@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.App", "Arbiter.App\Arbiter.App.csproj", "{9AE1DBB8-16D0-4B78-BC78-DE138826A961}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.Interop", "Arbiter.Interop\Arbiter.Interop.csproj", "{91D838B1-AD95-4E5D-BC0B-B30EFBB9D91D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{9AE1DBB8-16D0-4B78-BC78-DE138826A961}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AE1DBB8-16D0-4B78-BC78-DE138826A961}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AE1DBB8-16D0-4B78-BC78-DE138826A961}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D838B1-AD95-4E5D-BC0B-B30EFBB9D91D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D838B1-AD95-4E5D-BC0B-B30EFBB9D91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D838B1-AD95-4E5D-BC0B-B30EFBB9D91D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D838B1-AD95-4E5D-BC0B-B30EFBB9D91D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
