@@ -1,6 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:Arbiter.App.Controls">
+        xmlns:controls="using:Arbiter.App.Controls"
+        xmlns:converters="using:Arbiter.App.Converters">
     <Style Selector="controls|TalgoniteWindow">
         <Setter Property="Background" Value="{StaticResource Talgonite.Window.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.Window.Foreground}"/>
@@ -19,22 +20,27 @@
                             <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" Background="Transparent">
                                 <!-- Icon --> 
                                 <Image Grid.Column="0"
-                                       MinWidth="16" MinHeight="16"
-                                       Source="{TemplateBinding Icon}"/>
+                                       Source="{TemplateBinding Icon, Converter={x:Static converters:IconImageConverter.Converter}}"
+                                       Width="24" Height="24"
+                                       Stretch="UniformToFill"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0,8,0"/>
                                 
                                 <!-- Title -->
                                 <TextBlock Grid.Column="1"
                                            Text="{TemplateBinding Title}"
                                            FontSize="{StaticResource Talgonite.Window.TitleFontSize}"
+                                           FontWeight="DemiBold"
                                            VerticalAlignment="Center"
-                                           Margin="16,4,8,4"/>
+                                           Margin="2"/>
                                 
                                 <!-- Custom Content Area -->
                                 <ContentControl Grid.Column="2"
                                                 Content="{TemplateBinding TitleBarContent}"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Center"
-                                                Margin="0"/>
+                                                Margin="8,0"/>
                                 
                                 <!-- Minimize Button -->
                                 <Button Name="PART_MinimizeButton"
@@ -42,7 +48,7 @@
                                     <Path
                                         Width="16"
                                         Height="16"
-                                        Stroke="{TemplateBinding Foreground}"
+                                        Stroke="{Binding $parent[Button].Foreground}"
                                         StrokeThickness="2"
                                         StrokeLineCap="Round"
                                         Stretch="None"
@@ -55,7 +61,7 @@
                                     <Path
                                         Width="16"
                                         Height="16"
-                                        Stroke="{TemplateBinding Foreground}"
+                                        Stroke="{Binding $parent[Button].Foreground}"
                                         StrokeThickness="2"
                                         StrokeJoin="Round"
                                         Stretch="None"
@@ -68,7 +74,7 @@
                                     <Path
                                         Height="16"
                                         Width="16"
-                                        Stroke="{TemplateBinding Foreground}"
+                                        Stroke="{Binding $parent[Button].Foreground}"
                                         StrokeThickness="2"
                                         StrokeLineCap="Round"
                                         Stretch="None"
@@ -99,7 +105,7 @@
         <Setter Property="Foreground" Value="#ffffff"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Opacity" Value="0.5"/>
-        <Setter Property="MinWidth" Value="32"/>
+        <Setter Property="MinWidth" Value="40"/>
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
@@ -111,5 +117,23 @@
     
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pointerover">
         <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Background" Value="#262b33"/>
+    </Style>
+    
+    
+    <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pressed">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Background" Value="#373d49"/>
+    </Style>
+    
+    <Style Selector="controls|TalgoniteWindow /template/ Button#PART_CloseButton:pointerover">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Foreground" Value="#ed6a5e"/>
+    </Style>
+    
+    <Style Selector="controls|TalgoniteWindow /template/ Button#PART_CloseButton:pressed">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Background" Value="#ed5547"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
     </Style>
 </Styles>

@@ -16,4 +16,14 @@ public class TalgoniteWindow : Window
         get => GetValue(TitleBarContentProperty);
         set => SetValue(TitleBarContentProperty, value);
     }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == WindowStateProperty)
+        {
+            PseudoClasses.Set(":maximized", change.NewValue is WindowState.Maximized);
+        }
+    }
 }
