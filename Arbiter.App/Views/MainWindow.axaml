@@ -10,8 +10,8 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/aiseirigh.ico"
         Title="Arbiter"
-        Width="1024" Height="640"
-        CanResize="False"
+        Width="1280" Height="720"
+        CanResize="True"
         WindowStartupLocation="CenterScreen">
         <controls:TalgoniteWindow.TitleBarContent>
                 <TextBlock Text="Custom content area" HorizontalAlignment="Right" VerticalAlignment="Center"/>
