@@ -1,0 +1,23 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:Arbiter.App.Controls">
+    <Style Selector="Window">
+        <Setter Property="Background" Value="{StaticResource Talgonite.Window.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.Window.Foreground}"/>
+        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.InterfaceFont}"/>
+        <Setter Property="FontSize" Value="{StaticResource Talgonite.FontSize.Normal}"/>
+        <Setter Property="SystemDecorations" Value="None"/>
+        <Setter Property="ExtendClientAreaToDecorationsHint" Value="True"/>
+        <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome"/>
+        <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="40"/>
+        <Setter Property="Template">
+            <ControlTemplate TargetType="controls:TalgoniteWindow">
+                <Border Background="{TemplateBinding Background}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      Margin="0"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

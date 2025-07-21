@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="using:System">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <!-- Shamelessly influenced by Godot's Dark interface -->
+            
+            <!-- Global Fonts and Sizes -->
+            <FontFamily x:Key="Talgonite.Font.InterfaceFont">Inter</FontFamily>
+            <FontFamily x:Key="Talgonite.Font.EditorFont">Consolas</FontFamily>
+
+            <sys:Double x:Key="Talgonite.FontSize.Normal">14</sys:Double>
+    
+            <!-- Window Resources -->
+            <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.Window.Foreground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.Window.TitleBackground" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#cdcfd2"/>
+            <sys:Double x:Key="Talgonite.Window.TitleFontSize">18</sys:Double>
+            
+        </ResourceDictionary>
+        
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
