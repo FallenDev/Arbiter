@@ -14,7 +14,12 @@
         CanResize="True"
         WindowStartupLocation="CenterScreen">
         <controls:TalgoniteWindow.TitleBarContent>
-                <TextBlock Text="Custom content area" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Text="Custom content area"
+                           Foreground="#72757a"
+                           FontSize="14"
+                           FontWeight="DemiBold"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"/>
         </controls:TalgoniteWindow.TitleBarContent>
         <Border Background="#262b33">
                 <TextBlock Text="The quick brown fox jumps over the lazy dog."
