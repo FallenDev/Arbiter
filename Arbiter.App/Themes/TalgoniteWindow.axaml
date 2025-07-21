@@ -1,7 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:Arbiter.App.Controls">
-    <Style Selector="Window">
+    <Style Selector="controls|TalgoniteWindow">
         <Setter Property="Background" Value="{StaticResource Talgonite.Window.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.Window.Foreground}"/>
         <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.InterfaceFont}"/>
@@ -11,13 +11,105 @@
         <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome"/>
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="40"/>
         <Setter Property="Template">
-            <ControlTemplate TargetType="controls:TalgoniteWindow">
-                <Border Background="{TemplateBinding Background}">
-                    <ContentPresenter Name="PART_ContentPresenter"
-                                      Content="{TemplateBinding Content}"
-                                      Margin="0"/>
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" Padding="0">
+                    <VisualLayerManager>
+                        <Grid RowDefinitions="40,*" Background="Transparent">
+                            <!-- Title Bar Area -->
+                            <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" Background="Transparent">
+                                <!-- Icon --> 
+                                <Image Grid.Column="0"
+                                       MinWidth="16" MinHeight="16"
+                                       Source="{TemplateBinding Icon}"/>
+                                
+                                <!-- Title -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Title}"
+                                           FontSize="{StaticResource Talgonite.Window.TitleFontSize}"
+                                           VerticalAlignment="Center"
+                                           Margin="16,4,8,4"/>
+                                
+                                <!-- Custom Content Area -->
+                                <ContentControl Grid.Column="2"
+                                                Content="{TemplateBinding TitleBarContent}"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Center"
+                                                Margin="0"/>
+                                
+                                <!-- Minimize Button -->
+                                <Button Name="PART_MinimizeButton"
+                                        Grid.Column="3" Classes="controlBox">
+                                    <Path
+                                        Width="16"
+                                        Height="16"
+                                        Stroke="{TemplateBinding Foreground}"
+                                        StrokeThickness="2"
+                                        StrokeLineCap="Round"
+                                        Stretch="None"
+                                        Data="M2 14 H14" />
+                                </Button>
+                                
+                                <!-- Maximize/Restore Button -->
+                                <Button Name="PART_MaximizeButton"
+                                        Grid.Column="4" Classes="controlBox">
+                                    <Path
+                                        Width="16"
+                                        Height="16"
+                                        Stroke="{TemplateBinding Foreground}"
+                                        StrokeThickness="2"
+                                        StrokeJoin="Round"
+                                        Stretch="None"
+                                        Data="M2 2 H14 V14 H2 Z" />
+                                </Button>
+                                
+                                <!-- Close Button -->
+                                <Button Name="PART_CloseButton"
+                                        Grid.Column="5" Classes="controlBox">
+                                    <Path
+                                        Height="16"
+                                        Width="16"
+                                        Stroke="{TemplateBinding Foreground}"
+                                        StrokeThickness="2"
+                                        StrokeLineCap="Round"
+                                        Stretch="None"
+                                        Data="M2 2 L14 14 M14 2 L2 14"/>
+                                </Button>
+                            </Grid>
+                            
+                            <!-- Content Area -->
+                            <DockPanel Grid.Row="1" LastChildFill="True">
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  DockPanel.Dock="Bottom"
+                                                  Content="{TemplateBinding Content}"
+                                                  Margin="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </DockPanel>
+                        </Grid>
+                        
+                    </VisualLayerManager>
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+    
+    <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox">
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Opacity" Value="0.5"/>
+        <Setter Property="MinWidth" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="{TemplateBinding HorizontalContentAlignment}"/>
+        <Setter Property="VerticalContentAlignment" Value="{TemplateBinding VerticalContentAlignment}"/>
+    </Style>
+    
+    <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pointerover">
+        <Setter Property="Opacity" Value="1"/>
     </Style>
 </Styles>

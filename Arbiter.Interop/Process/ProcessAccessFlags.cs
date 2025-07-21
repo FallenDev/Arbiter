@@ -1,5 +1,5 @@
 ﻿
-namespace Arbiter.Interop;
+namespace Arbiter.Interop.Process;
 
 [Flags]
 public enum ProcessAccessFlags : uint

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Arbiter.Interop.Win32;
 
-namespace Arbiter.Interop;
+namespace Arbiter.Interop.Process;
 
 public class SuspendedProcess : IDisposable
 {

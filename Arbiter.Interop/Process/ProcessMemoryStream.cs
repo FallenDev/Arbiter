@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Arbiter.Interop.Win32;
 
-namespace Arbiter.Interop;
+namespace Arbiter.Interop.Process;
 
 public class ProcessMemoryStream : Stream
 {

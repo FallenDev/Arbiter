@@ -50,8 +50,14 @@ internal static class NativeMethods
 
     [DllImport("kernel32.dll", EntryPoint = "OpenProcess", SetLastError = true)]
     internal static extern IntPtr OpenProcess(Win32ProcessAccess desireAccess, bool inheritHandle, int processId);
-    
+
     [DllImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool CloseHandle(IntPtr handle);
+
+    [DllImport("user32.dll", EntryPoint = "GetClassLongPtr")]
+    internal static extern IntPtr GetClassLongPtr(IntPtr hWindow, Win32GetClassLongIndex index);
+
+    [DllImport("user32.dll", EntryPoint = "SetClassLongPtr")]
+    internal static extern IntPtr SetClassLongPtr(IntPtr hWindow, Win32GetClassLongIndex index, IntPtr newValue);
 }
