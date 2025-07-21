@@ -2,15 +2,19 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 
 namespace Arbiter.App.Controls;
 
 public class TalgoniteWindow : Window
 {
-    private Grid _titleBar;
+    private Grid? _titleBar;
     private Button? _minimizeButton;
     private Button? _maximizeButton;
     private Button? _closeButton;
+
+    private bool _isMouseDown;
+    private Point _mouseDownPosition;
     
     protected override Type StyleKeyOverride { get; } = typeof(TalgoniteWindow);
     
@@ -48,6 +52,35 @@ public class TalgoniteWindow : Window
         
         _closeButton = e.NameScope.Find<Button>("PART_CloseButton")!;
         _closeButton.Click += (_, _) => Close();
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        if (_titleBar?.IsPointerOver is true)
+        {
+            _isMouseDown = true;
+            _mouseDownPosition = e.GetPosition(this);
+
+            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            {
+                BeginMoveDrag(e);
+                PseudoClasses.Set(":dragging", true);
+                _isMouseDown = false;
+            }
+        }
+        else
+        {
+            PseudoClasses.Set(":dragging", false);
+            _isMouseDown = false;
+        }
+
+        base.OnPointerPressed(e);
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        PseudoClasses.Set(":dragging", false);
+        base.OnPointerReleased(e);
     }
 
     private void ToggleMaximizedState()

@@ -116,11 +116,14 @@
         <Setter Property="VerticalContentAlignment" Value="{TemplateBinding VerticalContentAlignment}"/>
     </Style>
     
+    <Style Selector="controls|TalgoniteWindow:dragging">
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pointerover">
         <Setter Property="Opacity" Value="1"/>
         <Setter Property="Background" Value="#262b33"/>
     </Style>
-    
     
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pressed">
         <Setter Property="Opacity" Value="1"/>
