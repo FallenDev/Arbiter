@@ -17,7 +17,8 @@
                     <VisualLayerManager>
                         <Grid RowDefinitions="40,*" Background="Transparent">
                             <!-- Title Bar Area -->
-                            <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" Background="Transparent">
+                            <Grid Name="PART_TitleBar"
+                                  Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" Background="Transparent">
                                 <!-- Icon --> 
                                 <Image Grid.Column="0"
                                        Source="{TemplateBinding Icon, Converter={x:Static converters:IconImageConverter.Converter}}"
