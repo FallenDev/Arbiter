@@ -15,10 +15,11 @@
     
     <Style Selector="Grid.resizeGripContainer:pointerover Path.resizeGrip">
         <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.HoverForeground}"/>
+        <Setter Property="Opacity" Value="1.0"/>
     </Style>
     
     <Style Selector="control|TalgoniteWindow:resizing Path.resizeGrip">
-        <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.HoverForeground}"/>
+        <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.PressedForeground}"/>
         <Setter Property="Opacity" Value="1.0"/>
     </Style>
     

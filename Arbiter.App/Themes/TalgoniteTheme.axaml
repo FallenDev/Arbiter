@@ -34,6 +34,7 @@
             <!-- ResizeGrip Resources -->
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.Foreground" Color="#888b90"/>
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.HoverForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ResizeGrip.PressedForeground" Color="#82baf7"/>
             
             <!-- TabControl Resources -->
             <SolidColorBrush x:Key="Talgonite.TabControl.Background" Color="#373d49"/>
