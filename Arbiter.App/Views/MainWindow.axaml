@@ -9,7 +9,7 @@
         x:Class="Arbiter.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/aiseirigh.ico"
-        Title="Arbiter"
+        Title="{Binding Title}"
         Width="1280" Height="720"
         MinWidth="1024" MinHeight="576"
         CanResize="True"
@@ -37,7 +37,7 @@
             <TabItem Header="_Clients">
                 <DockPanel>
                     <WrapPanel DockPanel.Dock="Top" Margin="4">
-                        <Button>
+                        <Button Command="{Binding LaunchClientCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Path Width="16" Height="16"
                                       Stroke="{Binding Path=$parent[Button].Foreground}"

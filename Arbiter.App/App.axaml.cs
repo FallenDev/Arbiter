@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Arbiter.App.Services;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Arbiter.App;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
@@ -67,6 +66,7 @@ public partial class App : Application
     private static void RegisterServices(IServiceCollection services)
     {
         services.AddTransient<IDialogService, DialogService>();
+        services.AddTransient<IGameClientService, GameClientService>();
         services.AddTransient<ISettingsService, SettingsService>();
     }
 
