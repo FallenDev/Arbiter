@@ -13,7 +13,8 @@
         Width="1280" Height="720"
         CanResize="True"
         WindowStartupLocation="CenterScreen">
-        <controls:TalgoniteWindow.TitleBarContent>
+    <!-- Title Bar Content -->
+    <controls:TalgoniteWindow.TitleBarContent>
                 <TextBlock Text="Custom content area"
                            Foreground="#72757a"
                            FontSize="14"
@@ -21,11 +22,48 @@
                            HorizontalAlignment="Right"
                            VerticalAlignment="Center"/>
         </controls:TalgoniteWindow.TitleBarContent>
-        <Border Background="#262b33">
-                <TextBlock Text="The quick brown fox jumps over the lazy dog."
-                           FontSize="20"
-                           FontWeight="Light"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-        </Border>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320" MinWidth="240"/>
+            <ColumnDefinition Width="*" MinWidth="480"/>
+            <ColumnDefinition Width="320" MinWidth="240"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left Panel Tabs -->
+        <TabControl Name="LeftPanelTabStrip" Grid.Column="0">
+            <TabItem Header="Characters">
+                <TextBlock Text="Character List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Center Area -->
+        <Grid Name="CenterContentGrid" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="480"/>
+                <RowDefinition Height="180" MinHeight="180"/>
+            </Grid.RowDefinitions>
+            
+            <TabControl Grid.Row="0">
+                <TabItem Header="Trace">
+                    <TextBlock Text="Packet List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </TabItem>
+                <TabItem Header="Filters">
+                    <TextBlock Text="Filter List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </TabItem>
+                <TabItem Header="Scripts">
+                    <TextBlock Text="Script List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        
+        <!-- Right Panel Tabs -->
+        <TabControl Name="RightPanelTabStrip" Grid.Column="2">
+            <TabItem Header="Inspector">
+                <TextBlock Text="Property List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </TabItem>
+            <TabItem Header="History">
+                <TextBlock Text="History List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </controls:TalgoniteWindow>
