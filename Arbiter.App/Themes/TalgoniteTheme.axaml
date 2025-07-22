@@ -18,6 +18,9 @@
             <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#cdcfd2"/>
             <sys:Double x:Key="Talgonite.Window.TitleFontSize">18</sys:Double>
             
+            <!-- TabControl Resources -->
+            <SolidColorBrush x:Key="Talgonite.TabControl.Background" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.TabControl.Foreground" Color="#e0e0e0"/>
         </ResourceDictionary>
         
     </ResourceDictionary.ThemeDictionaries>

@@ -1,6 +1,5 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StyleInclude Source="./TalgoniteWindow.axaml"/>
     <Styles.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -8,4 +7,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Styles.Resources>
+    
+    <StyleInclude Source="./TalgoniteTabControl.axaml"/>
+    <StyleInclude Source="./TalgoniteWindow.axaml"/>
 </Styles>
