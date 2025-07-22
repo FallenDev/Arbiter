@@ -94,6 +94,18 @@
                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             </DockPanel>
+                           
+                            <!-- Resize Grip -->
+                            <Grid Name="PART_ResizeGrip"
+                                  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                  Classes="resizeGripContainer"
+                                  IsVisible="{Binding $parent[Window].CanResize}"
+                                  Cursor="BottomRightCorner">
+                                <Path Width="16" Height="16"
+                                      Classes="resizeGrip"
+                                      Margin="0,0,4,4"
+                                      Data="M2 14 L14 2 M7 14 L14 7 M12 14 L14 12"/>
+                            </Grid>
                         </Grid>
                         
                     </VisualLayerManager>

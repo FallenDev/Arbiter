@@ -11,6 +11,7 @@
         Icon="/Assets/aiseirigh.ico"
         Title="Arbiter"
         Width="1280" Height="720"
+        MinWidth="1024" MinHeight="576"
         CanResize="True"
         WindowStartupLocation="CenterScreen">
     <!-- Title Bar Content -->

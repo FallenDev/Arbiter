@@ -12,6 +12,7 @@ public class TalgoniteWindow : Window
     private Button? _minimizeButton;
     private Button? _maximizeButton;
     private Button? _closeButton;
+    private Grid? _resizeGrip;
 
     private bool _isMouseDown;
     private Point _mouseDownPosition;
@@ -52,6 +53,8 @@ public class TalgoniteWindow : Window
         
         _closeButton = e.NameScope.Find<Button>("PART_CloseButton")!;
         _closeButton.Click += (_, _) => Close();
+
+        _resizeGrip = e.NameScope.Find<Grid>("PART_ResizeGrip");
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -67,6 +70,10 @@ public class TalgoniteWindow : Window
                 PseudoClasses.Set(":dragging", true);
                 _isMouseDown = false;
             }
+        }
+        else if (_resizeGrip?.IsPointerOver is true)
+        {
+            BeginResizeDrag(WindowEdge.SouthEast, e);
         }
         else
         {

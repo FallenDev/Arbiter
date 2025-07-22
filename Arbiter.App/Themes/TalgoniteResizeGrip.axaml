@@ -1,0 +1,17 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Path.resizeGrip">
+        <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.Foreground}"/>
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="StrokeLineCap" Value="Square"/>
+        <Setter Property="Stretch" Value="None"/>
+    </Style>
+    
+    <Style Selector="Grid.resizeGripContainer">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <Style Selector="Grid.resizeGripContainer:pointerover Path.resizeGrip">
+        <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.HoverForeground}"/>
+    </Style>
+</Styles>
