@@ -11,12 +11,8 @@
 
             <sys:Double x:Key="Talgonite.FontSize.Normal">14</sys:Double>
     
-            <!-- Window Resources -->
-            <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>
-            <SolidColorBrush x:Key="Talgonite.Window.Foreground" Color="#ffffff"/>
-            <SolidColorBrush x:Key="Talgonite.Window.TitleBackground" Color="#1e2228"/>
-            <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#cdcfd2"/>
-            <sys:Double x:Key="Talgonite.Window.TitleFontSize">18</sys:Double>
+            <!-- ListBox Resources -->
+            <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#22262d"/>
             
             <!-- ResizeGrip Resources -->
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.Foreground" Color="#888b90"/>
@@ -34,6 +30,13 @@
             
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
+            
+            <!-- Window Resources -->
+            <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.Window.Foreground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.Window.TitleBackground" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#cdcfd2"/>
+            <sys:Double x:Key="Talgonite.Window.TitleFontSize">18</sys:Double>
             
         </ResourceDictionary>
         

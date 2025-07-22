@@ -4,10 +4,10 @@
         <Setter Property="Background" Value="{StaticResource Talgonite.TabControl.Background}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="0,16,0,0"/>
+        <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Padding" Value="4"/>
         <Setter Property="TabStripPlacement" Value="Top"/>
         <Setter Property="Template">
             <ControlTemplate>
@@ -19,11 +19,12 @@
                         VerticalAlignment="{TemplateBinding VerticalAlignment}">
                     <DockPanel>
                         <Border Name="ItemsPresenterBorder"
-                                Background="{StaticResource Talgonite.TabStrip.Background}">
+                                Background="{StaticResource Talgonite.TabStrip.Background}"
+                                CornerRadius="0,8,0,0">
                             <ItemsPresenter Name="PART_ItemsPresenter"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"/>
                         </Border>
-                        <Border Background="{TemplateBinding Background}"
+                        <Border Background="Transparent"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter Name="PART_SelectedContentHost"
                                               Content="{TemplateBinding SelectedContent}"
@@ -37,25 +38,16 @@
         </Setter>
         
         <!-- Top Tab Placement -->
-        <Style Selector="^[TabStripPlacement=Top]">
-            <Setter Property="Padding" Value="0,4,0,0"/>
-        </Style>
         <Style Selector="^[TabStripPlacement=Top] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Top"/>
         </Style>
         
         <!-- Bottom Tab Placement -->
-        <Style Selector="^[TabStripPlacement=Bottom]">
-            <Setter Property="Padding" Value="0,0,0,4"/>
-        </Style>
         <Style Selector="^[TabStripPlacement=Bottom] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Bottom"/>
         </Style>
         
         <!-- Left Tab Placement -->
-        <Style Selector="^[TabStripPlacement=Left]">
-            <Setter Property="Padding" Value="4,0,0,0"/>
-        </Style>
         <Style Selector="^[TabStripPlacement=Left] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Left"/>
         </Style>
@@ -64,9 +56,6 @@
         </Style>
         
         <!-- Right Tab Placement -->
-        <Style Selector="^[TabStripPlacement=Right]">
-            <Setter Property="Padding" Value="0,0,4,0"/>
-        </Style>
         <Style Selector="^[TabStripPlacement=Right] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Right"/>
         </Style>

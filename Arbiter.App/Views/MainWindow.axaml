@@ -35,7 +35,9 @@
         <!-- Left Panel Tabs -->
         <TabControl Name="LeftPanelTabStrip" Grid.Column="0">
             <TabItem Header="Characters">
-                <TextBlock Text="Character List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ListBox>
+                    
+                </ListBox>
             </TabItem>
         </TabControl>
         
@@ -51,13 +53,13 @@
             
             <TabControl Grid.Row="0">
                 <TabItem Header="Trace">
-                    <TextBlock Text="Packet List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ListBox></ListBox>
                 </TabItem>
                 <TabItem Header="Filters">
-                    <TextBlock Text="Filter List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ListBox></ListBox>
                 </TabItem>
                 <TabItem Header="Scripts">
-                    <TextBlock Text="Script List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ListBox></ListBox>
                 </TabItem>
             </TabControl>
             
@@ -65,7 +67,7 @@
             
             <TabControl Grid.Row="2">
                 <TabItem Header="Event Log">
-                    <TextBlock Text="Event List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ListBox></ListBox>
                 </TabItem>
             </TabControl>
         </Grid>
@@ -75,10 +77,10 @@
         <!-- Right Panel Tabs -->
         <TabControl Name="RightPanelTabStrip" Grid.Column="4">
             <TabItem Header="Inspector">
-                <TextBlock Text="Property List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ListBox></ListBox>
             </TabItem>
             <TabItem Header="History">
-                <TextBlock Text="History List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ListBox></ListBox>
             </TabItem>
         </TabControl>
     </Grid>

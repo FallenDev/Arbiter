@@ -9,7 +9,9 @@
     </Styles.Resources>
     
     <StyleInclude Source="./TalgoniteGridSplitter.axaml"/>
-    <StyleInclude Source="TalgoniteResizeGrip.axaml"/>
+    <StyleInclude Source="./TalgoniteListBox.axaml"/>
+    <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>
+    <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
     <StyleInclude Source="./TalgoniteTabControl.axaml"/>
     <StyleInclude Source="./TalgoniteTabItem.axaml"/>
     <StyleInclude Source="./TalgoniteTabStrip.axaml"/>
