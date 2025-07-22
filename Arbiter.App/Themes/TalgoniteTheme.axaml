@@ -11,6 +11,23 @@
 
             <sys:Double x:Key="Talgonite.FontSize.Normal">14</sys:Double>
     
+            <!-- Button Resources -->
+            <SolidColorBrush x:Key="Talgonite.Button.Background" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.Button.HoverBackground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.Button.PressedBackground" Color="#222831"/>
+            <SolidColorBrush x:Key="Talgonite.Button.DisabledBackground" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.Button.Foreground" Color="#e0e0e0"/>
+            <SolidColorBrush x:Key="Talgonite.Button.HoverForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.Button.PressedForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.Button.DisabledForeground" Color="#7b7e85"/>
+            
+            <!-- GridSplitter Resources -->
+            <SolidColorBrush x:Key="Talgonite.GridSplitter.Background" Color="Transparent"/>
+            <SolidColorBrush x:Key="Talgonite.GridSplitter.Foreground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.GridSplitter.HoverForeground" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.GridSplitter.PressedForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.GridSplitter.DisabledForeground" Color="#373d49"/>
+            
             <!-- ListBox Resources -->
             <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#22262d"/>
             
@@ -26,7 +43,8 @@
             <SolidColorBrush x:Key="Talgonite.TabItem.HoverBackground" Color="#2d323c"/>
             <SolidColorBrush x:Key="Talgonite.TabItem.SelectedBackground" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.TabItem.SelectedHighlight" Color="#6893c2"/>
-            <SolidColorBrush x:Key="Talgonite.TabItem.Foreground" Color="#e0e0e0"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.Foreground" Color="#717479"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.SelectedForeground" Color="#cdcfd2"/>
             
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>

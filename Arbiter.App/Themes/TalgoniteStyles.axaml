@@ -8,6 +8,7 @@
         </ResourceDictionary>
     </Styles.Resources>
     
+    <StyleInclude Source="./TalgoniteButton.axaml"/>
     <StyleInclude Source="./TalgoniteGridSplitter.axaml"/>
     <StyleInclude Source="./TalgoniteListBox.axaml"/>
     <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>

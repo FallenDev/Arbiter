@@ -1,0 +1,45 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Button">
+        <Setter Property="Background" Value="{StaticResource Talgonite.Button.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.Foreground}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Background="{TemplateBinding Background}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Padding="{TemplateBinding Padding}"
+                                  RecognizesAccessKey="True"
+                                  TextElement.Foreground="{TemplateBinding Foreground}"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.HoverForeground}"/>
+        </Style>
+        
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.PressedBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.PressedForeground}"/>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
+        </Style>
+    </Style>
+</Styles>
