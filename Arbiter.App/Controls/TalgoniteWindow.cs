@@ -1,11 +1,13 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 
 namespace Arbiter.App.Controls;
 
+[PseudoClasses(":dragging", ":resizing", ":maximized")]
 public class TalgoniteWindow : Window
 {
     private Grid? _titleBar;
@@ -73,21 +75,33 @@ public class TalgoniteWindow : Window
         }
         else if (_resizeGrip?.IsPointerOver is true)
         {
+            PseudoClasses.Set(":resizing", true);
             BeginResizeDrag(WindowEdge.SouthEast, e);
         }
         else
         {
+            PseudoClasses.Set(":resizing", false);
             PseudoClasses.Set(":dragging", false);
             _isMouseDown = false;
         }
-
+        
         base.OnPointerPressed(e);
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
+        PseudoClasses.Set(":resizing", false);
         PseudoClasses.Set(":dragging", false);
         base.OnPointerReleased(e);
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        if (!_isMouseDown)
+        {
+            PseudoClasses.Set(":resizing", false);
+        }
+        base.OnPointerMoved(e);
     }
 
     private void ToggleMaximizedState()

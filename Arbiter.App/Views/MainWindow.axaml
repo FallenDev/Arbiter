@@ -25,16 +25,16 @@
         </controls:TalgoniteWindow.TitleBarContent>
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280" MinWidth="240"/>
+            <ColumnDefinition Width="280" MinWidth="200"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="480"/>
+            <ColumnDefinition Width="*" MinWidth="400"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="280" MinWidth="240"/>
+            <ColumnDefinition Width="280" MinWidth="200"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
         <TabControl Name="LeftPanelTabStrip" Grid.Column="0">
-            <TabItem Header="Characters">
+            <TabItem Header="_Clients">
                 <DockPanel>
                     <WrapPanel DockPanel.Dock="Top" Margin="4">
                         <Button>
@@ -62,19 +62,19 @@
         <!-- Center Area -->
         <Grid Name="CenterContentGrid" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MinHeight="240"/>
+                <RowDefinition Height="*" MinHeight="160"/>
                 <RowDefinition Height="8"/>
-                <RowDefinition Height="160" MinHeight="160"/>
+                <RowDefinition Height="160" MinHeight="100"/>
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
-                <TabItem Header="Trace">
+                <TabItem Header="_Trace">
                     <ListBox></ListBox>
                 </TabItem>
-                <TabItem Header="Filters">
+                <TabItem Header="_Filters">
                     <ListBox></ListBox>
                 </TabItem>
-                <TabItem Header="Scripts">
+                <TabItem Header="_Scripts">
                     <ListBox></ListBox>
                 </TabItem>
             </TabControl>
@@ -82,7 +82,7 @@
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
             
             <TabControl Grid.Row="2">
-                <TabItem Header="Event Log">
+                <TabItem Header="_Event Log">
                     <ListBox></ListBox>
                 </TabItem>
             </TabControl>
@@ -92,10 +92,10 @@
         
         <!-- Right Panel Tabs -->
         <TabControl Name="RightPanelTabStrip" Grid.Column="4">
-            <TabItem Header="Inspector">
+            <TabItem Header="_Inspector">
                 <ListBox></ListBox>
             </TabItem>
-            <TabItem Header="History">
+            <TabItem Header="_History">
                 <ListBox></ListBox>
             </TabItem>
         </TabControl>

@@ -1,10 +1,12 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="using:Arbiter.App.Controls">
     <Style Selector="Path.resizeGrip">
         <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.Foreground}"/>
         <Setter Property="StrokeThickness" Value="2"/>
         <Setter Property="StrokeLineCap" Value="Square"/>
         <Setter Property="Stretch" Value="None"/>
+        <Setter Property="Opacity" Value="0.5"/>
     </Style>
     
     <Style Selector="Grid.resizeGripContainer">
@@ -14,4 +16,10 @@
     <Style Selector="Grid.resizeGripContainer:pointerover Path.resizeGrip">
         <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.HoverForeground}"/>
     </Style>
+    
+    <Style Selector="control|TalgoniteWindow:resizing Path.resizeGrip">
+        <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.HoverForeground}"/>
+        <Setter Property="Opacity" Value="1.0"/>
+    </Style>
+    
 </Styles>
