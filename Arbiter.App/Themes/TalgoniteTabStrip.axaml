@@ -1,6 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="TabStrip">
+        <Setter Property="Background" Value="{StaticResource Talgonite.TabStrip.Background}"/>
         <Setter Property="Template">
             <ControlTemplate>
                 <ItemsPresenter Name="PART_ItemsPresenter"
@@ -9,7 +10,9 @@
         </Setter>
         <Setter Property="ItemsPanel">
             <ItemsPanelTemplate>
-                <WrapPanel/>
+                <Border Background="{TemplateBinding Background}">
+                    <WrapPanel/>
+                </Border>
             </ItemsPanelTemplate>
         </Setter>
     </Style>

@@ -20,7 +20,17 @@
             
             <!-- TabControl Resources -->
             <SolidColorBrush x:Key="Talgonite.TabControl.Background" Color="#373d49"/>
-            <SolidColorBrush x:Key="Talgonite.TabControl.Foreground" Color="#e0e0e0"/>
+            
+            <!-- TabItem Resources -->
+            <SolidColorBrush x:Key="Talgonite.TabItem.Background" Color="Transparent"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.HoverBackground" Color="#2d323c"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.SelectedBackground" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.SelectedHighlight" Color="#6893c2"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.Foreground" Color="#e0e0e0"/>
+            
+            <!-- TabStrip Resources -->
+            <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
+            
         </ResourceDictionary>
         
     </ResourceDictionary.ThemeDictionaries>

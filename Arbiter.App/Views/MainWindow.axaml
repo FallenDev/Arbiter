@@ -22,11 +22,13 @@
                            HorizontalAlignment="Right"
                            VerticalAlignment="Center"/>
         </controls:TalgoniteWindow.TitleBarContent>
-    <Grid>
+    <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="320" MinWidth="240"/>
+            <ColumnDefinition Width="280" MinWidth="240"/>
+            <ColumnDefinition Width="8"/>
             <ColumnDefinition Width="*" MinWidth="480"/>
-            <ColumnDefinition Width="320" MinWidth="240"/>
+            <ColumnDefinition Width="8"/>
+            <ColumnDefinition Width="280" MinWidth="240"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
@@ -36,11 +38,14 @@
             </TabItem>
         </TabControl>
         
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns"/>
+        
         <!-- Center Area -->
-        <Grid Name="CenterContentGrid" Grid.Column="1">
+        <Grid Name="CenterContentGrid" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MinHeight="480"/>
-                <RowDefinition Height="180" MinHeight="180"/>
+                <RowDefinition Height="*" MinHeight="240"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="160" MinHeight="160"/>
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
@@ -54,10 +59,20 @@
                     <TextBlock Text="Script List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </TabItem>
             </TabControl>
+            
+            <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
+            
+            <TabControl Grid.Row="2">
+                <TabItem Header="Event Log">
+                    <TextBlock Text="Event List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </TabItem>
+            </TabControl>
         </Grid>
         
+        <GridSplitter Grid.Column="3" ResizeDirection="Columns"/>
+        
         <!-- Right Panel Tabs -->
-        <TabControl Name="RightPanelTabStrip" Grid.Column="2">
+        <TabControl Name="RightPanelTabStrip" Grid.Column="4">
             <TabItem Header="Inspector">
                 <TextBlock Text="Property List" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </TabItem>
