@@ -10,9 +10,10 @@
         x:Class="Arbiter.App.Views.MessageBoxWindow"
         x:DataType="vm:MessageBoxViewModel"
         Title="{Binding Title}"
+        TitleAlignment="Center"
         Width="320" Height="180"
-        MinWidth="320"
-        MinHeight="180"
+        MinWidth="360"
+        MinHeight="240"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">

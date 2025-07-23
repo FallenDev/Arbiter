@@ -18,7 +18,9 @@
                         <Grid RowDefinitions="40,*" Background="Transparent">
                             <!-- Title Bar Area -->
                             <Grid Name="PART_TitleBar"
-                                  Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto" Background="Transparent">
+                                  Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
+                                  Background="Transparent"
+                                  Margin="12,0,0,0">
                                 <!-- Icon --> 
                                 <Image Grid.Column="0"
                                        Source="{TemplateBinding Icon, Converter={x:Static converters:IconImageConverter.Converter}}"
@@ -26,15 +28,17 @@
                                        Stretch="UniformToFill"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
-                                       Margin="12,0,8,0"/>
+                                       IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                                 
                                 <!-- Title -->
                                 <TextBlock Grid.Column="1"
                                            Text="{TemplateBinding Title}"
                                            FontSize="{StaticResource Talgonite.Window.TitleFontSize}"
                                            FontWeight="DemiBold"
+                                           TextAlignment="{TemplateBinding TitleAlignment}"
+                                           HorizontalAlignment="Stretch"
                                            VerticalAlignment="Center"
-                                           Margin="2"/>
+                                           Margin="8,0,0,0"/>
                                 
                                 <!-- Custom Content Area -->
                                 <ContentControl Grid.Column="2"
@@ -45,7 +49,8 @@
                                 
                                 <!-- Minimize Button -->
                                 <Button Name="PART_MinimizeButton"
-                                        Grid.Column="3" Classes="controlBox">
+                                        Grid.Column="3" Classes="controlBox"
+                                        IsVisible="{TemplateBinding CanResize}">
                                     <Path
                                         Width="16"
                                         Height="16"
@@ -58,7 +63,8 @@
                                 
                                 <!-- Maximize/Restore Button -->
                                 <Button Name="PART_MaximizeButton"
-                                        Grid.Column="4" Classes="controlBox">
+                                        Grid.Column="4" Classes="controlBox"
+                                        IsVisible="{TemplateBinding CanResize}">
                                     <Path
                                         Width="16"
                                         Height="16"

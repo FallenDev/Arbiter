@@ -4,6 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace Arbiter.App.Controls;
 
@@ -24,10 +26,19 @@ public class TalgoniteWindow : Window
     public static readonly StyledProperty<Control> TitleBarContentProperty = AvaloniaProperty.Register<TalgoniteWindow, Control>(
         nameof(TitleBarContent));
 
+    public static readonly StyledProperty<TextAlignment> TitleAlignmentProperty = AvaloniaProperty.Register<TalgoniteWindow, TextAlignment>(
+        nameof(TitleAlignment));
+
     public Control TitleBarContent
     {
         get => GetValue(TitleBarContentProperty);
         set => SetValue(TitleBarContentProperty, value);
+    }
+    
+    public TextAlignment TitleAlignment
+    {
+        get => GetValue(TitleAlignmentProperty);
+        set => SetValue(TitleAlignmentProperty, value);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
