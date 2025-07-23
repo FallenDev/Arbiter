@@ -26,6 +26,12 @@ public class TalgoniteWindow : Window
     public static readonly StyledProperty<Control> TitleBarContentProperty = AvaloniaProperty.Register<TalgoniteWindow, Control>(
         nameof(TitleBarContent));
 
+    public static readonly StyledProperty<IBrush?> TitleBarBorderBrushProperty = AvaloniaProperty.Register<TalgoniteWindow, IBrush?>(
+        nameof(TitleBarBorderBrush), Brushes.Transparent);
+
+    public static readonly StyledProperty<Thickness> TitleBarBorderThicknessProperty = AvaloniaProperty.Register<TalgoniteWindow, Thickness>(
+        nameof(TitleBarBorderThickness), new Thickness(0, 0, 0, 0));
+    
     public static readonly StyledProperty<TextAlignment> TitleAlignmentProperty = AvaloniaProperty.Register<TalgoniteWindow, TextAlignment>(
         nameof(TitleAlignment));
 
@@ -33,6 +39,18 @@ public class TalgoniteWindow : Window
     {
         get => GetValue(TitleBarContentProperty);
         set => SetValue(TitleBarContentProperty, value);
+    }
+    
+    public IBrush? TitleBarBorderBrush
+    {
+        get => GetValue(TitleBarBorderBrushProperty);
+        set => SetValue(TitleBarBorderBrushProperty, value);
+    }
+    
+    public Thickness TitleBarBorderThickness
+    {
+        get => GetValue(TitleBarBorderThicknessProperty);
+        set => SetValue(TitleBarBorderThicknessProperty, value);
     }
     
     public TextAlignment TitleAlignment
@@ -54,7 +72,7 @@ public class TalgoniteWindow : Window
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-
+        
         _titleBar = e.NameScope.Find<Grid>("PART_TitleBar")!;
         _titleBar.DoubleTapped += (_, _) => ToggleMaximizedState();
         
@@ -84,7 +102,7 @@ public class TalgoniteWindow : Window
                 _isMouseDown = false;
             }
         }
-        else if (_resizeGrip?.IsPointerOver is true)
+        else if (_resizeGrip?.IsPointerOver is true && CanResize)
         {
             PseudoClasses.Set(":resizing", true);
             BeginResizeDrag(WindowEdge.SouthEast, e);
@@ -117,6 +135,11 @@ public class TalgoniteWindow : Window
 
     private void ToggleMaximizedState()
     {
+        if (!CanResize)
+        {
+            return;
+        }
+        
         WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
     }
 }

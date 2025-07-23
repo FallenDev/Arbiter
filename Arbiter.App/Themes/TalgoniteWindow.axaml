@@ -5,6 +5,7 @@
     <Style Selector="controls|TalgoniteWindow">
         <Setter Property="Background" Value="{StaticResource Talgonite.Window.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.Window.Foreground}"/>
+        <Setter Property="TitleBarBorderBrush" Value="{StaticResource Talgonite.Window.TitleBorderBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.InterfaceFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Talgonite.FontSize.Normal}"/>
         <Setter Property="SystemDecorations" Value="None"/>
@@ -17,77 +18,82 @@
                     <VisualLayerManager>
                         <Grid RowDefinitions="40,*" Background="Transparent">
                             <!-- Title Bar Area -->
-                            <Grid Name="PART_TitleBar"
-                                  Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
-                                  Background="Transparent"
-                                  Margin="12,0,0,0">
-                                <!-- Icon --> 
-                                <Image Grid.Column="0"
-                                       Source="{TemplateBinding Icon, Converter={x:Static converters:IconImageConverter.Converter}}"
-                                       Width="24" Height="24"
-                                       Stretch="UniformToFill"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                                
-                                <!-- Title -->
-                                <TextBlock Grid.Column="1"
-                                           Text="{TemplateBinding Title}"
-                                           FontSize="{StaticResource Talgonite.Window.TitleFontSize}"
-                                           FontWeight="DemiBold"
-                                           TextAlignment="{TemplateBinding TitleAlignment}"
-                                           HorizontalAlignment="Stretch"
+                            <Border Grid.Row="0"
+                                    Background="Transparent"
+                                    BorderBrush="{TemplateBinding TitleBarBorderBrush}"
+                                    BorderThickness="{TemplateBinding TitleBarBorderThickness}">
+                                <Grid Name="PART_TitleBar"
+                                      ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
+                                      Background="Transparent"
+                                      Margin="12,0,0,0">
+                                    <!-- Icon --> 
+                                    <Image Grid.Column="0"
+                                           Source="{TemplateBinding Icon, Converter={x:Static converters:IconImageConverter.Converter}}"
+                                           Width="24" Height="24"
+                                           Stretch="UniformToFill"
+                                           HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
-                                           Margin="8,0,0,0"/>
-                                
-                                <!-- Custom Content Area -->
-                                <ContentControl Grid.Column="2"
-                                                Content="{TemplateBinding TitleBarContent}"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Center"
-                                                Margin="8,0"/>
-                                
-                                <!-- Minimize Button -->
-                                <Button Name="PART_MinimizeButton"
-                                        Grid.Column="3" Classes="controlBox"
-                                        IsVisible="{TemplateBinding CanResize}">
-                                    <Path
-                                        Width="16"
-                                        Height="16"
-                                        Stroke="{Binding $parent[Button].Foreground}"
-                                        StrokeThickness="2"
-                                        StrokeLineCap="Round"
-                                        Stretch="None"
-                                        Data="M2 14 H14" />
-                                </Button>
-                                
-                                <!-- Maximize/Restore Button -->
-                                <Button Name="PART_MaximizeButton"
-                                        Grid.Column="4" Classes="controlBox"
-                                        IsVisible="{TemplateBinding CanResize}">
-                                    <Path
-                                        Width="16"
-                                        Height="16"
-                                        Stroke="{Binding $parent[Button].Foreground}"
-                                        StrokeThickness="2"
-                                        StrokeJoin="Round"
-                                        Stretch="None"
-                                        Data="M2 2 H14 V14 H2 Z" />
-                                </Button>
-                                
-                                <!-- Close Button -->
-                                <Button Name="PART_CloseButton"
-                                        Grid.Column="5" Classes="controlBox">
-                                    <Path
-                                        Height="16"
-                                        Width="16"
-                                        Stroke="{Binding $parent[Button].Foreground}"
-                                        StrokeThickness="2"
-                                        StrokeLineCap="Round"
-                                        Stretch="None"
-                                        Data="M2 2 L14 14 M14 2 L2 14"/>
-                                </Button>
-                            </Grid>
+                                           IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                    
+                                    <!-- Title -->
+                                    <TextBlock Grid.Column="1"
+                                               Text="{TemplateBinding Title}"
+                                               FontSize="{StaticResource Talgonite.Window.TitleFontSize}"
+                                               FontWeight="DemiBold"
+                                               TextAlignment="{TemplateBinding TitleAlignment}"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Center"
+                                               Margin="8,0,0,0"/>
+                                    
+                                    <!-- Custom Content Area -->
+                                    <ContentControl Grid.Column="2"
+                                                    Content="{TemplateBinding TitleBarContent}"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Center"
+                                                    Margin="8,0"/>
+                                    
+                                    <!-- Minimize Button -->
+                                    <Button Name="PART_MinimizeButton"
+                                            Grid.Column="3" Classes="controlBox"
+                                            IsVisible="{TemplateBinding CanResize}">
+                                        <Path
+                                            Width="16"
+                                            Height="16"
+                                            Stroke="{Binding $parent[Button].Foreground}"
+                                            StrokeThickness="2"
+                                            StrokeLineCap="Round"
+                                            Stretch="None"
+                                            Data="M2 14 H14" />
+                                    </Button>
+                                    
+                                    <!-- Maximize/Restore Button -->
+                                    <Button Name="PART_MaximizeButton"
+                                            Grid.Column="4" Classes="controlBox"
+                                            IsVisible="{TemplateBinding CanResize}">
+                                        <Path
+                                            Width="16"
+                                            Height="16"
+                                            Stroke="{Binding $parent[Button].Foreground}"
+                                            StrokeThickness="2"
+                                            StrokeJoin="Round"
+                                            Stretch="None"
+                                            Data="M2 2 H14 V14 H2 Z" />
+                                    </Button>
+                                    
+                                    <!-- Close Button -->
+                                    <Button Name="PART_CloseButton"
+                                            Grid.Column="5" Classes="controlBox">
+                                        <Path
+                                            Height="16"
+                                            Width="16"
+                                            Stroke="{Binding $parent[Button].Foreground}"
+                                            StrokeThickness="2"
+                                            StrokeLineCap="Round"
+                                            Stretch="None"
+                                            Data="M2 2 L14 14 M14 2 L2 14"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
                             
                             <!-- Content Area -->
                             <DockPanel Grid.Row="1" LastChildFill="True">

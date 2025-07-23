@@ -66,6 +66,7 @@
             <SolidColorBrush x:Key="Talgonite.Window.Foreground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.Window.TitleBackground" Color="#1e2228"/>
             <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Window.TitleBorderBrush" Color="#292d34"/>
             <sys:Double x:Key="Talgonite.Window.TitleFontSize">18</sys:Double>
             
         </ResourceDictionary>

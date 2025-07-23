@@ -11,6 +11,7 @@
         x:DataType="vm:MessageBoxViewModel"
         Title="{Binding Title}"
         TitleAlignment="Center"
+        TitleBarBorderThickness="0,0,0,1"
         Width="320" Height="180"
         MinWidth="360"
         MinHeight="240"
@@ -25,13 +26,17 @@
             <TextBlock Text="{Binding Message}"
                        TextAlignment="Center"
                        TextWrapping="Wrap"
-                       FontSize="18"
-                       FontWeight="Light"/>
+                       FontSize="16"
+                       FontWeight="Light"
+                       Padding="8"
+                       IsVisible="{Binding Message, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
             <TextBlock Text="{Binding Description}"
                        TextAlignment="Center"
                        TextWrapping="Wrap"
                        FontSize="14"
-                       FontWeight="Light"/>
+                       FontWeight="Light"
+                       Padding="8"
+                       IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
         </StackPanel>
         <UniformGrid Grid.Row="1" ColumnSpacing="8">
             <Button Command="{Binding HandleOkCommand}"
