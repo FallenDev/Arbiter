@@ -86,6 +86,9 @@
                 <TabItem Header="_Event Log">
                     <ListBox></ListBox>
                 </TabItem>
+                <TabItem Header="C_onsole">
+                    <ListBox></ListBox>
+                </TabItem>
             </TabControl>
         </Grid>
         
