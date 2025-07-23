@@ -36,7 +36,8 @@
                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                                     
                                     <!-- Title -->
-                                    <TextBlock Grid.Column="1"
+                                    <TextBlock Name="TitleTextBlock"
+                                               Grid.Column="1"
                                                Text="{TemplateBinding Title}"
                                                FontSize="{StaticResource Talgonite.Window.TitleFontSize}"
                                                FontWeight="DemiBold"
@@ -128,6 +129,12 @@
     
     <Style Selector="controls|TalgoniteWindow:dragging">
         <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    
+    <Style Selector="controls|TalgoniteWindow[TitleAlignment=Center] /template/ TextBlock#TitleTextBlock">
+        <Setter Property="Grid.Column" Value="0"/>
+        <Setter Property="Grid.ColumnSpan" Value="6"/>
+        <Setter Property="Margin" Value="8,0"/>
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox">
