@@ -126,10 +126,14 @@
         </Setter>
     </Style>
     
+    <Style Selector="controls|TalgoniteWindow:dragging">
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox">
-        <Setter Property="Foreground" Value="#ffffff"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Opacity" Value="0.5"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.Foreground}"/>
+        <Setter Property="CornerRadius" Value="0"/>
         <Setter Property="MinWidth" Value="40"/>
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="Margin" Value="0"/>
@@ -140,28 +144,23 @@
         <Setter Property="VerticalContentAlignment" Value="{TemplateBinding VerticalContentAlignment}"/>
     </Style>
     
-    <Style Selector="controls|TalgoniteWindow:dragging">
-        <Setter Property="Cursor" Value="Hand"/>
-    </Style>
-    
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pointerover">
-        <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Background" Value="#262b33"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.HoverBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.HoverForeground}"/>
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pressed">
-        <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Background" Value="#373d49"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.PressedBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.PressedForeground}"/>
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button#PART_CloseButton:pointerover">
-        <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Foreground" Value="#ed6a5e"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.CloseHoverBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.CloseHoverForeground}"/>
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button#PART_CloseButton:pressed">
-        <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Background" Value="#ed5547"/>
-        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.ClosePressedBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.ClosePressedForeground}"/>
     </Style>
 </Styles>

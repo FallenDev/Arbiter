@@ -11,7 +11,6 @@
         x:DataType="vm:MessageBoxViewModel"
         Title="{Binding Title}"
         TitleAlignment="Center"
-        TitleBarBorderThickness="0,0,0,1"
         Width="320" Height="180"
         MinWidth="360"
         MinHeight="240"

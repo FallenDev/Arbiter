@@ -30,7 +30,7 @@ public class TalgoniteWindow : Window
         nameof(TitleBarBorderBrush), Brushes.Transparent);
 
     public static readonly StyledProperty<Thickness> TitleBarBorderThicknessProperty = AvaloniaProperty.Register<TalgoniteWindow, Thickness>(
-        nameof(TitleBarBorderThickness), new Thickness(0, 0, 0, 0));
+        nameof(TitleBarBorderThickness), new Thickness(0, 0, 0, 1));
     
     public static readonly StyledProperty<TextAlignment> TitleAlignmentProperty = AvaloniaProperty.Register<TalgoniteWindow, TextAlignment>(
         nameof(TitleAlignment));
