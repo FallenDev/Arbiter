@@ -52,6 +52,7 @@
                         <ListBoxItem>First</ListBoxItem>
                         <ListBoxItem>Second</ListBoxItem>
                         <ListBoxItem>Third</ListBoxItem>
+                        <ListBoxItem IsEnabled="False">Disabled</ListBoxItem>
                     </ListBox>
                 </DockPanel>
             </TabItem>

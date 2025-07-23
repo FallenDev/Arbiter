@@ -31,6 +31,17 @@
             <!-- ListBox Resources -->
             <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#22262d"/>
             
+            <!-- ListBoxItem Resources -->
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.Background" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverBackground" Color="#2e3743"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedBackground" Color="#3f5168"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledBackground" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.FocusForeground" Color="#afc7c1"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledForeground" Color="#6d6f73"/>
+            
             <!-- ResizeGrip Resources -->
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.Foreground" Color="#888b90"/>
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.HoverForeground" Color="#cdcfd2"/>

@@ -1,10 +1,13 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="ListBoxItem">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.Foreground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="4,2"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+        <Setter Property="Padding" Value="8"/>
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter Name="PART_ContentPresenter"
@@ -19,5 +22,24 @@
                                   Padding="{TemplateBinding Padding}"/>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^:focus-visible /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.FocusForeground}"/>
+        </Style>
+    
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.HoverForeground}"/>
+        </Style>
+    
+        <Style Selector="^:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.SelectedBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.SelectedForeground}"/>
+        </Style>
+    
+        <Style Selector="^:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.DisabledBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.DisabledForeground}"/>
+        </Style>
     </Style>
 </Styles>
