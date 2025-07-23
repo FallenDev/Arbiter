@@ -17,11 +17,12 @@
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
-    <Grid RowDefinitions="*,Auto" Margin="8">
+    <Grid RowDefinitions="*,Auto">
         <StackPanel Grid.Row="0"
                     Spacing="16"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Margin="8">
             <TextBlock Text="{Binding Message}"
                        TextAlignment="Center"
                        TextWrapping="Wrap"
@@ -37,18 +38,24 @@
                        Padding="8"
                        IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
         </StackPanel>
-        <UniformGrid Grid.Row="1" ColumnSpacing="8">
-            <Button Command="{Binding HandleOkCommand}"
-                    IsDefault="True">
-                <TextBlock Text="{Binding AcceptButtonText}"
-                           FontSize="16"/>
-            </Button>
-            <Button Command="{Binding HandleCancelCommand}"
-                    IsCancel="True"
-                    IsVisible="{Binding Style, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static models:MessageBoxStyle.YesNo}}">
-                <TextBlock Text="{Binding CancelButtonText}"
-                           FontSize="16"/>
-            </Button>
-        </UniformGrid>
+        <Border Grid.Row="1"
+                Background="Transparent"
+                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="8">
+            <UniformGrid ColumnSpacing="8">
+                <Button Command="{Binding HandleOkCommand}"
+                        IsDefault="True">
+                    <TextBlock Text="{Binding AcceptButtonText}"
+                               FontSize="16"/>
+                </Button>
+                <Button Command="{Binding HandleCancelCommand}"
+                        IsCancel="True"
+                        IsVisible="{Binding Style, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static models:MessageBoxStyle.YesNo}}">
+                    <TextBlock Text="{Binding CancelButtonText}"
+                               FontSize="16"/>
+                </Button>
+            </UniformGrid>
+        </Border>
     </Grid>
 </controls:TalgoniteWindow>
