@@ -4,7 +4,6 @@
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                           xmlns:controls="using:Arbiter.App.Controls"
                           xmlns:vm="using:Arbiter.App.ViewModels"
-                          xmlns:models="using:Arbiter.App.Models"
                           mc:Ignorable="d"
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
@@ -15,10 +14,8 @@
                           ShowInTaskbar="False">
     <Grid RowDefinitions="*,Auto">
         <StackPanel Grid.Row="0"
-                    Spacing="16"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Margin="8">
+                    Spacing="8"
+                    Margin="16">
             <Label Content="Client E_xecutable Path:"/>
             <TextBox Text="{Binding ClientExecutablePath}"
                      Watermark="Path to game client..."/>
@@ -28,7 +25,13 @@
                          Text="{Binding RemoteServerAddress}"
                          Watermark="Hostname..."/>
                 <Label Grid.Column="1" Content="_Port:"/>
-                <NumericUpDown Grid.Column="2" Value="{Binding RemoteServerPort}"/>
+                <NumericUpDown Grid.Column="2"
+                               Value="{Binding RemoteServerPort}"
+                               Minimum="1"
+                               Maximum="65535"
+                               TextAlignment="Center"
+                               Watermark="1-65535"
+                               Width="80"/>
             </Grid>
         </StackPanel>
         

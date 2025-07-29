@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
@@ -28,17 +29,27 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         get => _settings.ClientExecutablePath;
         set
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ValidationException("Client executable path cannot be empty");
+            }
+            
             _settings.ClientExecutablePath = value;
             OnPropertyChanged();
             MarkDirty();
         }
     }
-
+    
     public string RemoteServerAddress
     {
         get => _settings.RemoteServerAddress;
         set
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ValidationException("Remote server address cannot be empty");
+            }
+            
             _settings.RemoteServerAddress = value;
             OnPropertyChanged();
             MarkDirty();

@@ -73,6 +73,7 @@
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.HoverBorderBrush" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.FocusBorderBrush" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.ErrorBorderBrush" Color="#ed6a5e"/>
             
             <!-- Window Resources -->
             <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>

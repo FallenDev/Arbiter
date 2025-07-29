@@ -13,6 +13,7 @@
     <StyleInclude Source="./TalgoniteLabel.axaml"/>
     <StyleInclude Source="./TalgoniteListBox.axaml"/>
     <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>
+    <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
     <StyleInclude Source="./TalgoniteTabControl.axaml"/>
     <StyleInclude Source="./TalgoniteTabItem.axaml"/>
