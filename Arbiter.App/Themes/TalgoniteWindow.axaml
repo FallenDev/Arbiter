@@ -47,7 +47,8 @@
                                                Margin="8,0,0,0"/>
                                     
                                     <!-- Custom Content Area -->
-                                    <ContentControl Grid.Column="2"
+                                    <ContentControl Name="PART_TitleContent"
+                                                    Grid.Column="2"
                                                     Content="{TemplateBinding TitleBarContent}"
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Center"

@@ -73,7 +73,7 @@ public class App : Application
     private static void RegisterViewModels(IServiceCollection services)
     {
         services.AddTransient<MessageBoxViewModel>();
-        services.AddTransient<SettingsViewModel>();
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<SettingsViewModel>();
     }
 }

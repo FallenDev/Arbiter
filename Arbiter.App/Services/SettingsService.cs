@@ -30,6 +30,8 @@ public class SettingsService : ISettingsService
 
     private readonly IStorageProvider _storageProvider;
 
+    public ArbiterSettings CurrentSettings { get; private set; } = new();
+
     public SettingsService(IStorageProvider storageProvider)
     {
         _storageProvider = storageProvider;
@@ -52,15 +54,11 @@ public class SettingsService : ISettingsService
         await using var stream = await settingsFile.OpenReadAsync();
         var settings = await JsonSerializer.DeserializeAsync<ArbiterSettings>(stream, JsonOptions);
 
-        if (settings is null)
-        {
-            throw new FormatException("Invalid settings format");
-        }
-
-        return settings;
+        CurrentSettings = settings ?? throw new FormatException("Invalid settings format");
+        return CurrentSettings;
     }
 
-    public async Task SaveSettingsAsync(ArbiterSettings settings)
+    public async Task SaveSettingsAsync()
     {
         var settingsFolder = await _storageProvider.TryGetFolderFromPathAsync(SettingsDirectory);
         if (settingsFolder is null)
@@ -71,6 +69,6 @@ public class SettingsService : ISettingsService
         var settingsFile = await settingsFolder.CreateFileAsync(SettingsFileName);
         await using var stream = await settingsFile!.OpenWriteAsync();
 
-        await JsonSerializer.SerializeAsync(stream, settings, JsonOptions);
+        await JsonSerializer.SerializeAsync(stream, CurrentSettings, JsonOptions);
     }
 }

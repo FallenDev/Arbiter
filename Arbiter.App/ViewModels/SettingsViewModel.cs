@@ -4,16 +4,14 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSettings>
 {
-    private static readonly string DefaultPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "KRU",
-        "Dark Ages");
+    private readonly ArbiterSettings _settings;
+    private readonly IStorageProvider _storageProvider;
 
     private static readonly FilePickerFileType ExecutableType = new("All Executables")
     {
@@ -21,33 +19,52 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         MimeTypes = ["application/octet-stream"],
     };
 
-    private readonly IStorageProvider _storageProvider;
-    private readonly ISettingsService _settingsService;
+    public string ClientExecutablePath
+    {
+        get => _settings.ClientExecutablePath;
+        set
+        {
+            _settings.ClientExecutablePath = value;
+            OnPropertyChanged();
+        }
+    }
 
-    [ObservableProperty] private string _clientExecutablePath = string.Empty;
+    public string RemoteServerAddress
+    {
+        get => _settings.RemoteServerAddress;
+        set
+        {
+            _settings.RemoteServerAddress = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public event Action<ArbiterSettings?>? RequestClose;
+    public int RemoteServerPort
+    {
+        get => _settings.RemoteServerPort;
+        set
+        {
+            _settings.RemoteServerPort = value;
+            OnPropertyChanged();
+        }
+    }
 
-    public SettingsViewModel(IStorageProvider storageProvider, ISettingsService settingsService)
+    public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
     {
         _storageProvider = storageProvider;
-        _settingsService = settingsService;
 
-        _ = LoadSettingsAsync();
+        // Make a copy so we can handle apply/cancel
+        _settings = (ArbiterSettings)settingsService.CurrentSettings.Clone();
     }
 
-    private async Task LoadSettingsAsync()
-    {
-        var settings = await _settingsService.LoadSettingsAsync();
-        ClientExecutablePath = settings.ClientExecutablePath;
-    }
+    public event Action<ArbiterSettings?>? RequestClose;
 
     [RelayCommand]
     private async Task OnLocateClient()
     {
         var existingFolder =
             await _storageProvider.TryGetFolderFromPathAsync(
-                Path.GetDirectoryName(ClientExecutablePath) ?? DefaultPath);
+                Path.GetDirectoryName(ClientExecutablePath) ?? ArbiterSettings.DefaultPath);
 
         var files = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -72,10 +89,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [RelayCommand]
     private void HandleOk()
     {
-        RequestClose?.Invoke(new ArbiterSettings
-        {
-            ClientExecutablePath = ClientExecutablePath
-        });
+        RequestClose?.Invoke(_settings);
     }
 
     [RelayCommand]

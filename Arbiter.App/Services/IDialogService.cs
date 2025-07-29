@@ -16,10 +16,10 @@ public interface IDialogService
     public Task ShowDialogAsync<TWindow>()
         where TWindow : Window, new();
     
-    Task ShowDialogAsync<TWindow, TViewModel>(TViewModel? viewModel)
+    Task ShowDialogAsync<TWindow, TViewModel>(TViewModel? viewModel = null)
         where TWindow : Window, new() where TViewModel : ViewModelBase;
 
-    Task<TResult?> ShowDialogAsync<TWindow, TViewModel, TResult>(TViewModel? viewModel)
+    Task<TResult?> ShowDialogAsync<TWindow, TViewModel, TResult>(TViewModel? viewModel = null)
         where TWindow : Window, new() where TViewModel : ViewModelBase, IDialogResult<TResult>;
     
     Task<bool?> ShowMessageBoxAsync(MessageBoxDetails details);

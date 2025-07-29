@@ -16,13 +16,41 @@
         WindowStartupLocation="CenterScreen">
     <!-- Title Bar Content -->
     <controls:TalgoniteWindow.TitleBarContent>
-                <TextBlock Text="Custom content area"
-                           Foreground="#72757a"
-                           FontSize="14"
-                           FontWeight="DemiBold"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Center"/>
-        </controls:TalgoniteWindow.TitleBarContent>
+        <DockPanel>
+            <Button Name="SettingsButton"
+                    Command="{Binding ShowSettingsCommand}"
+                    Classes="controlBox">
+                <Path Width="16"
+                      Height="16"
+                      Stretch="None"
+                      Stroke="{Binding $parent[Button].Foreground}"
+                      StrokeThickness="2"
+                      StrokeLineCap="Round"
+                      Data="M16,8
+                            L13.26,10.17
+                            L13.6,13.6
+                            L10.17,13.26
+                            L8,16
+                            L5.83,13.26
+                            L2.4,13.6
+                            L2.74,10.17
+                            L0,8
+                            L2.74,5.83
+                            L2.4,2.4
+                            L5.83,2.74
+                            L8,0
+                            L10.17,2.74
+                            L13.6,2.4
+                            L13.26,5.83
+                            Z
+                            M11,8
+                            A3,3 0 1,1 5,8
+                            A3,3 0 1,1 11,8
+                            Z"/>
+            </Button>
+        </DockPanel>
+    </controls:TalgoniteWindow.TitleBarContent>
+    
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="280" MinWidth="200"/>

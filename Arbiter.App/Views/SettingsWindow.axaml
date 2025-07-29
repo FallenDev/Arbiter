@@ -1,0 +1,17 @@
+﻿<controls:TalgoniteWindow xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:controls="using:Arbiter.App.Controls"
+                          xmlns:vm="using:Arbiter.App.ViewModels"
+                          xmlns:models="using:Arbiter.App.Models"
+                          mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                          x:Class="Arbiter.App.Views.SettingsWindow"
+                          x:DataType="vm:SettingsViewModel"
+                          Title="Settings"
+                          Width="480" Height="360"
+                          CanResize="False"
+                          WindowStartupLocation="CenterOwner"
+                          ShowInTaskbar="False">
+    Welcome to Avalonia!
+</controls:TalgoniteWindow>

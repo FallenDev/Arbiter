@@ -75,7 +75,14 @@ public class TalgoniteWindow : Window
         
         _titleBar = e.NameScope.Find<Grid>("PART_TitleBar")!;
         _titleBar.DoubleTapped += (_, _) => ToggleMaximizedState();
-        
+
+        // Avoid resizing if double-tapping custom content
+        var titleBarContent = e.NameScope.Find<Control>("PART_TitleContent");
+        if (titleBarContent is not null)
+        {
+            titleBarContent.DoubleTapped += (_, tappedEventArgs) => tappedEventArgs.Handled = true;
+        }
+
         _minimizeButton = e.NameScope.Find<Button>("PART_MinimizeButton")!;
         _minimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
         

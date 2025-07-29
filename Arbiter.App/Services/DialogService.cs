@@ -26,7 +26,7 @@ public class DialogService : IDialogService
         return window.ShowDialog(_mainWindow);
     }
 
-    public Task ShowDialogAsync<TWindow, TViewModel>(TViewModel? viewModel)
+    public Task ShowDialogAsync<TWindow, TViewModel>(TViewModel? viewModel = null)
         where TWindow : Window, new() where TViewModel : ViewModelBase
     {
         var window = new TWindow();
@@ -36,7 +36,7 @@ public class DialogService : IDialogService
         return window.ShowDialog(_mainWindow);
     }
 
-    public async Task<TResult?> ShowDialogAsync<TWindow, TViewModel, TResult>(TViewModel? viewModel)
+    public async Task<TResult?> ShowDialogAsync<TWindow, TViewModel, TResult>(TViewModel? viewModel = null)
         where TWindow : Window, new() where TViewModel : ViewModelBase, IDialogResult<TResult>
     {
         var window = new TWindow();
