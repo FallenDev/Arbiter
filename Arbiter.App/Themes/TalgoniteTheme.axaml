@@ -28,6 +28,8 @@
             <SolidColorBrush x:Key="Talgonite.GridSplitter.PressedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.GridSplitter.DisabledForeground" Color="#373d49"/>
             
+            <!-- Label Resources -->
+            <SolidColorBrush x:Key="Talgonite.Label.Foreground" Color="#a6a7a9"/>
             <!-- ListBox Resources -->
             <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#22262d"/>
             

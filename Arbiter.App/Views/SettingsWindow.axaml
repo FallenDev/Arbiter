@@ -13,5 +13,29 @@
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
-    Welcome to Avalonia!
+    <Grid RowDefinitions="*,Auto">
+        <StackPanel Grid.Row="0"
+                    Spacing="16"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="8">
+            <Label Content="Client E_xecutable Path:"/>
+        </StackPanel>
+        <Border Grid.Row="1"
+                Background="Transparent"
+                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="8">
+            <UniformGrid Rows="1" ColumnSpacing="8">
+                <Button Command="{Binding HandleOkCommand}"
+                        IsDefault="True">
+                    <TextBlock Text="Apply Changes"/>
+                </Button>
+                <Button Command="{Binding HandleCancelCommand}"
+                        IsCancel="True">
+                    <TextBlock Text="Cancel"/>
+                </Button>
+            </UniformGrid>
+        </Border>
+    </Grid>
 </controls:TalgoniteWindow>
