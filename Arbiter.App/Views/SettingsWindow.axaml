@@ -5,11 +5,11 @@
                           xmlns:controls="using:Arbiter.App.Controls"
                           xmlns:vm="using:Arbiter.App.ViewModels"
                           xmlns:models="using:Arbiter.App.Models"
-                          mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                          mc:Ignorable="d"
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="480" Height="360"
+                          Width="540" Height="360"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -20,7 +20,18 @@
                     VerticalAlignment="Stretch"
                     Margin="8">
             <Label Content="Client E_xecutable Path:"/>
+            <TextBox Text="{Binding ClientExecutablePath}"
+                     Watermark="Path to game client..."/>
+            <Label Content="Remote Server _Host:"/>
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding RemoteServerAddress}"
+                         Watermark="Hostname..."/>
+                <Label Grid.Column="1" Content="_Port:"/>
+                <NumericUpDown Grid.Column="2" Value="{Binding RemoteServerPort}"/>
+            </Grid>
         </StackPanel>
+        
         <Border Grid.Row="1"
                 Background="Transparent"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
@@ -28,7 +39,8 @@
                 Padding="8">
             <UniformGrid Rows="1" ColumnSpacing="8">
                 <Button Command="{Binding HandleOkCommand}"
-                        IsDefault="True">
+                        IsDefault="True"
+                        IsEnabled="{Binding HasChanges}">
                     <TextBlock Text="Apply Changes"/>
                 </Button>
                 <Button Command="{Binding HandleCancelCommand}"

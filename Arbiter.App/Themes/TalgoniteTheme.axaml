@@ -9,17 +9,17 @@
             <FontFamily x:Key="Talgonite.Font.InterfaceFont">Inter</FontFamily>
             <FontFamily x:Key="Talgonite.Font.EditorFont">Consolas</FontFamily>
 
-            <sys:Double x:Key="Talgonite.FontSize.Normal">14</sys:Double>
+            <sys:Double x:Key="Talgonite.FontSize.Normal">16</sys:Double>
     
             <!-- Button Resources -->
             <SolidColorBrush x:Key="Talgonite.Button.Background" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.Button.HoverBackground" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.Button.PressedBackground" Color="#222831"/>
-            <SolidColorBrush x:Key="Talgonite.Button.DisabledBackground" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.Button.DisabledBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.Button.Foreground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.Button.HoverForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.Button.PressedForeground" Color="#82baf7"/>
-            <SolidColorBrush x:Key="Talgonite.Button.DisabledForeground" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.Button.DisabledForeground" Color="#4d535d"/>
             
             <!-- GridSplitter Resources -->
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Background" Color="Transparent"/>
@@ -62,6 +62,17 @@
             
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
+            
+            <!-- TextBox Resources -->
+            <SolidColorBrush x:Key="Talgonite.TextBox.Background" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.BorderBrush" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.WatermarkForeground" Color="#93959a"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.CaretForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.SelectionBackground" Color="#4a6380"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.HoverBorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.FocusBorderBrush" Color="#81b8f5"/>
             
             <!-- Window Resources -->
             <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>

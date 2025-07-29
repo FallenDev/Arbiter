@@ -30,7 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private async Task LoadSettingsAsync()
     {
-        Settings = await _settingsService.LoadSettingsAsync();
+        Settings = await _settingsService.LoadFromFileAsync();
     }
 
     [RelayCommand]
@@ -45,7 +45,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
 
         Settings = newSettings;
-        await _settingsService.SaveSettingsAsync();
+        await _settingsService.SaveToFileAsync(Settings);
     }
 
     [RelayCommand]

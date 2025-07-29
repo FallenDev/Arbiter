@@ -4,21 +4,25 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSettings>
 {
-    private readonly ArbiterSettings _settings;
+    private ArbiterSettings _settings = new();
+    private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
-
+    
     private static readonly FilePickerFileType ExecutableType = new("All Executables")
     {
         Patterns = ["*.exe"],
         MimeTypes = ["application/octet-stream"],
     };
 
+    [ObservableProperty] private bool _hasChanges;
+    
     public string ClientExecutablePath
     {
         get => _settings.ClientExecutablePath;
@@ -26,6 +30,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         {
             _settings.ClientExecutablePath = value;
             OnPropertyChanged();
+            MarkDirty();
         }
     }
 
@@ -36,6 +41,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         {
             _settings.RemoteServerAddress = value;
             OnPropertyChanged();
+            MarkDirty();
         }
     }
 
@@ -46,19 +52,28 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         {
             _settings.RemoteServerPort = value;
             OnPropertyChanged();
+            MarkDirty();
         }
     }
 
     public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
     {
+        _settingsService = settingsService;
         _storageProvider = storageProvider;
 
-        // Make a copy so we can handle apply/cancel
-        _settings = (ArbiterSettings)settingsService.CurrentSettings.Clone();
+        _ = LoadSettingsAsync();
     }
 
     public event Action<ArbiterSettings?>? RequestClose;
 
+    private async Task LoadSettingsAsync()
+    {
+        _settings = await _settingsService.LoadFromFileAsync();
+        OnPropertyChanged(nameof(ClientExecutablePath));
+        OnPropertyChanged(nameof(RemoteServerAddress));
+        OnPropertyChanged(nameof(RemoteServerPort));
+    }
+    
     [RelayCommand]
     private async Task OnLocateClient()
     {
@@ -96,5 +111,11 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     private void HandleCancel()
     {
         RequestClose?.Invoke(null);
+    }
+
+    private void MarkDirty()
+    {
+        HasChanges = true;
+        OnPropertyChanged(nameof(HasChanges));
     }
 }

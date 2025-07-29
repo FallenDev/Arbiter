@@ -5,8 +5,6 @@ namespace Arbiter.App.Services;
 
 public interface ISettingsService
 {
-    ArbiterSettings CurrentSettings { get; }
-    
-    Task<ArbiterSettings> LoadSettingsAsync();
-    Task SaveSettingsAsync();
+    Task<ArbiterSettings> LoadFromFileAsync();
+    Task SaveToFileAsync(ArbiterSettings settings);
 }
