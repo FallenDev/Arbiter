@@ -15,7 +15,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     private ArbiterSettings _settings = new();
     private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
-    
+
     private static readonly FilePickerFileType ExecutableType = new("All Executables")
     {
         Patterns = ["*.exe"],
@@ -23,47 +23,59 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     };
 
     [ObservableProperty] private bool _hasChanges;
-    
+
+    public ArbiterSettings Settings
+    {
+        get => _settings;
+        set
+        {
+            _settings = value;
+            OnPropertyChanged(nameof(ClientExecutablePath));
+            OnPropertyChanged(nameof(RemoteServerAddress));
+            OnPropertyChanged(nameof(RemoteServerPort));
+        }
+    }
+
     public string ClientExecutablePath
     {
-        get => _settings.ClientExecutablePath;
+        get => Settings.ClientExecutablePath;
         set
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ValidationException("Client executable path cannot be empty");
             }
-            
-            _settings.ClientExecutablePath = value;
+
+            Settings.ClientExecutablePath = value;
             OnPropertyChanged();
-            MarkDirty();
+            HasChanges = true;
         }
     }
-    
+
     public string RemoteServerAddress
     {
-        get => _settings.RemoteServerAddress;
+        get => Settings.RemoteServerAddress;
         set
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ValidationException("Remote server address cannot be empty");
             }
-            
-            _settings.RemoteServerAddress = value;
+
+            Settings.RemoteServerAddress = value;
             OnPropertyChanged();
-            MarkDirty();
+            HasChanges = true;
         }
     }
 
     public int RemoteServerPort
     {
-        get => _settings.RemoteServerPort;
+        get => Settings.RemoteServerPort;
         set
         {
-            _settings.RemoteServerPort = value;
+            Settings.RemoteServerPort = value;
             OnPropertyChanged();
-            MarkDirty();
+            HasChanges = true;
         }
     }
 
@@ -79,12 +91,9 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     private async Task LoadSettingsAsync()
     {
-        _settings = await _settingsService.LoadFromFileAsync();
-        OnPropertyChanged(nameof(ClientExecutablePath));
-        OnPropertyChanged(nameof(RemoteServerAddress));
-        OnPropertyChanged(nameof(RemoteServerPort));
+        Settings = await _settingsService.LoadFromFileAsync();
     }
-    
+
     [RelayCommand]
     private async Task OnLocateClient()
     {
@@ -115,7 +124,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [RelayCommand]
     private void HandleOk()
     {
-        RequestClose?.Invoke(_settings);
+        RequestClose?.Invoke(Settings);
     }
 
     [RelayCommand]
@@ -124,9 +133,10 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         RequestClose?.Invoke(null);
     }
 
-    private void MarkDirty()
+    [RelayCommand]
+    private void HandleResetDefaults()
     {
+        Settings = new ArbiterSettings();
         HasChanges = true;
-        OnPropertyChanged(nameof(HasChanges));
     }
 }

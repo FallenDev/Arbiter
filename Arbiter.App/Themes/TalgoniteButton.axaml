@@ -28,6 +28,8 @@
             </ControlTemplate>
         </Setter>
         
+ 
+        
         <Style Selector="^:pointerover">
             <Setter Property="Background" Value="{StaticResource Talgonite.Button.HoverBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.HoverForeground}"/>
@@ -42,5 +44,21 @@
             <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
         </Style>
+        
+        <Style Selector="^.destructive">
+            <Setter Property="Background" Value="{StaticResource Talgonite.DestructiveButton.Background}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.DestructiveButton.Foreground}"/>
+        </Style>
+        
+        <Style Selector="^.destructive:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.DestructiveButton.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.DestructiveButton.HoverForeground}"/>
+        </Style>
+        
+        <Style Selector="^.destructive:pressed">
+            <Setter Property="Background" Value="{StaticResource Talgonite.DestructiveButton.PressedBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.DestructiveButton.PressedForeground}"/>
+        </Style>
+        
     </Style>
 </Styles>

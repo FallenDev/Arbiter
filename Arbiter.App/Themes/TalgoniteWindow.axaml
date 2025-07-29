@@ -163,12 +163,12 @@
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button#PART_CloseButton:pointerover">
-        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.CloseHoverBackground}"/>
-        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.CloseHoverForeground}"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.DestructiveButton.HoverBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.DestructiveButton.HoverForeground}"/>
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button#PART_CloseButton:pressed">
-        <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.ClosePressedBackground}"/>
-        <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.ClosePressedForeground}"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.DestructiveButton.PressedBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.DestructiveButton.PressedForeground}"/>
     </Style>
 </Styles>

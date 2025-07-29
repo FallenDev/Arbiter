@@ -21,6 +21,13 @@
             <SolidColorBrush x:Key="Talgonite.Button.PressedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.Button.DisabledForeground" Color="#4d535d"/>
             
+            <SolidColorBrush x:Key="Talgonite.DestructiveButton.Background" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.DestructiveButton.HoverBackground" Color="#260e0b"/>
+            <SolidColorBrush x:Key="Talgonite.DestructiveButton.PressedBackground" Color="#ed5547"/>
+            <SolidColorBrush x:Key="Talgonite.DestructiveButton.Foreground" Color="#e0e0e0"/>
+            <SolidColorBrush x:Key="Talgonite.DestructiveButton.HoverForeground" Color="#ed6a5e"/>
+            <SolidColorBrush x:Key="Talgonite.DestructiveButton.PressedForeground" Color="#ffffff"/>
+            
             <!-- GridSplitter Resources -->
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Background" Color="Transparent"/>
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Foreground" Color="#4d535d"/>
@@ -91,12 +98,6 @@
             <SolidColorBrush x:Key="Talgonite.ControlBox.PressedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.ControlBox.DisabledForeground" Color="#7b7e85"/>
             
-            <SolidColorBrush x:Key="Talgonite.ControlBox.CloseBackground" Color="Transparent"/>
-            <SolidColorBrush x:Key="Talgonite.ControlBox.CloseHoverBackground" Color="#260e0b"/>
-            <SolidColorBrush x:Key="Talgonite.ControlBox.ClosePressedBackground" Color="#ed5547"/>
-            <SolidColorBrush x:Key="Talgonite.ControlBox.CloseForeground" Color="#707378"/>
-            <SolidColorBrush x:Key="Talgonite.ControlBox.CloseHoverForeground" Color="#ed6a5e"/>
-            <SolidColorBrush x:Key="Talgonite.ControlBox.ClosePressedForeground" Color="#ffffff"/>
             <sys:Double x:Key="Talgonite.Window.TitleFontSize">18</sys:Double>
             
         </ResourceDictionary>
