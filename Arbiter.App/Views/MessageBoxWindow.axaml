@@ -9,17 +9,14 @@
         mc:Ignorable="d"
         x:Class="Arbiter.App.Views.MessageBoxWindow"
         x:DataType="vm:MessageBoxViewModel"
+        d:DataContext="{x:Static vm:MessageBoxViewModel.DesignInstance}"
         Title="{Binding Title}"
         TitleAlignment="Center"
-        d:DesignWidth="360" d:DesignHeight="240"
-        MinWidth="360"
-        MinHeight="240"
+        Width="420" Height="280"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
-    <Grid RowDefinitions="*,Auto"
-          HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch">
+    <Grid RowDefinitions="*,Auto">
         <StackPanel Grid.Row="0"
                     Spacing="16"
                     HorizontalAlignment="Stretch"
@@ -35,6 +32,7 @@
             <TextBlock Text="{Binding Description}"
                        TextAlignment="Center"
                        TextWrapping="Wrap"
+                       Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                        FontWeight="Light"
                        Padding="8"
                        IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>

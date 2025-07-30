@@ -37,6 +37,7 @@
             
             <!-- Label Resources -->
             <SolidColorBrush x:Key="Talgonite.Label.Foreground" Color="#a6a7a9"/>
+            
             <!-- ListBox Resources -->
             <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#22262d"/>
             
@@ -70,6 +71,9 @@
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
             
+            <!-- TextBlock Resources -->
+            <SolidColorBrush x:Key="Talgonite.TextBlock.DimForeground" Color="#717479"/>
+            
             <!-- TextBox Resources -->
             <SolidColorBrush x:Key="Talgonite.TextBox.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.Foreground" Color="#cdcfd2"/>
@@ -82,11 +86,16 @@
             <SolidColorBrush x:Key="Talgonite.TextBox.FocusBorderBrush" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.ErrorBorderBrush" Color="#ed6a5e"/>
             
+            <!-- ToolTip Resources -->
+            <SolidColorBrush x:Key="Talgonite.ToolTip.Background" Color="#101215"/>
+            <SolidColorBrush x:Key="Talgonite.ToolTip.Foreground" Color="#e6e7e2"/>
+            <SolidColorBrush x:Key="Talgonite.ToolTip.BorderBrush" Color="#262b33"/>
+            
             <!-- Window Resources -->
             <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>
             <SolidColorBrush x:Key="Talgonite.Window.Foreground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.Window.TitleBackground" Color="#1e2228"/>
-            <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Window.TitleForeground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.Window.TitleBorderBrush" Color="#292d34"/>
             <SolidColorBrush x:Key="Talgonite.ControlBox.Background" Color="Transparent"/>
             <SolidColorBrush x:Key="Talgonite.ControlBox.HoverBackground" Color="#2e3743"/>

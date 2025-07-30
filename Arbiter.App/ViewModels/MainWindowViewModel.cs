@@ -61,8 +61,8 @@ public partial class MainWindowViewModel : ViewModelBase
             await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
             {
                 Title = "Failed to Launch Client",
-                Message = "An error occurred while launching the client.",
-                Description = ex.Message
+                Message = $"An error occurred while launching the client:\n\n{ex.Message}",
+                Description = "You can change the client executable path in Settings."
             });
         }
     }

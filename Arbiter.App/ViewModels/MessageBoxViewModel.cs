@@ -8,6 +8,16 @@ namespace Arbiter.App.ViewModels;
 
 public partial class MessageBoxViewModel : ViewModelBase, IDialogResult<bool?>
 {
+    public static MessageBoxViewModel DesignInstance => new()
+    {
+        Title = "Message Box",
+        Message = "This is a message box that can display a message.\nIt can even span multiple lines.",
+        Description = "This is a description of the message box.",
+        Style = MessageBoxStyle.YesNo,
+        AcceptButtonText = "OK",
+        CancelButtonText = "Cancel"
+    };
+    
     [ObservableProperty] private string _title = "Message Box";
 
     [ObservableProperty] private string _message = string.Empty;
