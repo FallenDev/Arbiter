@@ -31,6 +31,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         {
             _settings = value;
             OnPropertyChanged(nameof(ClientExecutablePath));
+            OnPropertyChanged(nameof(LocalPort));
             OnPropertyChanged(nameof(RemoteServerAddress));
             OnPropertyChanged(nameof(RemoteServerPort));
         }
@@ -47,6 +48,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             }
 
             Settings.ClientExecutablePath = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public int LocalPort
+    {
+        get => Settings.LocalPort;
+        set
+        {
+            Settings.LocalPort = value;
             OnPropertyChanged();
             HasChanges = true;
         }

@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="540" Height="360"
+                          Width="540" Height="420"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -44,22 +44,49 @@
         <StackPanel Grid.Row="0"
                     Spacing="8"
                     Margin="16">
+            <!-- Client Path Settings -->
             <Label Content="Client E_xecutable Path:"/>
-            <TextBox Text="{Binding ClientExecutablePath}"
+            <TextBox Name="ClientPathTextBox" 
+                     Text="{Binding ClientExecutablePath}"
                      Watermark="Path to game client..."/>
+            
+            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                    BorderThickness="0,0,0,1"
+                    Margin="0,8"/>
+            
+            <!-- Local Port Settings -->
+            <Grid ColumnDefinitions="Auto,Auto">
+                <Label Grid.Column="0" Content="_Local Port:"/>
+                <NumericUpDown Name="LocalPortUpDown"
+                               Grid.Column="1"
+                               Value="{Binding LocalPort}"
+                               Minimum="1"
+                               Maximum="65535"
+                               TextAlignment="Center"
+                               Watermark="1-65535"
+                               Width="100"/>
+            </Grid>
+            
+            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                    BorderThickness="0,0,0,1"
+                    Margin="0,8"/>
+
+            
+            <!-- Remote Server Settings -->
             <Label Content="Remote Server _Host:"/>
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <TextBox Grid.Column="0"
                          Text="{Binding RemoteServerAddress}"
                          Watermark="Hostname..."/>
                 <Label Grid.Column="1" Content="_Port:"/>
-                <NumericUpDown Grid.Column="2"
+                <NumericUpDown Name="RemotePortUpDown"
+                               Grid.Column="2"
                                Value="{Binding RemoteServerPort}"
                                Minimum="1"
                                Maximum="65535"
                                TextAlignment="Center"
                                Watermark="1-65535"
-                               Width="80"/>
+                               Width="100"/>
             </Grid>
         </StackPanel>
         
@@ -70,9 +97,19 @@
                 Padding="8">
             <UniformGrid Rows="1" ColumnSpacing="8">
                 <Button Command="{Binding HandleOkCommand}"
-                        IsDefault="True"
-                        IsEnabled="{Binding HasChanges}">
+                        IsDefault="True">
                     <TextBlock Text="Apply Changes"/>
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="HasChanges"/>
+                            <Binding Path="#ClientPathTextBox.(DataValidationErrors.HasErrors)"
+                                     Converter="{x:Static BoolConverters.Not}"/>
+                            <Binding Path="#LocalPortUpDown.(DataValidationErrors.HasErrors)"
+                                     Converter="{x:Static BoolConverters.Not}"/>
+                            <Binding Path="#RemotePortUpDown.(DataValidationErrors.HasErrors)"
+                                     Converter="{x:Static BoolConverters.Not}"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
                 </Button>
                 <Button Command="{Binding HandleCancelCommand}"
                         IsCancel="True">
