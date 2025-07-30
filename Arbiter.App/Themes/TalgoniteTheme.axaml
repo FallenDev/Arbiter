@@ -89,7 +89,8 @@
             <!-- ToolTip Resources -->
             <SolidColorBrush x:Key="Talgonite.ToolTip.Background" Color="#101215"/>
             <SolidColorBrush x:Key="Talgonite.ToolTip.Foreground" Color="#e6e7e2"/>
-            <SolidColorBrush x:Key="Talgonite.ToolTip.BorderBrush" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.ToolTip.BorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.ToolTip.ShadowBorderBrush" Color="#262b33"/>
             
             <!-- Window Resources -->
             <SolidColorBrush x:Key="Talgonite.Window.Background" Color="#1e2228"/>

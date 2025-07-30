@@ -11,17 +11,22 @@
         <Setter Property="ShowDelay" Value="400"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Background="{TemplateBinding Background}"
-                                  Foreground="{TemplateBinding Foreground}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                <Border BorderBrush="{StaticResource Talgonite.ToolTip.ShadowBorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsHitTestVisible="False">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Background="{TemplateBinding Background}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
             </ControlTemplate>
         </Setter>
     </Style>
