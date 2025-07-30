@@ -6,6 +6,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToolTip.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="ShowDelay" Value="400"/>
