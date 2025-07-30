@@ -95,7 +95,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="160"/>
                 <RowDefinition Height="8"/>
-                <RowDefinition Height="160" MinHeight="100"/>
+                <RowDefinition Height="240" MinHeight="100"/>
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
