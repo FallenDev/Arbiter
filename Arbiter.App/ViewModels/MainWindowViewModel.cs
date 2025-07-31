@@ -36,10 +36,6 @@ public partial class MainWindowViewModel : ViewModelBase
         _dialogService = dialogService;
         _gameClientService = gameClientService;
         _settingsService = settingsService;
-
-        _logger.LogDebug("This is a debug message");
-        _logger.LogInformation("This is an info message");
-        _logger.LogWarning("This is a warning message");
         
         _ = LoadSettingsAsync();
     }
