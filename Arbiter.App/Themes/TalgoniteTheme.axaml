@@ -8,8 +8,11 @@
             <!-- Global Fonts and Sizes -->
             <FontFamily x:Key="Talgonite.Font.InterfaceFont">Inter</FontFamily>
             <FontFamily x:Key="Talgonite.Font.EditorFont">Consolas</FontFamily>
+            <FontFamily x:Key="Talgonite.Font.ConsoleFont">Consolas</FontFamily>
 
             <sys:Double x:Key="Talgonite.FontSize.Normal">16</sys:Double>
+            <sys:Double x:Key="Talgonite.FontSize.Editor">14</sys:Double>
+            <sys:Double x:Key="Talgonite.FontSize.Console">14</sys:Double>
     
             <!-- Button Resources -->
             <SolidColorBrush x:Key="Talgonite.Button.Background" Color="#373d49"/>
@@ -39,13 +42,14 @@
             <SolidColorBrush x:Key="Talgonite.Label.Foreground" Color="#a6a7a9"/>
             
             <!-- ListBox Resources -->
-            <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#22262d"/>
+            <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.ListBox.ConsoleBackground" Color="#1e2228"/>
             
             <!-- ListBoxItem Resources -->
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverBackground" Color="#2e3743"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedBackground" Color="#3f5168"/>
-            <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledBackground" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledBackground" Color="#22262d"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedForeground" Color="#ffffff"/>

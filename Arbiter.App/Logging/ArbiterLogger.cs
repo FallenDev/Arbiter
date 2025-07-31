@@ -27,11 +27,6 @@ public class ArbiterLogger : ILogger
         }
         
         var message = formatter(state, exception);
-        if (exception is not null)
-        {
-            message += Environment.NewLine + exception;
-        }
-
         var logEntry = new ArbiterLogEntry
         {
             Timestamp = DateTime.Now,

@@ -1,6 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="using:Arbiter.App.Controls"
+             xmlns:converters="using:Arbiter.App.Converters"
              x:Class="Arbiter.App.App"
              xmlns:local="using:Arbiter.App"
              RequestedThemeVariant="Default">
@@ -15,10 +15,13 @@
     
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Converters -->
+            <converters:LogLevelBrushConverter x:Key="LogLevelBrushConverter"/>
+            
+            <!-- Data Templates -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/DataTemplates/LogEntryTemplate.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-    
 </Application>

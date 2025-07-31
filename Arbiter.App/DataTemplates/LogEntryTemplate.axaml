@@ -1,12 +1,36 @@
 ﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vm="using:Arbiter.App.ViewModels">
+                    xmlns:vm="using:Arbiter.App.ViewModels"
+                    xmlns:converters="using:Arbiter.App.Converters">
     <DataTemplate x:Key="LogEntryTemplate" DataType="vm:LogEntryViewModel">
-        <Border Margin="0">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Timestamp}"/>
-                <TextBlock Text="{Binding Message}"/>
-            </StackPanel>
+        <Border Background="Transparent" Margin="2,0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <!-- Timestamp -->
+                <TextBlock Name="TimestampText"
+                           Grid.Column="0"
+                           Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}"
+                           Foreground="{Binding Path=Level, Converter={x:Static converters:LogLevelBrushConverter.Converter}}"/>
+                
+                <!-- Message and Stack Trace -->
+                <StackPanel Grid.Column="1">
+                    <TextBlock Name="MessageText"
+                               Text="{Binding FormattedMessage}"
+                               TextWrapping="WrapWithOverflow"
+                               Foreground="{Binding #TimestampText.Foreground}"/>
+
+                    <TextBlock Name="ExceptionText"
+                               Text="{Binding FormattedException}"
+                               TextWrapping="WrapWithOverflow"
+                               Foreground="{Binding #TimestampText.Foreground}"
+                               IsVisible="{Binding FormattedException, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                
+                    <TextBlock Name="StackTraceText"
+                               Text="{Binding FormattedStackTrace}"
+                               TextWrapping="WrapWithOverflow"
+                               Foreground="{Binding #TimestampText.Foreground}"
+                               IsVisible="{Binding FormattedStackTrace, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                </StackPanel>
+            </Grid>
         </Border>
     </DataTemplate>
 </ResourceDictionary>

@@ -39,7 +39,10 @@
     
     <!-- Console Log ListBox Overrides -->
     <Style Selector="ListBox.console">
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ListBox.ConsoleBackground}"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
     </Style>
     
 </Styles>

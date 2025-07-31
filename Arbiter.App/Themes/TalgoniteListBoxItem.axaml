@@ -49,6 +49,9 @@
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.ConsoleFont}"/>
+        <Setter Property="FontSize" Value="{StaticResource Talgonite.FontSize.Console}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Template">

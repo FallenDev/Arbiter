@@ -40,8 +40,6 @@ public partial class MainWindowViewModel : ViewModelBase
         _logger.LogDebug("This is a debug message");
         _logger.LogInformation("This is an info message");
         _logger.LogWarning("This is a warning message");
-        _logger.LogError("This is an error message");
-        _logger.LogError(new Exception("This is an exception"), "This is an exception with a message");
         
         _ = LoadSettingsAsync();
     }
