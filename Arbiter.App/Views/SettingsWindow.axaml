@@ -70,7 +70,6 @@
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                     BorderThickness="0,0,0,1"
                     Margin="0,8"/>
-
             
             <!-- Remote Server Settings -->
             <Label Content="Remote Server _Host:"/>

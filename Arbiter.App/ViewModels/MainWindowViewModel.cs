@@ -5,6 +5,7 @@ using Arbiter.App.Services;
 using Arbiter.App.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
 
@@ -12,19 +13,32 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private ArbiterSettings Settings { get; set; } = new();
     
+    private readonly ILogger<MainWindowViewModel> _logger;
     private readonly IDialogService _dialogService;
     private readonly IGameClientService _gameClientService;
     private readonly ISettingsService _settingsService;
     
     [ObservableProperty]
     private string _title = "Arbiter";
+    
+    public ConsoleViewModel Console { get; }
 
-    public MainWindowViewModel(IDialogService dialogService, IGameClientService gameClientService, ISettingsService settingsService)
+    public MainWindowViewModel(
+        ILogger<MainWindowViewModel> logger,
+        IDialogService dialogService,
+        IGameClientService gameClientService,
+        ISettingsService settingsService,
+        ConsoleViewModel consoleViewModel)
     {
+        Console = consoleViewModel;
+
+        _logger = logger;
         _dialogService = dialogService;
         _gameClientService = gameClientService;
         _settingsService = settingsService;
-        
+
+        _logger.LogInformation("Application initialized");
+
         _ = LoadSettingsAsync();
     }
 
@@ -58,6 +72,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to launch client");
             await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
             {
                 Title = "Failed to Launch Client",

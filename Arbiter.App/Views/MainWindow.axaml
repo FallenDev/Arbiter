@@ -10,7 +10,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/aiseirigh.ico"
         Title="{Binding Title}"
-        Width="1280" Height="720"
+        Width="1920" Height="1080"
         MinWidth="1024" MinHeight="576"
         CanResize="True"
         WindowStartupLocation="CenterScreen">
@@ -54,11 +54,11 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280" MinWidth="200"/>
+            <ColumnDefinition Width="*" MinWidth="200"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="400"/>
+            <ColumnDefinition Width="3*" MinWidth="400"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="280" MinWidth="200"/>
+            <ColumnDefinition Width="*" MinWidth="200"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
@@ -93,9 +93,9 @@
         <!-- Center Area -->
         <Grid Name="CenterContentGrid" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MinHeight="160"/>
+                <RowDefinition Height="3*" MinHeight="160"/>
                 <RowDefinition Height="8"/>
-                <RowDefinition Height="240" MinHeight="100"/>
+                <RowDefinition Height="*" MinHeight="100"/>
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
@@ -113,11 +113,16 @@
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
             
             <TabControl Grid.Row="2">
-                <TabItem Header="_Event Log">
-                    <ListBox></ListBox>
-                </TabItem>
-                <TabItem Header="C_onsole">
-                    <ListBox></ListBox>
+                <TabItem Header="Console _Log">
+                    <ListBox ItemsSource="{Binding Console.LogEntries}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border>
+                                    <TextBlock Text="{Binding Message}"></TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </TabItem>
             </TabControl>
         </Grid>
@@ -127,10 +132,10 @@
         <!-- Right Panel Tabs -->
         <TabControl Name="RightPanelTabStrip" Grid.Column="4">
             <TabItem Header="_Inspector">
-                <ListBox></ListBox>
+                <ListBox/>
             </TabItem>
             <TabItem Header="_History">
-                <ListBox></ListBox>
+                <ListBox/>
             </TabItem>
         </TabControl>
     </Grid>

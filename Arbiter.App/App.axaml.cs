@@ -2,12 +2,14 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Arbiter.App.Logging;
 using Arbiter.App.Services;
 using Avalonia.Markup.Xaml;
 using Arbiter.App.ViewModels;
 using Arbiter.App.Views;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App;
 
@@ -34,6 +36,17 @@ public class App : Application
             collection.AddSingleton<TopLevel>(window);
             collection.AddSingleton(window.StorageProvider);
 
+            // Configure logging with our custom provider
+            var loggerProvider = new ArbiterLoggerProvider();
+            collection.AddSingleton(loggerProvider);
+            
+            collection.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddProvider(loggerProvider);
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
+            
             // Register all services and view models with the DI container
             RegisterServices(collection);
             RegisterViewModels(collection);
@@ -72,6 +85,7 @@ public class App : Application
 
     private static void RegisterViewModels(IServiceCollection services)
     {
+        services.AddSingleton<ConsoleViewModel>();
         services.AddTransient<MessageBoxViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<SettingsViewModel>();
