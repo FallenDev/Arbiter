@@ -61,6 +61,18 @@
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.HoverForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.PressedForeground" Color="#82baf7"/>
             
+            <!-- ScrollBar Resources -->
+            <SolidColorBrush x:Key="Talgonite.ScrollBar.Background" Color="#313439"/>
+            <SolidColorBrush x:Key="Talgonite.ScrollBar.ThumbBackground" Color="#6d6f73"/>
+            <SolidColorBrush x:Key="Talgonite.ScrollBar.ThumbHoverBackground" Color="#93959a"/>
+            <SolidColorBrush x:Key="Talgonite.ScrollBar.ThumbPressedBackground" Color="#cdcfd2"/>
+            <sys:Double x:Key="Talgonite.ScrollBar.Width">12</sys:Double>
+            <sys:Double x:Key="Talgonite.ScrollBar.Height">12</sys:Double>
+            <sys:Double x:Key="Talgonite.ScrollBar.ThumbWidth">6</sys:Double>
+            <sys:Double x:Key="Talgonite.ScrollBar.ThumbHeight">6</sys:Double>
+            <sys:Double x:Key="Talgonite.ScrollBar.TrackWidth">4</sys:Double>
+            <sys:Double x:Key="Talgonite.ScrollBar.TrackHeight">4</sys:Double>
+            
             <!-- TabControl Resources -->
             <SolidColorBrush x:Key="Talgonite.TabControl.Background" Color="#373d49"/>
             

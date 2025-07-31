@@ -1,0 +1,136 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="ScrollBar">
+        <Setter Property="Background" Value="{StaticResource Talgonite.ScrollBar.Background}"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+        
+        <!-- Horizontal Scroll Bar -->
+        <Style Selector="^:horizontal">
+            <Setter Property="Height" Value="{StaticResource Talgonite.ScrollBar.Height}"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="Transparent"
+                            UseLayoutRounding="False">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <RepeatButton Name="PART_LineUpButton"
+                                          Grid.Column="0"
+                                          MinWidth="{StaticResource Talgonite.ScrollBar.Width}"
+                                          VerticalAlignment="Center"
+                                          Classes="repeat"
+                                          Focusable="False">
+                                <Path Data="M 4 0 L 4 8 L 0 4 Z" />
+                            </RepeatButton>
+                            
+                            <Border Grid.Column="1" Background="{TemplateBinding Background}"
+                                    CornerRadius="4"
+                                    Height="{StaticResource Talgonite.ScrollBar.TrackHeight}"
+                                    VerticalAlignment="Center"
+                                    IsHitTestVisible="False"
+                                    Focusable="False"/>
+                            
+                            <Track Grid.Column="1"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Orientation="{TemplateBinding Orientation}"
+                                   ViewportSize="{TemplateBinding ViewportSize}"
+                                   Height="{StaticResource Talgonite.ScrollBar.TrackHeight}"
+                                   DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}">
+                                <Thumb Name="ScrollThumb" Classes="horizontal"/>
+                            </Track>
+                            
+                            <RepeatButton Name="PART_LineDownButton"
+                                          Grid.Column="2"
+                                          MinWidth="{StaticResource Talgonite.ScrollBar.Width}"
+                                          VerticalAlignment="Center"
+                                          Classes="repeat"
+                                          Focusable="False">
+                                <Path Data="M 0 0 L 4 4 L 0 8 Z" />
+                            </RepeatButton>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        
+        <!-- Vertical Scroll Bar -->
+        <Style Selector="^:vertical">
+            <Setter Property="Width" Value="{StaticResource Talgonite.ScrollBar.Width}"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="Transparent"
+                            UseLayoutRounding="False"
+                            Padding="{TemplateBinding Margin}">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <RepeatButton Name="PART_LineUpButton"
+                                          Grid.Row="0"
+                                          MinWidth="8"
+                                          VerticalAlignment="Center"
+                                          Classes="repeat"
+                                          Focusable="False">
+                                <Path Data="M 0 4 L 8 4 L 4 0 Z" />
+                            </RepeatButton>
+                            
+                            <Border Grid.Row="1" Background="{TemplateBinding Background}"
+                                    CornerRadius="4"
+                                    Width="{StaticResource Talgonite.ScrollBar.TrackWidth}"
+                                    HorizontalAlignment="Center"
+                                    IsHitTestVisible="False"
+                                    Focusable="False"/>
+                            
+                            <Track Grid.Row="1"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Orientation="{TemplateBinding Orientation}"
+                                   ViewportSize="{TemplateBinding ViewportSize}"
+                                   Width="{StaticResource Talgonite.ScrollBar.TrackWidth}"
+                                   DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                   Value="{TemplateBinding Value, Mode=TwoWay}"
+                                   IsDirectionReversed="True">
+                                <Thumb Name="ScrollThumb" Classes="vertical"/>
+                            </Track>
+                            
+                            <RepeatButton Name="PART_LineDownButton"
+                                          Grid.Row="2"
+                                          MinWidth="8"
+                                          VerticalAlignment="Center"
+                                          Classes="repeat"
+                                          Focusable="False">
+                                <Path Data="M 0 0 L 4 4 L 8 0 Z" />
+                            </RepeatButton>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        
+        <Style Selector="^ /template/ Thumb#ScrollThumb">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ScrollBar.ThumbBackground}"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"/>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        
+        <Style Selector="^ /template/ Thumb#ScrollThumb:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ScrollBar.ThumbHoverBackground}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Thumb#ScrollThumb:pressed">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ScrollBar.ThumbPressedBackground}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Thumb#ScrollThumb.horizontal">
+            <Setter Property="Height" Value="{StaticResource Talgonite.ScrollBar.ThumbHeight}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Thumb#ScrollThumb.vertical">
+            <Setter Property="Width" Value="{StaticResource Talgonite.ScrollBar.ThumbWidth}"/>
+        </Style>
+    </Style>
+</Styles>
