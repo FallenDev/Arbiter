@@ -93,7 +93,7 @@
         <!-- Center Area -->
         <Grid Name="CenterContentGrid" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*" MinHeight="160"/>
+                <RowDefinition Height="2*" MinHeight="160"/>
                 <RowDefinition Height="8"/>
                 <RowDefinition Height="*" MinHeight="100"/>
             </Grid.RowDefinitions>
@@ -114,15 +114,9 @@
             
             <TabControl Grid.Row="2">
                 <TabItem Header="Console _Log">
-                    <ListBox ItemsSource="{Binding Console.LogEntries}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border>
-                                    <TextBlock Text="{Binding Message}"></TextBlock>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                    <ListBox ItemsSource="{Binding Console.LogEntries}"
+                             ItemTemplate="{StaticResource LogEntryTemplate}"
+                             Classes="console"/>
                 </TabItem>
             </TabControl>
         </Grid>
@@ -139,4 +133,6 @@
             </TabItem>
         </TabControl>
     </Grid>
+    
+
 </controls:TalgoniteWindow>

@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="using:Arbiter.App.ViewModels">
+    <DataTemplate x:Key="LogEntryTemplate" DataType="vm:LogEntryViewModel">
+        <Border Margin="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Timestamp}"/>
+                <TextBlock Text="{Binding Message}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

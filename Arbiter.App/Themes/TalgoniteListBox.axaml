@@ -36,4 +36,10 @@
             </ControlTemplate>
         </Setter>
     </Style>
+    
+    <!-- Console Log ListBox Overrides -->
+    <Style Selector="ListBox.console">
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    
 </Styles>
