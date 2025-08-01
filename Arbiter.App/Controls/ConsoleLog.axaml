@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:behaviors="using:Arbiter.App.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
              x:Class="Arbiter.App.Controls.ConsoleLog"
              x:DataType="vm:ConsoleViewModel">
@@ -11,25 +12,35 @@
         <ListBox Grid.Column="0"
                  ItemsSource="{Binding FilteredLogEntries}"
                  ItemTemplate="{StaticResource LogEntryTemplate}"
-                 Classes="console"/>
+                 Classes="console"
+                 behaviors:ScrollToEndBehavior.AutoScrollToEnd="True"
+                 behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"/>
         <!-- Toolbar Area -->
         <StackPanel Grid.Column="1">
             <UniformGrid Columns="2" Rows="1"
                          ColumnSpacing="4" RowSpacing="4"
                          Margin="4">
+                <!-- Scroll to End Button -->
+                <Button Command="{Binding ScrollToEndCommand}"
+                        ToolTip.Tip="Scrolls to the end.">
+                    <Path Width="16"
+                          Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          StrokeThickness="2"
+                          Stretch="None"
+                          Data="M8,0     L8,12
+                                M2,8     L8,14    L14,8
+                                M0,15    L16,15"/>
+                </Button>
                 <!-- Clear Logs Button -->
                 <Button Command="{Binding ClearLogsCommand}"
                         ToolTip.Tip="Clears all messages.">
                     <Path Width="16"
                           Height="16"
-                          Stroke="{Binding $parent[Button].Foreground}"/>
-                </Button>
-                <!-- Scroll to End Button -->
-                <Button Command="{Binding ClearLogsCommand}"
-                        ToolTip.Tip="Scrolls to the end.">
-                    <Path Width="16"
-                          Height="16"
-                          Stroke="{Binding $parent[Button].Foreground}"/>
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          StrokeThickness="2"
+                          Stretch="None"
+                          Data="M1,1 L15,15 M15,1 L1,15"/>
                 </Button>
             </UniformGrid>
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"

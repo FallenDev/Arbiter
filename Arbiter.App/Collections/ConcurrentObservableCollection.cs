@@ -62,15 +62,14 @@ public class ConcurrentObservableCollection<T> : ObservableCollection<T>
 
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-        if (Dispatcher.CheckAccess())
+        if (!Dispatcher.CheckAccess())
         {
-            RaiseCollectionChanged();
-        }
-        else
-        {
-            Dispatcher.Invoke(RaiseCollectionChanged);
+            Dispatcher.Post(RaiseCollectionChanged);
+            return;
+
         }
 
+        RaiseCollectionChanged();
         return;
 
         void RaiseCollectionChanged() => base.OnCollectionChanged(e);

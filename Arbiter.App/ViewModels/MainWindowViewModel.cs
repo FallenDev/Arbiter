@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.Views;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ public partial class MainWindowViewModel : ViewModelBase
         
         _ = LoadSettingsAsync();
         
-        AddMockLogLines();
+        Dispatcher.UIThread.Post(AddMockLogLines);
     }
 
     private async Task LoadSettingsAsync()

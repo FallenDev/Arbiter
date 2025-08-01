@@ -2,6 +2,7 @@
 using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Logging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
@@ -12,6 +13,8 @@ public partial class ConsoleViewModel : ViewModelBase
     private readonly ConcurrentObservableCollection<LogEntryViewModel> _allLogEntries = [];
     
     public ConcurrentObservableCollection<LogEntryViewModel> FilteredLogEntries { get; } = [];
+
+    [ObservableProperty] private bool _scrollToEndRequested;
     
     private bool _showDebugMessages = true;
     private bool _showInfoMessages = true;
@@ -143,5 +146,11 @@ public partial class ConsoleViewModel : ViewModelBase
     {
         _allLogEntries.Clear();
         OnPropertyChanged(nameof(FilteredLogEntries));
+    }
+
+    [RelayCommand]
+    private void ScrollToEnd()
+    {
+        ScrollToEndRequested = true;
     }
 }
