@@ -38,12 +38,12 @@
         </Style>
         
         <Style Selector="^:checked /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.Background}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
         </Style>
         
         <Style Selector="^:checked /template/ Border#SelectionBorder">
-            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.Background}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
         </Style>
     </Style>

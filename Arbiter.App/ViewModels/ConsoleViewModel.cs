@@ -1,22 +1,28 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
+using System.Linq;
+using Arbiter.App.Collections;
 using Arbiter.App.Logging;
-using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
 
 public partial class ConsoleViewModel : ViewModelBase
 {
-    private readonly ObservableCollection<LogEntryViewModel> _allLogEntries = [];
+    private readonly ConcurrentObservableCollection<LogEntryViewModel> _allLogEntries = [];
     
-    public ObservableCollection<LogEntryViewModel> FilteredLogEntries { get; } = [];
+    public ConcurrentObservableCollection<LogEntryViewModel> FilteredLogEntries { get; } = [];
     
     private bool _showDebugMessages = true;
     private bool _showInfoMessages = true;
     private bool _showWarningMessages = true;
     private bool _showErrorMessages = true;
 
+    public int DebugCount => _allLogEntries.Count(log => log.Level is LogLevel.Debug or LogLevel.Trace);
+    public int InfoCount => _allLogEntries.Count(log => log.Level == LogLevel.Information);
+    public int WarningCount => _allLogEntries.Count(log => log.Level == LogLevel.Warning);
+    public int ErrorCount => _allLogEntries.Count(log => log.Level is LogLevel.Error or LogLevel.Critical);
+    
     public bool ShowDebugMessages
     {
         get => _showDebugMessages;
@@ -72,6 +78,14 @@ public partial class ConsoleViewModel : ViewModelBase
     public ConsoleViewModel(ArbiterLoggerProvider provider)
     {
         _allLogEntries.CollectionChanged += OnLogEntriesChanged;
+        _allLogEntries.CollectionChanged += (_,_) =>
+        {
+            OnPropertyChanged(nameof(DebugCount));
+            OnPropertyChanged(nameof(InfoCount));
+            OnPropertyChanged(nameof(WarningCount));
+            OnPropertyChanged(nameof(ErrorCount));
+        };
+        
         provider.LogEntryCreated += logEntry => { _allLogEntries.Add(new LogEntryViewModel(logEntry)); };
     }
 
@@ -122,5 +136,12 @@ public partial class ConsoleViewModel : ViewModelBase
             LogLevel.Debug or LogLevel.Trace => ShowDebugMessages,
             _ => true
         };
+    }
+
+    [RelayCommand]
+    private void ClearLogs()
+    {
+        _allLogEntries.Clear();
+        OnPropertyChanged(nameof(FilteredLogEntries));
     }
 }

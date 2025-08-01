@@ -103,8 +103,9 @@
             <SolidColorBrush x:Key="Talgonite.TextBox.ErrorBorderBrush" Color="#ed6a5e"/>
             
             <!-- ToggleButton Resources -->
-            <SolidColorBrush x:Key="Talgonite.ToggleButton.Background" Color="#222831"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleButton.Background" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.HoverBackground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.HoverForeground" Color="#e6e7e8"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedForeground" Color="#81b8f5"/>

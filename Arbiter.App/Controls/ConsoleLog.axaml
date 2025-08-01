@@ -1,0 +1,100 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arbiter.App.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
+             x:Class="Arbiter.App.Controls.ConsoleLog"
+             x:DataType="vm:ConsoleViewModel">
+    <Grid ColumnDefinitions="*,Auto">
+        <!-- Console Log List -->
+        <ListBox Grid.Column="0"
+                 ItemsSource="{Binding FilteredLogEntries}"
+                 ItemTemplate="{StaticResource LogEntryTemplate}"
+                 Classes="console"/>
+        <!-- Toolbar Area -->
+        <StackPanel Grid.Column="1">
+            <UniformGrid Columns="2" Rows="1"
+                         ColumnSpacing="4" RowSpacing="4"
+                         Margin="4">
+                <!-- Clear Logs Button -->
+                <Button Command="{Binding ClearLogsCommand}"
+                        ToolTip.Tip="Clears all messages.">
+                    <Path Width="16"
+                          Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"/>
+                </Button>
+                <!-- Scroll to End Button -->
+                <Button Command="{Binding ClearLogsCommand}"
+                        ToolTip.Tip="Scrolls to the end.">
+                    <Path Width="16"
+                          Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"/>
+                </Button>
+            </UniformGrid>
+            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                    BorderThickness="1"
+                    Margin="4"/>
+            <!-- Error Filter Button -->
+            <ToggleButton IsChecked="{Binding ShowErrorMessages}"
+                          ToolTip.Tip="Toggles displaying of error messages.">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <Path Width="16" Height="16"
+                          Stroke="#ee8071"
+                          StrokeThickness="2"
+                          StrokeLineCap="Round"
+                          Margin="4,0,0,0"
+                          Data="M8,1 A7,7 0 1,1 8,15 A7,7 0 1,1 8,1 Z"/>
+                    <TextBlock Text="{Binding ErrorCount}"
+                               TextAlignment="Center"
+                               MinWidth="30"/>
+                </StackPanel>
+            </ToggleButton>
+            <!-- Warn Filter Button -->
+            <ToggleButton IsChecked="{Binding ShowWarningMessages}"
+                          ToolTip.Tip="Toggles displaying of warning messages.">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <Path Width="16" Height="16"
+                          Stroke="#fadf79"
+                          StrokeThickness="2"
+                          StrokeLineCap="Round"
+                          Margin="4,0,0,0"
+                          Data="M8,1   L16,15   L0,15  Z"/>
+                    <TextBlock Text="{Binding WarningCount}"
+                               TextAlignment="Center"
+                               MinWidth="30"/>
+                </StackPanel>
+            </ToggleButton>
+            <!-- Info Filter Button -->
+            <ToggleButton IsChecked="{Binding ShowInfoMessages}"
+                          ToolTip.Tip="Toggles displaying of info messages.">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <Path Width="16" Height="16"
+                          Stroke="#cdcfd2"
+                          StrokeThickness="2"
+                          StrokeLineCap="Round"
+                          Margin="4,0,0,0"
+                          Data="M1,1 L15,1 L15,15 L1,15 Z"/>
+                    <TextBlock Text="{Binding InfoCount}"
+                               TextAlignment="Center"
+                               MinWidth="30"/>
+                </StackPanel>
+            </ToggleButton>
+            <!-- Debug Filter Button -->
+            <ToggleButton IsChecked="{Binding ShowDebugMessages}"
+                          ToolTip.Tip="Toggles displaying of debug messages.">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <Path Width="16" Height="16"
+                          Stroke="#888b90"
+                          StrokeThickness="2"
+                          StrokeLineCap="Round"
+                          Margin="4,0,0,0"
+                          Data="M8,1 L15,8 L8,15 L1,8 Z"/>
+                    <TextBlock Text="{Binding DebugCount}"
+                               TextAlignment="Center"
+                               MinWidth="30"/>
+                </StackPanel>
+            </ToggleButton>
+        </StackPanel>
+    </Grid>
+</UserControl>

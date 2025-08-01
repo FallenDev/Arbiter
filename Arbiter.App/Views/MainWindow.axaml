@@ -95,7 +95,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" MinHeight="160"/>
                 <RowDefinition Height="8"/>
-                <RowDefinition Height="*" MinHeight="100"/>
+                <RowDefinition Height="*" MinHeight="300"/>
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
@@ -115,40 +115,7 @@
             <TabControl Grid.Row="2">
                 <!-- Console Tab -->
                 <TabItem Header="Console _Log">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <!-- Console Log List -->
-                        <ListBox Grid.Column="0"
-                                 ItemsSource="{Binding Console.FilteredLogEntries}"
-                                 ItemTemplate="{StaticResource LogEntryTemplate}"
-                                 Classes="console"/>
-                        <!-- Toolbar Area -->
-                        <StackPanel Grid.Column="1">
-                            <!-- Error Filter Button -->
-                            <ToggleButton IsChecked="{Binding Console.ShowErrorMessages}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Error"/>
-                                </StackPanel>
-                            </ToggleButton>
-                            <!-- Warn Filter Button -->
-                            <ToggleButton IsChecked="{Binding Console.ShowWarningMessages}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Warn"/>
-                                </StackPanel>
-                            </ToggleButton>
-                            <!-- Info Filter Button -->
-                            <ToggleButton IsChecked="{Binding Console.ShowInfoMessages}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Info"/>
-                                </StackPanel>
-                            </ToggleButton>
-                            <!-- Debug Filter Button -->
-                            <ToggleButton IsChecked="{Binding Console.ShowDebugMessages}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Debug"/>
-                                </StackPanel>
-                            </ToggleButton>
-                        </StackPanel>
-                    </Grid>
+                    <controls:ConsoleLog DataContext="{Binding Console}"/>
                 </TabItem>
             </TabControl>
         </Grid>
