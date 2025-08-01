@@ -23,6 +23,7 @@
     <StyleInclude Source="./TalgoniteTabStrip.axaml"/>
     <StyleInclude Source="./TalgoniteTabStripItem.axaml"/>
     <StyleInclude Source="./TalgoniteTextBox.axaml"/>
+    <StyleInclude Source="./TalgoniteToggleButton.axaml"/>
     <StyleInclude Source="./TalgoniteToolTip.axaml"/>
     <StyleInclude Source="./TalgoniteWindow.axaml"/>
 </Styles>
