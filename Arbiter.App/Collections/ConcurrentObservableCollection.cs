@@ -66,7 +66,6 @@ public class ConcurrentObservableCollection<T> : ObservableCollection<T>
         {
             Dispatcher.Post(RaiseCollectionChanged);
             return;
-
         }
 
         RaiseCollectionChanged();
@@ -77,15 +76,13 @@ public class ConcurrentObservableCollection<T> : ObservableCollection<T>
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        if (Dispatcher.CheckAccess())
+        if (!Dispatcher.CheckAccess())
         {
-            RaisePropertyChanged();
+            Dispatcher.Post(RaisePropertyChanged);
+            return;
         }
-        else
-        {
-            Dispatcher.Invoke(RaisePropertyChanged);
-        }
-
+        
+        RaisePropertyChanged();
         return;
 
         void RaisePropertyChanged() => base.OnPropertyChanged(e);
