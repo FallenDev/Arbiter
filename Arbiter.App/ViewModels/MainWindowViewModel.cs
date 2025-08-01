@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.Views;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -39,36 +38,11 @@ public partial class MainWindowViewModel : ViewModelBase
         _settingsService = settingsService;
         
         _ = LoadSettingsAsync();
-        
-        Dispatcher.UIThread.Post(AddMockLogLines);
     }
 
     private async Task LoadSettingsAsync()
     {
         Settings = await _settingsService.LoadFromFileAsync();
-    }
-
-    private void AddMockLogLines()
-    {
-        for (var i = 0; i < 6; i++)
-        {
-            _logger.LogInformation("This is a mock log line ({i})", i + 1);
-        }
-
-        for (var i = 0; i < 5; i++)
-        {
-            _logger.LogWarning("This is a mock warning ({i})", i + 1);
-        }
-
-        for (var i = 0; i < 4; i++)
-        {
-            _logger.LogError("This is a mock error ({i})", i + 1);
-        }
-        
-        for (var i = 0; i < 3; i++)
-        {
-            _logger.LogDebug("This is a mock debug message ({i})", i + 1);
-        }
     }
 
     [RelayCommand]
