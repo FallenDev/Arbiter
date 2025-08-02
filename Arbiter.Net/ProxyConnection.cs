@@ -55,23 +55,34 @@ public class ProxyConnection : IDisposable
     {
         var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
 
-        var clientRecvTask = RecvLoopAsync(_clientStream!, ProxyDirection.ClientToServer, linked.Token);
-        var serverRecvTask = RecvLoopAsync(_serverStream!, ProxyDirection.ServerToClient, linked.Token);
+        var clientRecvTask = RecvLoopAsync(_clientStream!, ProxyDirection.ClientToServer, linked);
+        var serverRecvTask = RecvLoopAsync(_serverStream!, ProxyDirection.ServerToClient, linked);
         var senderTask = SendLoopAsync(linked.Token);
 
         return Task.WhenAll(clientRecvTask, serverRecvTask, senderTask);
     }
 
-    private async Task RecvLoopAsync(NetworkStream stream, ProxyDirection direction, CancellationToken token = default)
+    private async Task RecvLoopAsync(NetworkStream stream, ProxyDirection direction, CancellationTokenSource tokenSource)
     {
+        var token = tokenSource.Token;
         var parser = new NetworkPacketParser();
         var recvBuffer = ArrayPool<byte>.Shared.Rent(RecvBufferSize);
-
+        
         try
         {
             while (!token.IsCancellationRequested)
             {
-                var recvCount = await stream.ReadAsync(recvBuffer, token).ConfigureAwait(false);
+                int recvCount;
+
+                try
+                {
+                    recvCount = await stream.ReadAsync(recvBuffer, token).ConfigureAwait(false);
+                }
+                catch when (token.IsCancellationRequested)
+                {
+                    recvCount = 0;
+                }
+                
                 if (recvCount == 0)
                 {
                     if (direction == ProxyDirection.ServerToClient)
@@ -82,7 +93,8 @@ public class ProxyConnection : IDisposable
                     {
                         ClientDisconnected?.Invoke(this, EventArgs.Empty);
                     }
-
+                    
+                    await tokenSource.CancelAsync();
                     break;
                 }
 
@@ -158,7 +170,13 @@ public class ProxyConnection : IDisposable
 
         if (isDisposing)
         {
+            _sendQueue.Writer.TryComplete();
+            
+            _clientStream?.Dispose();
             _client.Dispose();
+            
+            _serverStream?.Dispose();
+            _server?.Dispose();
         }
         
         _isDisposed = true;
