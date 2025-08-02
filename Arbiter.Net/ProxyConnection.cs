@@ -16,6 +16,9 @@ public class ProxyConnection : IDisposable
     private NetworkStream? _clientStream;
     private NetworkStream? _serverStream;
     private readonly Channel<QueuedNetworkPacket> _sendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
+
+    public event EventHandler<NetworkPacketEventArgs>? PacketReceived;
+    public event EventHandler<NetworkPacketEventArgs>? PacketSent;
     
     public ProxyConnection(TcpClient client)
     {
@@ -40,8 +43,9 @@ public class ProxyConnection : IDisposable
 
         var clientRecvTask = RecvLoopAsync(_clientStream!, ProxyDirection.ClientToServer, linked.Token);
         var serverRecvTask = RecvLoopAsync(_serverStream!, ProxyDirection.ServerToClient, linked.Token);
+        var senderTask = SendLoopAsync(linked.Token);
 
-        return Task.WhenAll(clientRecvTask, serverRecvTask);
+        return Task.WhenAll(clientRecvTask, serverRecvTask, senderTask);
     }
 
     private async Task RecvLoopAsync(NetworkStream stream, ProxyDirection direction, CancellationToken token = default)
@@ -54,13 +58,20 @@ public class ProxyConnection : IDisposable
             while (!token.IsCancellationRequested)
             {
                 var recvCount = await stream.ReadAsync(recvBuffer, token).ConfigureAwait(false);
-
                 if (recvCount == 0)
                 {
                     break;
                 }
 
                 parser.Append(recvBuffer, 0, recvCount);
+
+                while (parser.TryTakePacket(out var packet))
+                {
+                    var queuedPacket = new QueuedNetworkPacket(packet, direction);
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(queuedPacket));
+
+                    await _sendQueue.Writer.WriteAsync(queuedPacket, token).ConfigureAwait(false);
+                }
             }
         }
         catch when (token.IsCancellationRequested)
@@ -69,6 +80,42 @@ public class ProxyConnection : IDisposable
         finally
         {
             ArrayPool<byte>.Shared.Return(recvBuffer);
+            _sendQueue.Writer.TryComplete();
+        }
+    }
+
+    private async Task SendLoopAsync(CancellationToken token = default)
+    {
+        var headerBuffer = ArrayPool<byte>.Shared.Rent(NetworkPacket.HeaderSize);
+
+        try
+        {
+            await foreach (var queuedPacket in _sendQueue.Reader.ReadAllAsync(token))
+            {
+                var destinationStream = queuedPacket.Direction switch
+                {
+                    ProxyDirection.ClientToServer => _serverStream!,
+                    ProxyDirection.ServerToClient => _clientStream!,
+                    _ => null
+                };
+
+                if (destinationStream is null)
+                {
+                    continue;
+                }
+
+                await queuedPacket.Packet.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
+                    .ConfigureAwait(false);
+
+                PacketSent?.Invoke(this, new NetworkPacketEventArgs(queuedPacket));
+            }
+        }
+        catch when (token.IsCancellationRequested)
+        {
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(headerBuffer);
         }
     }
 
