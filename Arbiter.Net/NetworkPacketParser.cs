@@ -49,7 +49,7 @@ public class NetworkPacketParser
         }
 
         // Check that we have the entire packet ready, from header size
-        var dataSize = (_buffer[1] << 8 | _buffer[2]) - 2;
+        var dataSize = (_buffer[1] << 8 | _buffer[2]) - 1;
         var packetSize = dataSize + NetworkPacket.HeaderSize;
         if (_bufferIndex < packetSize)
         {
@@ -65,7 +65,7 @@ public class NetworkPacketParser
             Buffer.BlockCopy(_buffer, NetworkPacket.HeaderSize, data, 0, dataSize);
         }
 
-        packet = new NetworkPacket(command, sequence, data);
+        packet = new NetworkPacket(command, data);
 
         // Copy the rest of the data back to the front of the buffer
         var remaining = _bufferIndex - packetSize;
