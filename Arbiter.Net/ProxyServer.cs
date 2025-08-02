@@ -18,8 +18,10 @@ public class ProxyServer : IDisposable
 
     public event Action? Started;
     public event Action? Stopped;
-    public event Action<ProxyConnection>? ClientConnected;
-    public event Action<ProxyConnection>? ClientDisconnected;
+    public event EventHandler<ProxyConnectionEventArgs>? ClientConnected;
+    public event EventHandler<ProxyConnectionEventArgs>? ClientDisconnected;
+    public event EventHandler<ProxyConnectionDataEventArgs>? PacketReceived;
+    public event EventHandler<ProxyConnectionDataEventArgs>? PacketSent;
 
     public void Start(int listenPort, IPAddress remoteAddress, int remotePort) =>
         Start(listenPort, new IPEndPoint(remoteAddress, remotePort));
@@ -80,7 +82,7 @@ public class ProxyServer : IDisposable
                 _connections.Add(connection);
             }
 
-            ClientConnected?.Invoke(connection);
+            ClientConnected?.Invoke(this, new ProxyConnectionEventArgs(connection));
 
             _ = HandleConnectionAsync(connection, token);
         }
@@ -88,6 +90,9 @@ public class ProxyServer : IDisposable
 
     private async Task HandleConnectionAsync(ProxyConnection connection, CancellationToken token)
     {
+        connection.PacketReceived += OnRecv;
+        connection.PacketSent += OnSend;
+
         try
         {
             await connection.ConnectToRemoteAsync(_remoteEndpoint!, token).ConfigureAwait(false);
@@ -95,12 +100,26 @@ public class ProxyServer : IDisposable
         }
         finally
         {
+            connection.PacketReceived -= OnRecv;
+            connection.PacketSent -= OnSend;
+
             using var _ = _connectionsLock.EnterScope();
             _connections.Remove(connection);
 
-            ClientDisconnected?.Invoke(connection);
+            ClientDisconnected?.Invoke(this, new ProxyConnectionEventArgs(connection));
             connection.Dispose();
         }
+
+        return;
+
+        // Forwarding handlers for events
+        void OnRecv(object? sender, NetworkPacketEventArgs e) =>
+            PacketReceived?.Invoke(this,
+                new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));
+
+        void OnSend(object? sender, NetworkPacketEventArgs e) =>
+            PacketSent?.Invoke(this,
+                new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));
     }
 
     public void Dispose()

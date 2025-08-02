@@ -1,6 +1,8 @@
 ﻿namespace Arbiter.Net;
 
-public class NetworkPacketEventArgs(QueuedNetworkPacket packet) : EventArgs
+public class NetworkPacketEventArgs(NetworkPacket packet, ProxyDirection direction)
+    : EventArgs
 {
-    public QueuedNetworkPacket Packet { get; } = packet;
+    public NetworkPacket Packet { get; } = packet;
+    public ProxyDirection Direction { get; } = direction;
 }

@@ -8,7 +8,6 @@ namespace Arbiter.Net;
 public class ProxyConnection : IDisposable
 {
     private const int RecvBufferSize = 4096;
-    private const int SendBufferSize = 4096;
     
     private bool _isDisposed;
     private readonly TcpClient _client;
@@ -68,7 +67,7 @@ public class ProxyConnection : IDisposable
                 while (parser.TryTakePacket(out var packet))
                 {
                     var queuedPacket = new QueuedNetworkPacket(packet, direction);
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(queuedPacket));
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(queuedPacket.Packet, queuedPacket.Direction));
 
                     await _sendQueue.Writer.WriteAsync(queuedPacket, token).ConfigureAwait(false);
                 }
@@ -107,7 +106,8 @@ public class ProxyConnection : IDisposable
                 await queuedPacket.Packet.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
-                PacketSent?.Invoke(this, new NetworkPacketEventArgs(queuedPacket));
+                PacketSent?.Invoke(this,
+                    new NetworkPacketEventArgs(queuedPacket.Packet, queuedPacket.Direction));
             }
         }
         catch when (token.IsCancellationRequested)
