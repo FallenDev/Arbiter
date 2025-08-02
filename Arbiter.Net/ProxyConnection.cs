@@ -40,7 +40,7 @@ public class ProxyConnection : IDisposable
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token=default)
     {
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
-        _server = new TcpClient { NoDelay = true };
+        _server = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
 
         await _server.ConnectAsync(remoteEndpoint, linked.Token).ConfigureAwait(false);
         
