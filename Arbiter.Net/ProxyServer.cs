@@ -60,7 +60,7 @@ public class ProxyServer : IDisposable
         Stopped?.Invoke();
     }
 
-    private async Task AcceptLoopAsync(CancellationToken token)
+    private async Task AcceptLoopAsync(CancellationToken token = default)
     {
         while (!token.IsCancellationRequested)
         {
