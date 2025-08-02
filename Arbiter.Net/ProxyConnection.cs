@@ -23,6 +23,7 @@ public class ProxyConnection : IDisposable
     public bool IsClientConnected => _client.Connected;
     public bool IsServerConnected => _server?.Connected ?? false;
 
+    public event EventHandler? ClientDisconnected;
     public event EventHandler? ServerConnected;
     public event EventHandler? ServerDisconnected;
     
@@ -77,6 +78,11 @@ public class ProxyConnection : IDisposable
                     {
                         ServerDisconnected?.Invoke(this, EventArgs.Empty);
                     }
+                    else
+                    {
+                        ClientDisconnected?.Invoke(this, EventArgs.Empty);
+                    }
+
                     break;
                 }
 
