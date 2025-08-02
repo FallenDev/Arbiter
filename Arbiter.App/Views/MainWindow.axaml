@@ -102,9 +102,9 @@
                         <Border DockPanel.Dock="Top" Padding="4">
                             <WrapPanel Orientation="Horizontal" ItemSpacing="8">
                                 <!-- Start Trace Button -->
-                                <Button Command="{Binding StartPacketTraceCommand}"
+                                <Button Command="{Binding Trace.StartTracingCommand}"
                                         ToolTip.Tip="Starts a new packet trace."
-                                        IsEnabled="{Binding IsTraceRunning, Converter={x:Static BoolConverters.Not}}">
+                                        IsEnabled="{Binding Trace.IsRunning, Converter={x:Static BoolConverters.Not}}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <Path Width="16" Height="16"
                                               Stroke="{Binding $parent[Button].Foreground}"
@@ -117,9 +117,9 @@
                                     </StackPanel>
                                 </Button>
                                 <!-- Stop Trace Button -->
-                                <Button Command="{Binding StopPacketTraceCommand}"
+                                <Button Command="{Binding Trace.StopTracingCommand}"
                                         ToolTip.Tip="Stops the current packet trace."
-                                        IsEnabled="{Binding IsTraceRunning}">
+                                        IsEnabled="{Binding Trace.IsRunning}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <Path Width="16" Height="16"
                                               Stroke="{Binding $parent[Button].Foreground}"

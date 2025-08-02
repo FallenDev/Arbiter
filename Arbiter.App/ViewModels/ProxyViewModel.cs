@@ -8,13 +8,14 @@ namespace Arbiter.App.ViewModels;
 public partial class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
-    private readonly ProxyServer _proxyServer = new();
+    private readonly ProxyServer _proxyServer;
     
     public bool IsRunning => _proxyServer.IsRunning;
     
-    public ProxyViewModel(ILogger<ProxyViewModel> logger)
+    public ProxyViewModel(ILogger<ProxyViewModel> logger, ProxyServer proxyServer)
     {
         _logger = logger;
+        _proxyServer = proxyServer;
     }
 
     public void Start(int localPort, IPAddress remoteIpAddress, int remotePort)

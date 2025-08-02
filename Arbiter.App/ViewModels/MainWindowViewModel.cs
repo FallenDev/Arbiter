@@ -17,18 +17,16 @@ public partial class MainWindowViewModel : ViewModelBase
     private ArbiterSettings Settings { get; set; } = new();
 
     private readonly ILogger<MainWindowViewModel> _logger;
-    private readonly IServiceProvider _serviceProvider;
     private readonly IDialogService _dialogService;
     private readonly IGameClientService _gameClientService;
     private readonly ISettingsService _settingsService;
 
     [ObservableProperty] private string _title = "Arbiter";
-
-    [ObservableProperty] private bool isTraceRunning;
     
     public ConsoleViewModel Console { get; }
     public ProxyViewModel Proxy { get; }
-    
+    public TraceViewModel Trace { get; }
+
     public MainWindowViewModel(
         ILogger<MainWindowViewModel> logger,
         IServiceProvider serviceProvider,
@@ -37,14 +35,14 @@ public partial class MainWindowViewModel : ViewModelBase
         ISettingsService settingsService)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
-        
+
         _dialogService = dialogService;
         _gameClientService = gameClientService;
         _settingsService = settingsService;
-        
-        Console = _serviceProvider.GetRequiredService<ConsoleViewModel>();
-        Proxy = _serviceProvider.GetRequiredService<ProxyViewModel>();
+
+        Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
+        Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
+        Trace = serviceProvider.GetRequiredService<TraceViewModel>();
     }
 
     [RelayCommand]
@@ -80,28 +78,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 Description = "You can change the client executable path in Settings."
             });
         }
-    }
-    
-    [RelayCommand]
-    private void StartPacketTrace()
-    {
-        if (IsTraceRunning)
-        {
-            return;
-        }
-
-        IsTraceRunning = true;
-    }
-    
-    [RelayCommand]
-    private void StopPacketTrace()
-    {
-        if (!IsTraceRunning)
-        {
-            return;
-        }
-
-        IsTraceRunning = false;
     }
 
     private async Task StartProxyAsync()

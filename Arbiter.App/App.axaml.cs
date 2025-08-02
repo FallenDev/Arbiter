@@ -7,6 +7,7 @@ using Arbiter.App.Services;
 using Avalonia.Markup.Xaml;
 using Arbiter.App.ViewModels;
 using Arbiter.App.Views;
+using Arbiter.Net;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -78,6 +79,10 @@ public class App : Application
     
     private static void RegisterServices(IServiceCollection services)
     {
+        // Singletons
+        services.AddSingleton<ProxyServer>();
+        
+        // Transients
         services.AddTransient<IDialogService, DialogService>();
         services.AddTransient<IGameClientService, GameClientService>();
         services.AddTransient<ISettingsService, SettingsService>();
