@@ -91,6 +91,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
+    public bool TraceOnStartup
+    {
+        get => Settings.TraceOnStartup;
+        set
+        {
+            Settings.TraceOnStartup = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
     public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
     {
         _settingsService = settingsService;

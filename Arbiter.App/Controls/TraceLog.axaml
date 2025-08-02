@@ -13,6 +13,7 @@
                 <!-- Start Trace Button -->
                 <Button Command="{Binding StartTracingCommand}"
                         ToolTip.Tip="Starts a new packet trace."
+                        Classes="toolbar"
                         IsEnabled="{Binding IsRunning, Converter={x:Static BoolConverters.Not}}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Path Width="16" Height="16"
@@ -28,6 +29,7 @@
                 <!-- Stop Trace Button -->
                 <Button Command="{Binding StopTracingCommand}"
                         ToolTip.Tip="Stops the current packet trace."
+                        Classes="toolbar"
                         IsEnabled="{Binding IsRunning}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Path Width="16" Height="16"

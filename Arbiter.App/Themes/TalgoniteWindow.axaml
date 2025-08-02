@@ -141,6 +141,8 @@
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox">
         <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.Foreground}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="0"/>
         <Setter Property="MinWidth" Value="40"/>
         <Setter Property="MinHeight" Value="32"/>
@@ -150,6 +152,7 @@
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="{TemplateBinding HorizontalContentAlignment}"/>
         <Setter Property="VerticalContentAlignment" Value="{TemplateBinding VerticalContentAlignment}"/>
+        <Setter Property="IsTabStop" Value="False"/>
     </Style>
     
     <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pointerover">

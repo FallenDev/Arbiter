@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="540" Height="420"
+                          Width="540" Height="460"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -45,7 +45,7 @@
                     Spacing="8"
                     Margin="16">
             <!-- Client Path Settings -->
-            <Label Content="Client E_xecutable Path:"/>
+            <Label Content="Client Executable Path:"/>
             <TextBox Name="ClientPathTextBox" 
                      Text="{Binding ClientExecutablePath}"
                      Watermark="Path to game client..."/>
@@ -56,7 +56,7 @@
             
             <!-- Local Port Settings -->
             <Grid ColumnDefinitions="Auto,Auto">
-                <Label Grid.Column="0" Content="_Local Port:"/>
+                <Label Grid.Column="0" Content="Local Port:"/>
                 <NumericUpDown Name="LocalPortUpDown"
                                Grid.Column="1"
                                Value="{Binding LocalPort}"
@@ -72,7 +72,7 @@
                     Margin="0,8"/>
             
             <!-- Remote Server Settings -->
-            <Label Content="Remote Server _Host:"/>
+            <Label Content="Remote Server Host:"/>
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <TextBox Grid.Column="0"
                          Text="{Binding RemoteServerAddress}"
@@ -87,6 +87,17 @@
                                Watermark="1-65535"
                                Width="100"/>
             </Grid>
+            
+            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                    BorderThickness="0,0,0,1"
+                    Margin="0,8"/>
+            
+            <!-- Trace on Startup -->
+            <StackPanel Orientation="Horizontal">
+                <ToggleSwitch IsChecked="{Binding TraceOnStartup}">
+                    <Label Content="Start Trace on Launch"/>
+                </ToggleSwitch>
+            </StackPanel>
         </StackPanel>
         
         <Border Grid.Row="1"

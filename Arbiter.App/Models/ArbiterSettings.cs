@@ -12,13 +12,16 @@ public class ArbiterSettings : ICloneable
 
     public string RemoteServerAddress { get; set; } = "da0.kru.com";
     public int RemoteServerPort { get; set; } = 2610;
+    
+    public bool TraceOnStartup { get; set; }
 
     public object Clone() => new ArbiterSettings
     {
         ClientExecutablePath = ClientExecutablePath,
         LocalPort = LocalPort,
         RemoteServerAddress = RemoteServerAddress,
-        RemoteServerPort = RemoteServerPort
+        RemoteServerPort = RemoteServerPort,
+        TraceOnStartup = TraceOnStartup
     };
 
 }

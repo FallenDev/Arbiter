@@ -1,0 +1,137 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="ToggleSwitch">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="KnobTransitions">
+            <Transitions>
+                <DoubleTransition Property="Canvas.Left" Easing="CubicEaseOut" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="Auto,*"
+                      Background="{TemplateBinding Background}">
+                    
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Grid.Column="0"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"/>
+                    
+                    <Grid Column="1"
+                          RowDefinitions="8,Auto,8"
+                          ColumnDefinitions="Auto,8,Auto"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center">
+                        
+                        <Grid Name="SwitchAreaGrid"
+                              Grid.Row="0" Grid.Column="0"
+                              Grid.RowSpan="3" Grid.ColumnSpan="3"
+                              Background="Transparent"
+                              TemplatedControl.IsTemplateFocusTarget="True"/>
+                        
+                        <ContentPresenter Name="PART_OffContentPresenter"
+                                          Grid.Row="0"
+                                          Grid.Column="2"
+                                          Grid.RowSpan="3"
+                                          Content="{TemplateBinding OffContent}"
+                                          ContentTemplate="{TemplateBinding OffContent}"
+                                          Foreground="{StaticResource Talgonite.ToggleSwitch.Foreground}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        
+                        <ContentPresenter Name="PART_OnContentPresenter"
+                                          Grid.Row="0"
+                                          Grid.Column="2"
+                                          Grid.RowSpan="3"
+                                          Content="{TemplateBinding OnContent}"
+                                          ContentTemplate="{TemplateBinding OnContent}"
+                                          Foreground="{StaticResource Talgonite.ToggleSwitch.CheckedForeground}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        
+                        <Border Name="SwitchKnobBounds"
+                                Grid.Row="1" Grid.Column="0"
+                                Width="48" Height="24"
+                                Background="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"
+                                BorderBrush="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"
+                                BorderThickness="2"
+                                CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
+                                />
+                        
+                        <Canvas Name="PART_SwitchKnob"
+                                Grid.Row="1" Grid.Column="0"
+                                Width="24"
+                                Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
+                                Margin="4,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                            
+                            <Grid Name="PART_MovingKnobs">
+                                <Ellipse Name="SwitchKnobOn"
+                                         Fill="{StaticResource Talgonite.ToggleSwitch.KnobCheckedForeground}"
+                                         Width="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
+                                         Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}"/>
+                                <Ellipse Name="SwitchKnobOff"
+                                         Fill="{StaticResource Talgonite.ToggleSwitch.KnobForeground}"
+                                         Width="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
+                                         Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}"/>
+                            </Grid>
+                        </Canvas>
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        
+        <!-- Checked State -->
+        <Style Selector="^:checked /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.KnobCheckedBackground}"/>
+        </Style>
+        
+        <Style Selector="^:checked /template/ Ellipse#SwitchKnobOff">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <Style Selector="^:checked /template/ ContentPresenter#PART_OffContentPresenter">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <Style Selector="^:checked /template/ Ellipse#SwitchKnobOn">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        
+        <Style Selector="^:checked /template/ ContentPresenter#PART_OnContentPresenter">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        
+        <!-- Unchecked State -->
+        <Style Selector="^:unchecked /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"/>
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ Ellipse#SwitchKnobOff">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ ContentPresenter#PART_OffContentPresenter">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ Ellipse#SwitchKnobOn">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <Style Selector="^:unchecked /template/ ContentPresenter#PART_OnContentPresenter">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <!-- Focus State -->
+        <Style Selector="^:focus /template/ Border#SwitchKnobBounds">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.FocusBorderBrush}"/>
+        </Style>
+    </Style>
+</Styles>

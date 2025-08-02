@@ -70,7 +70,8 @@
                 <DockPanel>
                     <WrapPanel DockPanel.Dock="Top" Margin="4">
                         <Button Command="{Binding LaunchClientCommand}"
-                                ToolTip.Tip="Launch a new client.">
+                                ToolTip.Tip="Launch a new client."
+                                Classes="toolbar">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Path Width="16" Height="16"
                                       Stroke="{Binding Path=$parent[Button].Foreground}"
