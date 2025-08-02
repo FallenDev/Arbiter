@@ -93,5 +93,6 @@ public class App : Application
         services.AddTransient<MessageBoxViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<TraceViewModel>();
     }
 }
