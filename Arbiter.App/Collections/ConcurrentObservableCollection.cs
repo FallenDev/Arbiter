@@ -71,7 +71,11 @@ public class ConcurrentObservableCollection<T> : ObservableCollection<T>
         RaiseCollectionChanged();
         return;
 
-        void RaiseCollectionChanged() => base.OnCollectionChanged(e);
+        void RaiseCollectionChanged()
+        {
+            using var _ = _lock.EnterScope();
+            base.OnCollectionChanged(e);
+        }
     }
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)

@@ -64,11 +64,18 @@ public partial class ProxyViewModel : ViewModelBase
             _ => "?"
         };
         
-        _logger.LogInformation("[{Id}] {Verb}> {Packet}", e.Connection.Id, verb, e.Packet.ToString());
+        _logger.LogInformation("[{Id}] {Verb} >> {Packet}", e.Connection.Id, verb, e.Packet.ToString());
     }
     
     private void OnPacketSent(object? sender, ProxyConnectionDataEventArgs e)
     {
+        var verb = e.Direction switch
+        {
+            ProxyDirection.ClientToServer => "SERVER",
+            ProxyDirection.ServerToClient => "CLIENT",
+            _ => "?"
+        };
         
+        _logger.LogInformation("[{Id}] {Verb} << {Packet}", e.Connection.Id, verb, e.Packet.ToString());
     }
 }

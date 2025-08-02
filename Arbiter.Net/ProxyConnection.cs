@@ -18,7 +18,7 @@ public class ProxyConnection : IDisposable
     
     public int Id { get; }
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
-    public IPEndPoint? RemoteEndpoint => _client.Client.RemoteEndPoint as IPEndPoint;
+    public IPEndPoint? RemoteEndpoint => _server?.Client.RemoteEndPoint as IPEndPoint;
     public bool IsConnected => IsClientConnected && IsServerConnected;
     public bool IsClientConnected => _client.Connected;
     public bool IsServerConnected => _server?.Connected ?? false;
