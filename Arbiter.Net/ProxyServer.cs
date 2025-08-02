@@ -11,7 +11,8 @@ public class ProxyServer : IDisposable
     private CancellationTokenSource? _cancelTokenSource;
     private readonly Lock _connectionsLock = new();
     private readonly List<ProxyConnection> _connections = [];
-
+    private int _nextConnectionId;
+    
     public bool IsRunning => _listener is not null;
     public IPEndPoint? LocalEndpoint => _listener?.LocalEndpoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _remoteEndpoint;
@@ -19,7 +20,9 @@ public class ProxyServer : IDisposable
     public event Action? Started;
     public event Action? Stopped;
     public event EventHandler<ProxyConnectionEventArgs>? ClientConnected;
+    public event EventHandler<ProxyConnectionEventArgs>? ServerConnected;
     public event EventHandler<ProxyConnectionEventArgs>? ClientDisconnected;
+    public event EventHandler<ProxyConnectionEventArgs>? ServerDisconnected;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketReceived;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketSent;
 
@@ -76,7 +79,8 @@ public class ProxyServer : IDisposable
                 break;
             }
 
-            var connection = new ProxyConnection(client);
+            var connectionId = Interlocked.Increment(ref _nextConnectionId);
+            var connection = new ProxyConnection(connectionId, client);
             {
                 using var _ = _connectionsLock.EnterScope();
                 _connections.Add(connection);
@@ -90,6 +94,8 @@ public class ProxyServer : IDisposable
 
     private async Task HandleConnectionAsync(ProxyConnection connection, CancellationToken token)
     {
+        connection.ServerConnected += OnServerConnected;
+        connection.ServerDisconnected += OnServerDisconnected;
         connection.PacketReceived += OnRecv;
         connection.PacketSent += OnSend;
 
@@ -100,6 +106,8 @@ public class ProxyServer : IDisposable
         }
         finally
         {
+            connection.ServerConnected -= OnServerConnected;
+            connection.ServerDisconnected -= OnServerDisconnected;
             connection.PacketReceived -= OnRecv;
             connection.PacketSent -= OnSend;
 
@@ -111,8 +119,14 @@ public class ProxyServer : IDisposable
         }
 
         return;
-
+        
         // Forwarding handlers for events
+        void OnServerConnected(object? sender, EventArgs e) =>
+            ServerConnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
+        
+        void OnServerDisconnected(object? sender, EventArgs e) =>
+            ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
+
         void OnRecv(object? sender, NetworkPacketEventArgs e) =>
             PacketReceived?.Invoke(this,
                 new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));

@@ -15,12 +15,24 @@ public class ProxyConnection : IDisposable
     private NetworkStream? _clientStream;
     private NetworkStream? _serverStream;
     private readonly Channel<QueuedNetworkPacket> _sendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
+    
+    public int Id { get; }
+    public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
+    public IPEndPoint? RemoteEndpoint => _client.Client.RemoteEndPoint as IPEndPoint;
+    public bool IsConnected => IsClientConnected && IsServerConnected;
+    public bool IsClientConnected => _client.Connected;
+    public bool IsServerConnected => _server?.Connected ?? false;
 
+    public event EventHandler? ServerConnected;
+    public event EventHandler? ServerDisconnected;
+    
     public event EventHandler<NetworkPacketEventArgs>? PacketReceived;
     public event EventHandler<NetworkPacketEventArgs>? PacketSent;
     
-    public ProxyConnection(TcpClient client)
+    public ProxyConnection(int id, TcpClient client)
     {
+        Id = id;
+        
         _client = client;
         _client.NoDelay = true;
     }
@@ -34,6 +46,8 @@ public class ProxyConnection : IDisposable
         
         _clientStream = _client.GetStream();
         _serverStream = _server.GetStream();
+        
+        ServerConnected?.Invoke(this, EventArgs.Empty);
     }
 
     internal Task SendRecvLoopAsync(CancellationToken token = default)
@@ -59,6 +73,10 @@ public class ProxyConnection : IDisposable
                 var recvCount = await stream.ReadAsync(recvBuffer, token).ConfigureAwait(false);
                 if (recvCount == 0)
                 {
+                    if (direction == ProxyDirection.ServerToClient)
+                    {
+                        ServerDisconnected?.Invoke(this, EventArgs.Empty);
+                    }
                     break;
                 }
 

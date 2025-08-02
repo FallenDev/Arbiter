@@ -85,7 +85,11 @@ public class App : Application
 
     private static void RegisterViewModels(IServiceCollection services)
     {
+        // Singletons
         services.AddSingleton<ConsoleViewModel>();
+        services.AddSingleton<ProxyViewModel>();
+        
+        // Transients
         services.AddTransient<MessageBoxViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<SettingsViewModel>();

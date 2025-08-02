@@ -13,7 +13,10 @@
         Width="1920" Height="1080"
         MinWidth="1024" MinHeight="576"
         CanResize="True"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Opened="Window_OnOpened"
+        Loaded="Window_OnLoaded"
+        Closing="Window_OnClosing">
     <!-- Title Bar Content -->
     <controls:TalgoniteWindow.TitleBarContent>
         <DockPanel>
@@ -78,12 +81,7 @@
                             </StackPanel>
                         </Button>
                     </WrapPanel>
-                    <ListBox>
-                        <ListBoxItem>First</ListBoxItem>
-                        <ListBoxItem>Second</ListBoxItem>
-                        <ListBoxItem>Third</ListBoxItem>
-                        <ListBoxItem IsEnabled="False">Disabled</ListBoxItem>
-                    </ListBox>
+                    <ListBox/>
                 </DockPanel>
             </TabItem>
         </TabControl>
