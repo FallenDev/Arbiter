@@ -9,7 +9,7 @@ namespace Arbiter.App.Collections;
 
 public class ConcurrentObservableCollection<T> : ObservableCollection<T>
 {
-    private readonly Lock _lock = new();
+    protected readonly Lock _lock = new();
 
     public Dispatcher Dispatcher { get; }
 

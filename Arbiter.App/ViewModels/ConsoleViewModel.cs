@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Linq;
+﻿using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Logging;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,7 +11,7 @@ public partial class ConsoleViewModel : ViewModelBase
 {
     private readonly ConcurrentObservableCollection<LogEntryViewModel> _allLogEntries = [];
     
-    public ConcurrentObservableCollection<LogEntryViewModel> FilteredLogEntries { get; } = [];
+    public FilteredObservableCollection<LogEntryViewModel> FilteredLogEntries { get; }
 
     [ObservableProperty] private bool _scrollToEndRequested;
     
@@ -33,7 +32,7 @@ public partial class ConsoleViewModel : ViewModelBase
         {
             if (SetProperty(ref _showDebugMessages, value))
             {
-                RefilterMessages();
+                FilteredLogEntries.Refresh();
                 OnPropertyChanged(nameof(FilteredLogEntries));
             }
         }
@@ -46,7 +45,7 @@ public partial class ConsoleViewModel : ViewModelBase
         {
             if (SetProperty(ref _showInfoMessages, value))
             {
-                RefilterMessages();
+                FilteredLogEntries.Refresh();
                 OnPropertyChanged(nameof(FilteredLogEntries));
             }
         }
@@ -59,7 +58,7 @@ public partial class ConsoleViewModel : ViewModelBase
         {
             if (SetProperty(ref _showWarningMessages, value))
             {
-                RefilterMessages();
+                FilteredLogEntries.Refresh();
                 OnPropertyChanged(nameof(FilteredLogEntries));
             }
         }
@@ -72,7 +71,7 @@ public partial class ConsoleViewModel : ViewModelBase
         {
             if (SetProperty(ref _showErrorMessages, value))
             {
-                RefilterMessages();
+                FilteredLogEntries.Refresh();
                 OnPropertyChanged(nameof(FilteredLogEntries));
             }
         }
@@ -80,7 +79,8 @@ public partial class ConsoleViewModel : ViewModelBase
 
     public ConsoleViewModel(ArbiterLoggerProvider provider)
     {
-        _allLogEntries.CollectionChanged += OnLogEntriesChanged;
+        FilteredLogEntries = new FilteredObservableCollection<LogEntryViewModel>(_allLogEntries, MatchesFilter);
+        
         _allLogEntries.CollectionChanged += (_,_) =>
         {
             OnPropertyChanged(nameof(DebugCount));
@@ -91,44 +91,7 @@ public partial class ConsoleViewModel : ViewModelBase
         
         provider.LogEntryCreated += logEntry => { _allLogEntries.Add(new LogEntryViewModel(logEntry)); };
     }
-
-    private void OnLogEntriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e is { Action: NotifyCollectionChangedAction.Add, NewItems: not null })
-        {
-            foreach (LogEntryViewModel entry in e.NewItems)
-            {
-                if (MatchesFilter(entry))
-                {
-                    FilteredLogEntries.Add(entry);
-                }
-            }
-        }
-        else if (e is { Action: NotifyCollectionChangedAction.Remove, OldItems: not null })
-        {
-            foreach (LogEntryViewModel entry in e.OldItems)
-            {
-                FilteredLogEntries.Remove(entry);
-            }
-        }
-        else if (e.Action == NotifyCollectionChangedAction.Reset)
-        {
-            RefilterMessages();
-        }
-    }
-
-    private void RefilterMessages()
-    {
-        FilteredLogEntries.Clear();
-        foreach (var entry in _allLogEntries)
-        {
-            if (MatchesFilter(entry))
-            {
-                FilteredLogEntries.Add(entry);
-            }
-        }
-    }
-
+    
     private bool MatchesFilter(LogEntryViewModel logEntry)
     {
         return logEntry.Level switch
