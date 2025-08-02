@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.Views;
+using Arbiter.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -17,6 +19,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly IGameClientService _gameClientService;
     private readonly ISettingsService _settingsService;
+    
+    private readonly ProxyServer _proxyServer = new();
     
     [ObservableProperty]
     private string _title = "Arbiter";
@@ -38,11 +42,39 @@ public partial class MainWindowViewModel : ViewModelBase
         _settingsService = settingsService;
         
         _ = LoadSettingsAsync();
+        _ = StartProxyAsync();
     }
 
     private async Task LoadSettingsAsync()
     {
         Settings = await _settingsService.LoadFromFileAsync();
+    }
+
+    private async Task StartProxyAsync()
+    {
+        try
+        {
+            var remoteIpAddress = await Dns.GetHostAddressesAsync(Settings.RemoteServerAddress);
+            if (remoteIpAddress.Length == 0)
+            {
+                throw new Exception("Failed to resolve remote server address");
+            }
+
+            _proxyServer.Start(Settings.LocalPort, remoteIpAddress[0], Settings.RemoteServerPort);
+
+            var localEndpoint = _proxyServer.LocalEndpoint!;
+            _logger.LogInformation("Proxy started on {IP}:{Port}", localEndpoint.Address, localEndpoint.Port);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to start proxy server");
+            await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
+            {
+                Title = "Failed to Start Proxy Server",
+                Message = $"An error occurred while starting the proxy server:\n\n{ex.Message}",
+                Description = "You can change the local and remote server in Settings."
+            });
+        }
     }
 
     [RelayCommand]

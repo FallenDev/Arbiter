@@ -63,7 +63,7 @@
         
         <!-- Left Panel Tabs -->
         <TabControl Name="LeftPanelTabStrip" Grid.Column="0">
-            <TabItem Header="_Clients">
+            <TabItem Header="Clients">
                 <DockPanel>
                     <WrapPanel DockPanel.Dock="Top" Margin="4">
                         <Button Command="{Binding LaunchClientCommand}"
@@ -99,13 +99,13 @@
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
-                <TabItem Header="_Trace">
+                <TabItem Header="Trace">
                     <ListBox></ListBox>
                 </TabItem>
-                <TabItem Header="_Filters">
+                <TabItem Header="Filters">
                     <ListBox></ListBox>
                 </TabItem>
-                <TabItem Header="_Scripts">
+                <TabItem Header="Scripts">
                     <ListBox></ListBox>
                 </TabItem>
             </TabControl>
@@ -114,7 +114,7 @@
             
             <TabControl Grid.Row="2">
                 <!-- Console Tab -->
-                <TabItem Header="Console _Log">
+                <TabItem Header="Console Log">
                     <controls:ConsoleLog DataContext="{Binding Console}"/>
                 </TabItem>
             </TabControl>
@@ -124,10 +124,7 @@
         
         <!-- Right Panel Tabs -->
         <TabControl Name="RightPanelTabStrip" Grid.Column="4">
-            <TabItem Header="_Inspector">
-                <ListBox/>
-            </TabItem>
-            <TabItem Header="_History">
+            <TabItem Header="Inspector">
                 <ListBox/>
             </TabItem>
         </TabControl>

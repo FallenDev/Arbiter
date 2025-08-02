@@ -35,5 +35,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Arbiter.Interop\Arbiter.Interop.csproj" />
+      <ProjectReference Include="..\Arbiter.Net\Arbiter.Net.csproj" />
     </ItemGroup>
 </Project>
