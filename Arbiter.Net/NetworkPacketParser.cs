@@ -49,7 +49,7 @@ public class NetworkPacketParser
         }
 
         // Check that we have the entire packet ready, from header size
-        var dataSize = (_buffer[2] << 8 | _buffer[3]) - 2;
+        var dataSize = (_buffer[1] << 8 | _buffer[2]) - 2;
         var packetSize = dataSize + NetworkPacket.HeaderSize;
         if (_bufferIndex < packetSize)
         {
@@ -57,8 +57,8 @@ public class NetworkPacketParser
         }
 
         // Copy the command, sequence, and data bytes
-        var command = _buffer[4];
-        var sequence = _buffer[5];
+        var command = _buffer[3];
+        var sequence = _buffer[4];
         var data = dataSize > 0 ? new byte[dataSize] : Array.Empty<byte>();
         if (dataSize > 0)
         {

@@ -64,7 +64,7 @@ public partial class ProxyViewModel : ViewModelBase
             _ => "?"
         };
         
-        _logger.LogInformation("[{Id}] {Verb}> {Packet}", e.Connection.Id, verb, e.Packet);
+        _logger.LogInformation("[{Id}] {Verb}> {Packet}", e.Connection.Id, verb, e.Packet.ToString());
     }
     
     private void OnPacketSent(object? sender, ProxyConnectionDataEventArgs e)
