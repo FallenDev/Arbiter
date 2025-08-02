@@ -9,7 +9,7 @@ namespace Arbiter.App.Converters;
 public class LogLevelBrushConverter : IValueConverter
 {
     private static readonly SolidColorBrush DefaultBrush = new(Color.FromRgb(0xcd, 0xcf, 0xd2));
-    private static readonly SolidColorBrush DebugBrush = new(Color.FromRgb(0x88, 0x8b, 0x90));
+    private static readonly SolidColorBrush DebugBrush = new(Color.FromRgb(0x82, 0xbf, 0xf7));
     private static readonly SolidColorBrush InfoBrush = new(Color.FromRgb(0xcd, 0xcf, 0xd2));
     private static readonly SolidColorBrush WarningBrush = new(Color.FromRgb(0xfa, 0xdf, 0x79));
     private static readonly SolidColorBrush ErrorBrush = new(Color.FromRgb(0xee, 0x80, 0x71));

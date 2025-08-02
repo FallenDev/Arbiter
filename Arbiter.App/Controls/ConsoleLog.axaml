@@ -7,6 +7,16 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
              x:Class="Arbiter.App.Controls.ConsoleLog"
              x:DataType="vm:ConsoleViewModel">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Talgonite.Console.ErrorBrush" Color="#ee8071"/>
+            <SolidColorBrush x:Key="Talgonite.Console.WarningBrush" Color="#fadf79"/>
+            <SolidColorBrush x:Key="Talgonite.Console.InfoBrush" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Console.DebugBrush" Color="#82baf7"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid ColumnDefinitions="*,Auto">
         <!-- Console Log List -->
         <ListBox Grid.Column="0"
@@ -51,7 +61,7 @@
                           ToolTip.Tip="Toggles displaying of error messages.">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <Path Width="16" Height="16"
-                          Stroke="#ee8071"
+                          Stroke="{StaticResource Talgonite.Console.ErrorBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0,0,0"
@@ -66,7 +76,7 @@
                           ToolTip.Tip="Toggles displaying of warning messages.">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <Path Width="16" Height="16"
-                          Stroke="#fadf79"
+                          Stroke="{StaticResource Talgonite.Console.WarningBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0,0,0"
@@ -81,7 +91,7 @@
                           ToolTip.Tip="Toggles displaying of info messages.">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <Path Width="16" Height="16"
-                          Stroke="#cdcfd2"
+                          Stroke="{StaticResource Talgonite.Console.InfoBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0,0,0"
@@ -96,7 +106,7 @@
                           ToolTip.Tip="Toggles displaying of debug messages.">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <Path Width="16" Height="16"
-                          Stroke="#888b90"
+                          Stroke="{StaticResource Talgonite.Console.DebugBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0,0,0"

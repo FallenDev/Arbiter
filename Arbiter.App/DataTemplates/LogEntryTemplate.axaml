@@ -12,25 +12,25 @@
                 <TextBlock Name="TimestampText"
                            Grid.Column="0"
                            Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}"
-                           Foreground="{Binding Path=Level, Converter={x:Static converters:LogLevelBrushConverter.Converter}}"/>
+                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"/>
                 
                 <!-- Message and Stack Trace -->
                 <StackPanel Grid.Column="1">
                     <TextBlock Name="MessageText"
                                Text="{Binding FormattedMessage}"
                                TextWrapping="WrapWithOverflow"
-                               Foreground="{Binding #TimestampText.Foreground}"/>
+                               Foreground="{Binding Path=Level, Converter={x:Static converters:LogLevelBrushConverter.Converter}}"/>
 
                     <TextBlock Name="ExceptionText"
                                Text="{Binding FormattedException}"
                                TextWrapping="WrapWithOverflow"
-                               Foreground="{Binding #TimestampText.Foreground}"
+                               Foreground="{Binding #MessageText.Foreground}"
                                IsVisible="{Binding FormattedException, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                 
                     <TextBlock Name="StackTraceText"
                                Text="{Binding FormattedStackTrace}"
                                TextWrapping="WrapWithOverflow"
-                               Foreground="{Binding #TimestampText.Foreground}"
+                               Foreground="{Binding #ExceptionText.Foreground}"
                                IsVisible="{Binding FormattedStackTrace, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                 </StackPanel>
             </Grid>
