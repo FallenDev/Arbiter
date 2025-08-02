@@ -34,6 +34,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             OnPropertyChanged(nameof(LocalPort));
             OnPropertyChanged(nameof(RemoteServerAddress));
             OnPropertyChanged(nameof(RemoteServerPort));
+            OnPropertyChanged(nameof(TraceOnStartup));
         }
     }
 

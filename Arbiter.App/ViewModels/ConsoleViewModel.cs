@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Specialized;
+using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Logging;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -80,16 +82,21 @@ public partial class ConsoleViewModel : ViewModelBase
     public ConsoleViewModel(ArbiterLoggerProvider provider)
     {
         FilteredLogEntries = new FilteredObservableCollection<LogEntryViewModel>(_allLogEntries, MatchesFilter);
+
+        _allLogEntries.CollectionChanged += OnLogCollectionChanged;
         
-        _allLogEntries.CollectionChanged += (_,_) =>
+        provider.LogEntryCreated += logEntry => { _allLogEntries.Add(new LogEntryViewModel(logEntry)); };
+    }
+
+    private void OnLogCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        Dispatcher.UIThread.Post(() =>
         {
             OnPropertyChanged(nameof(DebugCount));
             OnPropertyChanged(nameof(InfoCount));
             OnPropertyChanged(nameof(WarningCount));
             OnPropertyChanged(nameof(ErrorCount));
-        };
-        
-        provider.LogEntryCreated += logEntry => { _allLogEntries.Add(new LogEntryViewModel(logEntry)); };
+        });
     }
     
     private bool MatchesFilter(LogEntryViewModel logEntry)

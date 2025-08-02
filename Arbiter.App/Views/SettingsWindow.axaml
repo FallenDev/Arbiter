@@ -93,7 +93,7 @@
                     Margin="0,8"/>
             
             <!-- Trace on Startup -->
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Spacing="4">
                 <ToggleSwitch IsChecked="{Binding TraceOnStartup}">
                     <Label Content="Start Trace on Launch"/>
                 </ToggleSwitch>

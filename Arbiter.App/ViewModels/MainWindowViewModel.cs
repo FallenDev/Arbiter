@@ -113,10 +113,20 @@ public partial class MainWindowViewModel : ViewModelBase
     internal async Task OnLoaded()
     {
         await StartProxyAsync();
+
+        if (Settings.TraceOnStartup)
+        {
+            Trace.StartTracing();
+        }
     }
 
     internal Task<bool> OnClosing(WindowCloseReason reason)
     {
+        if (Trace.IsRunning)
+        {
+            Trace.StopTracing();
+        }
+        
         return Task.FromResult(true);
     }
 }

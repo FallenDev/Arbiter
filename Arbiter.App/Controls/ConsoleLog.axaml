@@ -60,63 +60,79 @@
                     Margin="4"/>
             <!-- Error Filter Button -->
             <ToggleButton IsChecked="{Binding ShowErrorMessages}"
-                          ToolTip.Tip="Toggles displaying of error messages.">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <Path Width="16" Height="16"
+                          ToolTip.Tip="Toggles displaying of error messages."
+                          Height="40">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                    <Path Grid.Column="0"
+                          Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.ErrorBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
-                          Margin="4,0,0,0"
+                          Margin="4,0"
                           Data="M8,1 A7,7 0 1,1 8,15 A7,7 0 1,1 8,1 Z"/>
-                    <TextBlock Text="{Binding ErrorCount}"
-                               TextAlignment="Center"
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ErrorCount}"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center"
                                MinWidth="30"/>
-                </StackPanel>
+                </Grid>
             </ToggleButton>
             <!-- Warn Filter Button -->
             <ToggleButton IsChecked="{Binding ShowWarningMessages}"
-                          ToolTip.Tip="Toggles displaying of warning messages.">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <Path Width="16" Height="16"
+                          ToolTip.Tip="Toggles displaying of warning messages."
+                          Height="40">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                    <Path Grid.Column="0"
+                          Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.WarningBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
-                          Margin="4,0,0,0"
-                          Data="M8,1   L16,15   L0,15  Z"/>
-                    <TextBlock Text="{Binding WarningCount}"
-                               TextAlignment="Center"
+                          Margin="4,0"
+                          Data="M8,1 L16,15 L0,15 Z"/>
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding WarningCount}"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center"
                                MinWidth="30"/>
-                </StackPanel>
+                </Grid>
             </ToggleButton>
             <!-- Info Filter Button -->
             <ToggleButton IsChecked="{Binding ShowInfoMessages}"
-                          ToolTip.Tip="Toggles displaying of info messages.">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <Path Width="16" Height="16"
+                          ToolTip.Tip="Toggles displaying of info messages."
+                          Height="40">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                    <Path Grid.Column="0"
+                          Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.InfoBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
-                          Margin="4,0,0,0"
+                          Margin="4,0"
                           Data="M1,1 L15,1 L15,15 L1,15 Z"/>
-                    <TextBlock Text="{Binding InfoCount}"
-                               TextAlignment="Center"
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding InfoCount}"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center"
                                MinWidth="30"/>
-                </StackPanel>
+                </Grid>
             </ToggleButton>
             <!-- Debug Filter Button -->
             <ToggleButton IsChecked="{Binding ShowDebugMessages}"
-                          ToolTip.Tip="Toggles displaying of debug messages.">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <Path Width="16" Height="16"
+                          ToolTip.Tip="Toggles displaying of debug messages."
+                          Height="40">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                    <Path Grid.Column="0"
+                          Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.DebugBrush}"
                           StrokeThickness="2"
                           StrokeLineCap="Round"
-                          Margin="4,0,0,0"
+                          Margin="4,0"
                           Data="M8,1 L15,8 L8,15 L1,8 Z"/>
-                    <TextBlock Text="{Binding DebugCount}"
-                               TextAlignment="Center"
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding DebugCount}"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center"
                                MinWidth="30"/>
-                </StackPanel>
+                </Grid>
             </ToggleButton>
         </StackPanel>
     </Grid>
