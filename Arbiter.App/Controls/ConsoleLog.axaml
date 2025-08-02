@@ -22,7 +22,9 @@
         <ListBox Grid.Column="0"
                  ItemsSource="{Binding FilteredLogEntries}"
                  ItemTemplate="{StaticResource LogEntryTemplate}"
-                 Classes="console"
+                 FontFamily="{StaticResource Talgonite.Font.ConsoleFont}"
+                 FontSize="{StaticResource Talgonite.FontSize.Console}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  behaviors:ScrollToEndBehavior.AutoScrollToEnd="True"
                  behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"/>
         <!-- Toolbar Area -->

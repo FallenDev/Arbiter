@@ -1,10 +1,13 @@
-﻿using Arbiter.Net;
+﻿using System;
+using Arbiter.Net;
 
 namespace Arbiter.App.ViewModels;
 
 public class TracePacketViewModel(ProxyConnection connection, NetworkPacket packet, ProxyDirection direction)
     : ViewModelBase
 {
+    public DateTime Timestamp { get; } = DateTime.Now;
+    
     public ProxyConnection Connection { get; } = connection;
     public NetworkPacket Packet { get; } = packet;
     public ProxyDirection Direction { get; } = direction;

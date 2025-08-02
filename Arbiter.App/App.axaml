@@ -21,6 +21,7 @@
             <!-- Data Templates -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/DataTemplates/LogEntryTemplate.axaml"/>
+                <ResourceInclude Source="/DataTemplates/TracePacketTemplate.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

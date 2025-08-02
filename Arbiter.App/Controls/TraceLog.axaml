@@ -1,0 +1,54 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:behaviors="using:Arbiter.App.Behaviors"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Arbiter.App.Controls.TraceLog"
+             x:DataType="vm:TraceViewModel">
+   <Grid RowDefinitions="Auto,*" RowSpacing="4">
+        <Border Grid.Row="0" Padding="4">
+            <WrapPanel Orientation="Horizontal" ItemSpacing="8">
+                <!-- Start Trace Button -->
+                <Button Command="{Binding StartTracingCommand}"
+                        ToolTip.Tip="Starts a new packet trace."
+                        IsEnabled="{Binding IsRunning, Converter={x:Static BoolConverters.Not}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              StrokeThickness="2"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Stretch="None"
+                              Data="M1,1 L15,8 L1,15 Z"/>
+                        <TextBlock Text="Start"/>
+                    </StackPanel>
+                </Button>
+                <!-- Stop Trace Button -->
+                <Button Command="{Binding StopTracingCommand}"
+                        ToolTip.Tip="Stops the current packet trace."
+                        IsEnabled="{Binding IsRunning}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              StrokeThickness="2"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round"
+                              Stretch="None"
+                              Data="M1,1 H15 V15 H1 Z"/>
+                        <TextBlock Text="Stop"/>
+                    </StackPanel>
+                </Button>
+            </WrapPanel>
+        </Border>
+        <ListBox Grid.Row="1"
+                 ItemsSource="{Binding FilteredPackets}"
+                 ItemTemplate="{StaticResource TracePacketTemplate}"
+                 FontFamily="{StaticResource Talgonite.Font.TraceFont}"
+                 FontSize="{StaticResource Talgonite.FontSize.Trace}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 behaviors:ScrollToEndBehavior.AutoScrollToEnd="True"
+                 behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"/>
+   </Grid>
+</UserControl>

@@ -142,8 +142,14 @@ public class ProxyConnection : IDisposable
                 await queuedPacket.Packet.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
+                var outgoingDirection = queuedPacket.Direction switch
+                {
+                    ProxyDirection.ClientToServer => ProxyDirection.ServerToClient,
+                    _ => ProxyDirection.ClientToServer
+                };
+                
                 PacketSent?.Invoke(this,
-                    new NetworkPacketEventArgs(queuedPacket.Packet, queuedPacket.Direction));
+                    new NetworkPacketEventArgs(queuedPacket.Packet, outgoingDirection));
             }
         }
         catch when (token.IsCancellationRequested)

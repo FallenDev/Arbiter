@@ -98,43 +98,7 @@
             
             <TabControl Grid.Row="0">
                 <TabItem Header="Trace">
-                    <DockPanel VerticalSpacing="4">
-                        <Border DockPanel.Dock="Top" Padding="4">
-                            <WrapPanel Orientation="Horizontal" ItemSpacing="8">
-                                <!-- Start Trace Button -->
-                                <Button Command="{Binding Trace.StartTracingCommand}"
-                                        ToolTip.Tip="Starts a new packet trace."
-                                        IsEnabled="{Binding Trace.IsRunning, Converter={x:Static BoolConverters.Not}}">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Path Width="16" Height="16"
-                                              Stroke="{Binding $parent[Button].Foreground}"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round"
-                                              StrokeJoin="Round"
-                                              Stretch="None"
-                                              Data="M1,1 L15,8 L1,15 Z"/>
-                                        <TextBlock Text="Start"/>
-                                    </StackPanel>
-                                </Button>
-                                <!-- Stop Trace Button -->
-                                <Button Command="{Binding Trace.StopTracingCommand}"
-                                        ToolTip.Tip="Stops the current packet trace."
-                                        IsEnabled="{Binding Trace.IsRunning}">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Path Width="16" Height="16"
-                                              Stroke="{Binding $parent[Button].Foreground}"
-                                              StrokeThickness="2"
-                                              StrokeLineCap="Round"
-                                              StrokeJoin="Round"
-                                              Stretch="None"
-                                              Data="M1,1 H15 V15 H1 Z"/>
-                                        <TextBlock Text="Stop"/>
-                                    </StackPanel>
-                                </Button>
-                            </WrapPanel>
-                        </Border>
-                        <ListBox/>
-                    </DockPanel>
+                    <controls:TraceLog DataContext="{Binding Trace}"/>
                 </TabItem>
                 <TabItem Header="Filters" IsEnabled="False">
                     <ListBox></ListBox>

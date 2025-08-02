@@ -26,7 +26,12 @@ public partial class TraceViewModel : ViewModelBase
     {
         return true;
     }
-    
+
+    private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
+    {
+        _allPackets.Add(new TracePacketViewModel(e.Connection, e.Packet, e.Direction));
+    }
+
     [RelayCommand]
     private void StartTracing()
     {
@@ -35,6 +40,7 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
+        _proxyServer.PacketReceived += OnPacketReceived;
         IsRunning = true;
     }
     
@@ -46,6 +52,7 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
+        _proxyServer.PacketReceived -= OnPacketReceived;
         IsRunning = false;
     }
 

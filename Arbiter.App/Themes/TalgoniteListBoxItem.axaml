@@ -1,6 +1,46 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="ListBoxItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Padding="{TemplateBinding Padding}"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^:focus-visible /template/ ContentPresenter">
+            
+        </Style>
+    
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            
+        </Style>
+    
+        <Style Selector="^:selected /template/ ContentPresenter">
+           
+        </Style>
+    
+        <Style Selector="^:disabled /template/ ContentPresenter">
+        </Style>
+    </Style>
+    
+    <!-- Bubble ListBoxItem Style -->
+    <Style Selector="ListBox.bubble ListBoxItem">
         <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.Foreground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -11,6 +51,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter Name="PART_ContentPresenter"
+                                  Classes="bubble"
                                   Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                   Background="{TemplateBinding Background}"
@@ -23,66 +64,23 @@
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^:focus-visible /template/ ContentPresenter:not(.console)">
+        <Style Selector="^:focus-visible /template/ ContentPresenter.bubble">
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.FocusForeground}"/>
         </Style>
     
-        <Style Selector="^:pointerover /template/ ContentPresenter:not(.console)">
+        <Style Selector="^:pointerover /template/ ContentPresenter.bubble">
             <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.HoverBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.HoverForeground}"/>
         </Style>
     
-        <Style Selector="^:selected /template/ ContentPresenter:not(.console)">
+        <Style Selector="^:selected /template/ ContentPresenter.bubble">
             <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.SelectedBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.SelectedForeground}"/>
         </Style>
     
-        <Style Selector="^:disabled /template/ ContentPresenter:not(.console)">
+        <Style Selector="^:disabled /template/ ContentPresenter.bubble">
             <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.DisabledBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ListBoxItem.DisabledForeground}"/>
-        </Style>
-    </Style>
-    
-    <!-- Console Log ListBoxItem Overrides -->
-    <Style Selector="ListBox.console ListBoxItem">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="0"/>
-        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.ConsoleFont}"/>
-        <Setter Property="FontSize" Value="{StaticResource Talgonite.FontSize.Console}"/>
-        <Setter Property="FontWeight" Value="Normal"/>
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="Template">
-            <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Classes="console"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Background="{TemplateBinding Background}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  Padding="{TemplateBinding Padding}"/>
-            </ControlTemplate>
-        </Setter>
-        
-        <Style Selector="^:focus-visible /template/ ContentPresenter.console">
-            
-        </Style>
-    
-        <Style Selector="^:pointerover /template/ ContentPresenter.console">
-            
-        </Style>
-    
-        <Style Selector="^:selected /template/ ContentPresenter.console">
-           
-        </Style>
-    
-        <Style Selector="^:disabled /template/ ContentPresenter.console">
         </Style>
     </Style>
     
