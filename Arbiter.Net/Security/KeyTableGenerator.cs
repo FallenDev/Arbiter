@@ -20,6 +20,6 @@ public static class KeyTableGenerator
             tableBuilder.Append(hash);
         }
         
-        encoding.GetBytes(table, keyTable);
+        encoding.GetBytes(tableBuilder.ToString(), keyTable);
     }
 }
