@@ -53,6 +53,12 @@ public class ProxyConnection : IDisposable
         _client = client;
         _client.NoDelay = true;
     }
+    
+    public void EnqueueToClient(ServerPacket packet) =>
+        _sendQueue.Writer.TryWrite(packet);
+    
+    public void EnqueueToServer(ClientPacket packet) =>
+        _sendQueue.Writer.TryWrite(packet);
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)
     {
@@ -139,7 +145,7 @@ public class ProxyConnection : IDisposable
                             HandleServerRedirect(decrypted);
                             break;
                         // Handle server setting user ID, this confirms a valid game connection
-                        case ServerPacket { Command: ServerCommand.SetPlayerId }:
+                        case ServerPacket { Command: ServerCommand.SetUserId }:
                             HandleServerSetUserId(decrypted);
                             break;
                         // Handle client auth request, we need to update encryption parameters

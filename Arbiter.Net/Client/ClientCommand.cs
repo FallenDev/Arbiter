@@ -2,6 +2,8 @@
 
 public enum ClientCommand : byte
 {
-    Unknown = 0x00,
-    Authenticate = 0x10
+    ClientVersion = 0x00,
+    Authenticate = 0x10,
+    ServerTable = 0x57,
+    Unknown = 0xFF
 }

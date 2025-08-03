@@ -2,7 +2,7 @@
 
 public enum ServerCommand : byte
 {
-    Unknown = 0x00,
     Redirect = 0x03,
-    SetPlayerId = 0x05
+    SetUserId = 0x05,
+    Unknown = 0xFF,
 }
