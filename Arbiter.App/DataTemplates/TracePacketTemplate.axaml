@@ -7,15 +7,33 @@
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="4,2">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8">
                 <!-- Timestamp -->
                 <TextBlock Name="TimestampText"
                            Grid.Column="0"
                            Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}"
                            Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"/>
                 
-                <!-- Message and Stack Trace -->
+                <!-- Client/Server Direction -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                    <TextBlock Name="DirectionText"
+                               Text="{Binding Packet, Converter={x:Static converters:PacketDirectionNameConverter.Converter}}"
+                               TextAlignment="Left"
+                               Foreground="{Binding Packet, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
+                               FontWeight="SemiBold"/>
+                    <Path Width="8" Height="8"
+                          Stretch="None"
+                          Stroke="{Binding #DirectionText.Foreground}"
+                          Fill="{Binding #DirectionText.Foreground}"
+                          StrokeThickness="2"
+                          StrokeLineCap="Round"
+                          StrokeJoin="Round"
+                          Data="M 2,1 L 6,4 L 2,7 Z"/>
+                </StackPanel>
+
+                
+                <!-- Message -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
                     <TextBlock Name="MessageText"
                                Text="{Binding Packet}"
                                TextWrapping="WrapWithOverflow"/>

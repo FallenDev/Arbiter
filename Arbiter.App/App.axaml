@@ -17,6 +17,8 @@
         <ResourceDictionary>
             <!-- Converters -->
             <converters:LogLevelBrushConverter x:Key="LogLevelBrushConverter"/>
+            <converters:PacketDirectionColorConverter x:Key="PacketDirectionColorConverter"/>
+            <converters:PacketDirectionNameConverter x:Key="PacketDirectionNameConverter"/>
             
             <!-- Data Templates -->
             <ResourceDictionary.MergedDictionaries>

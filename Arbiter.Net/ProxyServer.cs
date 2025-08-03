@@ -105,7 +105,7 @@ public class ProxyServer : IDisposable
         connection.PacketSent += OnSend;
 
         // Check for any pending redirects, use that first
-        var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : _remoteEndpoint!;
+        var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : RemoteEndpoint!;
         
         try
         {
