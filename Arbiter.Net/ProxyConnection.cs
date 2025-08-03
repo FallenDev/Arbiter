@@ -127,7 +127,10 @@ public class ProxyConnection : IDisposable
                 // Attempt to dequeue all available packets
                 while (packetBuffer.TryTakePacket(out var packet))
                 {
-                    var decrypted = encryptor.Decrypt(packet);
+                    // Decrypt the packet if necessary
+                    var decrypted = encryptor?.IsEncrypted(packet.Command) ?? false
+                        ? encryptor.Decrypt(packet)
+                        : packet;
 
                     switch (decrypted)
                     {
@@ -145,6 +148,7 @@ public class ProxyConnection : IDisposable
                             break;
                     }
 
+                    // Raise the event with the decrypted packet
                     PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decrypted, direction));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
@@ -190,9 +194,12 @@ public class ProxyConnection : IDisposable
                     _ => null
                 };
 
-                // Encrypt and write the packet to the stream
-                var encryptedPacket = encryptor?.Encrypt(packet) ?? packet;
-                await encryptedPacket.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
+                // Encrypt the packet if necessary
+                var encrypted = encryptor?.IsEncrypted(packet.Command) ?? false
+                    ? encryptor.Encrypt(packet)
+                    : packet;
+                
+                await encrypted.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
                 // Determine the outgoing direction which is the inverse of the incoming direction
@@ -202,6 +209,7 @@ public class ProxyConnection : IDisposable
                     _ => ProxyDirection.ClientToServer
                 };
 
+                // Raise the event with the decrypted (plaintext) packet
                 PacketSent?.Invoke(this,
                     new NetworkPacketEventArgs(packet, outgoingDirection));
             }

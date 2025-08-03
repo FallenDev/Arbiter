@@ -34,9 +34,9 @@ public class NetworkEncryptionParameters
 
     public void GenerateKey(ushort bRand, ushort sRand, Span<byte> outputBuffer)
     {
-        for (var i = 0; i < outputBuffer.Length; i++)
+        for (var i = 0; i < KeyLength; i++)
         {
-            var index = (i * (9 * i + sRand * sRand) + bRand) % KeyTableSize;
+            var index = (i * (KeyLength * i + sRand * sRand) + bRand) % KeyTableSize;
             outputBuffer[i] = _keyTable[index];
         }
     }
