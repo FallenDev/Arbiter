@@ -43,7 +43,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        _allPackets.Add(new TracePacketViewModel(e.Connection, e.Packet, e.Direction));
+        _allPackets.Add(new TracePacketViewModel(e.Connection, e.Packet));
     }
 
     [RelayCommand]

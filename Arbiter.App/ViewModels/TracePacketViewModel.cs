@@ -3,15 +3,11 @@ using Arbiter.Net;
 
 namespace Arbiter.App.ViewModels;
 
-public class TracePacketViewModel(ProxyConnection connection, NetworkPacket packet, ProxyDirection direction)
+public class TracePacketViewModel(ProxyConnection connection, NetworkPacket packet)
     : ViewModelBase
 {
     public DateTime Timestamp { get; } = DateTime.Now;
     
     public ProxyConnection Connection { get; } = connection;
     public NetworkPacket Packet { get; } = packet;
-    public ProxyDirection Direction { get; } = direction;
-
-    public bool IsClient => Direction == ProxyDirection.ClientToServer;
-    public bool IsServer => Direction == ProxyDirection.ServerToClient;
 }

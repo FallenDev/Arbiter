@@ -155,7 +155,7 @@ public class ProxyConnection : IDisposable
                     }
 
                     // Raise the event with the decrypted packet
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decrypted, direction));
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decrypted));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }
@@ -208,16 +208,9 @@ public class ProxyConnection : IDisposable
                 await encrypted.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
-                // Determine the outgoing direction which is the inverse of the incoming direction
-                var outgoingDirection = packet switch
-                {
-                    ClientPacket => ProxyDirection.ServerToClient,
-                    _ => ProxyDirection.ClientToServer
-                };
-
                 // Raise the event with the decrypted (plaintext) packet
                 PacketSent?.Invoke(this,
-                    new NetworkPacketEventArgs(packet, outgoingDirection));
+                    new NetworkPacketEventArgs(packet));
             }
         }
         catch when (token.IsCancellationRequested)
@@ -278,8 +271,8 @@ public class ProxyConnection : IDisposable
         var encryptionParameters = new NetworkEncryptionParameters(seed, key, name);
         
         // Update the client/server encryption parameters together
-        _clientEncryptor.SetParameters(encryptionParameters);
-        _serverEncryptor.SetParameters(encryptionParameters);
+        _clientEncryptor.Parameters = encryptionParameters;
+        _serverEncryptor.Parameters = encryptionParameters;
     }
 
     private void HandleServerSetUserId(NetworkPacket packet)
