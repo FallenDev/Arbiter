@@ -8,10 +8,15 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
     public bool IsEncrypted(byte command) => command is not 0x00 and not 0x0B and not 0x10 and not 0x48 and not 0x57 and not 0x62;
     
-    public NetworkPacket Encrypt(NetworkPacket packet)
+    private static bool UseDefaultKey(byte command) => command is 0x02 or 0x03 or 0x04 or 0x0B or 0x26 or 0x2D or 0x3A or 0x42
+        or 0x43 or 0x4B or 0x57 or 0x62 or 0x68 or 0x71 or 0x73 or 0x7B;
+
+    private static bool IsDialog(byte command) => command is 0x39 or 0x3A;
+    
+    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
     {
         var parameters = Parameters;
-        
+
         return packet;
     }
 
@@ -57,13 +62,6 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             }
         }
 
-        var decryptedPacket =  new ClientPacket(packet.Command, decrypted);
-        return decryptedPacket;
+        return new ClientPacket(packet.Command, decrypted);
     }
-
-
-    private static bool UseDefaultKey(byte command) => command is 0x02 or 0x03 or 0x04 or 0x0B or 0x26 or 0x2D or 0x3A or 0x42
-        or 0x43 or 0x4B or 0x57 or 0x62 or 0x68 or 0x71 or 0x73 or 0x7B;
-
-    private static bool IsDialog(byte command) => command is 0x39 or 0x3A;
 }

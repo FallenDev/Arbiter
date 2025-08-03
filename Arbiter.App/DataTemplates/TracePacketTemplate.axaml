@@ -30,12 +30,16 @@
                           StrokeJoin="Round"
                           Data="M 2,1 L 6,4 L 2,7 Z"/>
                 </StackPanel>
-
                 
-                <!-- Message -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
-                    <TextBlock Name="MessageText"
-                               Text="{Binding Packet}"
+                <!-- Payload Display -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <TextBlock Name="CommandText"
+                               Text="{Binding Packet.Command, StringFormat={}{0:X2}}"
+                               Foreground="{Binding #DirectionText.Foreground}"
+                               TextWrapping="WrapWithOverflow"/>
+                    
+                    <TextBlock Name="PayloadText"
+                               Text="{Binding FormattedPayload}"
                                TextWrapping="WrapWithOverflow"/>
                 </StackPanel>
             </Grid>

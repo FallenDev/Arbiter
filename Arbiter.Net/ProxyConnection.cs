@@ -24,6 +24,8 @@ public class ProxyConnection : IDisposable
     private readonly NetworkPacketBuffer _serverPacketBuffer = new((command, data) => new ServerPacket(command, data));
     private readonly ServerPacketEncryptor _serverEncryptor = new();
 
+    private byte _clientSequence;
+    private byte _serverSequence;
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
     
     public int Id { get; }
@@ -155,7 +157,7 @@ public class ProxyConnection : IDisposable
                     }
 
                     // Raise the event with the decrypted packet
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decrypted));
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(packet, decrypted.Data));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }
@@ -200,17 +202,25 @@ public class ProxyConnection : IDisposable
                     _ => null
                 };
 
+                // Determine the next sequence number
+                var nextSequence = packet switch
+                {
+                    ClientPacket => _clientSequence++,
+                    ServerPacket => _serverSequence++,
+                    _ => (byte)0x00
+                };
+
                 // Encrypt the packet if necessary
                 var encrypted = encryptor?.IsEncrypted(packet.Command) ?? false
-                    ? encryptor.Encrypt(packet)
+                    ? encryptor.Encrypt(packet, nextSequence)
                     : packet;
-                
+
                 await encrypted.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
                 // Raise the event with the decrypted (plaintext) packet
                 PacketSent?.Invoke(this,
-                    new NetworkPacketEventArgs(packet));
+                    new NetworkPacketEventArgs(packet, packet.Data));
             }
         }
         catch when (token.IsCancellationRequested)

@@ -8,7 +8,7 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
 
     public bool IsEncrypted(byte command) => command is not 0x00 and not 0x03 and not 0x6F and not 0x7E;
     
-    public NetworkPacket Encrypt(NetworkPacket packet)
+    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
     {
         return packet;
     }
