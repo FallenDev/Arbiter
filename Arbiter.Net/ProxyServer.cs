@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Arbiter.Net;
@@ -12,6 +13,7 @@ public class ProxyServer : IDisposable
     private readonly Lock _connectionsLock = new();
     private readonly List<ProxyConnection> _connections = [];
     private int _nextConnectionId;
+    private readonly ConcurrentQueue<IPEndPoint> _pendingRedirects = new();
     
     public bool IsRunning => _listener is not null;
     public IPEndPoint? LocalEndpoint => _listener?.LocalEndpoint as IPEndPoint;
@@ -102,9 +104,12 @@ public class ProxyServer : IDisposable
         connection.PacketReceived += OnRecv;
         connection.PacketSent += OnSend;
 
+        // Check for any pending redirects, use that first
+        var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : _remoteEndpoint!;
+        
         try
         {
-            await connection.ConnectToRemoteAsync(_remoteEndpoint!, token).ConfigureAwait(false);
+            await connection.ConnectToRemoteAsync(remoteEndpoint, token).ConfigureAwait(false);
             await connection.SendRecvLoopAsync(token).ConfigureAwait(false);
         }
         finally
@@ -120,30 +125,31 @@ public class ProxyServer : IDisposable
             _connections.Remove(connection);
             connection.Dispose();
         }
+    }
+    
+    private void OnClientDisconnected(object? sender, EventArgs e) =>
+        ClientDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
-        return;
-        
-        // Forwarding handlers for events
-        void OnClientDisconnected(object? sender, EventArgs e) =>
-            ClientDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
-        
-        void OnServerConnected(object? sender, EventArgs e) =>
-            ServerConnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
-        
-        void OnServerDisconnected(object? sender, EventArgs e) =>
-            ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
+    private void OnServerConnected(object? sender, EventArgs e) =>
+        ServerConnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
-        void OnClientRedirected(object? sender, NetworkRedirectEventArgs e) =>
-            ClientRedirected?.Invoke(this,
-                new ProxyConnectionRedirectEventArgs((sender as ProxyConnection)!, e.Name, e.RemoteEndpoint));
-        
-        void OnRecv(object? sender, NetworkPacketEventArgs e) =>
-            PacketReceived?.Invoke(this,
-                new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));
+    private void OnServerDisconnected(object? sender, EventArgs e) =>
+        ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
-        void OnSend(object? sender, NetworkPacketEventArgs e) =>
-            PacketSent?.Invoke(this,
-                new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));
+    private void OnRecv(object? sender, NetworkPacketEventArgs e) =>
+        PacketReceived?.Invoke(this,
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));
+
+    private void OnSend(object? sender, NetworkPacketEventArgs e) =>
+        PacketSent?.Invoke(this,
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));
+    
+    private void OnClientRedirected(object? sender, NetworkRedirectEventArgs e)
+    {
+        _pendingRedirects.Enqueue(e.RemoteEndpoint);
+        
+        ClientRedirected?.Invoke(this,
+            new ProxyConnectionRedirectEventArgs((sender as ProxyConnection)!, e.Name, e.RemoteEndpoint));
     }
 
     public void Dispose()

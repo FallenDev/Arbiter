@@ -24,7 +24,7 @@ public class ProxyConnection : IDisposable
     private readonly ServerPacketEncryptor _serverEncryptor = new();
 
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
-
+    
     public int Id { get; }
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _server?.Client.RemoteEndPoint as IPEndPoint;
@@ -212,7 +212,7 @@ public class ProxyConnection : IDisposable
         var remotePort = reader.ReadUInt16();
 
         reader.ReadByte();
-        
+
         var seed = reader.ReadByte();
         var keyLength = reader.ReadByte();
         var key = reader.ReadBytes(keyLength);
@@ -220,6 +220,7 @@ public class ProxyConnection : IDisposable
         var name = reader.ReadString8();
         var clientId = reader.ReadUInt32();
 
+        // Redirect the client to the local endpoint instead
         var localIp = LocalEndpoint!.Address.GetAddressBytes();
         packet.Data[0] = localIp[3];
         packet.Data[1] = localIp[2];
@@ -230,7 +231,9 @@ public class ProxyConnection : IDisposable
         packet.Data[4] = (byte)((localPort >> 8) & 0xFF);
         packet.Data[5] = (byte)(localPort & 0xFF);
 
-        ClientRedirected?.Invoke(this, new NetworkRedirectEventArgs(name, new IPEndPoint(remoteIpAddress, remotePort)));
+        // Notify the proxy server that the redirect is taking place
+        var remoteEndpoint = new IPEndPoint(remoteIpAddress, remotePort);
+        ClientRedirected?.Invoke(this, new NetworkRedirectEventArgs(name, remoteEndpoint));
     }
 
     private void HandleClientAuthenticated(NetworkPacket packet)
