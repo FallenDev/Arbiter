@@ -261,7 +261,7 @@ public class ProxyConnection : IDisposable
         // Update connection name based on client request
         Name = name;
 
-        var encryptionParameters = new NetworkEncryptionParameters();
+        var encryptionParameters = new NetworkEncryptionParameters(seed, key, name);
         
         // Update the client/server encryption parameters together
         _clientEncryptor.SetParameters(encryptionParameters);
