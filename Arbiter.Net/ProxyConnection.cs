@@ -36,6 +36,7 @@ public class ProxyConnection : IDisposable
     public event EventHandler? ServerConnected;
     public event EventHandler? ServerDisconnected;
 
+    public event EventHandler<NetworkRedirectEventArgs>? ClientRedirected;
     public event EventHandler<NetworkPacketEventArgs>? PacketReceived;
     public event EventHandler<NetworkPacketEventArgs>? PacketSent;
 
@@ -49,11 +50,13 @@ public class ProxyConnection : IDisposable
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)
     {
+        // Create the TCP client to connect to the remote server
         _server = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
         
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
         await _server.ConnectAsync(remoteEndpoint, linked.Token).ConfigureAwait(false);
 
+        // Get the client and server network streams
         _clientStream = _client.GetStream();
         _serverStream = _server.GetStream();
 
@@ -64,6 +67,7 @@ public class ProxyConnection : IDisposable
     {
         var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
 
+        // Start the client/server recv and send queue tasks in the background
         var clientRecvTask = RecvLoopAsync(_clientStream!, _clientPacketBuffer, _clientEncryptor,
             ProxyDirection.ClientToServer, linked);
         var serverRecvTask = RecvLoopAsync(_serverStream!, _serverPacketBuffer, _serverEncryptor,
@@ -83,6 +87,7 @@ public class ProxyConnection : IDisposable
         {
             while (!token.IsCancellationRequested)
             {
+                // Attempt to ready from the stream for any available bytes
                 int recvCount;
                 try
                 {
@@ -93,6 +98,7 @@ public class ProxyConnection : IDisposable
                     recvCount = 0;
                 }
 
+                // Handle socket disconnect when read returns zero
                 if (recvCount == 0)
                 {
                     if (direction == ProxyDirection.ServerToClient)
@@ -104,17 +110,32 @@ public class ProxyConnection : IDisposable
                         ClientDisconnected?.Invoke(this, EventArgs.Empty);
                     }
 
+                    // This will trigger the other send/recv tasks to also cancel
                     await tokenSource.CancelAsync();
                     break;
                 }
 
+                // Append all received bytes into the packet buffer
                 packetBuffer.Append(recvBuffer, 0, recvCount);
 
+                // Attempt to dequeue all available packets
                 while (packetBuffer.TryTakePacket(out var packet))
                 {
-                    var decryptedPacket = encryptor.Decrypt(packet);
+                    var decrypted = encryptor.Decrypt(packet);
 
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decryptedPacket, direction));
+                    switch (decrypted)
+                    {
+                        // Handle server redirects, we need to hijack the redirect
+                        case ServerPacket { Command: ServerCommand.Redirect }:
+                            HandleServerRedirect(decrypted);
+                            break;
+                        // Handle client joins, we need to update encryption parameters
+                        case ClientPacket { Command: ClientCommand.Authenticate }:
+                            HandleClientAuthenticated(decrypted);
+                            break;
+                    }
+
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decrypted, direction));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }
@@ -135,8 +156,10 @@ public class ProxyConnection : IDisposable
 
         try
         {
+            // Keep polling for any available outgoing packets
             await foreach (var packet in _sendQueue.Reader.ReadAllAsync(token))
             {
+                // Determine which stream we need to send to
                 var destinationStream = packet switch
                 {
                     ClientPacket => _serverStream!,
@@ -149,6 +172,7 @@ public class ProxyConnection : IDisposable
                     continue;
                 }
 
+                // Determine which encryption to use based on the outgoing packet type
                 NetworkPacketEncryptor? encryptor = packet switch
                 {
                     ClientPacket => _clientEncryptor,
@@ -156,11 +180,12 @@ public class ProxyConnection : IDisposable
                     _ => null
                 };
 
+                // Encrypt and write the packet to the stream
                 var encryptedPacket = encryptor?.Encrypt(packet) ?? packet;
-                
                 await encryptedPacket.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
+                // Determine the outgoing direction which is the inverse of the incoming direction
                 var outgoingDirection = packet switch
                 {
                     ClientPacket => ProxyDirection.ServerToClient,
@@ -178,6 +203,39 @@ public class ProxyConnection : IDisposable
         {
             ArrayPool<byte>.Shared.Return(headerBuffer);
         }
+    }
+
+    private void HandleServerRedirect(NetworkPacket packet)
+    {
+        var reader = new NetworkPacketReader(packet);
+        var remoteIpAddress = reader.ReadIPv4Address();
+        var remotePort = reader.ReadUInt16();
+
+        reader.ReadByte();
+        
+        var seed = reader.ReadByte();
+        var keyLength = reader.ReadByte();
+        var key = reader.ReadBytes(keyLength);
+
+        var name = reader.ReadString8();
+        var clientId = reader.ReadUInt32();
+
+        var localIp = LocalEndpoint!.Address.GetAddressBytes();
+        packet.Data[0] = localIp[3];
+        packet.Data[1] = localIp[2];
+        packet.Data[2] = localIp[1];
+        packet.Data[3] = localIp[0];
+
+        var localPort = LocalEndpoint!.Port;
+        packet.Data[4] = (byte)((localPort >> 8) & 0xFF);
+        packet.Data[5] = (byte)(localPort & 0xFF);
+
+        ClientRedirected?.Invoke(this, new NetworkRedirectEventArgs(name, new IPEndPoint(remoteIpAddress, remotePort)));
+    }
+
+    private void HandleClientAuthenticated(NetworkPacket packet)
+    {
+        
     }
 
     public void Dispose()

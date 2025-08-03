@@ -31,6 +31,7 @@ public partial class ProxyViewModel : ViewModelBase
         _proxyServer.ServerConnected += OnServerConnected;
         _proxyServer.ClientDisconnected += OnClientDisconnected;
         _proxyServer.ServerDisconnected += OnServerDisconnected;
+        _proxyServer.ClientRedirected += OnClientRedirected;
         
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
         OnPropertyChanged(nameof(IsRunning));
@@ -55,16 +56,9 @@ public partial class ProxyViewModel : ViewModelBase
     {
         _logger.LogInformation("[{Id}] Server disconnected: {Endpoint}", e.Connection.Id, e.Connection.RemoteEndpoint);
     }
-
-    private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
+    
+    private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
     {
-        var verb = e.Packet switch
-        {
-            ClientPacket => "CLIENT",
-            ServerPacket => "SERVER",
-            _ => "?"
-        };
-        
-        _logger.LogInformation("[{Id}] {Verb} >> {Packet}", e.Connection.Id, verb, e.Packet.ToString());
+        _logger.LogInformation("[{Id}] Client redirected to {Endpoint}", e.Connection.Id, e.RemoteEndpoint);
     }
 }

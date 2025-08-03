@@ -23,6 +23,7 @@ public class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionEventArgs>? ServerConnected;
     public event EventHandler<ProxyConnectionEventArgs>? ClientDisconnected;
     public event EventHandler<ProxyConnectionEventArgs>? ServerDisconnected;
+    public event EventHandler<ProxyConnectionRedirectEventArgs>? ClientRedirected;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketReceived;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketSent;
 
@@ -97,6 +98,7 @@ public class ProxyServer : IDisposable
         connection.ClientDisconnected += OnClientDisconnected;
         connection.ServerConnected += OnServerConnected;
         connection.ServerDisconnected += OnServerDisconnected;
+        connection.ClientRedirected += OnClientRedirected;
         connection.PacketReceived += OnRecv;
         connection.PacketSent += OnSend;
 
@@ -110,6 +112,7 @@ public class ProxyServer : IDisposable
             connection.ClientDisconnected -= OnClientDisconnected;
             connection.ServerConnected -= OnServerConnected;
             connection.ServerDisconnected -= OnServerDisconnected;
+            connection.ClientRedirected -= OnClientRedirected;
             connection.PacketReceived -= OnRecv;
             connection.PacketSent -= OnSend;
 
@@ -130,6 +133,10 @@ public class ProxyServer : IDisposable
         void OnServerDisconnected(object? sender, EventArgs e) =>
             ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
+        void OnClientRedirected(object? sender, NetworkRedirectEventArgs e) =>
+            ClientRedirected?.Invoke(this,
+                new ProxyConnectionRedirectEventArgs((sender as ProxyConnection)!, e.Name, e.RemoteEndpoint));
+        
         void OnRecv(object? sender, NetworkPacketEventArgs e) =>
             PacketReceived?.Invoke(this,
                 new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Direction));

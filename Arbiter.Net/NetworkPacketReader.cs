@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 
 namespace Arbiter.Net;
 
@@ -24,18 +25,6 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
 
     public bool ReadBoolean() => ReadByte() != 0;
 
-    public char ReadChar()
-    {
-        EnsureCanRead(1);
-
-        Span<byte> byteBuffer = stackalloc byte[1];
-        Span<char> charBuffer = stackalloc char[1];
-
-        byteBuffer[0] = ReadByte();
-        _encoding.GetChars(byteBuffer, charBuffer);
-        return charBuffer[0];
-    }
-
     public sbyte ReadSByte() => (sbyte)ReadByte();
 
     public byte ReadByte()
@@ -49,7 +38,7 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     public ushort ReadUInt16()
     {
         EnsureCanRead(2);
-        return (byte)((_buffer[_position++] << 8) | _buffer[_position++]);
+        return (ushort)((_buffer[_position++] << 8) | _buffer[_position++]);
     }
 
     public int ReadInt32() => (int)ReadUInt32();
@@ -87,8 +76,10 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
         }
 
         EnsureCanRead(length);
+        var stringValue =  _encoding.GetString(_buffer, _position, length);
+        
         _position += length;
-        return _encoding.GetString(_buffer, _position, length);
+        return stringValue;
     }
 
     public string ReadNullTerminatedString()
@@ -101,9 +92,22 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
         }
 
         var stringValue = _encoding.GetString(_buffer, _position, length);
+        
         _position += length + 1;
-
         return stringValue;
+    }
+
+    public IPAddress ReadIPv4Address()
+    {
+        EnsureCanRead(4);
+        
+        Span<byte> ipBytes = stackalloc byte[4];
+        ipBytes[3] = _buffer[_position++];
+        ipBytes[2] = _buffer[_position++];
+        ipBytes[1] = _buffer[_position++];
+        ipBytes[0] = _buffer[_position++];
+        
+        return new IPAddress(ipBytes);
     }
 
     public byte[] ReadBytes(int length)
