@@ -27,6 +27,8 @@ public partial class ConsoleViewModel : ViewModelBase
     public int WarningCount => _allLogEntries.Count(log => log.Level == LogLevel.Warning);
     public int ErrorCount => _allLogEntries.Count(log => log.Level is LogLevel.Error or LogLevel.Critical);
     
+    public bool IsEmpty => _allLogEntries.Count == 0;
+    
     public bool ShowDebugMessages
     {
         get => _showDebugMessages;
@@ -92,6 +94,7 @@ public partial class ConsoleViewModel : ViewModelBase
     {
         Dispatcher.UIThread.Post(() =>
         {
+            OnPropertyChanged(nameof(IsEmpty));
             OnPropertyChanged(nameof(DebugCount));
             OnPropertyChanged(nameof(InfoCount));
             OnPropertyChanged(nameof(WarningCount));

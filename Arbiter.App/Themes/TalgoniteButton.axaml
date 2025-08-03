@@ -73,6 +73,12 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
         </Style>
         
+        <Style Selector="^.destructive:disabled">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
         <!-- Toolbar Button Style -->
         <Style Selector="^.toolbar">
             <Setter Property="Focusable" Value="False"/>

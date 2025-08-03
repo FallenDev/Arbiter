@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid ColumnDefinitions="*,Auto">
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
         <!-- Console Log List -->
         <ListBox Grid.Column="0"
                  ItemsSource="{Binding FilteredLogEntries}"
@@ -34,7 +34,8 @@
                          Margin="4">
                 <!-- Scroll to End Button -->
                 <Button Command="{Binding ScrollToEndCommand}"
-                        ToolTip.Tip="Scrolls to the end.">
+                        ToolTip.Tip="Scrolls to the end."
+                        Classes="toolbar">
                     <Path Width="16"
                           Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"
@@ -46,7 +47,8 @@
                 </Button>
                 <!-- Clear Logs Button -->
                 <Button Command="{Binding ClearLogsCommand}"
-                        ToolTip.Tip="Clears all messages.">
+                        ToolTip.Tip="Clears all messages."
+                        Classes="toolbar destructive">
                     <Path Width="16"
                           Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"
