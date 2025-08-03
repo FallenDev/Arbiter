@@ -49,9 +49,9 @@ public class ProxyConnection : IDisposable
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)
     {
-        using var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
         _server = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
-
+        
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
         await _server.ConnectAsync(remoteEndpoint, linked.Token).ConfigureAwait(false);
 
         _clientStream = _client.GetStream();
@@ -84,7 +84,6 @@ public class ProxyConnection : IDisposable
             while (!token.IsCancellationRequested)
             {
                 int recvCount;
-
                 try
                 {
                     recvCount = await stream.ReadAsync(recvBuffer, token).ConfigureAwait(false);

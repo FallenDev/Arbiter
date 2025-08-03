@@ -1,0 +1,140 @@
+﻿using System.Text;
+
+namespace Arbiter.Net;
+
+public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null)
+{
+    private int _position;
+    private readonly byte[] _buffer = packet.Data;
+    private readonly Encoding _encoding = encoding ?? Encoding.ASCII;
+
+    public int Position
+    {
+        get => _position;
+        set
+        {
+            if (value < 0 || value > _buffer.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
+            _position = value;
+        }
+    }
+
+    public bool ReadBoolean() => ReadByte() != 0;
+
+    public char ReadChar()
+    {
+        EnsureCanRead(1);
+
+        Span<byte> byteBuffer = stackalloc byte[1];
+        Span<char> charBuffer = stackalloc char[1];
+
+        byteBuffer[0] = ReadByte();
+        _encoding.GetChars(byteBuffer, charBuffer);
+        return charBuffer[0];
+    }
+
+    public sbyte ReadSByte() => (sbyte)ReadByte();
+
+    public byte ReadByte()
+    {
+        EnsureCanRead(1);
+        return _buffer[_position++];
+    }
+
+    public short ReadInt16() => (short)ReadUInt16();
+
+    public ushort ReadUInt16()
+    {
+        EnsureCanRead(2);
+        return (byte)((_buffer[_position++] << 8) | _buffer[_position++]);
+    }
+
+    public int ReadInt32() => (int)ReadUInt32();
+
+    public uint ReadUInt32()
+    {
+        EnsureCanRead(4);
+        return ((uint)_buffer[_position++] << 24) | ((uint)_buffer[_position++] << 16) |
+               ((uint)_buffer[_position++] << 8) | _buffer[_position++];
+    }
+
+    public long ReadInt64() => (long)ReadUInt64();
+
+    public ulong ReadUInt64()
+    {
+        EnsureCanRead(8);
+        return ((ulong)_buffer[_position++] << 56) | ((ulong)_buffer[_position++] << 48) |
+               ((ulong)_buffer[_position++] << 40) | ((ulong)_buffer[_position++] << 32) |
+               ((ulong)_buffer[_position++] << 24) | ((ulong)_buffer[_position++] << 16) |
+               ((ulong)_buffer[_position++] << 8) | _buffer[_position++];
+    }
+
+    public string ReadString8() => ReadFixedString(ReadByte());
+
+    public string ReadString16() => ReadFixedString(ReadUInt16());
+
+    public string ReadFixedString(int length)
+    {
+        switch (length)
+        {
+            case < 0:
+                throw new ArgumentOutOfRangeException(nameof(length));
+            case 0:
+                return string.Empty;
+        }
+
+        EnsureCanRead(length);
+        _position += length;
+        return _encoding.GetString(_buffer, _position, length);
+    }
+
+    public string ReadNullTerminatedString()
+    {
+        var length = 0;
+        while (_buffer[_position + length] != 0)
+        {
+            EnsureCanRead(1);
+            length++;
+        }
+
+        var stringValue = _encoding.GetString(_buffer, _position, length);
+        _position += length + 1;
+
+        return stringValue;
+    }
+
+    public byte[] ReadBytes(int length)
+    {
+        switch (length)
+        {
+            case < 0:
+                throw new ArgumentOutOfRangeException(nameof(length), "Length must be greater than or equal to 0");
+            case 0:
+                return [];
+        }
+
+        EnsureCanRead(length);
+        var bytes = _buffer.AsSpan(_position, length).ToArray();
+
+        _position += length;
+        return bytes;
+    }
+
+    public void ReadBytes(Span<byte> buffer, int count)
+    {
+        EnsureCanRead(count);
+        _buffer.AsSpan(_position, count).CopyTo(buffer);
+        _position += count;
+    }
+
+    private void EnsureCanRead(int length)
+    {
+        if (_position + length > _buffer.Length)
+        {
+            throw new IndexOutOfRangeException("Cannot read past end of buffer");
+        }
+    }
+}
