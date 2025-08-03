@@ -1,14 +1,23 @@
-﻿namespace Arbiter.Net.Server;
+﻿using Arbiter.Net.Security;
 
-public class ServerPacketEncryptor : NetworkPacketEncryptor
+namespace Arbiter.Net.Server;
+
+public class ServerPacketEncryptor : INetworkPacketEncryptor
 {
-    public override NetworkPacket Encrypt(NetworkPacket packet)
+    public NetworkEncryptionParameters Parameters { get; private set; } = NetworkEncryptionParameters.Default;
+
+    public NetworkPacket Encrypt(NetworkPacket packet)
     {
         return packet;
     }
 
-    public override NetworkPacket Decrypt(NetworkPacket packet)
+    public NetworkPacket Decrypt(NetworkPacket packet)
     {
         return packet;
+    }
+
+    public void SetParameters(NetworkEncryptionParameters parameters)
+    {
+        Parameters = parameters;
     }
 }

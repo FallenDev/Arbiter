@@ -23,6 +23,7 @@ public class ProxyServer : IDisposable
     public event Action? Stopped;
     public event EventHandler<ProxyConnectionEventArgs>? ClientConnected;
     public event EventHandler<ProxyConnectionEventArgs>? ServerConnected;
+    public event EventHandler<ProxyConnectionEventArgs>? ClientAuthenticated;
     public event EventHandler<ProxyConnectionEventArgs>? ClientDisconnected;
     public event EventHandler<ProxyConnectionEventArgs>? ServerDisconnected;
     public event EventHandler<ProxyConnectionRedirectEventArgs>? ClientRedirected;
@@ -97,6 +98,7 @@ public class ProxyServer : IDisposable
 
     private async Task HandleConnectionAsync(ProxyConnection connection, CancellationToken token)
     {
+        connection.ClientAuthenticated += OnClientAuthenticated;
         connection.ClientDisconnected += OnClientDisconnected;
         connection.ServerConnected += OnServerConnected;
         connection.ServerDisconnected += OnServerDisconnected;
@@ -114,6 +116,7 @@ public class ProxyServer : IDisposable
         }
         finally
         {
+            connection.ClientAuthenticated -= OnClientAuthenticated;
             connection.ClientDisconnected -= OnClientDisconnected;
             connection.ServerConnected -= OnServerConnected;
             connection.ServerDisconnected -= OnServerDisconnected;
@@ -126,6 +129,9 @@ public class ProxyServer : IDisposable
             connection.Dispose();
         }
     }
+
+    private void OnClientAuthenticated(object? sender, EventArgs e) =>
+        ClientAuthenticated?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
     
     private void OnClientDisconnected(object? sender, EventArgs e) =>
         ClientDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));

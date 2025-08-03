@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Channels;
 using Arbiter.Net.Client;
+using Arbiter.Net.Security;
 using Arbiter.Net.Server;
 
 namespace Arbiter.Net;
@@ -10,7 +11,7 @@ namespace Arbiter.Net;
 public class ProxyConnection : IDisposable
 {
     private const int RecvBufferSize = 4096;
-
+    
     private bool _isDisposed;
     private readonly TcpClient _client;
 
@@ -26,12 +27,17 @@ public class ProxyConnection : IDisposable
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
     
     public int Id { get; }
+    public string? Name { get; set; }
+    public long? UserId { get; set; }
+    public bool IsAuthenticated { get; private set; }
+    
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _server?.Client.RemoteEndPoint as IPEndPoint;
     public bool IsConnected => IsClientConnected && IsServerConnected;
     public bool IsClientConnected => _client.Connected;
     public bool IsServerConnected => _server?.Connected ?? false;
 
+    public event EventHandler? ClientAuthenticated;
     public event EventHandler? ClientDisconnected;
     public event EventHandler? ServerConnected;
     public event EventHandler? ServerDisconnected;
@@ -78,7 +84,7 @@ public class ProxyConnection : IDisposable
     }
 
     private async Task RecvLoopAsync(NetworkStream stream, NetworkPacketBuffer packetBuffer,
-        NetworkPacketEncryptor encryptor, ProxyDirection direction, CancellationTokenSource tokenSource)
+        INetworkPacketEncryptor encryptor, ProxyDirection direction, CancellationTokenSource tokenSource)
     {
         var token = tokenSource.Token;
         var recvBuffer = ArrayPool<byte>.Shared.Rent(RecvBufferSize);
@@ -129,9 +135,13 @@ public class ProxyConnection : IDisposable
                         case ServerPacket { Command: ServerCommand.Redirect }:
                             HandleServerRedirect(decrypted);
                             break;
-                        // Handle client joins, we need to update encryption parameters
+                        // Handle server setting user ID, this confirms a valid game connection
+                        case ServerPacket { Command: ServerCommand.SetPlayerId }:
+                            HandleServerSetUserId(decrypted);
+                            break;
+                        // Handle client auth request, we need to update encryption parameters
                         case ClientPacket { Command: ClientCommand.Authenticate }:
-                            HandleClientAuthenticated(decrypted);
+                            HandleClientAuthRequest(decrypted);
                             break;
                     }
 
@@ -173,7 +183,7 @@ public class ProxyConnection : IDisposable
                 }
 
                 // Determine which encryption to use based on the outgoing packet type
-                NetworkPacketEncryptor? encryptor = packet switch
+                INetworkPacketEncryptor? encryptor = packet switch
                 {
                     ClientPacket => _clientEncryptor,
                     ServerPacket => _serverEncryptor,
@@ -231,14 +241,44 @@ public class ProxyConnection : IDisposable
         packet.Data[4] = (byte)((localPort >> 8) & 0xFF);
         packet.Data[5] = (byte)(localPort & 0xFF);
 
+        // Update connection name based on server response
+        Name = name;
+
         // Notify the proxy server that the redirect is taking place
         var remoteEndpoint = new IPEndPoint(remoteIpAddress, remotePort);
         ClientRedirected?.Invoke(this, new NetworkRedirectEventArgs(name, remoteEndpoint));
     }
 
-    private void HandleClientAuthenticated(NetworkPacket packet)
+    private void HandleClientAuthRequest(NetworkPacket packet)
     {
+        var reader = new NetworkPacketReader(packet);
+        var seed = reader.ReadByte();
+        var keyLength = reader.ReadByte();
+        var key = reader.ReadBytes(keyLength);
+        var name = reader.ReadString8();
+        var id = reader.ReadUInt32();
         
+        // Update connection name based on client request
+        Name = name;
+
+        var encryptionParameters = new NetworkEncryptionParameters();
+        
+        // Update the client/server encryption parameters together
+        _clientEncryptor.SetParameters(encryptionParameters);
+        _serverEncryptor.SetParameters(encryptionParameters);
+    }
+
+    private void HandleServerSetUserId(NetworkPacket packet)
+    {
+        var reader = new NetworkPacketReader(packet);
+        var userId = reader.ReadUInt32();
+
+        IsAuthenticated = true;
+
+        // Update the user ID based on server response
+        UserId = userId;
+
+        ClientAuthenticated?.Invoke(this, EventArgs.Empty);
     }
 
     public void Dispose()
