@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace Arbiter.Net;
 
-public class NetworkPacket : IEnumerable<byte>
+public abstract class NetworkPacket : IEnumerable<byte>
 {
     public const byte Marker = 0xAA;
     public const int HeaderSize = 4;
@@ -11,10 +11,10 @@ public class NetworkPacket : IEnumerable<byte>
     public byte Command { get; }
     public byte[] Data { get; }
 
-    public NetworkPacket(byte command, byte[] data)
+    protected NetworkPacket(byte command, ReadOnlySpan<byte> data)
     {
         Command = command;
-        Data = data;
+        Data = data.ToArray();
     }
 
     public async ValueTask WriteToAsync(NetworkStream stream, Memory<byte> headerBuffer,

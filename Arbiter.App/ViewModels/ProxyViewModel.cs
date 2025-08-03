@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using Arbiter.Net;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
@@ -56,10 +58,10 @@ public partial class ProxyViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        var verb = e.Direction switch
+        var verb = e.Packet switch
         {
-            ProxyDirection.ClientToServer => "CLIENT",
-            ProxyDirection.ServerToClient => "SERVER",
+            ClientPacket => "CLIENT",
+            ServerPacket => "SERVER",
             _ => "?"
         };
         

@@ -1,4 +1,6 @@
-﻿namespace Arbiter.Net;
+﻿using Arbiter.Net;
+
+namespace Arbiter.Net;
 
 public class ProxyConnectionDataEventArgs(ProxyConnection connection, NetworkPacket packet, ProxyDirection direction)
     : ProxyConnectionEventArgs(connection)

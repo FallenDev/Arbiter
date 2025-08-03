@@ -2,6 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Channels;
+using Arbiter.Net.Client;
+using Arbiter.Net.Security;
+using Arbiter.Net.Server;
 
 namespace Arbiter.Net;
 
@@ -14,7 +17,8 @@ public class ProxyConnection : IDisposable
     private TcpClient? _server;
     private NetworkStream? _clientStream;
     private NetworkStream? _serverStream;
-    private readonly Channel<QueuedNetworkPacket> _sendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
+    private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
+    private readonly NetworkPacketEncryptor _encryptor = new();
     
     public int Id { get; }
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
@@ -65,8 +69,16 @@ public class ProxyConnection : IDisposable
     private async Task RecvLoopAsync(NetworkStream stream, ProxyDirection direction, CancellationTokenSource tokenSource)
     {
         var token = tokenSource.Token;
-        var parser = new NetworkPacketParser();
         var recvBuffer = ArrayPool<byte>.Shared.Rent(RecvBufferSize);
+
+        NetworkPacketFactory packetFactory = direction switch
+        {
+            ProxyDirection.ClientToServer => (command, data) => new ClientPacket(command, data),
+            ProxyDirection.ServerToClient => (command, data) => new ServerPacket(command, data),
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), "Invalid proxy direction")
+        };
+        
+        var packetBuffer = new NetworkPacketBuffer(packetFactory);
         
         try
         {
@@ -98,14 +110,12 @@ public class ProxyConnection : IDisposable
                     break;
                 }
 
-                parser.Append(recvBuffer, 0, recvCount);
+                packetBuffer.Append(recvBuffer, 0, recvCount);
 
-                while (parser.TryTakePacket(out var packet))
+                while (packetBuffer.TryTakePacket(out var packet))
                 {
-                    var queuedPacket = new QueuedNetworkPacket(packet, direction);
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(queuedPacket.Packet, queuedPacket.Direction));
-
-                    await _sendQueue.Writer.WriteAsync(queuedPacket, token).ConfigureAwait(false);
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(packet, direction));
+                    await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }
         }
@@ -125,12 +135,12 @@ public class ProxyConnection : IDisposable
 
         try
         {
-            await foreach (var queuedPacket in _sendQueue.Reader.ReadAllAsync(token))
+            await foreach (var packet in _sendQueue.Reader.ReadAllAsync(token))
             {
-                var destinationStream = queuedPacket.Direction switch
+                var destinationStream = packet switch
                 {
-                    ProxyDirection.ClientToServer => _serverStream!,
-                    ProxyDirection.ServerToClient => _clientStream!,
+                    ClientPacket => _serverStream!,
+                    ServerPacket => _clientStream!,
                     _ => null
                 };
 
@@ -139,17 +149,17 @@ public class ProxyConnection : IDisposable
                     continue;
                 }
 
-                await queuedPacket.Packet.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
+                await packet.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
-                var outgoingDirection = queuedPacket.Direction switch
+                var outgoingDirection = packet switch
                 {
-                    ProxyDirection.ClientToServer => ProxyDirection.ServerToClient,
+                    ClientPacket => ProxyDirection.ServerToClient,
                     _ => ProxyDirection.ClientToServer
                 };
                 
                 PacketSent?.Invoke(this,
-                    new NetworkPacketEventArgs(queuedPacket.Packet, outgoingDirection));
+                    new NetworkPacketEventArgs(packet, outgoingDirection));
             }
         }
         catch when (token.IsCancellationRequested)
@@ -187,6 +197,4 @@ public class ProxyConnection : IDisposable
         
         _isDisposed = true;
     }
-    
-    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Proxy connection is disposed");
 }
