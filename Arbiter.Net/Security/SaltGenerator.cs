@@ -245,9 +245,9 @@ public static class SaltGenerator
         #endregion
     };
 
-    public static void GenerateSalt(int seed, Span<byte> buffer)
+    public static void GenerateSalt(int seed, Span<byte> outputBuffer)
     {
         var index = Math.Clamp(seed, 0, SaltTables.Length - 1);
-        SaltTables[index].CopyTo(buffer);
+        SaltTables[index].CopyTo(outputBuffer);
     }
 }

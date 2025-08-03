@@ -4,10 +4,10 @@ namespace Arbiter.Net.Security;
 
 public static class KeyTableGenerator
 {
-    public static void GenerateKeyTable(string name, Span<byte> keyTable, Encoding? encoding = null)
+    public static void GenerateKeyTable(string name, Span<byte> outputBuffer, Encoding? encoding = null)
     {
         encoding ??= Encoding.ASCII;
-        
+
         var table = HashGenerator.CalcMd5Hash(name, encoding);
         table = HashGenerator.CalcMd5Hash(table, encoding);
 
@@ -19,7 +19,7 @@ public static class KeyTableGenerator
             var hash = HashGenerator.CalcMd5Hash(tableBuilder.ToString());
             tableBuilder.Append(hash);
         }
-        
-        encoding.GetBytes(tableBuilder.ToString(), keyTable);
+
+        encoding.GetBytes(tableBuilder.ToString(), outputBuffer);
     }
 }
