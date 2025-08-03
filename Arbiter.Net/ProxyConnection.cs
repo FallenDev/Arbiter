@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Channels;
 using Arbiter.Net.Client;
-using Arbiter.Net.Security;
 using Arbiter.Net.Server;
 
 namespace Arbiter.Net;
@@ -11,15 +10,21 @@ namespace Arbiter.Net;
 public class ProxyConnection : IDisposable
 {
     private const int RecvBufferSize = 4096;
-    
+
     private bool _isDisposed;
     private readonly TcpClient _client;
-    private TcpClient? _server;
+
     private NetworkStream? _clientStream;
+    private readonly NetworkPacketBuffer _clientPacketBuffer = new((command, data) => new ClientPacket(command, data));
+    private readonly ClientPacketEncryptor _clientEncryptor = new();
+
+    private TcpClient? _server;
     private NetworkStream? _serverStream;
+    private readonly NetworkPacketBuffer _serverPacketBuffer = new((command, data) => new ServerPacket(command, data));
+    private readonly ServerPacketEncryptor _serverEncryptor = new();
+
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
-    private readonly NetworkPacketEncryptor _encryptor = new();
-    
+
     public int Id { get; }
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _server?.Client.RemoteEndPoint as IPEndPoint;
@@ -30,28 +35,28 @@ public class ProxyConnection : IDisposable
     public event EventHandler? ClientDisconnected;
     public event EventHandler? ServerConnected;
     public event EventHandler? ServerDisconnected;
-    
+
     public event EventHandler<NetworkPacketEventArgs>? PacketReceived;
     public event EventHandler<NetworkPacketEventArgs>? PacketSent;
-    
+
     public ProxyConnection(int id, TcpClient client)
     {
         Id = id;
-        
+
         _client = client;
         _client.NoDelay = true;
     }
 
-    internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token=default)
+    internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)
     {
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
         _server = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
 
         await _server.ConnectAsync(remoteEndpoint, linked.Token).ConfigureAwait(false);
-        
+
         _clientStream = _client.GetStream();
         _serverStream = _server.GetStream();
-        
+
         ServerConnected?.Invoke(this, EventArgs.Empty);
     }
 
@@ -59,27 +64,21 @@ public class ProxyConnection : IDisposable
     {
         var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
 
-        var clientRecvTask = RecvLoopAsync(_clientStream!, ProxyDirection.ClientToServer, linked);
-        var serverRecvTask = RecvLoopAsync(_serverStream!, ProxyDirection.ServerToClient, linked);
+        var clientRecvTask = RecvLoopAsync(_clientStream!, _clientPacketBuffer, _clientEncryptor,
+            ProxyDirection.ClientToServer, linked);
+        var serverRecvTask = RecvLoopAsync(_serverStream!, _serverPacketBuffer, _serverEncryptor,
+            ProxyDirection.ServerToClient, linked);
         var senderTask = SendLoopAsync(linked.Token);
 
         return Task.WhenAll(clientRecvTask, serverRecvTask, senderTask);
     }
 
-    private async Task RecvLoopAsync(NetworkStream stream, ProxyDirection direction, CancellationTokenSource tokenSource)
+    private async Task RecvLoopAsync(NetworkStream stream, NetworkPacketBuffer packetBuffer,
+        NetworkPacketEncryptor encryptor, ProxyDirection direction, CancellationTokenSource tokenSource)
     {
         var token = tokenSource.Token;
         var recvBuffer = ArrayPool<byte>.Shared.Rent(RecvBufferSize);
 
-        NetworkPacketFactory packetFactory = direction switch
-        {
-            ProxyDirection.ClientToServer => (command, data) => new ClientPacket(command, data),
-            ProxyDirection.ServerToClient => (command, data) => new ServerPacket(command, data),
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), "Invalid proxy direction")
-        };
-        
-        var packetBuffer = new NetworkPacketBuffer(packetFactory);
-        
         try
         {
             while (!token.IsCancellationRequested)
@@ -94,7 +93,7 @@ public class ProxyConnection : IDisposable
                 {
                     recvCount = 0;
                 }
-                
+
                 if (recvCount == 0)
                 {
                     if (direction == ProxyDirection.ServerToClient)
@@ -105,7 +104,7 @@ public class ProxyConnection : IDisposable
                     {
                         ClientDisconnected?.Invoke(this, EventArgs.Empty);
                     }
-                    
+
                     await tokenSource.CancelAsync();
                     break;
                 }
@@ -114,7 +113,9 @@ public class ProxyConnection : IDisposable
 
                 while (packetBuffer.TryTakePacket(out var packet))
                 {
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(packet, direction));
+                    var decryptedPacket = encryptor.Decrypt(packet);
+
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(decryptedPacket, direction));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }
@@ -149,7 +150,16 @@ public class ProxyConnection : IDisposable
                     continue;
                 }
 
-                await packet.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
+                NetworkPacketEncryptor? encryptor = packet switch
+                {
+                    ClientPacket => _clientEncryptor,
+                    ServerPacket => _serverEncryptor,
+                    _ => null
+                };
+
+                var encryptedPacket = encryptor?.Encrypt(packet) ?? packet;
+                
+                await encryptedPacket.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
                 var outgoingDirection = packet switch
@@ -157,7 +167,7 @@ public class ProxyConnection : IDisposable
                     ClientPacket => ProxyDirection.ServerToClient,
                     _ => ProxyDirection.ClientToServer
                 };
-                
+
                 PacketSent?.Invoke(this,
                     new NetworkPacketEventArgs(packet, outgoingDirection));
             }
@@ -187,14 +197,14 @@ public class ProxyConnection : IDisposable
         if (isDisposing)
         {
             _sendQueue.Writer.TryComplete();
-            
+
             _clientStream?.Dispose();
             _client.Dispose();
-            
+
             _serverStream?.Dispose();
             _server?.Dispose();
         }
-        
+
         _isDisposed = true;
     }
 }

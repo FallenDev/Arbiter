@@ -1,20 +1,22 @@
-﻿namespace Arbiter.Net.Security;
+﻿using Arbiter.Net.Security;
 
-public class NetworkPacketEncryptor
+namespace Arbiter.Net;
+
+public abstract class NetworkPacketEncryptor
 {
     private const int KeyLength = 9;
     private const int SaltLength = 256;
-    
-    private static readonly byte[] DefaultKey = "UrkcnItnI"u8.ToArray();
-    
+
+    protected static readonly byte[] DefaultKey = "UrkcnItnI"u8.ToArray();
+
     private int _saltAlgorithm;
     private readonly byte[] _privateKey = new byte[KeyLength];
     private readonly byte[] _saltTable = new byte[SaltLength];
-    
+
     public int SaltAlgorithm => _saltAlgorithm;
     public ReadOnlySpan<byte> PrivateKey => _privateKey;
 
-    public NetworkPacketEncryptor()
+    protected NetworkPacketEncryptor()
     {
         SetPrivateKey(DefaultKey);
         SetSaltAlgorithm(0);
@@ -41,13 +43,6 @@ public class NetworkPacketEncryptor
         keyBytes.CopyTo(_privateKey);
     }
 
-    public NetworkPacket Encrypt(NetworkPacket packet)
-    {
-        return packet;
-    }
-    
-    public NetworkPacket Decrypt(NetworkPacket packet)
-    {
-        return packet;
-    }
+    public abstract NetworkPacket Encrypt(NetworkPacket packet);
+    public abstract NetworkPacket Decrypt(NetworkPacket packet);
 }
