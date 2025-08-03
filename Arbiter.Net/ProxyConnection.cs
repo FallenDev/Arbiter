@@ -54,10 +54,10 @@ public class ProxyConnection : IDisposable
         _client.NoDelay = true;
     }
     
-    public void EnqueueToClient(ServerPacket packet) =>
+    public bool EnqueueToClient(ServerPacket packet) =>
         _sendQueue.Writer.TryWrite(packet);
     
-    public void EnqueueToServer(ClientPacket packet) =>
+    public bool EnqueueToServer(ClientPacket packet) =>
         _sendQueue.Writer.TryWrite(packet);
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)
