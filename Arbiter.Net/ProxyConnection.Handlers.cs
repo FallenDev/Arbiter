@@ -44,8 +44,11 @@ public partial class ProxyConnection
         packet.Data[5] = (byte)(localPort & 0xFF);
 
         // Update connection name based on server response
-        Name = name;
-        
+        if (IsValidCharacterName(name))
+        {
+            Name = name;
+        }
+
         SetEncryptionParameters(seed, key, name);
 
         // Notify the proxy server that the redirect is taking place
@@ -63,7 +66,10 @@ public partial class ProxyConnection
         var id = reader.ReadUInt32();
 
         // Update connection name based on client request
-        Name = name;
+        if (IsValidCharacterName(name))
+        {
+            Name = name;
+        }
 
         SetEncryptionParameters(seed, key, name);
     }
@@ -89,4 +95,7 @@ public partial class ProxyConnection
         _clientEncryptor.Parameters = encryptionParameters;
         _serverEncryptor.Parameters = encryptionParameters;
     }
+
+    private bool IsValidCharacterName(string name) =>
+        !string.IsNullOrWhiteSpace(name) && name.All(char.IsAsciiLetter);
 }

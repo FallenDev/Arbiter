@@ -16,6 +16,9 @@ public partial class TracePacketViewModel(
     [NotifyPropertyChangedFor(nameof(DisplayValue))] [ObservableProperty]
     private PacketDisplayMode _displayMode = PacketDisplayMode.Decrypted;
 
+    public int ClientId => Connection.Id;
+    public string? ClientName => Connection.Name;
+
     public DateTime Timestamp { get; } = DateTime.Now;
 
     public ProxyConnection Connection { get; } = connection;

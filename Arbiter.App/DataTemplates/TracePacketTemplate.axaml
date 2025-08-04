@@ -2,17 +2,26 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="using:Arbiter.App.ViewModels"
                     xmlns:converters="using:Arbiter.App.Converters">
+    <SolidColorBrush x:Key="Talgonite.TracePacket.TimestampForeground" Color="#717479"/>
+    <SolidColorBrush x:Key="Talgonite.TracePacket.ClientNameForeground" Color="#e0e0e0"/>
+    
     <DataTemplate x:Key="TracePacketTemplate" DataType="vm:TracePacketViewModel">
         <Border Background="Transparent"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="4,2">
-            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8">
-                <!-- Timestamp -->
-                <TextBlock Name="TimestampText"
-                           Grid.Column="0"
-                           Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}"
-                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"/>
+            <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
+                <!-- Timestamp and Client Name -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <TextBlock Name="TimestampText"
+                               Text="{Binding Timestamp, StringFormat={}{0:HH:mm:ss}}"
+                               Foreground="{StaticResource Talgonite.TracePacket.TimestampForeground}"/>
+                    
+                    <!-- Client Name -->
+                    <TextBlock Text="{Binding ClientName}"
+                               Foreground="{StaticResource Talgonite.TracePacket.ClientNameForeground}"
+                               IsVisible="{Binding ClientName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                </StackPanel>
                 
                 <!-- Client/Server Direction -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
