@@ -26,17 +26,19 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var saltTable = parameters.SaltTable.Span;
         var keyLength = parameters.PrivateKey.Length;
 
-        // [u8 Sequence] [u8... Payload] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
-        var payloadLength = packet.Data.Length - 4;
-        var payload = new Span<byte>(packet.Data, 1, payloadLength);
-
         // Extract the relevant encryption values
         var sequence = packet.Data[0];
         var sRand = (byte)(packet.Data[^2] ^ 0x23);
         var bRand = (ushort)((packet.Data[^1] << 8 | packet.Data[^3]) ^ 0x7470);
 
+        // Extract the packet checksum
+        var checksum = (long)((uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 | packet.Data[^4]);
+
+        // [u8 Sequence] [u8... Payload] [u8? Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
+        var payloadLength = packet.Data.Length - 8;
+        
         // Some packets use the static fixed key
-        // Others use the newer MD5 key table slice
+        // Others use the newer MD5 key table
         Span<byte> privateKey = stackalloc byte[keyLength];
         if (UseStaticKey(packet.Command))
         {
@@ -45,11 +47,13 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         else
         {
             parameters.GenerateKey(bRand, sRand, privateKey);
+            payloadLength -= 1; // Ignore the duplicated command byte
         }
 
+        var payload = new Span<byte>(packet.Data, 1, payloadLength);
         var decrypted = new byte[payloadLength];
         payload.CopyTo(decrypted);
-
+        
         // Decrypt the payload
         for (var i = 0; i < payloadLength; i++)
         {
@@ -61,9 +65,29 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
                 decrypted[i] ^= saltTable[sequence];
             }
         }
-        
-        // TODO: implement dialog encryption
 
-        return new ClientPacket(packet.Command, decrypted);
+        if (!IsDialog(packet.Command))
+        {
+            return new ClientPacket(packet.Command, decrypted, checksum);
+        }
+
+        // Handle dialog encryption
+        // [u8 xPrime] [u8 x] [u16 Length] [u16 Checksum]
+        var xPrime = (byte)(decrypted[0] - 0x2D);
+        var x = (byte)(decrypted[1] ^ xPrime);
+        var y = (byte)(x + 0x72);
+        var z = (byte)(x + 0x28);
+        decrypted[2] ^= y;
+        decrypted[3] ^= (byte)((y + 1) & 0xFF);
+
+        var length = (decrypted[2] << 8) | decrypted[3];
+        for (var i = 0; i < length; i++)
+        {
+            decrypted[4 + i] ^= (byte)((z + i) & 0xFF);
+        }
+
+        decrypted = decrypted[6..];
+
+        return new ClientPacket(packet.Command, decrypted, checksum);
     }
 }
