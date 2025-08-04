@@ -20,7 +20,7 @@ public class NetworkPacketBuffer
         Buffer.BlockCopy(buffer, offset, _queueBuffer, _bufferIndex, count);
         _bufferIndex += count;
     }
-    
+
     public bool TryTakePacket(out NetworkPacket packet)
     {
         packet = null!;
@@ -38,7 +38,7 @@ public class NetworkPacketBuffer
         {
             return false;
         }
-
+        
         // Copy the command and data bytes
         var command = _queueBuffer[3];
         if (dataSize > 0)
