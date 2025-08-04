@@ -1,6 +1,8 @@
 ﻿using System.Collections.Specialized;
+using System.Threading.Tasks;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
+using Arbiter.App.Services;
 using Arbiter.Net;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,6 +14,7 @@ namespace Arbiter.App.ViewModels;
 public partial class TraceViewModel : ViewModelBase
 {
     private readonly ILogger<TraceViewModel> _logger;
+    private readonly IDialogService _dialogService;
     private readonly ProxyServer _proxyServer;
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
 
@@ -43,9 +46,10 @@ public partial class TraceViewModel : ViewModelBase
         }
     }
 
-    public TraceViewModel(ILogger<TraceViewModel> logger, ProxyServer proxyServer)
+    public TraceViewModel(ILogger<TraceViewModel> logger, IDialogService dialogService, ProxyServer proxyServer)
     {
         _logger = logger;
+        _dialogService = dialogService;
         _proxyServer = proxyServer;
 
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
@@ -99,9 +103,28 @@ public partial class TraceViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ClearTrace()
+    private async Task ClearTrace()
     {
+        var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
+        {
+            Title = "Confirm Clear Trace",
+            Message = "Are you sure you want to clear?\nThis will remove all packets from the trace.",
+            Description = "This action cannot be undone.",
+            Style = MessageBoxStyle.YesNo
+        });
+
+        if (confirm is not true)
+        {
+            return;
+        }
+
         _allPackets.Clear();
         OnPropertyChanged(nameof(FilteredPackets));
+    }
+
+    [RelayCommand]
+    private void ScrollToEnd()
+    {
+        ScrollToEndRequested = true;
     }
 }

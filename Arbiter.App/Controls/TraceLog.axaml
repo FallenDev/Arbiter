@@ -114,6 +114,19 @@
                             <TextBlock Text="Clear"/>
                         </StackPanel>
                     </Button>
+                    <!-- Scroll to End Button -->
+                    <Button Command="{Binding ScrollToEndCommand}"
+                            ToolTip.Tip="Scrolls to the end of the trace."
+                            Classes="toolbar">
+                        <Path Width="16"
+                              Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              StrokeThickness="2"
+                              Stretch="None"
+                              Data="M8,0     L8,12
+                                M2,8     L8,14    L14,8
+                                M0,15    L16,15"/>
+                    </Button>
                 </WrapPanel>
             </Grid>
         </Border>

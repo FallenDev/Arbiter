@@ -34,7 +34,7 @@
                          Margin="4">
                 <!-- Scroll to End Button -->
                 <Button Command="{Binding ScrollToEndCommand}"
-                        ToolTip.Tip="Scrolls to the end."
+                        ToolTip.Tip="Scrolls to the end of the logs."
                         Classes="toolbar">
                     <Path Width="16"
                           Height="16"
