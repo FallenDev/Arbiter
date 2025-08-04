@@ -65,6 +65,9 @@
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.HoverForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.PressedForeground" Color="#82baf7"/>
             
+            <!-- SelectableTextBlock Resources -->
+            <SolidColorBrush x:Key="Talgonite.SelectableTextBlock.SelectionBrush" Color="#804a6380"/>
+            
             <!-- ScrollBar Resources -->
             <SolidColorBrush x:Key="Talgonite.ScrollBar.Background" Color="#313439"/>
             <SolidColorBrush x:Key="Talgonite.ScrollBar.ThumbBackground" Color="#6d6f73"/>

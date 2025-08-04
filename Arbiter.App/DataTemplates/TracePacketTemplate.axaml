@@ -38,7 +38,7 @@
                                Foreground="{Binding #DirectionText.Foreground}"
                                TextWrapping="WrapWithOverflow"/>
                     
-                    <TextBlock Name="PayloadText"
+                    <SelectableTextBlock Name="PayloadText"
                                Text="{Binding FormattedPayload}"
                                TextWrapping="WrapWithOverflow"/>
                 </StackPanel>

@@ -1,0 +1,14 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="SelectableTextBlock">
+        <Setter Property="Theme">
+            <ControlTheme TargetType="SelectableTextBlock">
+                <Setter Property="SelectionBrush" Value="{StaticResource Talgonite.SelectableTextBlock.SelectionBrush}"/>
+            </ControlTheme>
+        </Setter>
+        
+        <Style Selector="^[IsEnabled=True]">
+            <Setter Property="Cursor" Value="IBeam"/>
+        </Style>
+    </Style>
+</Styles>

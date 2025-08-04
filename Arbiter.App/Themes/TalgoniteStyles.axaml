@@ -16,6 +16,7 @@
     <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgonitePopupRoot.axaml"/>
     <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
+    <StyleInclude Source="./TalgoniteSelectableTextBlock.axaml"/>
     <StyleInclude Source="./TalgoniteScrollBar.axaml"/>
     <StyleInclude Source="./TalgoniteScrollViewer.axaml"/>
     <StyleInclude Source="./TalgoniteTabControl.axaml"/>

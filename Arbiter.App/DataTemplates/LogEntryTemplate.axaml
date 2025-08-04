@@ -2,6 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="using:Arbiter.App.ViewModels"
                     xmlns:converters="using:Arbiter.App.Converters">
+    <SolidColorBrush x:Key="Talgonite.Console.ErrorSelectionBrush" Color="#80ed6a5e"/>
+    
     <DataTemplate x:Key="LogEntryTemplate" DataType="vm:LogEntryViewModel">
         <Border Background="Transparent"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
@@ -16,22 +18,24 @@
                 
                 <!-- Message and Stack Trace -->
                 <StackPanel Grid.Column="1">
-                    <TextBlock Name="MessageText"
+                    <SelectableTextBlock Name="MessageText"
                                Text="{Binding FormattedMessage}"
                                TextWrapping="WrapWithOverflow"
                                Foreground="{Binding Path=Level, Converter={x:Static converters:LogLevelBrushConverter.Converter}}"/>
 
-                    <TextBlock Name="ExceptionText"
-                               Text="{Binding FormattedException}"
-                               TextWrapping="WrapWithOverflow"
-                               Foreground="{Binding #MessageText.Foreground}"
-                               IsVisible="{Binding FormattedException, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                    <SelectableTextBlock Name="ExceptionText"
+                                         Text="{Binding FormattedException}"
+                                         TextWrapping="WrapWithOverflow"
+                                         Foreground="{Binding #MessageText.Foreground}"
+                                         SelectionBrush="{StaticResource Talgonite.Console.ErrorSelectionBrush}"
+                                         IsVisible="{Binding FormattedException, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                 
-                    <TextBlock Name="StackTraceText"
-                               Text="{Binding FormattedStackTrace}"
-                               TextWrapping="WrapWithOverflow"
-                               Foreground="{Binding #ExceptionText.Foreground}"
-                               IsVisible="{Binding FormattedStackTrace, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                    <SelectableTextBlock Name="StackTraceText"
+                                         Text="{Binding FormattedStackTrace}"
+                                         TextWrapping="WrapWithOverflow"
+                                         Foreground="{Binding #ExceptionText.Foreground}"
+                                         SelectionBrush="{StaticResource Talgonite.Console.ErrorSelectionBrush}"
+                                         IsVisible="{Binding FormattedStackTrace, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                 </StackPanel>
             </Grid>
         </Border>
