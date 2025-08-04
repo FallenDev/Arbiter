@@ -86,4 +86,72 @@
             <Setter Property="Fill" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
         </Style>
     </Style>
+    
+    <!-- Segmented Style Radio Button -->
+    <Style Selector="RadioButton.segment">
+        <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Background="{TemplateBinding Background}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  Margin="{TemplateBinding Margin}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RecognizesAccessKey="True"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.HoverBorderBrush}"/>
+        </Style>
+        
+        <Style Selector="^:focus">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.FocusBorderBrush}"/>
+        </Style>
+        
+        <Style Selector="^:checked">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.PressedForeground}"/>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.DisabledBorderBrush}"/>
+        </Style>
+        
+        <Style Selector="^.segment-left">
+            <Setter Property="BorderThickness" Value="2,2,0,2"/>
+            <Setter Property="CornerRadius" Value="8,0,0,8"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+        
+        <Style Selector="^.segment-left:checked">
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        
+        <Style Selector="^.segment-right">
+            <Setter Property="BorderThickness" Value="0,2,2,2"/>
+            <Setter Property="CornerRadius" Value="0,8,8,0"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+        
+        <Style Selector="^.segment-right:checked">
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+    </Style>
 </Styles>

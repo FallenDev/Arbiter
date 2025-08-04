@@ -57,11 +57,11 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="200"/>
+            <ColumnDefinition Width="*" MinWidth="240" MaxWidth="360"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="3*" MinWidth="400"/>
+            <ColumnDefinition Width="3*" MinWidth="560"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="200"/>
+            <ColumnDefinition Width="*" MinWidth="320" MaxWidth="480"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
