@@ -47,8 +47,8 @@
                 </WrapPanel>
                 
                 <!-- Center Buttons -->
-                <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="8">
-                    <StackPanel Orientation="Horizontal">
+                <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="8" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="16">
                         <RadioButton IsChecked="{Binding ShowRawPackets, Converter={x:Static BoolConverters.Not}}"
                                      GroupName="DisplayMode"
                                      Classes="segment segment-left">

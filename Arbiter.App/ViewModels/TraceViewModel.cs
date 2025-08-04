@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using Arbiter.App.Collections;
+using Arbiter.App.Models;
 using Arbiter.Net;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -13,15 +14,35 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ILogger<TraceViewModel> _logger;
     private readonly ProxyServer _proxyServer;
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
+
+    private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
     
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
-    [ObservableProperty] private bool _showRawPackets;
     
     public bool IsEmpty => _allPackets.Count == 0;
-    
+
+    public bool ShowRawPackets
+    {
+        get => _packetDisplayMode == PacketDisplayMode.Raw;
+        set
+        {
+            var newValue = value ? PacketDisplayMode.Raw : PacketDisplayMode.Decrypted;
+            if (!SetProperty(ref _packetDisplayMode, newValue))
+            {
+                return;
+            }
+
+            OnPropertyChanged();
+            foreach (var packet in _allPackets)
+            {
+                packet.DisplayMode = newValue;
+            }
+        }
+    }
+
     public TraceViewModel(ILogger<TraceViewModel> logger, ProxyServer proxyServer)
     {
         _logger = logger;
@@ -44,7 +65,9 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        _allPackets.Add(new TracePacketViewModel(e.Connection, e.Packet, e.Payload));
+        var packetViewModel = new TracePacketViewModel(e.Connection, e.Packet, e.Payload)
+            { DisplayMode = _packetDisplayMode };
+        _allPackets.Add(packetViewModel);
     }
 
     [RelayCommand]

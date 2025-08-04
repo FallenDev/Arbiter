@@ -39,7 +39,7 @@
                                TextWrapping="WrapWithOverflow"/>
                     
                     <SelectableTextBlock Name="PayloadText"
-                               Text="{Binding FormattedPayload}"
+                               Text="{Binding DisplayValue}"
                                TextWrapping="WrapWithOverflow"/>
                 </StackPanel>
             </Grid>
