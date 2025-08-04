@@ -5,7 +5,7 @@ using Arbiter.Net;
 
 namespace Arbiter.App.ViewModels;
 
-public class TracePacketViewModel(ProxyConnection connection, NetworkPacket packet, IReadOnlyCollection<byte> payload)
+public partial class TracePacketViewModel(ProxyConnection connection, NetworkPacket packet, IReadOnlyCollection<byte> payload)
     : ViewModelBase
 {
     public DateTime Timestamp { get; } = DateTime.Now;

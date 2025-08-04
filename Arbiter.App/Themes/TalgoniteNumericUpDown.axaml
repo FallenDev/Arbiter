@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="NumericUpDown">
         <Setter Property="Background" Value="{StaticResource Talgonite.TextBox.Background}"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="Padding" Value="8,4"/>

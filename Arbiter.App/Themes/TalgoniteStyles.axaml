@@ -15,6 +15,7 @@
     <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>
     <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgonitePopupRoot.axaml"/>
+    <StyleInclude Source="./TalgoniteRadioButton.axaml"/>
     <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
     <StyleInclude Source="./TalgoniteSelectableTextBlock.axaml"/>
     <StyleInclude Source="./TalgoniteScrollBar.axaml"/>

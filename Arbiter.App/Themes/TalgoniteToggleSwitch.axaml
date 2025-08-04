@@ -87,6 +87,11 @@
             </ControlTemplate>
         </Setter>
         
+        <!-- Hover State -->
+        <Style Selector="^:pointerover /template/ Border#SwitchKnobBounds">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.HoverBorderBrush}"/>
+        </Style>
+        
         <!-- Checked State -->
         <Style Selector="^:checked /template/ Border#SwitchKnobBounds">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.KnobCheckedBackground}"/>

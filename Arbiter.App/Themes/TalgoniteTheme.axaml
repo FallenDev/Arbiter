@@ -60,6 +60,20 @@
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.FocusForeground" Color="#afc7c1"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledForeground" Color="#6d6f73"/>
             
+            <!-- RadioButton Resources -->
+            <SolidColorBrush x:Key="Talgonite.RadioButton.Background" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.PressedForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.DisabledForeground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.BorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.HoverBorderBrush" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.FocusBorderBrush" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.RadioButton.DisabledBorderBrush" Color="#4d535d"/>
+            <sys:Double x:Key="Talgonite.RadioButton.Width">24</sys:Double>
+            <sys:Double x:Key="Talgonite.RadioButton.Height">24</sys:Double>
+            <sys:Double x:Key="Talgonite.RadioButton.CheckMarkWidth">12</sys:Double>
+            <sys:Double x:Key="Talgonite.RadioButton.CheckMarkHeight">12</sys:Double>
+            
             <!-- ResizeGrip Resources -->
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.Foreground" Color="#888b90"/>
             <SolidColorBrush x:Key="Talgonite.ResizeGrip.HoverForeground" Color="#cdcfd2"/>
@@ -100,12 +114,12 @@
             <!-- TextBox Resources -->
             <SolidColorBrush x:Key="Talgonite.TextBox.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.Foreground" Color="#cdcfd2"/>
-            <SolidColorBrush x:Key="Talgonite.TextBox.BorderBrush" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.BorderBrush" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.WatermarkForeground" Color="#93959a"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.CaretForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionBackground" Color="#4a6380"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#ffffff"/>
-            <SolidColorBrush x:Key="Talgonite.TextBox.HoverBorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.HoverBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.FocusBorderBrush" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.ErrorBorderBrush" Color="#ed6a5e"/>
             
@@ -120,15 +134,15 @@
             <!-- ToggleSwitch Resources -->
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.Foreground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.CheckedForeground" Color="#81b8f5"/>
-            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBackground" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBackground" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobCheckedBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobForeground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobCheckedForeground" Color="#81b8f5"/>
-            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBorderBrush" Color="#292d34"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.HoverBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.FocusBorderBrush" Color="#81b8f5"/>
             <sys:Double x:Key="Talgonite.ToggleSwitch.KnobSize">16</sys:Double>
             <CornerRadius x:Key="Talgonite.ToggleSwitch.KnobCornerRadius">16</CornerRadius>
-            
             
             <!-- ToolTip Resources -->
             <SolidColorBrush x:Key="Talgonite.ToolTip.Background" Color="#101215"/>

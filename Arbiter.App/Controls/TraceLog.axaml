@@ -9,7 +9,8 @@
              x:DataType="vm:TraceViewModel">
    <Grid RowDefinitions="Auto,*" RowSpacing="4">
         <Border Grid.Row="0" Padding="4">
-            <Grid ColumnDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="Auto,*,Auto,*,Auto">
+                <!-- Left Side Buttons -->
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="8">
                     <!-- Start Trace Button -->
                     <Button Command="{Binding StartTracingCommand}"
@@ -45,7 +46,28 @@
                     </Button>
                 </WrapPanel>
                 
+                <!-- Center Buttons -->
                 <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="8">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton IsChecked="{Binding ShowRawPackets, Converter={x:Static BoolConverters.Not}}"
+                                     GroupName="DisplayMode"
+                                     Classes="segment segment-left">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Show Decrypted"/>
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton IsChecked="{Binding ShowRawPackets}"
+                                     GroupName="DisplayMode"
+                                     Classes="segment segment-right">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Show Raw"/>
+                            </StackPanel>
+                        </RadioButton>
+                    </StackPanel>
+                </WrapPanel>
+                
+                <!-- Right Side Buttons -->
+                <WrapPanel Grid.Column="4" Orientation="Horizontal" ItemSpacing="8">
                     <!-- Clear Trace Button -->
                     <Button Command="{Binding ClearTraceCommand}"
                             ToolTip.Tip="Clears all packets from the trace."

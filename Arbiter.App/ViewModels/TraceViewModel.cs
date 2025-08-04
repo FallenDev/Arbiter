@@ -15,10 +15,11 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
     
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
-
+    
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
-
+    [ObservableProperty] private bool _showRawPackets;
+    
     public bool IsEmpty => _allPackets.Count == 0;
     
     public TraceViewModel(ILogger<TraceViewModel> logger, ProxyServer proxyServer)
