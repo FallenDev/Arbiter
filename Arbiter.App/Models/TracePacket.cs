@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Arbiter.App.Json;
+using Arbiter.Json.Converters;
 
 namespace Arbiter.App.Models;
 

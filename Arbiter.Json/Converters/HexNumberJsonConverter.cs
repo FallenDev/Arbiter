@@ -1,9 +1,8 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Arbiter.App.Json;
+namespace Arbiter.Json.Converters;
 
 public class HexNumberJsonConverter<T> : JsonConverter<T> where T:struct
 {

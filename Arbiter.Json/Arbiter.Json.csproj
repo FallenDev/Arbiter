@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Company>Aiseirigh Team</Company>
-        <Product>Arbiter Network Library</Product>
+        <Product>Arbiter JSON Library</Product>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
