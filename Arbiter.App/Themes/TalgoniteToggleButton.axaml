@@ -62,14 +62,32 @@
         </Style>
         
         <Style Selector="^.toolbar /template/ Border#SelectionBorder">
-            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.SegmentBorderBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Margin" Value="0"/>
         </Style>
         
-        <!-- Toolbar Button Style -->
+        <Style Selector="^.toolbar:pointerover /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.SegmentHoverBorderBrush}"/>
+        </Style>
+        
+        <!-- Toolbar Button Focus Style -->
+        <Style Selector="^.toolbar:focus">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        
+        <!-- Toolbar Button Pressed Style -->
+        <Style Selector="^.toolbar:pressed">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="ZIndex" Value="1000"/>
+        </Style>
+        
+        <!-- Toolbar Button Checked Style -->
         <Style Selector="^.toolbar:checked">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
             <Setter Property="BorderThickness" Value="2"/>
