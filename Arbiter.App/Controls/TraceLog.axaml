@@ -7,8 +7,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Controls.TraceLog"
              x:DataType="vm:TraceViewModel">
-   <Grid RowDefinitions="Auto,*" RowSpacing="4">
-        <Border Grid.Row="0" Padding="4">
+   <Grid RowDefinitions="Auto,Auto,*">
+       <!-- Toolbar Area -->
+       <Border Grid.Row="0" Padding="4">
             <Grid ColumnDefinitions="*,*,*">
                 <!-- Left Side Buttons -->
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4">
@@ -159,7 +160,21 @@
                 </WrapPanel>
             </Grid>
         </Border>
-        <ListBox Grid.Row="1"
+        <!-- Filter Bar -->
+        <Border Grid.Row="1" IsVisible="{Binding ShowFilterBar}"
+                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="4">
+            <Grid ColumnDefinitions="*,*,*">
+                <WrapPanel Grid.Column="0">
+                    <Button Content="1" Classes="toolbar"/>
+                    <Button Content="2" Classes="toolbar"/>
+                    <Button Content="3" Classes="toolbar"/>
+                </WrapPanel>
+            </Grid>
+        </Border>
+        <!-- Trace List -->
+        <ListBox Grid.Row="2"
                  ItemsSource="{Binding FilteredPackets}"
                  ItemTemplate="{StaticResource TracePacketTemplate}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
