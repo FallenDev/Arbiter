@@ -47,7 +47,7 @@
                 </Button>
                 <!-- Clear Logs Button -->
                 <Button Command="{Binding ClearLogsCommand}"
-                        ToolTip.Tip="Clears all messages."
+                        ToolTip.Tip="Clears all console messages."
                         Classes="toolbar destructive">
                     <Path Width="16"
                           Height="16"

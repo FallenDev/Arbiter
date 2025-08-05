@@ -78,7 +78,7 @@
                                       StrokeThickness="2"
                                       StrokeLineCap="Square"
                                       Stretch="None"
-                                      Data="M8 2 L8 14 M2 8 L14 8"/>
+                                      Data="M8 0 L8 16 M0 8 L16 8"/>
                             </StackPanel>
                         </Button>
                     </WrapPanel>

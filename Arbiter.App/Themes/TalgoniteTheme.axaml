@@ -130,6 +130,7 @@
             <SolidColorBrush x:Key="Talgonite.ToggleButton.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.HoverForeground" Color="#e6e7e8"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedForeground" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedBorderBrush" Color="#81b8f5"/>
             
             <!-- ToggleSwitch Resources -->
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.Foreground" Color="#e0e0e0"/>

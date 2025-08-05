@@ -25,6 +25,7 @@
                                       Background="{TemplateBinding Background}"
                                       Foreground="{TemplateBinding Foreground}"
                                       BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
                                       CornerRadius="{TemplateBinding CornerRadius}"
                                       Padding="{TemplateBinding Padding}"
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -34,11 +35,13 @@
             </ControlTemplate>
         </Setter>
         
+        <!-- Hover Style -->
         <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.HoverBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.HoverForeground}"/>
         </Style>
         
+        <!-- Checked Style -->
         <Style Selector="^:checked /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
@@ -46,7 +49,34 @@
         
         <Style Selector="^:checked /template/ Border#SelectionBorder">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
+        </Style>
+        
+        <!-- Toolbar Button Style -->
+        <Style Selector="^.toolbar">
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="MinWidth" Value="40"/>
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+        </Style>
+        
+        <Style Selector="^.toolbar /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+        
+        <!-- Toolbar Button Style -->
+        <Style Selector="^.toolbar:checked">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="MinWidth" Value="40"/>
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
         </Style>
     </Style>
 </Styles>

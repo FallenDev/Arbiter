@@ -26,6 +26,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
+    [ObservableProperty] private bool _showFilterBar;
     
     public bool IsEmpty => _allPackets.Count == 0;
 
