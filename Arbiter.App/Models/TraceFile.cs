@@ -8,5 +8,5 @@ public class TraceFile
 {
     [JsonPropertyName("version")] public string Version { get; set; } = "1.0";
     [JsonPropertyName("createdDate")] public DateTime Date { get; set; } = DateTime.UtcNow;
-    [JsonPropertyName("packets")] public IEnumerable<TracePacket> Packets { get; set; } = [];
+    [JsonPropertyName("packets")] public IReadOnlyCollection<TracePacket> Packets { get; set; } = [];
 }

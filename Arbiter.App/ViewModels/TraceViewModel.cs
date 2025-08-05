@@ -87,17 +87,32 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        var packetViewModel = new TracePacketViewModel(e.Connection, e.Packet, e.Payload)
+        var packetViewModel = new TracePacketViewModel(e.Packet, e.Payload, e.Connection.Name)
             { DisplayMode = _packetDisplayMode };
         _allPackets.Add(packetViewModel);
     }
 
-    public async Task SaveToFile(string outputPath)
+    public async Task LoadFromFileAsync(string inputPath)
+    {
+        var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
+        var packets = traceFile.Packets;
+        
+        StopTracing();
+        _allPackets.Clear();
+
+        foreach (var packet in packets)
+        {
+            var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
+            _allPackets.Add(vm);
+        }
+    }
+
+    public async Task SaveToFileAsync(string outputPath)
     {
         var snapshot = _allPackets.ToList();
         var packets = snapshot.Select(vm => vm.ToTracePacket());
         
-        var traceFile = new TraceFile { Packets = packets };
+        var traceFile = new TraceFile { Packets = packets.ToList() };
         await _traceService.SaveTraceFileAsync(traceFile, outputPath);
     }
 
@@ -164,6 +179,12 @@ public partial class TraceViewModel : ViewModelBase
                 return;
             }
         }
+
+        var inputPath = result[0].Path.AbsolutePath;
+        var filename = Path.GetFileName(inputPath);
+
+        await LoadFromFileAsync(inputPath);
+        _logger.LogInformation("Trace loaded from {Filename}", filename);
     }
 
     [RelayCommand]
@@ -190,8 +211,9 @@ public partial class TraceViewModel : ViewModelBase
 
         var outputPath = result.Path.AbsolutePath;
         var filename = Path.GetFileName(outputPath);
-        await SaveToFile(outputPath);
-        _logger.LogInformation("Trace saved to {Path}", filename);
+        
+        await SaveToFileAsync(outputPath);
+        _logger.LogInformation("Trace saved to {Filename}", filename);
     }
 
     [RelayCommand]

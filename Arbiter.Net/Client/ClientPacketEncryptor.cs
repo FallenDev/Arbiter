@@ -68,7 +68,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         if (!IsDialog(packet.Command))
         {
-            return new ClientPacket(packet.Command, decrypted, checksum);
+            return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum);
         }
 
         // Handle dialog encryption
@@ -88,6 +88,6 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         decrypted = decrypted[6..];
 
-        return new ClientPacket(packet.Command, decrypted, checksum);
+        return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum);
     }
 }

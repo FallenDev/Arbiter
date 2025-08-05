@@ -11,10 +11,16 @@ public abstract class NetworkPacket : IEnumerable<byte>
     public byte Command { get; }
     public byte[] Data { get; }
 
+
     protected NetworkPacket(byte command, ReadOnlySpan<byte> data)
+        : this(command, data.ToArray())
+    {
+    }
+
+    protected NetworkPacket(byte command, byte[] data)
     {
         Command = command;
-        Data = data.ToArray();
+        Data = data;
     }
 
     public async ValueTask WriteToAsync(NetworkStream stream, Memory<byte> headerBuffer,
