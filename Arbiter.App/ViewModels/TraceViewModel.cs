@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -22,6 +23,7 @@ public partial class TraceViewModel : ViewModelBase
     
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     
+    [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
     
@@ -83,6 +85,8 @@ public partial class TraceViewModel : ViewModelBase
         }
 
         _proxyServer.PacketReceived += OnPacketReceived;
+        
+        StartTime = DateTime.Now;
         IsRunning = true;
         
         _logger.LogInformation("Trace started");
@@ -100,6 +104,18 @@ public partial class TraceViewModel : ViewModelBase
         IsRunning = false;
 
         _logger.LogInformation("Trace stopped");
+    }
+
+    [RelayCommand]
+    private Task LoadTrace()
+    {
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private Task SaveTrace()
+    {
+        return Task.CompletedTask;
     }
 
     [RelayCommand]

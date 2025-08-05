@@ -41,9 +41,9 @@
                           Stroke="{Binding $parent[Button].Foreground}"
                           StrokeThickness="2"
                           Stretch="None"
-                          Data="M8,0     L8,12
+                          Data="M8,0     L8,14
                                 M2,8     L8,14    L14,8
-                                M0,15    L16,15"/>
+                                M0,16    L16,16"/>
                 </Button>
                 <!-- Clear Logs Button -->
                 <Button Command="{Binding ClearLogsCommand}"
@@ -54,7 +54,7 @@
                           Stroke="{Binding $parent[Button].Foreground}"
                           StrokeThickness="2"
                           Stretch="None"
-                          Data="M1,1 L15,15 M15,1 L1,15"/>
+                          Data="M0,0 L16,16 M16,0 L0,16"/>
                 </Button>
             </UniformGrid>
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"

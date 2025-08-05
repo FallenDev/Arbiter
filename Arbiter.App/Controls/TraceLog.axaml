@@ -11,7 +11,7 @@
         <Border Grid.Row="0" Padding="4">
             <Grid ColumnDefinitions="*,*,*">
                 <!-- Left Side Buttons -->
-                <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="8">
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4">
                     <!-- Start Trace Button -->
                     <Button Command="{Binding StartTracingCommand}"
                             ToolTip.Tip="Starts a new packet trace."
@@ -24,8 +24,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M1,1 L15,8 L1,15 Z"/>
-                            <TextBlock Text="Start"/>
+                                  Data="M0,0 L16,8 L0,16 Z"/>
                         </StackPanel>
                     </Button>
                     <!-- Stop Trace Button -->
@@ -40,14 +39,13 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M1,1 H15 V15 H1 Z"/>
-                            <TextBlock Text="Stop"/>
+                                  Data="M0,0 H16 V16 H0 Z"/>
                         </StackPanel>
                     </Button>
                 </WrapPanel>
                 
                 <!-- Center Buttons -->
-                <WrapPanel Grid.Column="1" Orientation="Horizontal" ItemSpacing="8" ItemsAlignment="Center">
+                <WrapPanel Grid.Column="1" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="Center">
                     <!-- Display Mode -->
                     <StackPanel Orientation="Horizontal">
                         <!-- Decrypted Display -->
@@ -95,7 +93,35 @@
                 </WrapPanel>
                 
                 <!-- Right Side Buttons -->
-                <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="8" ItemsAlignment="End">
+                <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="End">
+                    <!-- Load Trace Button -->
+                    <Button Command="{Binding LoadTraceCommand}"
+                            ToolTip.Tip="Loads a trace from a file."
+                            IsEnabled="{Binding IsRunning, Converter={x:Static BoolConverters.Not}}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Path Width="16" Height="16"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="2"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Stretch="None"
+                                  Data="M0,0 H8 L10,4 H16 V16 H0 Z"/>
+                        </StackPanel>
+                    </Button>
+                    <!-- Save Trace Button -->
+                    <Button Command="{Binding SaveTraceCommand}"
+                            ToolTip.Tip="Saves this trace to a file."
+                            IsEnabled="{Binding IsEmpty, Converter={x:Static BoolConverters.Not}}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Path Width="16" Height="16"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="2"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Stretch="None"
+                                  Data="M0,0 H12 L16,4 V16 H0 Z M4,0 H12 V7 H4 Z M4,10 H12 V16 H4 Z"/>
+                        </StackPanel>
+                    </Button>
                     <!-- Clear Trace Button -->
                     <Button Command="{Binding ClearTraceCommand}"
                             ToolTip.Tip="Clears all packets from the trace."
@@ -108,10 +134,8 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Margin="2,0,0,0"
-                                  RenderTransform="rotate(20deg)"
+                                  RenderTransform="rotate(25deg)"
                                   Data="M8 0 V12 M3 12 H13 M3 14 H13 M4 12 V14 M6 12 V14 M9 12 V14 M11 12 V14"/>
-                            <TextBlock Text="Clear"/>
                         </StackPanel>
                     </Button>
                     <!-- Scroll to End Button -->
@@ -123,9 +147,9 @@
                               Stroke="{Binding $parent[Button].Foreground}"
                               StrokeThickness="2"
                               Stretch="None"
-                              Data="M8,0     L8,12
-                                M2,8     L8,14    L14,8
-                                M0,15    L16,15"/>
+                              Data="M8,0     L8,14
+                                    M2,8     L8,14    L14,8
+                                    M0,16    L16,16"/>
                     </Button>
                 </WrapPanel>
             </Grid>
