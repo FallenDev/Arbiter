@@ -22,8 +22,7 @@ public class SettingsService : ISettingsService
     };
 
     // Default to the folder where the application is running
-    private static readonly string SettingsDirectory =
-        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+    private static readonly string SettingsDirectory = AppHelper.GetStartupLocation();
 
     private const string SettingsFileName = "settings.json";
 

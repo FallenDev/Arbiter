@@ -32,7 +32,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var bRand = (ushort)((packet.Data[^1] << 8 | packet.Data[^3]) ^ 0x7470);
 
         // Extract the packet checksum
-        var checksum = (long)((uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 | packet.Data[^4]);
+        var checksum = ((uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 | packet.Data[^4]);
 
         // [u8 Sequence] [u8... Payload] [u8? Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         var payloadLength = packet.Data.Length - 8;

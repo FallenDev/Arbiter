@@ -86,6 +86,7 @@ public class App : Application
         services.AddTransient<IDialogService, DialogService>();
         services.AddTransient<IGameClientService, GameClientService>();
         services.AddTransient<ISettingsService, SettingsService>();
+        services.AddTransient<ITraceService, TraceService>();
     }
 
     private static void RegisterViewModels(IServiceCollection services)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Arbiter.App.Models;
 using Arbiter.Net;
+using Arbiter.Net.Client;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels;
@@ -33,4 +34,19 @@ public partial class TracePacketViewModel(
 
     public string FormattedPacket => string.Join(' ', Packet.Select(x => x.ToString("X2")));
     public string FormattedPayload => string.Join(' ', Payload.Select(x => x.ToString("X2")));
+
+    public TracePacket ToTracePacket()
+    {
+        var tracePacket = new TracePacket
+        {
+            Timestamp = Timestamp,
+            Direction = Packet is ClientPacket ? "client" : "server",
+            ClientName = Connection.Name,
+            Command = packet.Command,
+            RawPacket = Packet.ToList(),
+            Payload = Payload,
+            Checksum = Packet is ClientPacket clientPacket ? clientPacket.Checksum : null
+        };
+        return tracePacket;
+    }
 }
