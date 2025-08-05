@@ -24,18 +24,7 @@
                       StrokeThickness="2"
                       StrokeLineCap="Round"
                       StrokeJoin="Round"
-                      Data="M2 2   H16
-                            M22 2  L20 0
-                            M22 2  L20 4
-
-                            M22 8  V14
-
-                            M8 14  H22
-
-                            M2 14  L4 12
-                            M2 14  L4 16
-
-                            M2 2   V8"/>
+                      Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
             </Button>
         </DockPanel>
     </controls:TalgoniteWindow.TitleBarContent>

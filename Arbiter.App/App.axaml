@@ -22,6 +22,7 @@
             
             <!-- Data Templates -->
             <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Themes/TalgoniteIcons.axaml"/>
                 <ResourceInclude Source="/DataTemplates/LogEntryTemplate.axaml"/>
                 <ResourceInclude Source="/DataTemplates/TracePacketTemplate.axaml"/>
             </ResourceDictionary.MergedDictionaries>

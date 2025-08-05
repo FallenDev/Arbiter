@@ -1,0 +1,138 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Minimize Icon -->
+    <Geometry x:Key="Talgonite.Icon.WindowMinimize">
+        M2 14 H14
+    </Geometry>
+    
+    <!-- Maximize Icon -->
+    <Geometry x:Key="Talgonite.Icon.WindowMaximize">
+        M2 2 H14 V14 H2 Z
+    </Geometry>
+    
+    <!-- Close Icon -->
+    <Geometry x:Key="Talgonite.Icon.WindowClose">
+        M2 2 L14 14 M14 2 L2 14
+    </Geometry>
+    
+    <!-- Settings Icon -->
+    <Geometry x:Key="Talgonite.Icon.SettingsGear">
+        M16,8
+        L13.26,10.17
+        L13.6,13.6
+        L10.17,13.26
+        L8,16
+        L5.83,13.26
+        L2.4,13.6
+        L2.74,10.17
+        L0,8
+        L2.74,5.83
+        L2.4,2.4
+        L5.83,2.74
+        L8,0
+        L10.17,2.74
+        L13.6,2.4
+        L13.26,5.83
+        Z
+        M11,8
+        A3,3 0 1,1 5,8
+        A3,3 0 1,1 11,8
+        Z
+    </Geometry>
+    
+    <!-- Refresh Icon -->
+    <Geometry x:Key="Talgonite.Icon.RefreshArrows">
+        M2 2   H16
+        M22 2  L20 0
+        M22 2  L20 4
+        M22 8  V14
+        M8 14  H22
+        M2 14  L4 12
+        M2 14  L4 16
+        M2 2   V8
+    </Geometry>
+    
+    <!-- ScrollToEnd Icon -->
+    <Geometry x:Key="Talgonite.Icon.ArrowDownEnd">
+        M8,0     L8,14
+        M2,8     L8,14    L14,8
+        M0,16    L16,16
+    </Geometry>
+    
+    <!-- Plus Icon -->
+    <Geometry x:Key="Talgonite.Icon.NewPlus">
+        M8 0 L8 16 M0 8 L16 8
+    </Geometry>
+    
+    <!-- Cross X Icon -->
+    <Geometry x:Key="Talgonite.Icon.CrossX">
+        M0,0 L16,16 M16,0 L0,16
+    </Geometry>
+    
+    <!-- Folder Icon -->
+    <Geometry x:Key="Talgonite.Icon.LoadFolder">
+        M0,0 H8 L10,4 H16 V16 H0 Z
+    </Geometry>
+    
+    <!-- Disk Icon -->
+    <Geometry x:Key="Talgonite.Icon.SaveDisk">
+        M0,0 H12 L16,4 V16 H0 Z M4,0 H12 V7 H4 Z M4,10 H12 V16 H4 Z
+    </Geometry>
+    
+    <!-- Search Icon -->
+    <Geometry x:Key="Talgonite.Icon.SearchMagnify">
+        M6,0 A6,6 0 0,0 6,13 A6,6 0 0,0 6,0 Z M12,12 L16,16
+    </Geometry>
+    
+    <!-- Filter Icon -->
+    <Geometry x:Key="Talgonite.Icon.FilterFunnel">
+        M0,0 H16 L10,8 V16 H6 V8 Z H16 Z
+    </Geometry>
+    
+    <!-- Trash Icon -->
+    <Geometry x:Key="Talgonite.Icon.TrashBin">
+        M0,6 H16 V2 H10 V0 H6 V2 H0 Z M2,6 H14 V16 H2 Z M6,9 V 13 Z
+    </Geometry>
+    
+    <!-- Start Icon -->
+    <Geometry x:Key="Talgonite.Icon.StartPlay">
+        M0,0 L16,8 L0,16 Z
+    </Geometry>
+    
+    <!-- Stop Icon -->
+    <Geometry x:Key="Talgonite.Icon.StopPlay">
+        M0,0 H16 V16 H0 Z
+    </Geometry>
+    
+    <!-- Reveal Eye Icon -->
+    <Geometry x:Key="Talgonite.Icon.RevealEye">
+        M1,8 C3,2 13,2 15,8 C13,14 3,14 1,8 Z
+        M8,4 C9,4 11,6 11,8 C11,10 9,12 8,12 C7,12 5,10 5,8 C5,6 7,4 8,4 Z
+    </Geometry>
+    
+    <!-- Lock Icon -->
+    <Geometry x:Key="Talgonite.Icon.SecureLock">
+        M4,7 V4 A4,4 0 0 1 12,4 V7 M2,7 H14 V15 H2 Z
+    </Geometry>
+    
+    <!-- Error Circle Icon -->
+    <Geometry x:Key="Talgonite.Icon.ErrorLevel">
+        M8,1 A7,7 0 1,1 8,15 A7,7 0 1,1 8,1 Z
+    </Geometry>
+    
+    <!-- Warning Triangle Icon -->
+    <Geometry x:Key="Talgonite.Icon.WarningLevel">
+        M8,1 L16,15 L0,15 Z
+    </Geometry>
+    
+    <!-- Info Square Icon -->
+    <Geometry x:Key="Talgonite.Icon.InfoLevel">
+        M1,1 L15,1 L15,15 L1,15 Z
+    </Geometry>
+    
+    <!-- Debug Diamond Icon -->
+    <Geometry x:Key="Talgonite.Icon.DebugLevel">
+        M8,1 L15,8 L8,15 L1,8 Z
+    </Geometry>
+    
+</ResourceDictionary>

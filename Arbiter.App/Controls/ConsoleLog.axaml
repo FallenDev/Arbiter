@@ -41,9 +41,7 @@
                           Stroke="{Binding $parent[Button].Foreground}"
                           StrokeThickness="2"
                           Stretch="None"
-                          Data="M8,0     L8,14
-                                M2,8     L8,14    L14,8
-                                M0,16    L16,16"/>
+                          Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
                 </Button>
                 <!-- Clear Logs Button -->
                 <Button Command="{Binding ClearLogsCommand}"
@@ -54,7 +52,7 @@
                           Stroke="{Binding $parent[Button].Foreground}"
                           StrokeThickness="2"
                           Stretch="None"
-                          Data="M0,0 L16,16 M16,0 L0,16"/>
+                          Data="{StaticResource Talgonite.Icon.TrashBin}"/>
                 </Button>
             </UniformGrid>
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
@@ -71,7 +69,7 @@
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0"
-                          Data="M8,1 A7,7 0 1,1 8,15 A7,7 0 1,1 8,1 Z"/>
+                          Data="{StaticResource Talgonite.Icon.ErrorLevel}"/>
                     <TextBlock Grid.Column="1"
                                Text="{Binding ErrorCount}"
                                TextAlignment="Right"
@@ -90,7 +88,7 @@
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0"
-                          Data="M8,1 L16,15 L0,15 Z"/>
+                          Data="{StaticResource Talgonite.Icon.WarningLevel}"/>
                     <TextBlock Grid.Column="1"
                                Text="{Binding WarningCount}"
                                TextAlignment="Right"
@@ -109,7 +107,7 @@
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0"
-                          Data="M1,1 L15,1 L15,15 L1,15 Z"/>
+                          Data="{StaticResource Talgonite.Icon.InfoLevel}"/>
                     <TextBlock Grid.Column="1"
                                Text="{Binding InfoCount}"
                                TextAlignment="Right"
@@ -128,7 +126,7 @@
                           StrokeThickness="2"
                           StrokeLineCap="Round"
                           Margin="4,0"
-                          Data="M8,1 L15,8 L8,15 L1,8 Z"/>
+                          Data="{StaticResource Talgonite.Icon.DebugLevel}"/>
                     <TextBlock Grid.Column="1"
                                Text="{Binding DebugCount}"
                                TextAlignment="Right"

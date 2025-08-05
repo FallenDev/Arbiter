@@ -24,7 +24,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M0,0 L16,8 L0,16 Z"/>
+                                  Data="{StaticResource Talgonite.Icon.StartPlay}"/>
                         </StackPanel>
                     </Button>
                     <!-- Stop Trace Button -->
@@ -39,7 +39,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M0,0 H16 V16 H0 Z"/>
+                                  Data="{StaticResource Talgonite.Icon.StopPlay}"/>
                         </StackPanel>
                     </Button>
                 </WrapPanel>
@@ -61,14 +61,7 @@
                                           StrokeLineCap="Round"
                                           StrokeJoin="Round"
                                           Stretch="None"
-                                          Data="M1,8 C3,2 13,2 15,8 C13,14 3,14 1,8 Z"/>
-                                    <Path Width="16" Height="16"
-                                          Fill="{Binding $parent[RadioButton].Foreground}"
-                                          StrokeThickness="2"
-                                          StrokeLineCap="Round"
-                                          StrokeJoin="Round"
-                                          Stretch="None"
-                                          Data="M8,4 C9,4 11,6 11,8 C11,10 9,12 8,12 C7,12 5,10 5,8 C5,6 7,4 8,4 Z"/>
+                                          Data="{StaticResource Talgonite.Icon.RevealEye}"/>
                                 </Canvas>
                                 <TextBlock Text="Decrypted"/>
                             </StackPanel>
@@ -85,7 +78,7 @@
                                       StrokeLineCap="Round"
                                       StrokeJoin="Round"
                                       Stretch="None"
-                                      Data="M4,7 V4 A4,4 0 0 1 12,4 V7 M2,7 H14 V15 H2 Z"/>
+                                      Data="{StaticResource Talgonite.Icon.SecureLock}"/>
                                 <TextBlock Text="Encrypted"/>
                             </StackPanel>
                         </RadioButton>
@@ -105,7 +98,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M6,0 A6,6 0 0,0 6,13 A6,6 0 0,0 6,0 Z M12,12 L16,16"/>
+                                  Data="{StaticResource Talgonite.Icon.FilterFunnel}"/>
                         </StackPanel>
                     </ToggleButton>
                     <!-- Load Trace Button -->
@@ -119,7 +112,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M0,0 H8 L10,4 H16 V16 H0 Z"/>
+                                  Data="{StaticResource Talgonite.Icon.LoadFolder}"/>
                         </StackPanel>
                     </Button>
                     <!-- Save Trace Button -->
@@ -134,7 +127,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  Data="M0,0 H12 L16,4 V16 H0 Z M4,0 H12 V7 H4 Z M4,10 H12 V16 H4 Z"/>
+                                  Data="{StaticResource Talgonite.Icon.SaveDisk}"/>
                         </StackPanel>
                     </Button>
                     <!-- Clear Trace Button -->
@@ -149,8 +142,7 @@
                                   StrokeLineCap="Round"
                                   StrokeJoin="Round"
                                   Stretch="None"
-                                  RenderTransform="rotate(25deg)"
-                                  Data="M8 0 V12 M3 12 H13 M3 14 H13 M4 12 V14 M6 12 V14 M9 12 V14 M11 12 V14"/>
+                                  Data="{StaticResource Talgonite.Icon.TrashBin}"/>
                         </StackPanel>
                     </Button>
                     <!-- Scroll to End Button -->
@@ -162,9 +154,7 @@
                               Stroke="{Binding $parent[Button].Foreground}"
                               StrokeThickness="2"
                               Stretch="None"
-                              Data="M8,0     L8,14
-                                    M2,8     L8,14    L14,8
-                                    M0,16    L16,16"/>
+                              Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
                     </Button>
                 </WrapPanel>
             </Grid>

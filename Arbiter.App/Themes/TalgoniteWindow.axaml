@@ -65,7 +65,7 @@
                                             StrokeThickness="2"
                                             StrokeLineCap="Round"
                                             Stretch="None"
-                                            Data="M2 14 H14" />
+                                            Data="{StaticResource Talgonite.Icon.WindowMinimize}" />
                                     </Button>
                                     
                                     <!-- Maximize/Restore Button -->
@@ -79,7 +79,7 @@
                                             StrokeThickness="2"
                                             StrokeJoin="Round"
                                             Stretch="None"
-                                            Data="M2 2 H14 V14 H2 Z" />
+                                            Data="{StaticResource Talgonite.Icon.WindowMaximize}" />
                                     </Button>
                                     
                                     <!-- Close Button -->
@@ -92,7 +92,7 @@
                                             StrokeThickness="2"
                                             StrokeLineCap="Round"
                                             Stretch="None"
-                                            Data="M2 2 L14 14 M14 2 L2 14"/>
+                                            Data="{StaticResource Talgonite.Icon.WindowClose}"/>
                                     </Button>
                                 </Grid>
                             </Border>
