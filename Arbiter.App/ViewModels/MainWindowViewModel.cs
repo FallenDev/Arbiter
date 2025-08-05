@@ -35,7 +35,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ISettingsService settingsService)
     {
         _logger = logger;
-
+        
         _dialogService = dialogService;
         _gameClientService = gameClientService;
         _settingsService = settingsService;

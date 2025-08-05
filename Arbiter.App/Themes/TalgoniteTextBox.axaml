@@ -11,9 +11,10 @@
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="Padding" Value="8,4"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
+        <Setter Property="TextAlignment" Value="Left"/>
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="Border"
@@ -21,8 +22,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <DockPanel Margin="{TemplateBinding Padding}"
-                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    <DockPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                         
                         <!-- Floating Watermark -->
@@ -30,7 +30,8 @@
                                    DockPanel.Dock="Top"
                                    Text="{TemplateBinding Watermark}"
                                    Foreground="{StaticResource Talgonite.TextBox.WatermarkForeground}"
-                                   FontSize="14">
+                                   FontSize="14"
+                                   Margin="{TemplateBinding Padding}">
                             <TextBlock.IsVisible>
                                 <MultiBinding Converter="{x:Static BoolConverters.And}">
                                     <Binding Path="$parent[TextBox].UseFloatingWatermark"/>
@@ -60,7 +61,8 @@
                                                    TextWrapping="{TemplateBinding TextWrapping}"
                                                    Foreground="{StaticResource Talgonite.TextBox.WatermarkForeground}"
                                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                   Margin="{TemplateBinding Padding}">
                                             <TextBlock.IsVisible>
                                                 <MultiBinding Converter="{x:Static BoolConverters.And}">
                                                     <Binding Path="#PART_TextPresenter.PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
@@ -82,7 +84,10 @@
                                                        SelectionStart="{TemplateBinding SelectionStart}"
                                                        SelectionEnd="{TemplateBinding SelectionEnd}"
                                                        RevealPassword="{TemplateBinding RevealPassword}"
-                                                       PasswordChar="{TemplateBinding PasswordChar}"/>
+                                                       PasswordChar="{TemplateBinding PasswordChar}"
+                                                       Margin="{TemplateBinding Padding}"
+                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                                     </Panel>
                                     
                                     <ScrollViewer.Styles>

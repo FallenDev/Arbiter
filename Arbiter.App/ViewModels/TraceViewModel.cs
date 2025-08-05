@@ -5,6 +5,7 @@ using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.Net;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,7 +15,14 @@ namespace Arbiter.App.ViewModels;
 
 public partial class TraceViewModel : ViewModelBase
 {
+    private static readonly FilePickerFileType JsonFileType = new("JSON Files")
+    {
+        Patterns = ["*.json"],
+        MimeTypes = ["application/json"],
+    };
+    
     private readonly ILogger<TraceViewModel> _logger;
+    private readonly IStorageProvider _storageProvider;
     private readonly IDialogService _dialogService;
     private readonly ProxyServer _proxyServer;
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
@@ -49,9 +57,11 @@ public partial class TraceViewModel : ViewModelBase
         }
     }
 
-    public TraceViewModel(ILogger<TraceViewModel> logger, IDialogService dialogService, ProxyServer proxyServer)
+    public TraceViewModel(ILogger<TraceViewModel> logger, IStorageProvider storageProvider,
+        IDialogService dialogService, ProxyServer proxyServer)
     {
         _logger = logger;
+        _storageProvider = storageProvider;
         _dialogService = dialogService;
         _proxyServer = proxyServer;
 

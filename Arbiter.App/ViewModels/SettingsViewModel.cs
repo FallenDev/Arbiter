@@ -12,15 +12,15 @@ namespace Arbiter.App.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSettings>
 {
-    private ArbiterSettings _settings = new();
-    private readonly ISettingsService _settingsService;
-    private readonly IStorageProvider _storageProvider;
-
     private static readonly FilePickerFileType ExecutableType = new("All Executables")
     {
         Patterns = ["*.exe"],
         MimeTypes = ["application/octet-stream"],
     };
+    
+    private ArbiterSettings _settings = new();
+    private readonly ISettingsService _settingsService;
+    private readonly IStorageProvider _storageProvider;
 
     [ObservableProperty] private bool _hasChanges;
 

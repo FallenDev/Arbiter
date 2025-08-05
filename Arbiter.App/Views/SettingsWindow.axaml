@@ -37,7 +37,16 @@
             <Label Content="Client Executable Path:"/>
             <TextBox Name="ClientPathTextBox" 
                      Text="{Binding ClientExecutablePath}"
-                     Watermark="Path to game client..."/>
+                     Watermark="Path to game client...">
+                <TextBox.InnerRightContent>
+                    <Button Command="{Binding LocateClientCommand}"
+                            Content="..."
+                            ToolTip.Tip="Opens a file dialog to locate the game client."
+                            MinWidth="40"
+                            Margin="2"
+                            Padding="4,2"/>
+                </TextBox.InnerRightContent>
+            </TextBox>
             
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                     BorderThickness="0,0,0,1"
