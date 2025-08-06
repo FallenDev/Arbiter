@@ -3,12 +3,15 @@
     <Style Selector="TabStrip">
         <Setter Property="Background" Value="{StaticResource Talgonite.TabStrip.Background}"/>
         <Setter Property="CornerRadius" Value="0,16,0,0"/>
+
         <Setter Property="Template">
             <ControlTemplate>
                 <ItemsPresenter Name="PART_ItemsPresenter"
                                 ItemsPanel="{TemplateBinding ItemsPanel}"/>
             </ControlTemplate>
         </Setter>
+        
+        <!-- Tab Items Panel -->
         <Setter Property="ItemsPanel">
             <ItemsPanelTemplate>
                 <Border Background="{TemplateBinding Background}"

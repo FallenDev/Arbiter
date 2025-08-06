@@ -17,4 +17,13 @@
         <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="Focusable" Value="False"/>
     </Style>
+    
+    <Style Selector="Border.raised-highlight">
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Border.HighlightBrush}"/>
+        <Setter Property="BorderThickness" Value="1,1,0,0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
 </Styles>

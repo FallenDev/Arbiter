@@ -4,37 +4,47 @@
         <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.Foreground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0,2,0,0"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="16,8"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Content="{TemplateBinding Header}"
-                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                  Background="{TemplateBinding Background}"
-                                  Foreground="{TemplateBinding Foreground}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  Padding="{TemplateBinding Padding}"
-                                  RecognizesAccessKey="True"/>
+                <Grid>
+                    <Border Name="SelectionBorder"
+                            BorderBrush="Transparent"
+                            BorderThickness="0,2,0,0">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          Background="Transparent"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}"
+                                          CornerRadius="{TemplateBinding CornerRadius}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Padding="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"/>
+                    </Border>
+                </Grid>
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <!-- Hover Style -->
+        <Style Selector="^:pointerover">
             <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.HoverForeground}"/>
         </Style>
+        
+        <!-- Selected Style -->
         <Style Selector="^:selected">
-            <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.SelectedForeground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TabItem.SelectedHighlight}"/>
-        </Style>
-        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.SelectedBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.SelectedForeground}"/>
+        </Style>
+        <Style Selector="^:selected /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TabItem.SelectedHighlight}"/>
         </Style>
         
         <!-- Right Tab Placement -->

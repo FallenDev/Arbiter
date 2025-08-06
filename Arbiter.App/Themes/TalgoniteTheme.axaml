@@ -133,7 +133,8 @@
             <SolidColorBrush x:Key="Talgonite.TabItem.SelectedBackground" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.TabItem.SelectedHighlight" Color="#6893c2"/>
             <SolidColorBrush x:Key="Talgonite.TabItem.Foreground" Color="#717479"/>
-            <SolidColorBrush x:Key="Talgonite.TabItem.SelectedForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.HoverForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.SelectedForeground" Color="#81b8f5"/>
             
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>

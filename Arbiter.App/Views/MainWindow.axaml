@@ -83,10 +83,13 @@
                 <TabItem Header="Trace">
                     <controls:TraceLog DataContext="{Binding Trace}"/>
                 </TabItem>
-                <TabItem Header="Filters" IsEnabled="False">
+                <TabItem Header="Filters">
                     <ListBox></ListBox>
                 </TabItem>
-                <TabItem Header="Scripts" IsEnabled="False">
+                <TabItem Header="Scripts">
+                    <ListBox></ListBox>
+                </TabItem>
+                <TabItem Header="Disabled" IsEnabled="False">
                     <ListBox></ListBox>
                 </TabItem>
             </TabControl>
