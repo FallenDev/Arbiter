@@ -1,11 +1,11 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="ComboBoxItem">
-        <Setter Property="Background" Value="Green"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.Background}"/>
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
@@ -23,13 +23,29 @@
             </ControlTemplate>
         </Setter>
         
-        <!-- Selected Style -->
-        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.SelectedBackground}"/>
+        <!-- Hover Style -->
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.HoverForeground}"/>
         </Style>
         
+        <!-- Focus Style -->
+        <Style Selector="^:focus">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.FocusBackground}"/>
+        </Style>
+        
+        <!-- Selected Style -->
+        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.Background}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.SelectedForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ComboBoxItem.SelectedForeground}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="2"/>
+        </Style>
+        
+        <!-- Disabled Style -->
         <Style Selector="^:disabled">
-            <Setter Property="Background" Value="Red"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.DisabledForeground}"/>
         </Style>
     </Style>
 

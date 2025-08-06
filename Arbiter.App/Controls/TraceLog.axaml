@@ -192,12 +192,9 @@
                             </ComboBox.SelectionBoxItemTemplate>
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="Red"
-                                            BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
+                                    <Border BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
                                             BorderThickness="0,0,0,1"
-                                            Padding="8,4"
-                                            HorizontalAlignment="Stretch"
-                                            IsHitTestVisible="True">
+                                            Padding="4">
                                         <TextBlock Text="{Binding .}"
                                                    Padding="8,2"/>
                                     </Border>

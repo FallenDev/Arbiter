@@ -18,8 +18,7 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        IsHitTestVisible="False">
+                        Padding="{TemplateBinding Padding}">
                     <WrapPanel Orientation="Horizontal" ItemSpacing="8">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content}"
