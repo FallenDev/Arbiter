@@ -61,6 +61,9 @@
             <SolidColorBrush x:Key="Talgonite.ComboBoxItem.SelectedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.ComboBoxItem.DisabledForeground" Color="#7b7e85"/>
             
+            <!-- Control Resources -->
+            <SolidColorBrush x:Key="Talgonite.Control.Background" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.Control.Foreground" Color="#e0e0e0"/>
             
             <!-- GridSplitter Resources -->
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Background" Color="Transparent"/>

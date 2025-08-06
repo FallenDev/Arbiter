@@ -35,6 +35,14 @@
                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                    IsVisible="{TemplateBinding SelectionBoxItem, Converter={x:Static ObjectConverters.IsNull}}"/>
                         
+                        <Border Grid.Column="0" Grid.ColumnSpan="2"
+                                Classes="sunken-shadow"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        
+                        <Border Grid.Column="0" Grid.ColumnSpan="2"
+                                Classes="sunken-highlight"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        
                         <!-- Content Area -->
                         <ContentControl Grid.Column="0"
                                         Content="{TemplateBinding SelectionBoxItem}"

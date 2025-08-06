@@ -53,15 +53,14 @@
                                           Foreground="{StaticResource Talgonite.ToggleSwitch.CheckedForeground}"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        
+
                         <Border Name="SwitchKnobBounds"
                                 Grid.Row="1" Grid.Column="0"
                                 Width="48" Height="24"
                                 Background="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"
                                 BorderBrush="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"
                                 BorderThickness="2"
-                                CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
-                                />
+                                CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
                         
                         <Canvas Name="PART_SwitchKnob"
                                 Grid.Row="1" Grid.Column="0"

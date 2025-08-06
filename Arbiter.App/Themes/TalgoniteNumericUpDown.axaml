@@ -12,39 +12,48 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <DataValidationErrors>
-                    <ButtonSpinner Name="PART_Spinner"
-                                   Background="{TemplateBinding Background}"
-                                   BorderBrush="{TemplateBinding BorderBrush}"
-                                   BorderThickness="{TemplateBinding BorderThickness}"
-                                   CornerRadius="{TemplateBinding CornerRadius}"
-                                   AllowSpin="{TemplateBinding AllowSpin}"
-                                   ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
-                                   ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
-                                   MinWidth="0"
-                                   Padding="0"
-                                   HorizontalContentAlignment="Stretch"
-                                   VerticalContentAlignment="Stretch"
-                                   IsTabStop="False">
-                        <TextBox Name="PART_TextBox"
-                                 Text="{TemplateBinding Text}"
-                                 TextAlignment="{TemplateBinding TextAlignment}"
-                                 TextWrapping="NoWrap"
-                                 Watermark="{TemplateBinding Watermark}"
-                                 Background="{TemplateBinding Background}"
-                                 BorderThickness="0"
-                                 MinWidth="40"
-                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                 Padding="{TemplateBinding Padding}"
-                                 AcceptsReturn="False"
-                                 AcceptsTab="False"
-                                 IsReadOnly="{TemplateBinding IsReadOnly}"
-                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                 InnerLeftContent="{Binding $parent[TextBox].InnerLeftContent}"
-                                 InnerRightContent="{Binding $parent[TextBox].InnerRightContent}"/>
-                    </ButtonSpinner>
-                </DataValidationErrors>
+                <Border>
+                    <DataValidationErrors>
+                        <Grid>
+                            <Border Classes="sunken-shadow"
+                                    CornerRadius="{TemplateBinding CornerRadius}"/>
+                            <Border Classes="sunken-highlight"
+                                    CornerRadius="{TemplateBinding CornerRadius}"/>
+                            
+                            <ButtonSpinner Name="PART_Spinner"
+                                           Background="{TemplateBinding Background}"
+                                           BorderBrush="{TemplateBinding BorderBrush}"
+                                           BorderThickness="{TemplateBinding BorderThickness}"
+                                           CornerRadius="{TemplateBinding CornerRadius}"
+                                           AllowSpin="{TemplateBinding AllowSpin}"
+                                           ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                                           ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
+                                           MinWidth="0"
+                                           Padding="0"
+                                           HorizontalContentAlignment="Stretch"
+                                           VerticalContentAlignment="Stretch"
+                                           IsTabStop="False">
+                                <TextBox Name="PART_TextBox"
+                                         Text="{TemplateBinding Text}"
+                                         TextAlignment="{TemplateBinding TextAlignment}"
+                                         TextWrapping="NoWrap"
+                                         Watermark="{TemplateBinding Watermark}"
+                                         Background="{TemplateBinding Background}"
+                                         BorderThickness="0"
+                                         MinWidth="40"
+                                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                         Padding="{TemplateBinding Padding}"
+                                         AcceptsReturn="False"
+                                         AcceptsTab="False"
+                                         IsReadOnly="{TemplateBinding IsReadOnly}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                         InnerLeftContent="{Binding $parent[TextBox].InnerLeftContent}"
+                                         InnerRightContent="{Binding $parent[TextBox].InnerRightContent}"/>
+                            </ButtonSpinner>
+                        </Grid>
+                    </DataValidationErrors>
+                </Border>
             </ControlTemplate>
         </Setter>
         
