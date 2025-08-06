@@ -90,8 +90,9 @@
                 <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="End">
                     <!-- Toggle Filter Button -->
                     <ToggleButton IsChecked="{Binding ShowFilterBar}"
-                            ToolTip.Tip="Shows or hides the trace filters."
-                            Classes="toolbar">
+                                  HotKey="Ctrl+F"
+                                  ToolTip.Tip="Shows or hides the trace filters."
+                                  Classes="toolbar">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
@@ -104,6 +105,7 @@
                     </ToggleButton>
                     <!-- Load Trace Button -->
                     <Button Command="{Binding LoadTraceCommand}"
+                            HotKey="Ctrl+O"
                             ToolTip.Tip="Loads a trace from a file."
                             Classes="toolbar">
                         <StackPanel Orientation="Horizontal" Spacing="8">
@@ -119,6 +121,7 @@
                     <!-- Save Trace Button -->
                     <Button Command="{Binding SaveTraceCommand}"
                             ToolTip.Tip="Saves this trace to a file."
+                            HotKey="Ctrl+S"
                             Classes="toolbar"
                             IsEnabled="{Binding IsEmpty, Converter={x:Static BoolConverters.Not}}">
                         <StackPanel Orientation="Horizontal" Spacing="8">

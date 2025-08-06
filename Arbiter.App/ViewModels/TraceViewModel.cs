@@ -7,6 +7,8 @@ using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.Net;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +34,7 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
 
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
+    private PacketDirection _packetDirectionFilter = PacketDirection.Both;
     
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     
@@ -61,6 +64,19 @@ public partial class TraceViewModel : ViewModelBase
         }
     }
 
+    public PacketDirection PacketDirectionFilter
+    {
+        get => _packetDirectionFilter;
+        set
+        {
+            if (SetProperty(ref _packetDirectionFilter, value))
+            {
+                OnPropertyChanged();
+                FilteredPackets.Refresh();
+            }
+        }
+    }
+
     public TraceViewModel(ILogger<TraceViewModel> logger, IStorageProvider storageProvider,
         IDialogService dialogService, ITraceService traceService, ProxyServer proxyServer)
     {
@@ -80,8 +96,20 @@ public partial class TraceViewModel : ViewModelBase
         Dispatcher.UIThread.Post(() => { OnPropertyChanged(nameof(IsEmpty)); });
     }
 
-    private bool MatchesFilter(TracePacketViewModel packet)
+    private bool MatchesFilter(TracePacketViewModel vm)
     {
+        var direction = vm.Packet switch
+        {
+            ClientPacket => PacketDirection.Client,
+            ServerPacket => PacketDirection.Server,
+            _ => PacketDirection.None
+        };
+
+        if (!_packetDirectionFilter.HasFlag(direction))
+        {
+            return false;
+        }
+
         return true;
     }
 

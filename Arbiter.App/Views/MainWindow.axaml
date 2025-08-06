@@ -50,6 +50,7 @@
                 <DockPanel>
                     <WrapPanel DockPanel.Dock="Top" Margin="4">
                         <Button Command="{Binding LaunchClientCommand}"
+                                HotKey="Ctrl+N"
                                 ToolTip.Tip="Launch a new client."
                                 Classes="toolbar">
                             <StackPanel Orientation="Horizontal" Spacing="8">
