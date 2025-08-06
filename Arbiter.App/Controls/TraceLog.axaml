@@ -211,7 +211,7 @@
                  ItemTemplate="{StaticResource TracePacketTemplate}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                  behaviors:ScrollToEndBehavior.AutoScrollToEnd="True"
                  behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"/>
    </Grid>
