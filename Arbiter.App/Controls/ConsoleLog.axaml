@@ -60,6 +60,7 @@
             <!-- Error Filter Button -->
             <ToggleButton IsChecked="{Binding ShowErrorMessages}"
                           ToolTip.Tip="Toggles displaying of error messages."
+                          Classes="glow"
                           Height="40">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
                     <Path Grid.Column="0"
@@ -79,6 +80,7 @@
             <!-- Warn Filter Button -->
             <ToggleButton IsChecked="{Binding ShowWarningMessages}"
                           ToolTip.Tip="Toggles displaying of warning messages."
+                          Classes="glow"
                           Height="40">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
                     <Path Grid.Column="0"
@@ -98,6 +100,7 @@
             <!-- Info Filter Button -->
             <ToggleButton IsChecked="{Binding ShowInfoMessages}"
                           ToolTip.Tip="Toggles displaying of info messages."
+                          Classes="glow"
                           Height="40">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
                     <Path Grid.Column="0"
@@ -117,6 +120,7 @@
             <!-- Debug Filter Button -->
             <ToggleButton IsChecked="{Binding ShowDebugMessages}"
                           ToolTip.Tip="Toggles displaying of debug messages."
+                          Classes="glow"
                           Height="40">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
                     <Path Grid.Column="0"

@@ -99,7 +99,7 @@
                     <ToggleButton IsChecked="{Binding ShowFilterBar}"
                                   HotKey="Ctrl+F"
                                   ToolTip.Tip="Shows or hides the trace filters."
-                                  Classes="toolbar">
+                                  Classes="outline">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
@@ -179,7 +179,7 @@
                 <WrapPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Direction"/>
-                        <ComboBox>
+                        <ComboBox Width="140">
                             <ComboBoxItem>Client</ComboBoxItem>
                             <ComboBoxItem>Server</ComboBoxItem>
                             <ComboBoxItem>Both</ComboBoxItem>

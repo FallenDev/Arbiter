@@ -35,6 +35,20 @@
             <SolidColorBrush x:Key="Talgonite.DestructiveButton.HoverForeground" Color="#ed6a5e"/>
             <SolidColorBrush x:Key="Talgonite.DestructiveButton.PressedForeground" Color="#ffffff"/>
             
+            <!-- ComboBox Resources -->
+            <SolidColorBrush x:Key="Talgonite.ComboBox.Background" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.BorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.PlaceholderForeground" Color="#93959a"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.DisabledForeground" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.CaretForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.SelectionBackground" Color="#4a6380"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.SelectionForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.HoverBorderBrush" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.FocusBorderBrush" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.ErrorBorderBrush" Color="#ed6a5e"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.PopupBorderBrush" Color="#4d535d"/>
+            
             <!-- GridSplitter Resources -->
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Background" Color="Transparent"/>
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Foreground" Color="#4d535d"/>
@@ -119,6 +133,7 @@
             <SolidColorBrush x:Key="Talgonite.TextBox.CaretForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionBackground" Color="#4a6380"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.DisabledForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.HoverBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.FocusBorderBrush" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.ErrorBorderBrush" Color="#ed6a5e"/>
@@ -126,10 +141,13 @@
             <!-- ToggleButton Resources -->
             <SolidColorBrush x:Key="Talgonite.ToggleButton.Background" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.HoverBackground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleButton.PressedBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.HoverForeground" Color="#e6e7e8"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleButton.PressedForeground" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedForeground" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleButton.PressedBorderBrush" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.CheckedBorderBrush" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.SegmentBorderBrush" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ToggleButton.SegmentHoverBorderBrush" Color="#4d535d"/>
