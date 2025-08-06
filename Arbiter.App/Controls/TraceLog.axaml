@@ -15,6 +15,7 @@
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4">
                     <!-- Start Trace Button -->
                     <Button Command="{Binding StartTracingCommand}"
+                            HotKey="F5"
                             ToolTip.Tip="Starts a new packet trace."
                             Classes="toolbar"
                             IsEnabled="{Binding IsRunning, Converter={x:Static BoolConverters.Not}}">
@@ -30,6 +31,7 @@
                     </Button>
                     <!-- Stop Trace Button -->
                     <Button Command="{Binding StopTracingCommand}"
+                            HotKey="F6"
                             ToolTip.Tip="Stops the current packet trace."
                             Classes="toolbar"
                             IsEnabled="{Binding IsRunning}">

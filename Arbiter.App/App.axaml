@@ -16,6 +16,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <!-- Converters -->
+            <converters:HotKeyConverter x:Key="HotKeyConverter"/>
             <converters:LogLevelBrushConverter x:Key="LogLevelBrushConverter"/>
             <converters:PacketDirectionColorConverter x:Key="PacketDirectionColorConverter"/>
             <converters:PacketDirectionNameConverter x:Key="PacketDirectionNameConverter"/>

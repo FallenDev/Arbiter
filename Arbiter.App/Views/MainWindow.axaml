@@ -22,6 +22,7 @@
         <DockPanel>
             <Button Name="SettingsButton"
                     Command="{Binding ShowSettingsCommand}"
+                    HotKey="F10"
                     Classes="controlBox"
                     ToolTip.Tip = "Opens the Settings window.">
                 <Path Width="16"
