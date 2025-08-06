@@ -9,15 +9,14 @@
              x:DataType="vm:ConsoleViewModel">
     
     <UserControl.Resources>
-        <ResourceDictionary>
-            <SolidColorBrush x:Key="Talgonite.Console.ErrorBrush" Color="#ee8071"/>
-            <SolidColorBrush x:Key="Talgonite.Console.WarningBrush" Color="#fadf79"/>
-            <SolidColorBrush x:Key="Talgonite.Console.InfoBrush" Color="#cdcfd2"/>
-            <SolidColorBrush x:Key="Talgonite.Console.DebugBrush" Color="#82baf7"/>
-        </ResourceDictionary>
+        <SolidColorBrush x:Key="Talgonite.Console.Background" Color="#373d49"/>
+        <SolidColorBrush x:Key="Talgonite.Console.ErrorBrush" Color="#ee8071"/>
+        <SolidColorBrush x:Key="Talgonite.Console.WarningBrush" Color="#fadf79"/>
+        <SolidColorBrush x:Key="Talgonite.Console.InfoBrush" Color="#cdcfd2"/>
+        <SolidColorBrush x:Key="Talgonite.Console.DebugBrush" Color="#82baf7"/>
     </UserControl.Resources>
     
-    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4" Background="{StaticResource Talgonite.Console.Background}">
         <!-- Console Log List -->
         <ListBox Grid.Column="0"
                  ItemsSource="{Binding FilteredLogEntries}"

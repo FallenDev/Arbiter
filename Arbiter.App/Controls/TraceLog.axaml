@@ -7,7 +7,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Controls.TraceLog"
              x:DataType="vm:TraceViewModel">
-   <Grid RowDefinitions="Auto,Auto,*">
+    
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.Trace.Background" Color="#373d49"/>
+    </UserControl.Resources>
+    
+    <Grid RowDefinitions="Auto,Auto,*" Background="{StaticResource Talgonite.Trace.Background}">
        <!-- Toolbar Area -->
        <Border Grid.Row="0" Padding="4">
             <Grid ColumnDefinitions="*,*,*">
@@ -172,9 +177,14 @@
                 Padding="4">
             <Grid ColumnDefinitions="*,*,*">
                 <WrapPanel Grid.Column="0">
-                    <Button Content="1" Classes="toolbar"/>
-                    <Button Content="2" Classes="toolbar"/>
-                    <Button Content="3" Classes="toolbar"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Direction"/>
+                        <ComboBox>
+                            <ComboBoxItem>Client</ComboBoxItem>
+                            <ComboBoxItem>Server</ComboBoxItem>
+                            <ComboBoxItem>Both</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
                 </WrapPanel>
             </Grid>
         </Border>
