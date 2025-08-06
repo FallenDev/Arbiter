@@ -69,7 +69,8 @@
                                PlacementTarget="{TemplateBinding}"
                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                IsLightDismissEnabled="True"
-                               InheritsTransform="True">
+                               InheritsTransform="True"
+                               WindowManagerAddShadowHint="True">
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
                                     BorderThickness="1,0,1,1"

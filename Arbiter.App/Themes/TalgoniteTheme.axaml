@@ -15,6 +15,10 @@
             <sys:Double x:Key="Talgonite.FontSize.Console">14</sys:Double>
             <sys:Double x:Key="Talgonite.FontSize.Editor">14</sys:Double>
             <sys:Double x:Key="Talgonite.FontSize.Trace">14</sys:Double>
+            
+            <!-- Border Resources -->
+            <SolidColorBrush x:Key="Talgonite.Border.ShadowBrush" Color="#101215"/>
+            <SolidColorBrush x:Key="Talgonite.Border.HighlightBrush" Color="#4d535d"/>
     
             <!-- Button Resources -->
             <SolidColorBrush x:Key="Talgonite.Button.Background" Color="#373d49"/>

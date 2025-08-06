@@ -18,20 +18,26 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <ScrollViewer Name="PART_ScrollViewer"
-                                  Background="Transparent"
-                                  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                  IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
-                                  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                                  HorizontalSnapPointsType="{TemplateBinding ScrollViewer.HorizontalSnapPointsType}"
-                                  VerticalSnapPointsType="{TemplateBinding ScrollViewer.VerticalSnapPointsType}"
-                                  BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                                  AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}">
-                        <ItemsPresenter Name="PART_ItemsPresenter"
-                                        ItemsPanel="{TemplateBinding ItemsPanel}"
-                                        Margin="{TemplateBinding Padding}"/>
-                    </ScrollViewer>
+                    <Grid>
+                        <Border Classes="sunken-shadow"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border Classes="sunken-highlight"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <ScrollViewer Name="PART_ScrollViewer"
+                                      Background="Transparent"
+                                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                      IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
+                                      IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                      HorizontalSnapPointsType="{TemplateBinding ScrollViewer.HorizontalSnapPointsType}"
+                                      VerticalSnapPointsType="{TemplateBinding ScrollViewer.VerticalSnapPointsType}"
+                                      BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                                      AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}">
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </ScrollViewer>
+                    </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>
