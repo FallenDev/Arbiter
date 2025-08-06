@@ -21,8 +21,8 @@ public partial class TracePacketViewModel(
     public string? ClientName => clientName;
 
     public DateTime Timestamp { get; private init; } = DateTime.Now;
-    public NetworkPacket Packet { get; private init; } = packet;
-    public IReadOnlyCollection<byte> Payload { get; private init; } = payload;
+    public NetworkPacket Packet { get; } = packet;
+    public IReadOnlyCollection<byte> Payload { get; } = payload;
 
     public string DisplayValue => DisplayMode switch
     {
@@ -38,7 +38,7 @@ public partial class TracePacketViewModel(
         var tracePacket = new TracePacket
         {
             Timestamp = Timestamp,
-            Direction = Packet is ClientPacket ? "client" : "server",
+            Direction = Packet is ClientPacket ? PacketDirection.Client : PacketDirection.Server,
             ClientName = ClientName,
             Command = Packet.Command,
             RawPacket = Packet.ToList(),
@@ -52,10 +52,10 @@ public partial class TracePacketViewModel(
     {
         var rawPayload = tracePacket.RawPacket.Skip(NetworkPacket.HeaderSize);
 
-        NetworkPacket rawPacket = tracePacket.Direction.ToLowerInvariant() switch
+        NetworkPacket rawPacket = tracePacket.Direction switch
         {
-            "client" => new ClientPacket(tracePacket.Command, rawPayload, tracePacket.Checksum),
-            "server" => new ServerPacket(tracePacket.Command, rawPayload),
+            PacketDirection.Client => new ClientPacket(tracePacket.Command, rawPayload, tracePacket.Checksum),
+            PacketDirection.Server => new ServerPacket(tracePacket.Command, rawPayload),
             _ => throw new InvalidOperationException("Invalid packet direction")
         };
 

@@ -9,7 +9,7 @@ public class TracePacket
 {
     [JsonPropertyName("timestamp")] public DateTime Timestamp { get; set; }
 
-    [JsonPropertyName("direction")] public required string Direction { get; set; }
+    [JsonPropertyName("direction")] public PacketDirection Direction { get; set; }
 
     [JsonPropertyName("name")] public string? ClientName { get; set; }
 

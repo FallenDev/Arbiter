@@ -234,6 +234,8 @@ public partial class TraceViewModel : ViewModelBase
 
         _allPackets.Clear();
         OnPropertyChanged(nameof(FilteredPackets));
+
+        _logger.LogInformation("Trace cleared");
     }
 
     [RelayCommand]

@@ -20,6 +20,7 @@ public class TraceService : ITraceService
         WriteIndented = true,
         Converters =
         {
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, false),
             new HexNumberConverterFactory(),
             new HexByteEnumerableConverterFactory()
         }
