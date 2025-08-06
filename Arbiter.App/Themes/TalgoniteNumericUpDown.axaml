@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="NumericUpDown">
         <Setter Property="Background" Value="{StaticResource Talgonite.TextBox.Background}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.BorderBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="Padding" Value="8,4"/>
@@ -15,11 +15,6 @@
                 <Border>
                     <DataValidationErrors>
                         <Grid>
-                            <Border Classes="sunken-shadow"
-                                    CornerRadius="{TemplateBinding CornerRadius}"/>
-                            <Border Classes="sunken-highlight"
-                                    CornerRadius="{TemplateBinding CornerRadius}"/>
-                            
                             <ButtonSpinner Name="PART_Spinner"
                                            Background="{TemplateBinding Background}"
                                            BorderBrush="{TemplateBinding BorderBrush}"
@@ -56,10 +51,6 @@
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <Style Selector="^:pointerover">
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.HoverBorderBrush}"/>
-        </Style>
         
         <Style Selector="^:focus-within">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.FocusBorderBrush}"/>

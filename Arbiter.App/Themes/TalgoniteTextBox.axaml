@@ -7,7 +7,7 @@
         <Setter Property="CaretBlinkInterval" Value="0.3"/>
         <Setter Property="SelectionBrush" Value="{StaticResource Talgonite.TextBox.SelectionBackground}"/>
         <Setter Property="SelectionForegroundBrush" Value="{StaticResource Talgonite.TextBox.SelectionForeground}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.BorderBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="Padding" Value="8,4"/>
@@ -120,10 +120,6 @@
         
         <Style Selector="^ /template/ TextBlock#FloatingWatermark">
             <Setter Property="Cursor" Value="IBeam"/>
-        </Style>
-        
-        <Style Selector="^:pointerover /template/ Border#Border">
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.HoverBorderBrush}"/>
         </Style>
         
         <Style Selector="^:focus /template/ Border#Border">

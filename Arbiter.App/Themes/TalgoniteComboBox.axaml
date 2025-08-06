@@ -3,7 +3,7 @@
     <Style Selector="ComboBox">
         <Setter Property="Background" Value="{StaticResource Talgonite.ComboBox.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.Foreground}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ComboBox.BorderBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="Padding" Value="8,4"/>
@@ -78,28 +78,31 @@
                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                IsLightDismissEnabled="True"
                                InheritsTransform="True"
-                               WindowManagerAddShadowHint="True">
-                            <Border Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
+                               WindowManagerAddShadowHint="False">
+                            <Border Name="DropdownBorder"
+                                    Background="{TemplateBinding Background}"
                                     BorderThickness="1,0,1,1"
-                                    CornerRadius="0,0,2,2">
-                                <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                              IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
-                                    <ItemsPresenter Name="PART_ItemsPresenter"
-                                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
-                                </ScrollViewer>
+                                    CornerRadius="0,0,2,2"
+                                    Padding="2">
+                                <Grid>
+                                    <Border Classes="sunken-shadow"
+                                            CornerRadius="{Binding $parent[Border].CornerRadius}"/>
+                                    <Border Classes="sunken-highlight"
+                                            CornerRadius="{Binding $parent[Border].CornerRadius}"/>
+                                    
+                                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                                  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                                        ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                    </ScrollViewer>
+                                </Grid>
                             </Border>
                         </Popup>
                     </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>
-        
-        <!-- Hover Style -->
-        <Style Selector="^:pointerover">
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ComboBox.HoverBorderBrush}"/>
-        </Style>
         
         <!-- Focus Style -->
         <Style Selector="^:focus">
