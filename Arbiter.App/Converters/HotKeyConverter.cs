@@ -43,23 +43,18 @@ public class HotKeyConverter : IValueConverter
         throw new NotSupportedException();
     }
 
-    private string? ConvertGestureText(object? value)
+    private static string? ConvertGestureText(object? value)
     {
         if (value is not AvaloniaObject obj)
         {
             return null;
         }
-        
+
         var keyGesture = HotKeyManager.GetHotKey(obj);
-        if (keyGesture is null)
-        {
-            return null;
-        }
-        
-        return keyGesture.ToString();
+        return keyGesture?.ToString().Replace(" ", string.Empty, StringComparison.Ordinal);
     }
 
-    private bool ConvertHasHotKey(object? value)
+    private static bool ConvertHasHotKey(object? value)
     {
         if (value is not AvaloniaObject obj)
         {
