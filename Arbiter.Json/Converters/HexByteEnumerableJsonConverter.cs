@@ -18,8 +18,27 @@ public class HexByteEnumerableJsonConverter : JsonConverter<IEnumerable<byte>>
             return [];
         }
 
-        return hexString.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        var byteValues = hexString.Split(' ', StringSplitOptions.RemoveEmptyEntries)
             .Select(hex => byte.Parse(hex, System.Globalization.NumberStyles.HexNumber));
+
+        if (type == typeof(byte[]))
+        {
+            return byteValues.ToArray();
+        }
+
+        if (type.IsAssignableFrom(typeof(List<byte>)))
+        {
+            return byteValues.ToList();
+        }
+
+        var ctor = type.GetConstructor([typeof(IEnumerable<byte>)]);
+        if (ctor is not null)
+        {
+            return ctor.Invoke([byteValues]) as IEnumerable<byte> ??
+                   throw new JsonException($"Unable to create instance of type {type.Name}");
+        }
+
+        throw new JsonException($"Cannot convert hex string to {type.Name}");
     }
 
     public override void Write(Utf8JsonWriter writer, IEnumerable<byte> value, JsonSerializerOptions options)

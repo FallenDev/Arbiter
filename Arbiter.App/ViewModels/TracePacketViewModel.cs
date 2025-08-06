@@ -61,6 +61,7 @@ public partial class TracePacketViewModel(
 
         return new TracePacketViewModel(rawPacket, tracePacket.Payload, tracePacket.ClientName)
         {
+            Timestamp = tracePacket.Timestamp,
             DisplayMode = displayMode,
         };
     }

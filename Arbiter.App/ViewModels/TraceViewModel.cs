@@ -164,7 +164,7 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
-        if (!IsRunning)
+        if (IsRunning)
         {
             var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
             {
