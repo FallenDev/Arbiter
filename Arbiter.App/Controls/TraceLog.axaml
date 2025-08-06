@@ -170,6 +170,7 @@
                 </WrapPanel>
             </Grid>
         </Border>
+       
         <!-- Filter Bar -->
         <Border Grid.Row="1" IsVisible="{Binding ShowFilterBar}"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
@@ -179,10 +180,29 @@
                 <WrapPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Direction"/>
-                        <ComboBox Width="140">
-                            <ComboBoxItem>Client</ComboBoxItem>
-                            <ComboBoxItem>Server</ComboBoxItem>
-                            <ComboBoxItem>Both</ComboBoxItem>
+                        <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}" 
+                                  SelectedValue="{Binding FilterParameters.PacketDirection}"
+                                  PlaceholderText="No Selection"
+                                  Width="140">
+                            <ComboBox.SelectionBoxItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding .}"
+                                               Padding="8,4"/>
+                                </DataTemplate>
+                            </ComboBox.SelectionBoxItemTemplate>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="Red"
+                                            BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
+                                            BorderThickness="0,0,0,1"
+                                            Padding="8,4"
+                                            HorizontalAlignment="Stretch"
+                                            IsHitTestVisible="True">
+                                        <TextBlock Text="{Binding .}"
+                                                   Padding="8,2"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
                     </StackPanel>
                 </WrapPanel>

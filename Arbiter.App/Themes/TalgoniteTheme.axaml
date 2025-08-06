@@ -39,7 +39,7 @@
             <SolidColorBrush x:Key="Talgonite.ComboBox.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.BorderBrush" Color="#373d49"/>
-            <SolidColorBrush x:Key="Talgonite.ComboBox.PlaceholderForeground" Color="#93959a"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.PlaceholderForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.DisabledForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.CaretForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.SelectionBackground" Color="#4a6380"/>
@@ -51,7 +51,7 @@
             
             <!-- ComboBoxItem Resources -->
             <SolidColorBrush x:Key="Talgonite.ComboBoxItem.Background" Color="Transparent"/>
-            <SolidColorBrush x:Key="Talgonite.ComboBoxItem.HoverBackground" Color="#4a6380"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBoxItem.HoverBackground" Color="#804a6380"/>
             <SolidColorBrush x:Key="Talgonite.ComboBoxItem.SelectedBackground" Color="#4a6380"/>
             
             <!-- GridSplitter Resources -->

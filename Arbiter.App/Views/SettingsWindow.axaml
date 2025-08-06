@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="540" Height="460"
+                          Width="600" Height="500"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -95,6 +95,16 @@
                 <ToggleSwitch IsChecked="{Binding TraceOnStartup}">
                     <Label Content="Start Trace on Launch"/>
                 </ToggleSwitch>
+            </StackPanel>
+            
+            <!-- Test -->
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <Label Content="Test Dropdown"/>
+                <ComboBox SelectedIndex="0">
+                    <ComboBoxItem>First</ComboBoxItem>
+                    <ComboBoxItem>Second</ComboBoxItem>
+                    <ComboBoxItem>Third</ComboBoxItem>
+                </ComboBox>
             </StackPanel>
         </StackPanel>
         

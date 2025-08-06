@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,16 +33,16 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ITraceService _traceService;
     private readonly ProxyServer _proxyServer;
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
-
-    private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
-    private PacketDirection _packetDirectionFilter = PacketDirection.Both;
     
-    public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
+    private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
     
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
     [ObservableProperty] private bool _showFilterBar = true;
+    
+    public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
+    public TraceFilterViewModel FilterParameters { get; } = new();
     
     public bool IsEmpty => _allPackets.Count == 0;
 
@@ -64,19 +65,6 @@ public partial class TraceViewModel : ViewModelBase
         }
     }
 
-    public PacketDirection PacketDirectionFilter
-    {
-        get => _packetDirectionFilter;
-        set
-        {
-            if (SetProperty(ref _packetDirectionFilter, value))
-            {
-                OnPropertyChanged();
-                FilteredPackets.Refresh();
-            }
-        }
-    }
-
     public TraceViewModel(ILogger<TraceViewModel> logger, IStorageProvider storageProvider,
         IDialogService dialogService, ITraceService traceService, ProxyServer proxyServer)
     {
@@ -89,6 +77,7 @@ public partial class TraceViewModel : ViewModelBase
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
 
         _allPackets.CollectionChanged += OnPacketCollectionChanged;
+        FilterParameters.PropertyChanged += OnFilterParametersChanged;
     }
 
     private void OnPacketCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -96,6 +85,11 @@ public partial class TraceViewModel : ViewModelBase
         Dispatcher.UIThread.Post(() => { OnPropertyChanged(nameof(IsEmpty)); });
     }
 
+    private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        FilteredPackets.Refresh();
+    }
+    
     private bool MatchesFilter(TracePacketViewModel vm)
     {
         var direction = vm.Packet switch
@@ -105,7 +99,7 @@ public partial class TraceViewModel : ViewModelBase
             _ => PacketDirection.None
         };
 
-        if (!_packetDirectionFilter.HasFlag(direction))
+        if (!FilterParameters.PacketDirection.HasFlag(direction))
         {
             return false;
         }

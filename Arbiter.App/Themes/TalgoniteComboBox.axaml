@@ -6,9 +6,9 @@
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ComboBox.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="MinWidth" Value="80"/>
         <Setter Property="MinHeight" Value="24"/>
         <Setter Property="Popup.Placement" Value="BottomEdgeAlignedLeft"/>
@@ -20,12 +20,15 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
-                    <Grid ColumnDefinitions="*,Auto">
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        MinWidth="{TemplateBinding MinWidth}"
+                        MinHeight="{TemplateBinding MinHeight}">
+                    <Grid ColumnDefinitions="*,Auto" MaxWidth="{Binding $parent.Bounds.Width}">
                         <!-- Placeholder -->
                         <TextBlock Name="PlaceholderTextBlock"
                                    Grid.Column="0"
                                    Text="{TemplateBinding PlaceholderText}"
+                                   TextWrapping="NoWrap"
                                    Foreground="{TemplateBinding PlaceholderForeground}"
                                    Margin="{TemplateBinding Padding}"
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -36,6 +39,7 @@
                         <ContentControl Grid.Column="0"
                                         Content="{TemplateBinding SelectionBoxItem}"
                                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                        Margin="{TemplateBinding Padding}"
                                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         
@@ -65,13 +69,11 @@
                                PlacementTarget="{TemplateBinding}"
                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                IsLightDismissEnabled="True"
-                               InheritsTransform="True"
-                               Margin="0">
+                               InheritsTransform="True">
                             <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
                                     BorderThickness="1,0,1,1"
-                                    CornerRadius="0,0,2,2"
-                                    Padding="8">
+                                    CornerRadius="0,0,2,2">
                                 <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                               VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                                               IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
