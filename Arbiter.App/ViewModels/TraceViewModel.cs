@@ -298,6 +298,9 @@ public partial class TraceViewModel : ViewModelBase
 
         var escaped = Regex.Escape(namePattern);
         var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        return new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        var newRegex = new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        _nameFilterRegexes.Add(namePattern, newRegex);
+        return newRegex;
     }
 }
