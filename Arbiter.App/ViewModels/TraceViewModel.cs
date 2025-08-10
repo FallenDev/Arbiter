@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -21,29 +23,31 @@ namespace Arbiter.App.ViewModels;
 public partial class TraceViewModel : ViewModelBase
 {
     private static readonly string TracesDirectory = AppHelper.GetRelativePath("traces");
+
     private static readonly FilePickerFileType JsonFileType = new("JSON Files")
     {
         Patterns = ["*.json"],
         MimeTypes = ["application/json"],
     };
-    
+
     private readonly ILogger<TraceViewModel> _logger;
     private readonly IStorageProvider _storageProvider;
     private readonly IDialogService _dialogService;
     private readonly ITraceService _traceService;
     private readonly ProxyServer _proxyServer;
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
-    
+
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
-    
+    private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
+
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
     [ObservableProperty] private bool _showFilterBar = true;
-    
+
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
-    
+
     public bool IsEmpty => _allPackets.Count == 0;
 
     public bool ShowRawPackets
@@ -87,9 +91,15 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
     {
+        // Do not filter on this, wait for pattern list to change
+        if (e.PropertyName == nameof(FilterParameters.NameFilter))
+        {
+            return;
+        }
+
         FilteredPackets.Refresh();
     }
-    
+
     private bool MatchesFilter(TracePacketViewModel vm)
     {
         var direction = vm.Packet switch
@@ -100,6 +110,17 @@ public partial class TraceViewModel : ViewModelBase
         };
 
         if (!FilterParameters.PacketDirection.HasFlag(direction))
+        {
+            return false;
+        }
+
+        var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
+        {
+            var regex = GetRegexForFilter(namePattern);
+            return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
+        });
+
+        if (!nameMatches)
         {
             return false;
         }
@@ -118,7 +139,7 @@ public partial class TraceViewModel : ViewModelBase
     {
         var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
         var packets = traceFile.Packets;
-        
+
         StopTracing();
         _allPackets.Clear();
 
@@ -133,7 +154,7 @@ public partial class TraceViewModel : ViewModelBase
     {
         var snapshot = _allPackets.ToList();
         var packets = snapshot.Select(vm => vm.ToTracePacket());
-        
+
         var traceFile = new TraceFile { Packets = packets.ToList() };
         await _traceService.SaveTraceFileAsync(traceFile, outputPath);
     }
@@ -147,10 +168,10 @@ public partial class TraceViewModel : ViewModelBase
         }
 
         _proxyServer.PacketReceived += OnPacketReceived;
-        
+
         StartTime = DateTime.Now;
         IsRunning = true;
-        
+
         _logger.LogInformation("Trace started");
     }
 
@@ -216,7 +237,7 @@ public partial class TraceViewModel : ViewModelBase
         {
             Directory.CreateDirectory(TracesDirectory);
         }
-        
+
         var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
         var result = await _storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
@@ -233,7 +254,7 @@ public partial class TraceViewModel : ViewModelBase
 
         var outputPath = result.Path.AbsolutePath;
         var filename = Path.GetFileName(outputPath);
-        
+
         await SaveToFileAsync(outputPath);
         _logger.LogInformation("Trace saved to {Filename}", filename);
     }
@@ -264,5 +285,17 @@ public partial class TraceViewModel : ViewModelBase
     private void ScrollToEnd()
     {
         ScrollToEndRequested = true;
+    }
+
+    private Regex GetRegexForFilter(string namePattern)
+    {
+        if (_nameFilterRegexes.TryGetValue(namePattern, out var regex))
+        {
+            return regex;
+        }
+
+        var escaped = Regex.Escape(namePattern);
+        var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
+        return new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 }

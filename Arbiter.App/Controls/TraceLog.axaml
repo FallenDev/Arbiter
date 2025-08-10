@@ -145,7 +145,9 @@
             <Grid ColumnDefinitions="*,*,*">
                 <WrapPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Direction"/>
+                        <!-- Direction Filter -->
+                        <Label Content="Direction"
+                               ToolTip.Tip="Allows filtering by packet direction."/>
                         <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}" 
                                   SelectedValue="{Binding FilterParameters.PacketDirection}"
                                   PlaceholderText="No Selection"
@@ -167,6 +169,12 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+                        
+                        <!-- Character Filter -->
+                        <Label Content="Name"
+                               ToolTip.Tip="Allows filtering by client name.&#x0a;Supports '*' and '?' wildcards."/>
+                        <TextBox Text="{Binding FilterParameters.NameFilter}"
+                                 Width="160"/>
                     </StackPanel>
                 </WrapPanel>
             </Grid>
