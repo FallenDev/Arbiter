@@ -172,7 +172,7 @@
                         
                         <!-- Character Filter -->
                         <Label Content="Name"
-                               ToolTip.Tip="Allows filtering by client name.&#x0a;Supports '*' and '?' wildcards."/>
+                               ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."/>
                         <TextBox Text="{Binding FilterParameters.NameFilter}"
                                  Width="160"/>
                     </StackPanel>
