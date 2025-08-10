@@ -186,12 +186,12 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
-        if (IsRunning)
+        if (IsRunning && !IsEmpty)
         {
             var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
             {
                 Title = "Confirm Load Trace",
-                Message = "You have a trace running.\nAre you sure you want to load?",
+                Message = "You have an active trace running.\nAre you sure you want to load?",
                 Description = "This will stop and replace your current trace.",
                 Style = MessageBoxStyle.YesNo
             });
