@@ -62,9 +62,6 @@
                                             Width="16"
                                             Height="16"
                                             Stroke="{Binding $parent[Button].Foreground}"
-                                            StrokeThickness="2"
-                                            StrokeLineCap="Round"
-                                            Stretch="None"
                                             Data="{StaticResource Talgonite.Icon.WindowMinimize}" />
                                     </Button>
                                     
@@ -76,9 +73,6 @@
                                             Width="16"
                                             Height="16"
                                             Stroke="{Binding $parent[Button].Foreground}"
-                                            StrokeThickness="2"
-                                            StrokeJoin="Round"
-                                            Stretch="None"
                                             Data="{StaticResource Talgonite.Icon.WindowMaximize}" />
                                     </Button>
                                     
@@ -89,9 +83,6 @@
                                             Height="16"
                                             Width="16"
                                             Stroke="{Binding $parent[Button].Foreground}"
-                                            StrokeThickness="2"
-                                            StrokeLineCap="Round"
-                                            Stretch="None"
                                             Data="{StaticResource Talgonite.Icon.WindowClose}"/>
                                     </Button>
                                 </Grid>

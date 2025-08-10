@@ -19,11 +19,7 @@
                     ToolTip.Tip="Reset to default values.">
                 <Path Width="24"
                       Height="16"
-                      Stretch="None"
                       Stroke="{Binding $parent[Button].Foreground}"
-                      StrokeThickness="2"
-                      StrokeLineCap="Round"
-                      StrokeJoin="Round"
                       Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
             </Button>
         </DockPanel>

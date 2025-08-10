@@ -5,12 +5,18 @@
     <SolidColorBrush x:Key="Talgonite.TracePacket.TimestampForeground" Color="#717479"/>
     <SolidColorBrush x:Key="Talgonite.TracePacket.ClientNameForeground" Color="#e0e0e0"/>
     
+    <Geometry x:Key="Talgonite.TracePacket.LeftCaret">M 6,1 L 2,4 L 6,7 Z</Geometry>
+    <Geometry x:Key="Talgonite.TracePacket.RightCaret">M 2,1 L 6,4 L 2,7 Z</Geometry>
+    
+    <Geometry x:Key="Talgonite.TracePacket.LeftArrow">M11,4 H4 M4,1 L1,4 L4,7</Geometry>
+    <Geometry x:Key="Talgonite.TracePacket.RightArrow">M1,4 H8 M8,1 L11,4 L8,7</Geometry>
+    
     <DataTemplate x:Key="TracePacketTemplate" DataType="vm:TracePacketViewModel">
         <Border Background="Transparent"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="4,2">
-            <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
+            <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="4">
                 <!-- Timestamp and Client Name -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
                     <TextBlock Name="TimestampText"
@@ -23,28 +29,32 @@
                                IsVisible="{Binding ClientName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                 </StackPanel>
                 
-                <!-- Client/Server Direction -->
+                <!-- Direction Arrow and Command Name -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                    <TextBlock Name="DirectionText"
-                               Text="{Binding Packet, Converter={x:Static converters:PacketDirectionNameConverter.Converter}}"
+                    <Path Width="12" Height="8"
+                          Stroke="{Binding #CommandNameText.Foreground}"
+                          Fill="{Binding #CommandNameText.Foreground}"
+                          Data="{StaticResource Talgonite.TracePacket.RightArrow}"
+                          IsVisible="{Binding IsClient}"/>
+                    <Path Width="12" Height="8"
+                          Stroke="{Binding #CommandNameText.Foreground}"
+                          Fill="{Binding #CommandNameText.Foreground}"
+                          Data="{StaticResource Talgonite.TracePacket.LeftArrow}"
+                          IsVisible="{Binding IsServer}"/>
+                    
+                    <!-- Command Display Name -->
+                    <TextBlock Name="CommandNameText"
+                               Text="{Binding CommandName}"
                                TextAlignment="Left"
                                Foreground="{Binding Packet, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                FontWeight="SemiBold"/>
-                    <Path Width="8" Height="8"
-                          Stretch="None"
-                          Stroke="{Binding #DirectionText.Foreground}"
-                          Fill="{Binding #DirectionText.Foreground}"
-                          StrokeThickness="2"
-                          StrokeLineCap="Round"
-                          StrokeJoin="Round"
-                          Data="M 2,1 L 6,4 L 2,7 Z"/>
                 </StackPanel>
                 
                 <!-- Payload Display -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
                     <TextBlock Name="CommandText"
                                Text="{Binding Packet.Command, StringFormat={}{0:X2}}"
-                               Foreground="{Binding #DirectionText.Foreground}"/>
+                               Foreground="{Binding #CommandNameText.Foreground}"/>
                     
                     <SelectableTextBlock Name="PayloadText"
                                Text="{Binding DisplayValue}"

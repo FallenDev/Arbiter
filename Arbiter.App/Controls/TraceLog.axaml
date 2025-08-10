@@ -27,10 +27,6 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="None"
                                   Data="{StaticResource Talgonite.Icon.StartPlay}"/>
                         </StackPanel>
                     </Button>
@@ -43,10 +39,6 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="None"
                                   Data="{StaticResource Talgonite.Icon.StopPlay}"/>
                         </StackPanel>
                     </Button>
@@ -65,10 +57,6 @@
                                 <Canvas Width="16" Height="16" ClipToBounds="True">
                                     <Path Width="16" Height="16"
                                           Stroke="{Binding $parent[RadioButton].Foreground}"
-                                          StrokeThickness="2"
-                                          StrokeLineCap="Round"
-                                          StrokeJoin="Round"
-                                          Stretch="None"
                                           Data="{StaticResource Talgonite.Icon.RevealEye}"/>
                                 </Canvas>
                                 <TextBlock Text="Decrypted"/>
@@ -82,10 +70,6 @@
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <Path Width="16" Height="16"
                                       Stroke="{Binding $parent[RadioButton].Foreground}"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Round"
-                                      StrokeJoin="Round"
-                                      Stretch="None"
                                       Data="{StaticResource Talgonite.Icon.SecureLock}"/>
                                 <TextBlock Text="Encrypted"/>
                             </StackPanel>
@@ -103,10 +87,6 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="None"
                                   Data="{StaticResource Talgonite.Icon.FilterFunnel}"/>
                         </StackPanel>
                     </ToggleButton>
@@ -118,10 +98,6 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="None"
                                   Data="{StaticResource Talgonite.Icon.LoadFolder}"/>
                         </StackPanel>
                     </Button>
@@ -134,10 +110,6 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="None"
                                   Data="{StaticResource Talgonite.Icon.SaveDisk}"/>
                         </StackPanel>
                     </Button>
@@ -149,10 +121,6 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="None"
                                   Data="{StaticResource Talgonite.Icon.TrashBin}"/>
                         </StackPanel>
                     </Button>
@@ -163,8 +131,6 @@
                         <Path Width="16"
                               Height="16"
                               Stroke="{Binding $parent[Button].Foreground}"
-                              StrokeThickness="2"
-                              Stretch="None"
                               Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
                     </Button>
                 </WrapPanel>

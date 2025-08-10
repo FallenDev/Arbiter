@@ -27,10 +27,7 @@
                     ToolTip.Tip = "Opens the Settings window.">
                 <Path Width="16"
                       Height="16"
-                      Stretch="None"
                       Stroke="{Binding $parent[Button].Foreground}"
-                      StrokeThickness="2"
-                      StrokeLineCap="Round"
                       Data="{StaticResource Talgonite.Icon.SettingsGear}"/>
             </Button>
         </DockPanel>
@@ -57,9 +54,6 @@
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <Path Width="16" Height="16"
                                       Stroke="{Binding Path=$parent[Button].Foreground}"
-                                      StrokeThickness="2"
-                                      StrokeLineCap="Square"
-                                      Stretch="None"
                                       Data="{StaticResource Talgonite.Icon.NewPlus}"/>
                             </StackPanel>
                         </Button>

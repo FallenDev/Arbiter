@@ -63,10 +63,6 @@
                                       Focusable="False">
                             <Path Width="16" Height="8"
                                   Stroke="{Binding $parent[ToggleButton].Foreground}"
-                                  StrokeThickness="2"
-                                  StrokeLineCap="Round"
-                                  StrokeJoin="Round"
-                                  Stretch="Uniform"
                                   Data="{StaticResource Talgonite.Icon.DownCaret}"/>
                         </ToggleButton>
                         

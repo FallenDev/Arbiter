@@ -24,11 +24,15 @@ public partial class TracePacketViewModel(
     public NetworkPacket Packet { get; } = packet;
     public IReadOnlyCollection<byte> Payload { get; } = payload;
 
+    public string CommandName => GetCommandName(Packet);
     public string DisplayValue => DisplayMode switch
     {
         PacketDisplayMode.Decrypted => FormattedPayload,
         _ => FormattedPacket
     };
+    
+    public bool IsClient => Packet is ClientPacket;
+    public bool IsServer => Packet is ServerPacket;
 
     public string FormattedPacket => string.Join(' ', Packet.Select(x => x.ToString("X2")));
     public string FormattedPayload => string.Join(' ', Payload.Select(x => x.ToString("X2")));
@@ -63,6 +67,16 @@ public partial class TracePacketViewModel(
         {
             Timestamp = tracePacket.Timestamp,
             DisplayMode = displayMode,
+        };
+    }
+
+    private static string GetCommandName(NetworkPacket packet)
+    {
+        return packet switch
+        {
+            ClientPacket clientPacket => $"{clientPacket.Command}",
+            ServerPacket serverPacket => $"{serverPacket.Command}",
+            _ => $"Unknown {packet.Command:X2}"
         };
     }
 }

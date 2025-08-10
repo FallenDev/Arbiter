@@ -38,8 +38,6 @@
                     <Path Width="16"
                           Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"
-                          StrokeThickness="2"
-                          Stretch="None"
                           Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
                 </Button>
                 <!-- Clear Logs Button -->
@@ -49,8 +47,6 @@
                     <Path Width="16"
                           Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"
-                          StrokeThickness="2"
-                          Stretch="None"
                           Data="{StaticResource Talgonite.Icon.TrashBin}"/>
                 </Button>
             </UniformGrid>
@@ -66,8 +62,6 @@
                     <Path Grid.Column="0"
                           Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.ErrorBrush}"
-                          StrokeThickness="2"
-                          StrokeLineCap="Round"
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.ErrorLevel}"/>
                     <TextBlock Grid.Column="1"
@@ -86,8 +80,6 @@
                     <Path Grid.Column="0"
                           Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.WarningBrush}"
-                          StrokeThickness="2"
-                          StrokeLineCap="Round"
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.WarningLevel}"/>
                     <TextBlock Grid.Column="1"
@@ -106,8 +98,6 @@
                     <Path Grid.Column="0"
                           Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.InfoBrush}"
-                          StrokeThickness="2"
-                          StrokeLineCap="Round"
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.InfoLevel}"/>
                     <TextBlock Grid.Column="1"
@@ -126,8 +116,6 @@
                     <Path Grid.Column="0"
                           Width="16" Height="16"
                           Stroke="{StaticResource Talgonite.Console.DebugBrush}"
-                          StrokeThickness="2"
-                          StrokeLineCap="Round"
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.DebugLevel}"/>
                     <TextBlock Grid.Column="1"
