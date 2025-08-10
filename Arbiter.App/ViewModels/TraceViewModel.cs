@@ -114,7 +114,9 @@ public partial class TraceViewModel : ViewModelBase
             return false;
         }
 
-        var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
+        var nameMatches =
+            FilterParameters.NameFilterPatterns.Count == 0 ||
+            FilterParameters.NameFilterPatterns.Any(namePattern =>
         {
             var regex = GetRegexForFilter(namePattern);
             return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
