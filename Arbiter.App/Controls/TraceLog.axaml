@@ -174,13 +174,33 @@
                         <Label Content="Clients"
                                ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."/>
                         <TextBox Text="{Binding FilterParameters.NameFilter}"
-                                 Width="160"/>
+                                 Width="160">
+                            <TextBox.InnerRightContent>
+                                <Button Command="{Binding FilterParameters.ClearNameFilterCommand}"
+                                        IsEnabled="{Binding FilterParameters.NameFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Classes="clear destructive">
+                                    <Path Width="12" Height="12"
+                                          Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="M1,1 L11,11 M11,1 L1,11"/>
+                                </Button>
+                            </TextBox.InnerRightContent>
+                        </TextBox>
                         
                         <!-- Command Filter -->
                         <Label Content="Commands"
                                ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."/>
                         <TextBox Text="{Binding FilterParameters.CommandFilter}"
-                                 Width="200"/>
+                                 Width="180">
+                            <TextBox.InnerRightContent>
+                                <Button Command="{Binding FilterParameters.ClearCommandFilterCommand}"
+                                        IsEnabled="{Binding FilterParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                        Classes="clear destructive">
+                                    <Path Width="12" Height="12"
+                                          Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="M1,1 L11,11 M11,1 L1,11"/>
+                                </Button>
+                            </TextBox.InnerRightContent>
+                        </TextBox>
                     </StackPanel>
                 </WrapPanel>
             </Grid>

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Arbiter.App.Models;
 using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels;
 
@@ -76,5 +77,17 @@ public partial class TraceFilterViewModel : ViewModelBase
                 throw new DataValidationException("Invalid command filter range");
             }
         }
+    }
+
+    [RelayCommand]
+    public void ClearNameFilter()
+    {
+        NameFilter = string.Empty;
+    }
+
+    [RelayCommand]
+    public void ClearCommandFilter()
+    {
+        CommandFilter = string.Empty;
     }
 }
