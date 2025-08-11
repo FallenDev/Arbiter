@@ -10,4 +10,9 @@
         <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Client\Messages\" />
+      <Folder Include="Server\Messages\" />
+    </ItemGroup>
+
 </Project>

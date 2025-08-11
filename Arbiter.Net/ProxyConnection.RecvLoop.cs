@@ -68,7 +68,7 @@ public partial class ProxyConnection
                             HandleServerRedirect(decrypted);
                             break;
                         // Handle server setting user ID, this confirms a valid game connection
-                        case ServerPacket { Command: ServerCommand.SetUserId }:
+                        case ServerPacket { Command: ServerCommand.UserId }:
                             HandleServerSetUserId(decrypted);
                             break;
                         // Handle client auth request, we need to update encryption parameters
