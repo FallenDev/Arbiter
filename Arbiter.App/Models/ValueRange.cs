@@ -6,7 +6,7 @@ using System.Linq;
 namespace Arbiter.App.Models;
 
 public struct ValueRange<T>(T min, T max)
-    where T : struct
+    where T : struct, IComparable<T>, IComparable, IEquatable<T>
 {
     public T Min { get; set; } = min;
     public T Max { get; set; } = max;
@@ -14,6 +14,8 @@ public struct ValueRange<T>(T min, T max)
     public ValueRange(T value) : this(value, value)
     {
     }
+
+    public bool Contains(T value) => value.CompareTo(Min) >= 0 && value.CompareTo(Max) <= 0;
 
     public static bool TryParseByteRange(string value, out ValueRange<byte> result)
         => TryParseByteRange(value, NumberStyles.Integer, out result);

@@ -97,6 +97,12 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
+        // Do not filter on this, wait for command list to change
+        if (e.PropertyName == nameof(FilterParameters.CommandFilter))
+        {
+            return;
+        }
+
         FilteredPackets.Refresh();
     }
 
@@ -108,23 +114,35 @@ public partial class TraceViewModel : ViewModelBase
             ServerPacket => PacketDirection.Server,
             _ => PacketDirection.None
         };
-
+        
+        // Filter by packet direction
         if (!FilterParameters.PacketDirection.HasFlag(direction))
         {
             return false;
         }
 
-        var nameMatches =
-            FilterParameters.NameFilterPatterns.Count == 0 ||
-            FilterParameters.NameFilterPatterns.Any(namePattern =>
+        // Filter by command
+        if (FilterParameters.CommandFilterRanges.Count > 0)
         {
-            var regex = GetRegexForFilter(namePattern);
-            return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
-        });
+            if (!FilterParameters.CommandFilterRanges.Any(range => range.Contains(vm.Packet.Command)))
+            {
+                return false;
+            }
+        }
 
-        if (!nameMatches)
+        // Filter by client name matches
+        if (FilterParameters.NameFilterPatterns.Count > 0)
         {
-            return false;
+            var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
+            {
+                var regex = GetRegexForFilter(namePattern);
+                return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
+            });
+
+            if (!nameMatches)
+            {
+                return false;
+            }
         }
 
         return true;
