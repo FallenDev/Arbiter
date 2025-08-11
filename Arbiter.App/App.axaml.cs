@@ -93,6 +93,7 @@ public class App : Application
     {
         // Singletons
         services.AddSingleton<ConsoleViewModel>();
+        services.AddSingleton<ClientManagerViewModel>();
         services.AddSingleton<ProxyViewModel>();
         
         // Transients

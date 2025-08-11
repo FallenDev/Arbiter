@@ -22,7 +22,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ISettingsService _settingsService;
 
     [ObservableProperty] private string _title = "Arbiter";
+    [ObservableProperty] private ClientViewModel? _selectedClient;
     
+    public ClientManagerViewModel ClientManager { get; }
     public ConsoleViewModel Console { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
@@ -35,11 +37,12 @@ public partial class MainWindowViewModel : ViewModelBase
         ISettingsService settingsService)
     {
         _logger = logger;
-        
+
         _dialogService = dialogService;
         _gameClientService = gameClientService;
         _settingsService = settingsService;
 
+        ClientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();

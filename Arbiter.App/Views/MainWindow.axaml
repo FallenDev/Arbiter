@@ -58,7 +58,9 @@
                             </StackPanel>
                         </Button>
                     </WrapPanel>
-                    <ListBox/>
+                    <ListBox ItemsSource="{Binding ClientManager.Clients}"
+                             SelectedItem="{Binding SelectedClient}"
+                             ItemTemplate="{StaticResource ClientTemplate}"/>
                 </DockPanel>
             </TabItem>
         </TabControl>

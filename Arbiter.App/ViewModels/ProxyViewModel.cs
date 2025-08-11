@@ -63,7 +63,7 @@ public partial class ProxyViewModel : ViewModelBase
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.IsAuthenticated ? e.Connection.Name : e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client authenticated successfully", name);
+        _logger.LogInformation("[{Name}] Client authenticated", name);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
