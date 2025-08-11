@@ -55,7 +55,6 @@ public partial class TraceViewModel : ViewModelBase
         {
             if (SetProperty(ref _selectedPacket, value))
             {
-                OnPropertyChanged();
                 SelectedPacketChanged?.Invoke(value);
             }
         }

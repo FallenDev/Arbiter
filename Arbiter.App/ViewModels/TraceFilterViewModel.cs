@@ -41,7 +41,6 @@ public partial class TraceFilterViewModel : ViewModelBase
                 return;
             }
 
-            OnPropertyChanged();
             NameFilterPatterns = value.Split(',',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct().ToList();
         }
@@ -56,8 +55,6 @@ public partial class TraceFilterViewModel : ViewModelBase
             {
                 return;
             }
-
-            OnPropertyChanged();
 
             var parsedRanges = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Select(range => ValueRange<byte>.ParseByteRange(range.TrimEnd('-'), NumberStyles.HexNumber));

@@ -8,6 +8,9 @@
              x:DataType="vm:RawHexViewModel">
     <TextBox Name="HexTextBox"
              Text="{Binding RawHex, Mode=OneWay}"
+             SelectionStart="{Binding SelectionStart, Mode=OneWay}"
+             SelectionEnd="{Binding SelectionEnd, Mode=OneWay}"
+             ClearSelectionOnLostFocus="False"
              Classes="editor"
              IsReadOnly="True"
              FontSize="16"
