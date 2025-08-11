@@ -37,7 +37,7 @@ public enum ServerCommand : byte
     ShowBoard = 0x31,
     MapDoor = 0x32,
     ShowUser = 0x33,
-    UserLegend = 0x34,
+    UserProfile = 0x34,
     WorldList = 0x36,
     SetEquipment = 0x37,
     RemoveEquipment = 0x38,

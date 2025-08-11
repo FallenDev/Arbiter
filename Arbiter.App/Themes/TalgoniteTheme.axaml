@@ -8,13 +8,16 @@
             <!-- Global Fonts and Sizes -->
             <FontFamily x:Key="Talgonite.Font.InterfaceFont">Inter</FontFamily>
             <FontFamily x:Key="Talgonite.Font.ConsoleFont">Consolas</FontFamily>
-            <FontFamily x:Key="Talgonite.Font.EditorFont">Consolas</FontFamily>
             <FontFamily x:Key="Talgonite.Font.TraceFont">Consolas</FontFamily>
 
             <sys:Double x:Key="Talgonite.FontSize.Normal">16</sys:Double>
             <sys:Double x:Key="Talgonite.FontSize.Console">14</sys:Double>
-            <sys:Double x:Key="Talgonite.FontSize.Editor">14</sys:Double>
             <sys:Double x:Key="Talgonite.FontSize.Trace">14</sys:Double>
+            
+            <!-- Editor Resources -->
+            <FontFamily x:Key="Talgonite.Editor.FontFamily">Consolas</FontFamily>
+            <sys:Double x:Key="Talgonite.Editor.FontSize">14</sys:Double>
+            <SolidColorBrush x:Key="Talgonite.Editor.Background" Color="#1e2228"/>
             
             <!-- Border Resources -->
             <SolidColorBrush x:Key="Talgonite.Border.ShadowBrush" Color="#101215"/>
@@ -80,9 +83,9 @@
             <SolidColorBrush x:Key="Talgonite.ListBox.ConsoleBackground" Color="#1e2228"/>
             
             <!-- ListBoxItem Resources -->
-            <SolidColorBrush x:Key="Talgonite.ListBoxItem.Background" Color="#262b33"/>
-            <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverBackground" Color="#2e3743"/>
-            <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedBackground" Color="#3f5168"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.Background" Color="Transparent"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverBackground" Color="#22262d"/>
+            <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedBackground" Color="#2e3743"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledBackground" Color="#22262d"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.HoverForeground" Color="#ffffff"/>

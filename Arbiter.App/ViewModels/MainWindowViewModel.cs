@@ -23,6 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private string _title = "Arbiter";
     [ObservableProperty] private ClientViewModel? _selectedClient;
+    [ObservableProperty] private RawHexViewModel? _selectedRawHex;
     
     public ClientManagerViewModel ClientManager { get; }
     public ConsoleViewModel Console { get; }
@@ -46,6 +47,13 @@ public partial class MainWindowViewModel : ViewModelBase
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
+
+        Trace.SelectedPacketChanged += OnPacketSelected;
+    }
+
+    private void OnPacketSelected(TracePacketViewModel? packet)
+    {
+        SelectedRawHex = packet is not null ? new RawHexViewModel(packet.Payload) : null;
     }
 
     [RelayCommand]

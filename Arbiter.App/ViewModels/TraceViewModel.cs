@@ -37,6 +37,7 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
 
+    private TracePacketViewModel? _selectedPacket;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
     private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
@@ -44,7 +45,21 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
     [ObservableProperty] private bool _showFilterBar = true;
-    [ObservableProperty] private TracePacketViewModel? _selectedPacket;
+
+    public event Action<TracePacketViewModel?>? SelectedPacketChanged;
+    
+    public TracePacketViewModel? SelectedPacket
+    {
+        get => _selectedPacket;
+        set
+        {
+            if (SetProperty(ref _selectedPacket, value))
+            {
+                OnPropertyChanged();
+                SelectedPacketChanged?.Invoke(value);
+            }
+        }
+    }
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
@@ -299,6 +314,8 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Clear();
         OnPropertyChanged(nameof(FilteredPackets));
 
+        SelectedPacket = null;
+        
         _logger.LogInformation("Trace cleared");
     }
 

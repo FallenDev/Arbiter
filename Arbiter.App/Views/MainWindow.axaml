@@ -107,6 +107,9 @@
             <TabItem Header="Inspector">
                 <ListBox/>
             </TabItem>
+            <TabItem Header="Hex" IsSelected="True">
+                <controls:RawHexDisplay DataContext="{Binding SelectedRawHex}"/>
+            </TabItem>
         </TabControl>
     </Grid>
     

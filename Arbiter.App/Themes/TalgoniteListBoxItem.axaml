@@ -10,16 +10,21 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Background="{TemplateBinding Background}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  Padding="{TemplateBinding Padding}"/>
+                <Grid>
+                    <Border Name="SelectionHighlight"
+                            Background="Transparent"
+                            Margin="0,1,0,2"/>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Background="Transparent"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Padding="{TemplateBinding Padding}"/>
+                </Grid>
             </ControlTemplate>
         </Setter>
         
@@ -27,15 +32,16 @@
             
         </Style>
     
-        <Style Selector="^:pointerover /template/ ContentPresenter">
-            
+        <Style Selector="^:pointerover /template/ Border#SelectionHighlight">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.HoverBackground}"/>
         </Style>
     
-        <Style Selector="^:selected /template/ ContentPresenter">
-           
+        <Style Selector="^:selected /template/ Border#SelectionHighlight">
+           <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.SelectedBackground}"/>
         </Style>
     
-        <Style Selector="^:disabled /template/ ContentPresenter">
+        <Style Selector="^:disabled /template/ Border#SelectionHighlight">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ListBoxItem.DisabledBackground}"/>
         </Style>
     </Style>
     
