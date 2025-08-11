@@ -144,7 +144,7 @@
                 Padding="0,8">
             <Grid ColumnDefinitions="*,*,*">
                 <WrapPanel Grid.Column="0">
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
                         <!-- Direction Filter -->
                         <Label Content="Direction"
                                ToolTip.Tip="Allows filtering by packet direction."/>
@@ -171,10 +171,16 @@
                         </ComboBox>
                         
                         <!-- Character Filter -->
-                        <Label Content="Name"
+                        <Label Content="Clients"
                                ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."/>
                         <TextBox Text="{Binding FilterParameters.NameFilter}"
                                  Width="160"/>
+                        
+                        <!-- Command Filter -->
+                        <Label Content="Commands"
+                               ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."/>
+                        <TextBox Text="{Binding FilterParameters.CommandFilter}"
+                                 Width="200"/>
                     </StackPanel>
                 </WrapPanel>
             </Grid>
