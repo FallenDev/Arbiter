@@ -212,6 +212,7 @@
         <!-- Trace List -->
         <ListBox Grid.Row="2"
                  ItemsSource="{Binding FilteredPackets}"
+                 SelectedItem="{Binding SelectedPacket}"
                  ItemTemplate="{StaticResource TracePacketTemplate}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"

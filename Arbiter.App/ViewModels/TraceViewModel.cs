@@ -44,6 +44,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
     [ObservableProperty] private bool _showFilterBar = true;
+    [ObservableProperty] private TracePacketViewModel? _selectedPacket;
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
