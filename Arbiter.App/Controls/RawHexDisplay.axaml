@@ -16,7 +16,7 @@
             <!-- Command Byte -->
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Label Content="Command"
-                       ToolTip.Tip="Command code of the packet."/>
+                       ToolTip.Tip="Command code of the packet (as hex)."/>
                 <TextBox Text="{Binding FormattedCommand, Mode=OneWay}"
                          TextAlignment="Right"
                          Watermark="--"
@@ -29,7 +29,7 @@
             <!-- Sequence Byte -->
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Label Content="Sequence"
-                       ToolTip.Tip="Incremental sequence number of the packet."/>
+                       ToolTip.Tip="Incremental sequence number of the packet (as hex)."/>
                 <TextBox Text="{Binding FormattedSequence, Mode=OneWay}"
                          TextAlignment="Right"
                          Watermark="--"
@@ -45,7 +45,7 @@
         <!-- Payload View -->
         <Label Grid.Row="2"
                Content="Payload"
-               ToolTip.Tip="Decrypted payload of the packet."
+               ToolTip.Tip="Decrypted payload bytes of the packet (as hex)."
                Margin="4"/>
         <TextBox Name="HexTextBox"
                  Grid.Row="3"
