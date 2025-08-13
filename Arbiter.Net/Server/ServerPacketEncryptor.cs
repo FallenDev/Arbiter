@@ -43,7 +43,7 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
             parameters.GenerateKey(bRand, sRand, privateKey);
         }
 
-        var decrypted = new byte[payloadLength];
+        var decrypted = new byte[payloadLength].AsSpan();
         payload.CopyTo(decrypted);
 
         // Decrypt the payload
@@ -58,6 +58,6 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
             }
         }
 
-        return new ServerPacket(packet.Command, (ReadOnlySpan<byte>)decrypted) { Sequence = sequence };
+        return new ServerPacket(packet.Command, decrypted) { Sequence = sequence };
     }
 }

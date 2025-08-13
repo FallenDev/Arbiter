@@ -10,7 +10,7 @@ public class HexNumberJsonConverter<T> : JsonConverter<T> where T:struct
     {
         if (reader.TokenType == JsonTokenType.String)
         {
-            var str = reader.GetString() ?? string.Empty;
+            var str = (reader.GetString() ?? string.Empty).AsSpan();
             if (str.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
             {
                 str = str[2..];
@@ -18,15 +18,15 @@ public class HexNumberJsonConverter<T> : JsonConverter<T> where T:struct
 
             object output = type switch
             {
-                _ when type == typeof(bool) => Convert.ToByte(str, 16) != 0,
-                _ when type == typeof(byte) => Convert.ToByte(str, 16),
-                _ when type == typeof(sbyte) => Convert.ToSByte(str, 16),
-                _ when type == typeof(short) => Convert.ToInt16(str, 16),
-                _ when type == typeof(ushort) => Convert.ToUInt16(str, 16),
-                _ when type == typeof(int) => Convert.ToInt32(str, 16),
-                _ when type == typeof(uint) => Convert.ToUInt32(str, 16),
-                _ when type == typeof(long) => Convert.ToInt64(str, 16),
-                _ when type == typeof(ulong) => Convert.ToUInt64(str, 16),
+                _ when type == typeof(bool) => byte.Parse(str, NumberStyles.HexNumber) != 0,
+                _ when type == typeof(byte) => byte.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(sbyte) => sbyte.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(short) => short.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(ushort) => ushort.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(int) => int.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(uint) => uint.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(long) => long.Parse(str, NumberStyles.HexNumber),
+                _ when type == typeof(ulong) => ulong.Parse(str, NumberStyles.HexNumber),
                 _ => throw new JsonException("Unsupported type")
             };
 

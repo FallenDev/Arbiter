@@ -1,5 +1,17 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Style Selector="Border.divider-h">
+        <Setter Property="Background" Value="{StaticResource Talgonite.Border.DividerBrush}"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Margin" Value="8,4"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="IsTabStop" Value="False"/>
+    </Style>
+    
     <Style Selector="Border.sunken-shadow">
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Border.ShadowBrush}"/>
         <Setter Property="BorderThickness" Value="1,1,0,0"/>

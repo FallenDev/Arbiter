@@ -30,8 +30,8 @@ public struct ValueRange<T>(T min, T max)
         result = default;
 
         var tokens = value.Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var minValueText = tokens.First();
-        var maxValueText = tokens.Last();
+        var minValueText = tokens.First().AsSpan();
+        var maxValueText = tokens.Last().AsSpan();
 
         // Despite what the documentation says, AllowHexSpecifier does not parse this properly
         if (style.HasFlag(NumberStyles.AllowHexSpecifier) && minValueText.StartsWith("0x"))

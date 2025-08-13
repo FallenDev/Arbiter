@@ -52,7 +52,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         }
 
         var payload = new Span<byte>(packet.Data, 1, payloadLength);
-        var decrypted = new byte[payloadLength];
+        var decrypted = new byte[payloadLength].AsSpan();
         payload.CopyTo(decrypted);
 
         // Decrypt the payload
@@ -69,7 +69,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         if (!IsDialog(packet.Command))
         {
-            return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum) { Sequence = sequence };
+            return new ClientPacket(packet.Command, decrypted, checksum) { Sequence = sequence };
         }
 
         // Handle dialog encryption
@@ -89,6 +89,6 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         decrypted = decrypted[6..];
 
-        return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum) { Sequence = sequence };
+        return new ClientPacket(packet.Command, decrypted, checksum) { Sequence = sequence };
     }
 }

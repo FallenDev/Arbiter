@@ -60,6 +60,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
 
         SelectedRawHex = new RawHexViewModel(viewModel.Payload, viewModel.Packet.Command, viewModel.Sequence);
+        SelectedRawHex.SelectAll();
     }
 
     [RelayCommand]

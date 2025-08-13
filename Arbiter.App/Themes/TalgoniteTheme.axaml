@@ -20,6 +20,7 @@
             <SolidColorBrush x:Key="Talgonite.Editor.Background" Color="#1e2228"/>
             
             <!-- Border Resources -->
+            <SolidColorBrush x:Key="Talgonite.Border.DividerBrush" Color="#292d34"/>
             <SolidColorBrush x:Key="Talgonite.Border.ShadowBrush" Color="#101215"/>
             <SolidColorBrush x:Key="Talgonite.Border.HighlightBrush" Color="#4d535d"/>
     

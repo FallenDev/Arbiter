@@ -85,9 +85,6 @@
                 <TabItem Header="Scripts">
                     <ListBox></ListBox>
                 </TabItem>
-                <TabItem Header="Disabled" IsEnabled="False">
-                    <ListBox></ListBox>
-                </TabItem>
             </TabControl>
             
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
