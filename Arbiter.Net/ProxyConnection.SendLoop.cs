@@ -55,7 +55,7 @@ public partial class ProxyConnection
 
                 // Raise the event with the decrypted (plaintext) packet
                 PacketSent?.Invoke(this,
-                    new NetworkPacketEventArgs(packet, packet.Data));
+                    new NetworkPacketEventArgs(packet, packet.Data, nextSequence));
             }
         }
         catch when (token.IsCancellationRequested)

@@ -2,6 +2,7 @@
 
 public class ClientPacket : NetworkPacket
 {
+    public byte? Sequence { get; set; }
     public uint? Checksum { get; }
 
     public new ClientCommand Command => Enum.IsDefined(typeof(ClientCommand), base.Command)

@@ -96,6 +96,6 @@ public partial class ProxyConnection
         _serverEncryptor.Parameters = encryptionParameters;
     }
 
-    private bool IsValidCharacterName(string name) =>
+    private static bool IsValidCharacterName(string name) =>
         !string.IsNullOrWhiteSpace(name) && name.All(char.IsAsciiLetter);
 }

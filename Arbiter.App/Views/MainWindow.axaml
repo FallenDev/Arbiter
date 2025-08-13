@@ -23,7 +23,7 @@
             <Button Name="SettingsButton"
                     Command="{Binding ShowSettingsCommand}"
                     HotKey="F10"
-                    Classes="controlBox"
+                    Classes="control-box"
                     ToolTip.Tip = "Opens the Settings window.">
                 <Path Width="16"
                       Height="16"

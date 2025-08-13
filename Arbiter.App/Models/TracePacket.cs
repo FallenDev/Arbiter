@@ -16,6 +16,10 @@ public class TracePacket
     [JsonPropertyName("command")]
     [JsonConverter(typeof(HexNumberConverterFactory))]
     public byte Command { get; set; }
+    
+    [JsonPropertyName("sequence")]
+    [JsonConverter(typeof(HexNumberConverterFactory))]
+    public byte? Sequence { get; set; }
 
     [JsonPropertyName("raw")]
     [JsonConverter(typeof(HexByteEnumerableConverterFactory))]

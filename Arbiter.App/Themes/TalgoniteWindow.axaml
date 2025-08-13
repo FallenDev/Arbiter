@@ -56,7 +56,7 @@
                                     
                                     <!-- Minimize Button -->
                                     <Button Name="PART_MinimizeButton"
-                                            Grid.Column="3" Classes="controlBox"
+                                            Grid.Column="3" Classes="control-box"
                                             IsVisible="{TemplateBinding CanResize}">
                                         <Path
                                             Width="16"
@@ -67,7 +67,7 @@
                                     
                                     <!-- Maximize/Restore Button -->
                                     <Button Name="PART_MaximizeButton"
-                                            Grid.Column="4" Classes="controlBox"
+                                            Grid.Column="4" Classes="control-box"
                                             IsVisible="{TemplateBinding CanResize}">
                                         <Path
                                             Width="16"
@@ -78,7 +78,7 @@
                                     
                                     <!-- Close Button -->
                                     <Button Name="PART_CloseButton"
-                                            Grid.Column="5" Classes="controlBox">
+                                            Grid.Column="5" Classes="control-box">
                                         <Path
                                             Height="16"
                                             Width="16"
@@ -103,11 +103,11 @@
                             <!-- Resize Grip -->
                             <Grid Name="PART_ResizeGrip"
                                   Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                  Classes="resizeGripContainer"
+                                  Classes="resize-grip-container"
                                   IsVisible="{Binding $parent[Window].CanResize}"
                                   Cursor="BottomRightCorner">
                                 <Path Width="16" Height="16"
-                                      Classes="resizeGrip"
+                                      Classes="resize-grip"
                                       Margin="0,0,4,4"
                                       Data="M2 14 L14 2 M7 14 L14 7 M12 14 L14 12"/>
                             </Grid>
@@ -129,7 +129,7 @@
         <Setter Property="Margin" Value="8,0"/>
     </Style>
     
-    <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox">
+    <Style Selector="controls|TalgoniteWindow /template/ Button.control-box">
         <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.Foreground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -146,12 +146,12 @@
         <Setter Property="IsTabStop" Value="False"/>
     </Style>
     
-    <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pointerover">
+    <Style Selector="controls|TalgoniteWindow /template/ Button.control-box:pointerover">
         <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.HoverBackground}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.HoverForeground}"/>
     </Style>
     
-    <Style Selector="controls|TalgoniteWindow /template/ Button.controlBox:pressed">
+    <Style Selector="controls|TalgoniteWindow /template/ Button.control-box:pressed">
         <Setter Property="Background" Value="{StaticResource Talgonite.ControlBox.PressedBackground}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ControlBox.PressedForeground}"/>
     </Style>

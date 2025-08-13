@@ -32,11 +32,12 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var bRand = (ushort)((packet.Data[^1] << 8 | packet.Data[^3]) ^ 0x7470);
 
         // Extract the packet checksum
-        var checksum = ((uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 | packet.Data[^4]);
+        var checksum = ((uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 |
+                        packet.Data[^4]);
 
         // [u8 Sequence] [u8... Payload] [u8? Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         var payloadLength = packet.Data.Length - 8;
-        
+
         // Some packets use the static fixed key
         // Others use the newer MD5 key table
         Span<byte> privateKey = stackalloc byte[keyLength];
@@ -53,7 +54,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var payload = new Span<byte>(packet.Data, 1, payloadLength);
         var decrypted = new byte[payloadLength];
         payload.CopyTo(decrypted);
-        
+
         // Decrypt the payload
         for (var i = 0; i < payloadLength; i++)
         {
@@ -68,7 +69,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         if (!IsDialog(packet.Command))
         {
-            return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum);
+            return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum) { Sequence = sequence };
         }
 
         // Handle dialog encryption
@@ -88,6 +89,6 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         decrypted = decrypted[6..];
 
-        return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum);
+        return new ClientPacket(packet.Command, (ReadOnlySpan<byte>)decrypted, checksum) { Sequence = sequence };
     }
 }

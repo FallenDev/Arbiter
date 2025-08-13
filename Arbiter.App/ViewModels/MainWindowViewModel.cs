@@ -51,9 +51,15 @@ public partial class MainWindowViewModel : ViewModelBase
         Trace.SelectedPacketChanged += OnPacketSelected;
     }
 
-    private void OnPacketSelected(TracePacketViewModel? packet)
+    private void OnPacketSelected(TracePacketViewModel? viewModel)
     {
-        SelectedRawHex = packet is not null ? new RawHexViewModel(packet.Payload) : null;
+        if (viewModel is null)
+        {
+            SelectedRawHex = null;
+            return;
+        }
+
+        SelectedRawHex = new RawHexViewModel(viewModel.Payload, viewModel.Packet.Command, viewModel.Sequence);
     }
 
     [RelayCommand]

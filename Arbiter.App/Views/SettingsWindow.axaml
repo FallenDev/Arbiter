@@ -15,7 +15,7 @@
     <controls:TalgoniteWindow.TitleBarContent>
         <DockPanel>
             <Button Command="{Binding HandleResetDefaultsCommand}"
-                    Classes="controlBox"
+                    Classes="control-box"
                     ToolTip.Tip="Reset to default values.">
                 <Path Width="24"
                       Height="16"

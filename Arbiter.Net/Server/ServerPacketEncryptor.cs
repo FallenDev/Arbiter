@@ -58,6 +58,6 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
             }
         }
 
-        return new ServerPacket(packet.Command, (ReadOnlySpan<byte>)decrypted);
+        return new ServerPacket(packet.Command, (ReadOnlySpan<byte>)decrypted) { Sequence = sequence };
     }
 }

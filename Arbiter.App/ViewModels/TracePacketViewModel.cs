@@ -12,6 +12,7 @@ namespace Arbiter.App.ViewModels;
 public partial class TracePacketViewModel(
     NetworkPacket packet,
     IReadOnlyCollection<byte> payload,
+    byte? sequence = null,
     string? clientName = null)
     : ViewModelBase
 {
@@ -22,6 +23,7 @@ public partial class TracePacketViewModel(
 
     public DateTime Timestamp { get; private init; } = DateTime.Now;
     public NetworkPacket Packet { get; } = packet;
+    public byte? Sequence { get; } = sequence;
     public IReadOnlyCollection<byte> Payload { get; } = payload;
 
     public string CommandName => GetCommandName(Packet);
@@ -45,9 +47,14 @@ public partial class TracePacketViewModel(
             Direction = Packet is ClientPacket ? PacketDirection.Client : PacketDirection.Server,
             ClientName = ClientName,
             Command = Packet.Command,
+            Sequence = Sequence,
             RawPacket = Packet.ToList(),
             Payload = Payload,
-            Checksum = Packet is ClientPacket clientPacket ? clientPacket.Checksum : null
+            Checksum = Packet switch
+            {
+                ClientPacket clientPacket => clientPacket.Checksum,
+                _ => null
+            }
         };
         return tracePacket;
     }
@@ -63,7 +70,7 @@ public partial class TracePacketViewModel(
             _ => throw new InvalidOperationException("Invalid packet direction")
         };
 
-        return new TracePacketViewModel(rawPacket, tracePacket.Payload, tracePacket.ClientName)
+        return new TracePacketViewModel(rawPacket, tracePacket.Payload, tracePacket.Sequence, tracePacket.ClientName)
         {
             Timestamp = tracePacket.Timestamp,
             DisplayMode = displayMode,

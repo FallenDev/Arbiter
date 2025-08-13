@@ -57,6 +57,14 @@ public partial class ProxyConnection
                         ? encryptor.Decrypt(packet)
                         : packet;
                     
+                    // Extract the sequence number
+                    var sequence = decrypted switch
+                    {
+                        ClientPacket clientPacket => clientPacket.Sequence,
+                        ServerPacket serverPacket => serverPacket.Sequence,
+                        _ => null
+                    };
+                    
                     switch (decrypted)
                     {
                         // Handle server encryption, we need to update encryption parameters
@@ -78,7 +86,7 @@ public partial class ProxyConnection
                     }
 
                     // Raise the event with the decrypted packet
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(packet, decrypted.Data));
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(packet, decrypted.Data, sequence));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }
