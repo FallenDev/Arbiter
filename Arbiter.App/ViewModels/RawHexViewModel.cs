@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Arbiter.Net;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -10,7 +12,8 @@ namespace Arbiter.App.ViewModels;
 
 public partial class RawHexViewModel : ViewModelBase
 {
-    private readonly byte[] _rawData;
+    private readonly NetworkPacket _packet;
+    private readonly byte[] _payload;
 
     private int _startIndex;
     private int _endIndex;
@@ -56,13 +59,19 @@ public partial class RawHexViewModel : ViewModelBase
         }
     }
 
-    public RawHexViewModel(IReadOnlyCollection<byte> rawData, byte command, byte? sequence = null)
+    public RawHexViewModel(NetworkPacket packet)
     {
-        _rawData = rawData.ToArray();
-        RawHex = string.Join(" ", _rawData.Select(b => b.ToString("X2")));
+        _packet = packet;
+        _payload = packet.Data.ToArray();
+        RawHex = string.Join(" ", _payload.Select(b => b.ToString("X2")));
 
-        Command = command;
-        Sequence = sequence;
+        Command = packet.Command;
+        Sequence = packet switch
+        {
+            ClientPacket clientPacket => clientPacket.Sequence,
+            ServerPacket serverPacket => serverPacket.Sequence,
+            _ => null
+        };
     }
 
     private void RecalculateSelection()
@@ -77,7 +86,7 @@ public partial class RawHexViewModel : ViewModelBase
         }
 
         _startIndex = Math.Max(0, startIndex);
-        _endIndex = Math.Min(endIndex, _rawData.Length);
+        _endIndex = Math.Min(endIndex, _payload.Length);
     }
 
     private void RefreshValues()
@@ -92,8 +101,7 @@ public partial class RawHexViewModel : ViewModelBase
             return string.Empty;
         }
         
-        var dataSpan = _rawData[_startIndex.._endIndex];
-
+        var dataSpan = _payload[_startIndex.._endIndex];
         var buffer = ArrayPool<char>.Shared.Rent(dataSpan.Length + 1);
 
         try
@@ -111,8 +119,6 @@ public partial class RawHexViewModel : ViewModelBase
                     var c when char.IsLetterOrDigit(c) => c,
                     var c when char.IsPunctuation(c) => c,
                     var c when char.IsSymbol(c) => c,
-                    var c when char.IsWhiteSpace(c) => ' ',
-                    var c when char.IsSeparator(c) => ' ',
                     _ => '.'
                 };
             }

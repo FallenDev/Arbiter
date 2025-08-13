@@ -2,12 +2,13 @@
 
 public class ProxyConnectionDataEventArgs(
     ProxyConnection connection,
+    NetworkAction action,
     NetworkPacket packet,
-    IReadOnlyCollection<byte> payload,
-    byte? sequence = null)
+    NetworkPacket encryptedPacket)
     : ProxyConnectionEventArgs(connection)
 {
+    public NetworkAction Action { get; } = action;
     public NetworkPacket Packet { get; } = packet;
-    public byte? Sequence = sequence;
-    public IReadOnlyCollection<byte> Payload { get; } = payload;
+    public NetworkPacket EncryptedPacket { get; } = encryptedPacket;
+    public bool IsEncrypted => !ReferenceEquals(Packet, EncryptedPacket);
 }

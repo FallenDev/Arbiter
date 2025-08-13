@@ -59,7 +59,7 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        SelectedRawHex = new RawHexViewModel(viewModel.Payload, viewModel.Packet.Command, viewModel.Sequence);
+        SelectedRawHex = new RawHexViewModel(viewModel.Packet);
         SelectedRawHex.SelectAll();
     }
 

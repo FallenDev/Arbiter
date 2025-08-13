@@ -1,9 +1,10 @@
 ﻿namespace Arbiter.Net;
 
-public class NetworkPacketEventArgs(NetworkPacket packet, IReadOnlyCollection<byte> payload, byte? sequence = null)
+public class NetworkPacketEventArgs(NetworkAction action, NetworkPacket packet, NetworkPacket encryptedPacket)
     : EventArgs
 {
+    public NetworkAction Action { get; } = action;
     public NetworkPacket Packet { get; } = packet;
-    public byte? Sequence { get; } = sequence;
-    public IReadOnlyCollection<byte> Payload { get; } = payload;
+    public NetworkPacket EncryptedPacket { get; } = encryptedPacket;
+    public bool IsEncrypted => !ReferenceEquals(Packet, EncryptedPacket);
 }

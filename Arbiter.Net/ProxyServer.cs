@@ -144,11 +144,11 @@ public class ProxyServer : IDisposable
 
     private void OnRecv(object? sender, NetworkPacketEventArgs e) =>
         PacketReceived?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Payload, e.Sequence));
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Action, e.Packet, e.EncryptedPacket));
 
     private void OnSend(object? sender, NetworkPacketEventArgs e) =>
         PacketSent?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Packet, e.Payload, e.Sequence));
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Action, e.Packet, e.EncryptedPacket));
     
     private void OnClientRedirected(object? sender, NetworkRedirectEventArgs e)
     {
