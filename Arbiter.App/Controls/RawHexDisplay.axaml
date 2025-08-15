@@ -3,11 +3,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:sys="using:System"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="580"
              x:Class="Arbiter.App.Controls.RawHexDisplay"
              x:DataType="vm:RawHexViewModel">
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,*">
-        <Border Grid.Row="0" Grid.RowSpan="6"
+    <UserControl.Resources>
+        <sys:Double x:Key="Talgonite.HexView.FontSize">14</sys:Double>
+        <SolidColorBrush x:Key="Talgonite.HexView.LabelBackground" Color="#262b33"/>
+        <SolidColorBrush x:Key="Talgonite.HexView.LabelBorderBrush" Color="#373d49"/>
+    </UserControl.Resources>
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,*,Auto,Auto">
+        <Border Grid.Row="0" Grid.RowSpan="8"
                 Background="{StaticResource Talgonite.Control.Background}"
                 IsHitTestVisible="False"
                 Focusable="False"/>
@@ -46,7 +52,7 @@
         <Label Grid.Row="2"
                Content="Payload"
                ToolTip.Tip="Decrypted payload bytes of the packet (as hex)."
-               Margin="4"/>
+               Margin="2,4"/>
         <TextBox Name="HexTextBox"
                  Grid.Row="3"
                  Text="{Binding RawHex, Mode=OneWay}"
@@ -58,11 +64,11 @@
                  FontSize="16"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
         
-        <!-- -->
+        <!-- ASCII Text View -->
         <Label Grid.Row="4"
                Content="Text"
                ToolTip.Tip="Decoded ASCII text of the selected bytes."
-               Margin="4"/>
+               Margin="2,4"/>
         <TextBox Name="AsciiTextBox"
                  Grid.Row="5"
                  Text="{Binding DecodedText, Mode=OneWay}"
@@ -71,6 +77,189 @@
                  Classes="editor"
                  FontSize="16"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+        
+        <!-- Integer Values View -->
+        <UniformGrid Grid.Row="6" Rows="5" Columns="2">
+            <Label Content="Values"
+                   ToolTip.Tip="Integer values of the selected bytes."
+                   Margin="2,4"/>
+            <!-- Base 10/16 Display -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <RadioButton IsChecked="{Binding ShowValuesAsHex, Converter={x:Static BoolConverters.Not}}"
+                             Classes="segment segment-left"
+                             Height="32" Padding="12,4"
+                             GroupName="Base">
+                    <TextBlock FontFamily="{StaticResource Talgonite.Font.ConsoleFont}" FontSize="14" Text="Dec"/>
+                </RadioButton>
+                <RadioButton IsChecked="{Binding ShowValuesAsHex}"
+                             Classes="segment segment-right"
+                             Height="32" Padding="12,4"
+                             GroupName="Base">
+                    <TextBlock FontFamily="{StaticResource Talgonite.Font.ConsoleFont}" FontSize="14" Text="Hex"/>
+                </RadioButton>
+            </StackPanel>
+            
+            <!-- Signed 8-bit -->
+            <TextBox Text="{Binding FormattedSignedByte, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right"
+                     IsReadOnly="True">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content=" i8"
+                               ToolTip.Tip="Signed 8-bit value of the first selected byte."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Unsigned 8-bit -->
+            <TextBox Text="{Binding FormattedUnsignedByte, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content=" u8"
+                               ToolTip.Tip="Unsigned 8-bit value of the first selected byte."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Signed 16-bit -->
+            <TextBox Text="{Binding FormattedSignedShort, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="i16"
+                               ToolTip.Tip="Signed 16-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Unsigned 16-bit -->
+            <TextBox Text="{Binding FormattedUnsignedShort, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="u16"
+                               ToolTip.Tip="Unsigned 16-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Signed 32-bit -->
+            <TextBox Text="{Binding FormattedSignedInt, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="i32"
+                               ToolTip.Tip="Signed 32-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Unsigned 32-bit -->
+            <TextBox Text="{Binding FormattedUnsignedInt, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="u32"
+                               ToolTip.Tip="Unsigned 32-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+             <!-- Signed 64-bit -->
+            <TextBox Text="{Binding FormattedSignedLong, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="i64"
+                               ToolTip.Tip="Signed 64-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Unsigned 64-bit -->
+            <TextBox Text="{Binding FormattedUnsignedLong, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="u64"
+                               ToolTip.Tip="Unsigned 64-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+        </UniformGrid>
     </Grid>
 
 </UserControl>

@@ -47,7 +47,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private bool _showFilterBar = true;
 
     public event Action<TracePacketViewModel?>? SelectedPacketChanged;
-    
+
     public TracePacketViewModel? SelectedPacket
     {
         get => _selectedPacket;
