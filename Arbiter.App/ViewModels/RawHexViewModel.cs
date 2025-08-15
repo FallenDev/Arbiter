@@ -63,7 +63,7 @@ public partial class RawHexViewModel : ViewModelBase
             if (SetProperty(ref _hexSelectionStart, value))
             {
                 SyncHexToTextSelection();
-                RecalculateSelection();
+                RecalculateBufferIndex();
                 RefreshValues();
             }
         }
@@ -77,7 +77,7 @@ public partial class RawHexViewModel : ViewModelBase
             if (SetProperty(ref _hexSelectionEnd, value))
             {
                 SyncHexToTextSelection();
-                RecalculateSelection();
+                RecalculateBufferIndex();
                 RefreshValues();
             }
         }
@@ -190,7 +190,7 @@ public partial class RawHexViewModel : ViewModelBase
         }
     }
 
-    private void RecalculateSelection()
+    private void RecalculateBufferIndex()
     {
         var startIndex = HexSelectionStart / 3;
         var endIndex = (HexSelectionEnd + 1) / 3;
@@ -274,7 +274,7 @@ public partial class RawHexViewModel : ViewModelBase
         ulong value = 0;
         for (var i = 0; i < numberOfBytes; i++)
         {
-            value |= (ulong)buffer[startIndex + i] << (i * 8);
+            value = (value << 8) | buffer[startIndex + i];
         }
 
         if (isHex)
