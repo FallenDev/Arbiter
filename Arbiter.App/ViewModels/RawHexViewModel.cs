@@ -21,6 +21,7 @@ public partial class RawHexViewModel : ViewModelBase
     private int _hexSelectionEnd;
     private int _textSelectionStart;
     private int _textSelectionEnd;
+    private bool _isSyncing;
 
     [NotifyPropertyChangedFor(nameof(FormattedCommand))] [ObservableProperty]
     private byte _command;
@@ -61,6 +62,7 @@ public partial class RawHexViewModel : ViewModelBase
         {
             if (SetProperty(ref _hexSelectionStart, value))
             {
+                SyncHexToTextSelection();
                 RecalculateSelection();
                 RefreshValues();
             }
@@ -74,6 +76,7 @@ public partial class RawHexViewModel : ViewModelBase
         {
             if (SetProperty(ref _hexSelectionEnd, value))
             {
+                SyncHexToTextSelection();
                 RecalculateSelection();
                 RefreshValues();
             }
@@ -87,7 +90,7 @@ public partial class RawHexViewModel : ViewModelBase
         {
             if (SetProperty(ref _textSelectionStart, value))
             {
-                SyncTextAndHex();
+                SyncTextToHexSelection();
             }
         }
     }
@@ -99,7 +102,7 @@ public partial class RawHexViewModel : ViewModelBase
         {
             if (SetProperty(ref _textSelectionEnd, value))
             {
-                SyncTextAndHex();
+                SyncTextToHexSelection();
             }
         }
     }
@@ -118,28 +121,73 @@ public partial class RawHexViewModel : ViewModelBase
         };
     }
 
-    private void SyncTextAndHex()
+    private void SyncTextToHexSelection()
     {
-        var textStart = TextSelectionStart;
-        var textEnd = TextSelectionEnd;
-        
-        if (textStart > textEnd)
+        if (_isSyncing)
         {
-            (textStart, textEnd) = (textEnd, textStart);
-        }
-        
-        var newHexStart = textStart * 3;
-        var newHexEnd = textEnd * 3 - 1;
-        
-        if (Math.Abs(newHexStart - newHexEnd) < 2)
-        {
-            HexSelectionStart = 0;
-            HexSelectionEnd = 0;
             return;
         }
 
-        HexSelectionStart = newHexStart;
-        HexSelectionEnd = newHexEnd;
+        _isSyncing = true;
+        
+        try
+        {
+            var textStart = TextSelectionStart;
+            var textEnd = TextSelectionEnd;
+
+            if (textStart > textEnd)
+            {
+                (textStart, textEnd) = (textEnd, textStart);
+            }
+
+            var newHexStart = textStart * 3;
+            var newHexEnd = textEnd * 3 - 1;
+
+            if (Math.Abs(newHexStart - newHexEnd) < 2)
+            {
+                HexSelectionStart = 0;
+                HexSelectionEnd = 0;
+                return;
+            }
+
+            HexSelectionStart = newHexStart;
+            HexSelectionEnd = newHexEnd;
+        }
+        finally
+        {
+            _isSyncing = false;
+        }
+    }
+
+    private void SyncHexToTextSelection()
+    {
+        if (_isSyncing)
+        {
+            return;
+        }
+
+        _isSyncing = true;
+
+        try
+        {
+            var hexStart = HexSelectionStart;
+            var hexEnd = HexSelectionEnd;
+
+            if (hexStart > hexEnd)
+            {
+                (hexStart, hexEnd) = (hexEnd, hexStart);
+            }
+
+            var newTextStart = hexStart / 3;
+            var newTextEnd = (hexEnd + 1) / 3;
+
+            TextSelectionStart = newTextStart;
+            TextSelectionEnd = newTextEnd;
+        }
+        finally
+        {
+            _isSyncing = false;
+        }
     }
 
     private void RecalculateSelection()
