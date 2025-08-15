@@ -207,14 +207,16 @@ public partial class RawHexViewModel : ViewModelBase
 
     private void RefreshValues()
     {
-        FormattedSignedByte = TryReadFormattedValue<sbyte>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedUnsignedByte = TryReadFormattedValue<byte>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedSignedShort = TryReadFormattedValue<short>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedUnsignedShort = TryReadFormattedValue<ushort>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedSignedInt = TryReadFormattedValue<int>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedUnsignedInt = TryReadFormattedValue<uint>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedSignedLong = TryReadFormattedValue<long>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
-        FormattedUnsignedLong = TryReadFormattedValue<ulong>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
+        var selectedSpan = _payload.AsSpan(_startIndex, Math.Abs(_endIndex - _startIndex));
+        
+        FormattedSignedByte = TryReadFormattedValue<sbyte>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedUnsignedByte = TryReadFormattedValue<byte>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedSignedShort = TryReadFormattedValue<short>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedUnsignedShort = TryReadFormattedValue<ushort>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedSignedInt = TryReadFormattedValue<int>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedUnsignedInt = TryReadFormattedValue<uint>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedSignedLong = TryReadFormattedValue<long>(selectedSpan, ShowValuesAsHex) ?? "--";
+        FormattedUnsignedLong = TryReadFormattedValue<ulong>(selectedSpan, ShowValuesAsHex) ?? "--";
     }
 
     private string GetAsciiText()
@@ -255,26 +257,21 @@ public partial class RawHexViewModel : ViewModelBase
         HexSelectionEnd = RawHex.Length;
     }
 
-    private static string? TryReadFormattedValue<T>(ReadOnlySpan<byte> buffer, int startIndex, bool isHex = false)
+    private static string? TryReadFormattedValue<T>(ReadOnlySpan<byte> buffer, bool isHex = false)
         where T : struct
     {
-        if (startIndex < 0 || startIndex >= buffer.Length)
-        {
-            return null;
-        }
-
         var t = typeof(T);
         var numberOfBytes = GetSizeOfType(t);
 
-        if (startIndex + numberOfBytes > buffer.Length)
+        if (numberOfBytes > buffer.Length)
         {
             return null;
         }
-
+        
         ulong value = 0;
         for (var i = 0; i < numberOfBytes; i++)
         {
-            value = (value << 8) | buffer[startIndex + i];
+            value = (value << 8) | buffer[i];
         }
 
         if (isHex)
