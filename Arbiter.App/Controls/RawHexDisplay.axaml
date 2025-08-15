@@ -81,7 +81,7 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
         
         <!-- Integer Values View -->
-        <UniformGrid Grid.Row="6" Rows="5" Columns="2">
+        <UniformGrid Grid.Row="6" Rows="6" Columns="2">
             <Label Content="Values"
                    ToolTip.Tip="Integer values of the selected bytes."
                    Margin="2,4"/>
@@ -258,6 +258,46 @@
                             Cursor="Help">
                         <Label Content="u64"
                                ToolTip.Tip="Unsigned 64-bit value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Ipv4 Address -->
+            <TextBox Text="{Binding FormattedIpAddress, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="ipv4"
+                               ToolTip.Tip="IPv4 address value of the selected bytes."/>
+                    </Border>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+            
+            <!-- Bitflags -->
+            <TextBox Text="{Binding FormattedBitFlags, FallbackValue=--}"
+                     Classes="read-only"
+                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     TextAlignment="Right">
+                <TextBox.InnerLeftContent>
+                    <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
+                            BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding $parent[TextBox].CornerRadius}"
+                            Margin="4,2"
+                            Height="28"
+                            Cursor="Help">
+                        <Label Content="flags"
+                               ToolTip.Tip="Bit flag representation of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
             </TextBox>

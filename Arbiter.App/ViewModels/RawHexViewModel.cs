@@ -39,7 +39,9 @@ public partial class RawHexViewModel : ViewModelBase
     [ObservableProperty] private string? _formattedUnsignedInt;
     [ObservableProperty] private string? _formattedSignedLong;
     [ObservableProperty] private string? _formattedUnsignedLong;
-
+    [ObservableProperty] private string? _formattedIpAddress;
+    [ObservableProperty] private string? _formattedBitFlags;
+    
     public bool ShowValuesAsHex
     {
         get => _showValuesAsHex;
@@ -208,7 +210,7 @@ public partial class RawHexViewModel : ViewModelBase
     private void RefreshValues()
     {
         var selectedSpan = _payload.AsSpan(_startIndex, Math.Abs(_endIndex - _startIndex));
-        
+
         FormattedSignedByte = TryReadFormattedValue<sbyte>(selectedSpan, ShowValuesAsHex) ?? "--";
         FormattedUnsignedByte = TryReadFormattedValue<byte>(selectedSpan, ShowValuesAsHex) ?? "--";
         FormattedSignedShort = TryReadFormattedValue<short>(selectedSpan, ShowValuesAsHex) ?? "--";
@@ -217,6 +219,12 @@ public partial class RawHexViewModel : ViewModelBase
         FormattedUnsignedInt = TryReadFormattedValue<uint>(selectedSpan, ShowValuesAsHex) ?? "--";
         FormattedSignedLong = TryReadFormattedValue<long>(selectedSpan, ShowValuesAsHex) ?? "--";
         FormattedUnsignedLong = TryReadFormattedValue<ulong>(selectedSpan, ShowValuesAsHex) ?? "--";
+
+        FormattedIpAddress = selectedSpan.Length >= 4
+            ? $"{selectedSpan[3]}.{selectedSpan[2]}.{selectedSpan[1]}.{selectedSpan[0]}"
+            : "--";
+
+        FormattedBitFlags = FormatBits(selectedSpan) ?? "--";
     }
 
     private string GetAsciiText()
@@ -255,6 +263,42 @@ public partial class RawHexViewModel : ViewModelBase
     {
         HexSelectionStart = 0;
         HexSelectionEnd = RawHex.Length;
+    }
+
+    private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ')
+    {
+        if (buffer.Length == 0)
+        {
+            return null;
+        }
+
+        var bytes = Math.Min(buffer.Length, 4);
+        var totalBits = bytes * 8;
+        var groups = (totalBits + groupBits - 1) / groupBits;
+        var separators = Math.Max(0, groups - 1);
+        var outLen = totalBits + separators;
+
+        var outSpan = outLen <= 1024 ? stackalloc char[outLen] : new char[outLen];
+
+        var pos = 0;
+        var bitsWritten = 0;
+
+        for (var b = 0; b < bytes; b++)
+        {
+            var val = b < buffer.Length ? buffer[b] : (byte)0;
+
+            // Big Endian
+            for (var bit = 7; bit >= 0; bit--)
+            {
+                outSpan[pos++] = (((val >> bit) & 1) != 0) ? '1' : '0';
+                bitsWritten++;
+
+                if (bitsWritten % groupBits == 0 && bitsWritten < totalBits)
+                    outSpan[pos++] = groupSeparator;
+            }
+        }
+
+        return new string(outSpan);
     }
 
     private static string? TryReadFormattedValue<T>(ReadOnlySpan<byte> buffer, bool isHex = false)
