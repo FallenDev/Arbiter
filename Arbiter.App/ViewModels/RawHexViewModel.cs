@@ -224,7 +224,7 @@ public partial class RawHexViewModel : ViewModelBase
             ? $"{selectedSpan[3]}.{selectedSpan[2]}.{selectedSpan[1]}.{selectedSpan[0]}"
             : "--";
 
-        FormattedBitFlags = FormatBits(selectedSpan) ?? "--";
+        FormattedBitFlags = FormatBits(selectedSpan, 4, ' ', 1) ?? "--";
     }
 
     private string GetAsciiText()
@@ -265,14 +265,14 @@ public partial class RawHexViewModel : ViewModelBase
         HexSelectionEnd = RawHex.Length;
     }
 
-    private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ')
+    private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ', int maxBytes = 4)
     {
         if (buffer.Length == 0)
         {
             return null;
         }
 
-        var bytes = Math.Min(buffer.Length, 4);
+        var bytes = Math.Min(buffer.Length, maxBytes);
         var totalBits = bytes * 8;
         var groups = (totalBits + groupBits - 1) / groupBits;
         var separators = Math.Max(0, groups - 1);

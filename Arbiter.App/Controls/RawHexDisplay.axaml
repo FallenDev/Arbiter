@@ -297,7 +297,7 @@
                             Height="28"
                             Cursor="Help">
                         <Label Content="flags"
-                               ToolTip.Tip="Bit flag representation of the selected bytes."/>
+                               ToolTip.Tip="Bit flag representation of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
             </TextBox>
