@@ -12,14 +12,15 @@ namespace Arbiter.App.ViewModels;
 
 public partial class RawHexViewModel : ViewModelBase
 {
-    private readonly NetworkPacket _packet;
     private readonly byte[] _payload;
     
     private bool _showValuesAsHex;
     private int _startIndex;
     private int _endIndex;
-    private int _selectionStart;
-    private int _selectionEnd;
+    private int _hexSelectionStart;
+    private int _hexSelectionEnd;
+    private int _textSelectionStart;
+    private int _textSelectionEnd;
 
     [NotifyPropertyChangedFor(nameof(FormattedCommand))] [ObservableProperty]
     private byte _command;
@@ -37,7 +38,7 @@ public partial class RawHexViewModel : ViewModelBase
     [ObservableProperty] private string? _formattedUnsignedInt;
     [ObservableProperty] private string? _formattedSignedLong;
     [ObservableProperty] private string? _formattedUnsignedLong;
-    
+
     public bool ShowValuesAsHex
     {
         get => _showValuesAsHex;
@@ -45,20 +46,20 @@ public partial class RawHexViewModel : ViewModelBase
         {
             if (SetProperty(ref _showValuesAsHex, value))
             {
-                RefreshValues(false);
+                RefreshValues();
             }
         }
     }
-    
+
     public string FormattedCommand => $"0x{Command:X2}";
     public string? FormattedSequence => Sequence is not null ? $"0x{Sequence:X2}" : null;
 
-    public int SelectionStart
+    public int HexSelectionStart
     {
-        get => _selectionStart;
+        get => _hexSelectionStart;
         set
         {
-            if (SetProperty(ref _selectionStart, value))
+            if (SetProperty(ref _hexSelectionStart, value))
             {
                 RecalculateSelection();
                 RefreshValues();
@@ -66,26 +67,49 @@ public partial class RawHexViewModel : ViewModelBase
         }
     }
 
-    public int SelectionEnd
+    public int HexSelectionEnd
     {
-        get => _selectionEnd;
+        get => _hexSelectionEnd;
         set
         {
-            if (SetProperty(ref _selectionEnd, value))
+            if (SetProperty(ref _hexSelectionEnd, value))
             {
                 RecalculateSelection();
                 RefreshValues();
+            }
+        }
+    }
+
+    public int TextSelectionStart
+    {
+        get => _textSelectionStart;
+        set
+        {
+            if (SetProperty(ref _textSelectionStart, value))
+            {
+                SyncTextAndHex();
+            }
+        }
+    }
+
+    public int TextSelectionEnd
+    {
+        get => _textSelectionEnd;
+        set
+        {
+            if (SetProperty(ref _textSelectionEnd, value))
+            {
+                SyncTextAndHex();
             }
         }
     }
 
     public RawHexViewModel(NetworkPacket packet)
     {
-        _packet = packet;
         _payload = packet.Data.ToArray();
         RawHex = string.Join(" ", _payload.Select(b => b.ToString("X2")));
-
-        Command = packet.Command;
+        DecodedText = GetAsciiText();
+        
         Sequence = packet switch
         {
             ClientPacket clientPacket => clientPacket.Sequence,
@@ -94,10 +118,34 @@ public partial class RawHexViewModel : ViewModelBase
         };
     }
 
+    private void SyncTextAndHex()
+    {
+        var textStart = TextSelectionStart;
+        var textEnd = TextSelectionEnd;
+        
+        if (textStart > textEnd)
+        {
+            (textStart, textEnd) = (textEnd, textStart);
+        }
+        
+        var newHexStart = textStart * 3;
+        var newHexEnd = textEnd * 3 - 1;
+        
+        if (Math.Abs(newHexStart - newHexEnd) < 2)
+        {
+            HexSelectionStart = 0;
+            HexSelectionEnd = 0;
+            return;
+        }
+
+        HexSelectionStart = newHexStart;
+        HexSelectionEnd = newHexEnd;
+    }
+
     private void RecalculateSelection()
     {
-        var startIndex = SelectionStart / 3;
-        var endIndex = (SelectionEnd + 1) / 3;
+        var startIndex = HexSelectionStart / 3;
+        var endIndex = (HexSelectionEnd + 1) / 3;
 
         // If selection is reversed, swap it for consistency
         if (startIndex > endIndex)
@@ -109,13 +157,8 @@ public partial class RawHexViewModel : ViewModelBase
         _endIndex = Math.Min(endIndex, _payload.Length);
     }
 
-    private void RefreshValues(bool includeText = true)
+    private void RefreshValues()
     {
-        if (includeText)
-        {
-            DecodedText = GetDecodedText();
-        }
-
         FormattedSignedByte = TryReadFormattedValue<sbyte>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
         FormattedUnsignedByte = TryReadFormattedValue<byte>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
         FormattedSignedShort = TryReadFormattedValue<short>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
@@ -126,19 +169,13 @@ public partial class RawHexViewModel : ViewModelBase
         FormattedUnsignedLong = TryReadFormattedValue<ulong>(_payload, _startIndex, ShowValuesAsHex) ?? "--";
     }
 
-    private string GetDecodedText()
+    private string GetAsciiText()
     {
-        if (_startIndex == _endIndex)
-        {
-            return string.Empty;
-        }
-        
-        var dataSpan = _payload[_startIndex.._endIndex];
-        var buffer = ArrayPool<char>.Shared.Rent(dataSpan.Length + 1);
+        var buffer = ArrayPool<char>.Shared.Rent(_payload.Length + 1);
 
         try
         {
-            var decodedLength = Encoding.ASCII.GetChars(dataSpan, buffer);
+            var decodedLength = Encoding.ASCII.GetChars(_payload, buffer);
             if (decodedLength < 1)
             {
                 return string.Empty;
@@ -166,8 +203,8 @@ public partial class RawHexViewModel : ViewModelBase
     [RelayCommand]
     public void SelectAll()
     {
-        SelectionStart = 0;
-        SelectionEnd = RawHex.Length;
+        HexSelectionStart = 0;
+        HexSelectionEnd = RawHex.Length;
     }
 
     private static string? TryReadFormattedValue<T>(ReadOnlySpan<byte> buffer, int startIndex, bool isHex = false)

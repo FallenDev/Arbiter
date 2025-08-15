@@ -75,7 +75,7 @@ public partial class RawHexDisplay : UserControl
             textBox.SelectionEnd = newSelectionStart + newSelectionLength;
         }
 
-        viewModel.SelectionStart = newSelectionStart;
-        viewModel.SelectionEnd = newSelectionStart + newSelectionLength;
+        viewModel.HexSelectionStart = newSelectionStart;
+        viewModel.HexSelectionEnd = newSelectionStart + newSelectionLength;
     }
 }
