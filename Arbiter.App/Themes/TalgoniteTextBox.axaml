@@ -50,7 +50,9 @@
                                 <Grid ColumnDefinitions="Auto,*,Auto">
                                     <!-- Inner Left Content -->
                                     <ContentPresenter Grid.Column="0"
-                                                      Content="{TemplateBinding InnerLeftContent}"/>
+                                                      Content="{TemplateBinding InnerLeftContent}"
+                                                      VerticalAlignment="Stretch"
+                                                      VerticalContentAlignment="Center"/>
                                     
                                     <!-- Scrollable Text -->
                                     <ScrollViewer Name="PART_ScrollViewer"
@@ -105,7 +107,9 @@
                                     
                                     <!-- Inner Right Content -->
                                     <ContentPresenter Grid.Column="2"
-                                                      Content="{TemplateBinding InnerRightContent}"/>
+                                                      Content="{TemplateBinding InnerRightContent}"
+                                                      VerticalAlignment="Stretch"
+                                                      VerticalContentAlignment="Center"/>
                                 </Grid>
                             </DataValidationErrors>
                         </DockPanel>

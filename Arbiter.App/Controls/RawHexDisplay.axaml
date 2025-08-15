@@ -8,7 +8,10 @@
              x:Class="Arbiter.App.Controls.RawHexDisplay"
              x:DataType="vm:RawHexViewModel">
     <UserControl.Resources>
-        <sys:Double x:Key="Talgonite.HexView.FontSize">14</sys:Double>
+        <sys:Double x:Key="Talgonite.HexView.FontSize">16</sys:Double>
+        <sys:Double x:Key="Talgonite.HexView.LabelFontSize">14</sys:Double>
+        <sys:Double x:Key="Talgonite.HexView.TextBoxHeight">50</sys:Double>
+        <SolidColorBrush x:Key="Talgonite.HexView.TextBoxBackground" Color="#1e2228"/>
         <SolidColorBrush x:Key="Talgonite.HexView.LabelBackground" Color="#262b33"/>
         <SolidColorBrush x:Key="Talgonite.HexView.LabelBorderBrush" Color="#373d49"/>
     </UserControl.Resources>
@@ -27,7 +30,7 @@
                          TextAlignment="Right"
                          Watermark="--"
                          Classes="read-only"
-                         IsReadOnly="True"
+                         Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                          MinWidth="60"
                          Focusable="False"/>
             </StackPanel>
@@ -40,7 +43,7 @@
                          TextAlignment="Right"
                          Watermark="--"
                          Classes="read-only"
-                         IsReadOnly="True"
+                         Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                          MinWidth="60"
                          Focusable="False"/>
             </StackPanel>
@@ -83,7 +86,7 @@
         <!-- Integer Values View -->
         <UniformGrid Grid.Row="6" Rows="6" Columns="2">
             <Label Content="Values"
-                   ToolTip.Tip="Integer values of the selected bytes."
+                   ToolTip.Tip="Scalar values of the selected bytes, as big endian."
                    Margin="2,4"/>
             <!-- Base 10/16 Display -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -107,16 +110,18 @@
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                      TextAlignment="Right"
-                     IsReadOnly="True">
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
-                        <Label Content=" i8"
+                        <Label Content="i8"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Signed 8-bit value of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -127,16 +132,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
-                        <Label Content=" u8"
+                        <Label Content="u8"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Unsigned 8-bit value of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -147,16 +155,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="i16"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Signed 16-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -167,16 +178,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="u16"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Unsigned 16-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -187,16 +201,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="i32"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Signed 32-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -207,16 +224,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="u32"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Unsigned 32-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -227,16 +247,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="i64"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Signed 64-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -247,16 +270,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="u64"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Unsigned 64-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -267,16 +293,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
-                            Margin="4,2"
-                            Height="28"
+                            Margin="4,0"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="ipv4"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="IPv4 address value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
@@ -287,16 +316,19 @@
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                     TextAlignment="Right">
+                     TextAlignment="Right"
+                     Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                     Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
                 <TextBox.InnerLeftContent>
                     <Border Background="{StaticResource Talgonite.HexView.LabelBackground}"
                             BorderBrush="{StaticResource Talgonite.HexView.LabelBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{Binding $parent[TextBox].CornerRadius}"
                             Margin="4,2"
-                            Height="28"
+                            Padding="2"
                             Cursor="Help">
                         <Label Content="flags"
+                               FontSize="{StaticResource Talgonite.HexView.LabelFontSize}"
                                ToolTip.Tip="Bit flag representation of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
