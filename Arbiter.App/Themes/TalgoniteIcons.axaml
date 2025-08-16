@@ -89,6 +89,11 @@
         M0,0 H16 L10,8 V16 H6 V8 Z H16 Z
     </Geometry>
     
+    <!-- Clear Text Icon -->
+    <Geometry x:Key="Talgonite.Icon.ClearText">
+        M1,1 L6,6 M6,1 L1,6 M9,2 L15,2 M9,6 L15,6 M1,10 L15,10 M1,14 L15,14
+    </Geometry>
+    
     <!-- Trash Icon -->
     <Geometry x:Key="Talgonite.Icon.TrashBin">
         M0,6 H16 V2 H10 V0 H6 V2 H0 Z M2,6 H14 V16 H2 Z M6,9 V 13 Z

@@ -47,7 +47,7 @@
                     <Path Width="16"
                           Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"
-                          Data="{StaticResource Talgonite.Icon.TrashBin}"/>
+                          Data="{StaticResource Talgonite.Icon.ClearText}"/>
                 </Button>
             </UniformGrid>
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
