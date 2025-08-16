@@ -6,7 +6,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Controls.PacketInspector"
              x:DataType="vm:InspectorPacketViewModel">
-    <TextBlock>
-        This is the packet inspector placeholder.
-    </TextBlock>
+    <Grid RowDefinitions="*">
+        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"
+                 Watermark="This is the packet inspector placeholder."
+                 Classes="read-only"/>
+    </Grid>
 </UserControl>
