@@ -91,7 +91,7 @@
     
     <!-- Clear Text Icon -->
     <Geometry x:Key="Talgonite.Icon.ClearText">
-        M1,1 L6,6 M6,1 L1,6 M9,2 L15,2 M9,6 L15,6 M1,10 L15,10 M1,14 L15,14
+        M1,1 L7,7 M7,1 L1,7 M10,3 L15,3 M10,7 L15,7 M1,11 L15,11 M1,15 L15,15
     </Geometry>
     
     <!-- Trash Icon -->
