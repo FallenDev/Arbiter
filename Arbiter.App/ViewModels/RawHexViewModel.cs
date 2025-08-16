@@ -121,6 +121,8 @@ public partial class RawHexViewModel : ViewModelBase
             ServerPacket serverPacket => serverPacket.Sequence,
             _ => null
         };
+        
+        RefreshValues();
     }
 
     private void SyncTextToHexSelection()
@@ -263,6 +265,13 @@ public partial class RawHexViewModel : ViewModelBase
     {
         HexSelectionStart = 0;
         HexSelectionEnd = RawHex.Length;
+    }
+
+    [RelayCommand]
+    public void ClearSelection()
+    {
+        HexSelectionStart = 0;
+        HexSelectionEnd = 0;
     }
 
     private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ', int maxBytes = 4)
