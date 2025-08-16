@@ -31,7 +31,7 @@ public partial class InspectorViewModel : ViewModelBase
 
     private void OnPacketSelected(NetworkPacket? packet)
     {
-        if (packet is null)
+        if (packet is null || !_packetMessageFactory.CanParse(packet))
         {
             InspectedPacket = null;
             return;

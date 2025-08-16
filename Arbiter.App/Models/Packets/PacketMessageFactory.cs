@@ -59,10 +59,17 @@ public class PacketMessageFactory
         }
     }
 
-    public bool TryParsePacket(NetworkPacket packet, [NotNullWhen(true)] out IPacketMessage? result,
+    public bool CanParse(NetworkPacket packet) => packet switch
+    {
+        ClientPacket => _clientPacketMap.ContainsKey(packet.Command),
+        ServerPacket => _serverPacketMap.ContainsKey(packet.Command),
+        _ => false
+    };
+
+    public bool TryParsePacket(NetworkPacket packet, [NotNullWhen(true)] out IPacketMessage? message,
         [NotNullWhen(false)] out Exception? exception)
     {
-        result = null;
+        message = null;
         exception = null;
 
         try
@@ -82,15 +89,15 @@ public class PacketMessageFactory
             }
 
             var reader = new NetworkPacketReader(packet);
-            var message = factory(reader) as IPacketMessage;
+            var parsed = factory(reader) as IPacketMessage;
 
-            result = message;
-            return result is not null;
+            message = parsed;
+            return message is not null;
         }
         catch (Exception ex)
         {
             exception = ex;
-            result = null;
+            message = null;
             return false;
         }
     }
