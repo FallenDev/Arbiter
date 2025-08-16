@@ -97,6 +97,21 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
         return stringValue;
     }
 
+    public string ReadLine()
+    {
+        var length = 0;
+        while (_buffer[_position + length] != '\n' && _buffer[_position + length] != '\r')
+        {
+            EnsureCanRead(1);
+            length++;
+        }
+
+        var stringValue = _encoding.GetString(_buffer, _position, length);
+
+        _position += length + 1;
+        return stringValue;
+    }
+
     public IPAddress ReadIPv4Address()
     {
         EnsureCanRead(4);
@@ -132,6 +147,12 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
         EnsureCanRead(count);
         _buffer.AsSpan(_position, count).CopyTo(buffer);
         _position += count;
+    }
+
+    public void Skip(int length)
+    {
+        EnsureCanRead(length);
+        _position += length;
     }
 
     private void EnsureCanRead(int length)

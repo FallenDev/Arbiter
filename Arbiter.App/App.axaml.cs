@@ -94,6 +94,7 @@ public class App : Application
         // Singletons
         services.AddSingleton<ConsoleViewModel>();
         services.AddSingleton<ClientManagerViewModel>();
+        services.AddSingleton<InspectorViewModel>();
         services.AddSingleton<ProxyViewModel>();
         
         // Transients

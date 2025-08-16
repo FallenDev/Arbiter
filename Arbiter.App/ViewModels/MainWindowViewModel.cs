@@ -27,6 +27,7 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public ClientManagerViewModel ClientManager { get; }
     public ConsoleViewModel Console { get; }
+    public InspectorViewModel Inspector { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
 
@@ -45,6 +46,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         ClientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
+        Inspector = serviceProvider.GetRequiredService<InspectorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
 
@@ -61,6 +63,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
         SelectedRawHex = new RawHexViewModel(viewModel.Packet);
         SelectedRawHex.ClearSelection();
+
+        Inspector.SelectedPacket = viewModel.Packet;
     }
 
     [RelayCommand]

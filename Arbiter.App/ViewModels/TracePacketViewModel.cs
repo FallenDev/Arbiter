@@ -8,7 +8,6 @@ using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
