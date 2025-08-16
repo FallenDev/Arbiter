@@ -12,10 +12,12 @@
     <StyleInclude Source="./TalgoniteButton.axaml"/>
     <StyleInclude Source="./TalgoniteComboBox.axaml"/>
     <StyleInclude Source="./TalgoniteComboBoxItem.axaml"/>
+    <StyleInclude Source="./TalgoniteContextMenu.axaml"/>
     <StyleInclude Source="./TalgoniteGridSplitter.axaml"/>
     <StyleInclude Source="./TalgoniteLabel.axaml"/>
     <StyleInclude Source="./TalgoniteListBox.axaml"/>
     <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>
+    <StyleInclude Source="./TalgoniteMenuItem.axaml"/>
     <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgonitePath.axaml"/>
     <StyleInclude Source="./TalgonitePopupRoot.axaml"/>

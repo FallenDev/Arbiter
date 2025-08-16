@@ -1,0 +1,143 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="using:System">
+    <Style Selector="MenuItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.MenuItem.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.MenuItem.BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8,0"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Root"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGT"/>
+                            <ColumnDefinition Width="20"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <ContentControl Name="PART_ToggleIconPresenter"
+                                        Grid.Column="0"
+                                        Width="16" Height="16"
+                                        Margin="4"
+                                        IsVisible="False"/>
+                        
+                        <ContentControl Name="PART_IconPresenter"
+                                        Grid.Column="0"
+                                        Content="{TemplateBinding Icon}"
+                                        Width="16" Height="16"
+                                        Margin="4"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                        
+                        <ContentPresenter Name="PART_HeaderPresenter"
+                                          Grid.Column="2"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center">
+                            <ContentPresenter.DataTemplates>
+                                <DataTemplate DataType="sys:String">
+                                    <AccessText Text="{Binding}"/>
+                                </DataTemplate>
+                            </ContentPresenter.DataTemplates>
+                        </ContentPresenter>
+                        
+                        <TextBlock Name="PART_InputGestureText"
+                                   Grid.Column="3"
+                                   Text="{TemplateBinding InputGesture, Converter={StaticResource KeyGestureConverter}}"
+                                   Foreground="{StaticResource Talgonite.MenuItem.GestureForeground}"
+                                   FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                   Margin="4,0,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"/>
+                        
+                        <Path Name="RightArrow"
+                              Grid.Column="4"
+                              Stroke="{TemplateBinding Foreground}"
+                              Data="M6,4 L12,8 L6,12"
+                              Margin="10,0,0,0"
+                              VerticalAlignment="Center"/>
+                        
+                        <Popup Name="PART_Popup"
+                               Grid.Column="0"
+                               IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}"
+                               IsLightDismissEnabled="False"
+                               Placement="RightEdgeAlignedTop">
+                            <Border>
+                                <ScrollViewer>
+                                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                                    Grid.IsSharedSizeScope="True"
+                                                    Margin="2"
+                                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^:separator">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Separator/>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.MenuItem.HoverForeground}"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ Border#Root">
+            <Setter Property="Background" Value="{StaticResource Talgonite.MenuItem.HoverBackground}"/>
+        </Style>
+        
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{StaticResource Talgonite.MenuItem.PressedForeground}"/>
+        </Style>
+        
+        <Style Selector="^:selected /template/ Border#Root">
+            <Setter Property="Background" Value="{StaticResource Talgonite.MenuItem.SelectedBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.MenuItem.SelectedBorderBrush}"/>
+        </Style>
+        
+        <Style Selector="^:empty /template/ Path#RightArrow">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.MenuItem.DisabledForeground}"/>
+        </Style>
+        
+        <Style Selector="^:toggle /template/ ContentControl#PART_ToggleIconPresenter, ^:radio /template/ ContentControl#PART_ToggleIconPresenter">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="^:toggle /template/ ContentPresenter#PART_IconPresenter, ^:radio /template/ ContentPresenter#PART_IconPresenter">
+            <Setter Property="IsVisible" Value="True"/>        
+        </Style>
+        
+        <Style Selector="^:checked:toggle /template/ ContentControl#PART_ToggleIconPresenter">
+            <Setter Property="Content">
+                <Template>
+                    <Path VerticalAlignment="Center"/>
+                </Template>
+            </Setter>
+        </Style>
+        
+        <Style Selector="^:checked:radio /template/ ContentControl#PART_ToggleIconPresenter">
+            <Setter Property="Content">
+                <Template>
+                    <Path VerticalAlignment="Center"/>
+                </Template>
+            </Setter>
+        </Style>
+    </Style>
+</Styles>

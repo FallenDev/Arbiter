@@ -65,6 +65,10 @@
             <SolidColorBrush x:Key="Talgonite.ComboBoxItem.SelectedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.ComboBoxItem.DisabledForeground" Color="#7b7e85"/>
             
+            <!-- ContextMenu Resources -->
+            <SolidColorBrush x:Key="Talgonite.ContextMenu.Background" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.ContextMenu.BorderBrush" Color="#292d34"/>
+            
             <!-- Control Resources -->
             <SolidColorBrush x:Key="Talgonite.Control.Background" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.Control.Foreground" Color="#e0e0e0"/>
@@ -93,6 +97,18 @@
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.SelectedForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.FocusForeground" Color="#afc7c1"/>
             <SolidColorBrush x:Key="Talgonite.ListBoxItem.DisabledForeground" Color="#6d6f73"/>
+            
+            <!-- MenuItem Resources -->
+            <SolidColorBrush x:Key="Talgonite.MenuItem.Background" Color="Transparent"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.HoverBackground" Color="#22262d"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.SelectedBackground" Color="#2e3743"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.HoverForeground" Color="#e0e0e0"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.PressedForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.DisabledForeground" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.GestureForeground" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.BorderBrush" Color="#292d34"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.SelectedBorderBrush" Color="#373d49"/>
             
             <!-- RadioButton Resources -->
             <SolidColorBrush x:Key="Talgonite.RadioButton.Background" Color="#262b33"/>

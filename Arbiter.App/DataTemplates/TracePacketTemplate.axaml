@@ -62,6 +62,12 @@
                                TextWrapping="Wrap"/>
                 </StackPanel>
             </Grid>
+            
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy" Command="{Binding CopyToClipboardCommand}" InputGesture="Ctrl+C" HotKey="Ctrl+C"/>
+                </ContextMenu>
+            </Border.ContextMenu>
         </Border>
     </DataTemplate>
 </ResourceDictionary>
