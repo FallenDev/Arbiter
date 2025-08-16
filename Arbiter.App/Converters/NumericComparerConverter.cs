@@ -8,6 +8,17 @@ public class NumericComparerConverter : IValueConverter
 {
     public static NumericComparerConverter IsZero => new((long value, long _) => value == 0);
     public static NumericComparerConverter NotZero => new((long value, long _) => value != 0);
+    public static NumericComparerConverter IsPositive => new((long value, long _) => value > 0);
+    public static NumericComparerConverter IsNegative => new((long value, long _) => value < 0);
+    public static NumericComparerConverter IsEven => new((long value, long _) => value % 2 == 0);
+    public static NumericComparerConverter IsOdd => new((long value, long _) => value % 2 != 0);
+    public static NumericComparerConverter IsGreaterThan => new((long lhs, long rhs) => lhs > rhs);
+    public static NumericComparerConverter IsLessThan => new((long lhs, long rhs) => lhs < rhs);
+    public static NumericComparerConverter IsGreaterOrEqual => new((long lhs, long rhs) => lhs >= rhs);
+    public static NumericComparerConverter IsLessOrEqual => new((long lhs, long rhs) => lhs <= rhs);
+    public static NumericComparerConverter IsEqual => new((long lhs, long rhs) => lhs == rhs);
+    public static NumericComparerConverter IsNotEqual => new((long lhs, long rhs) => lhs != rhs);
+    public static NumericComparerConverter IsEvenlyDivisibleBy => new((long lhs, long rhs) => lhs % rhs == 0);
     
     private readonly Func<long, long, bool> _comparer;
 
