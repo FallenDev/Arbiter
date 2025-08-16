@@ -160,6 +160,7 @@
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
             
             <!-- TextBlock Resources -->
+            <SolidColorBrush x:Key="Talgonite.TextBlock.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TextBlock.DimForeground" Color="#717479"/>
             
             <!-- TextBox Resources -->

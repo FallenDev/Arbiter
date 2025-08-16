@@ -22,6 +22,7 @@
             <!-- Converters -->
             <converters:HotKeyConverter x:Key="HotKeyConverter"/>
             <converters:LogLevelBrushConverter x:Key="LogLevelBrushConverter"/>
+            <converters:NumericComparerConverter x:Key="NumericComparerConverter"/>
             <converters:PacketDirectionColorConverter x:Key="PacketDirectionColorConverter"/>
             <converters:PacketDirectionNameConverter x:Key="PacketDirectionNameConverter"/>
             

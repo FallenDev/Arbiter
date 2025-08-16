@@ -84,6 +84,8 @@ public partial class RawHexViewModel : ViewModelBase
             }
         }
     }
+    
+    public int SelectedByteCount => Math.Abs(_endIndex - _startIndex);
 
     public int TextSelectionStart
     {
@@ -207,6 +209,8 @@ public partial class RawHexViewModel : ViewModelBase
 
         _startIndex = Math.Max(0, startIndex);
         _endIndex = Math.Min(endIndex, _payload.Length);
+
+        OnPropertyChanged(nameof(SelectedByteCount));
     }
 
     private void RefreshValues()
