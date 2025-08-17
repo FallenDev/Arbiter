@@ -101,10 +101,10 @@
         
         <!-- Right Panel Tabs -->
         <TabControl Name="RightPanelTabStrip" Grid.Column="4">
-            <TabItem Header="Inspector">
+            <TabItem Header="Inspector" IsSelected="True">
                 <controls:PacketInspector DataContext="{Binding Inspector}"/>
             </TabItem>
-            <TabItem Header="Hex" IsSelected="True">
+            <TabItem Header="Hex">
                 <controls:RawHexDisplay DataContext="{Binding SelectedRawHex}"/>
             </TabItem>
         </TabControl>

@@ -3,12 +3,51 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:converters="using:Arbiter.App.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Controls.PacketInspector"
-             x:DataType="vm:InspectorPacketViewModel">
-    <Grid RowDefinitions="*">
-        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"
-                 Watermark="This is the packet inspector placeholder."
-                 Classes="read-only"/>
+             x:DataType="vm:InspectorViewModel">
+    <Grid RowDefinitions="Auto,*" Margin="0,4">
+        
+        <!-- Placeholder -->
+        <TextBlock Grid.Row="1"
+                   Text="Unknown packet structure"
+                   TextAlignment="Center"
+                   Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                   VerticalAlignment="Center"
+                   IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}"/>
+        
+        <!-- Header Section -->
+        <StackPanel Grid.Row="0"
+                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <TextBlock Text="{Binding InspectedPacket.DisplayName, FallbackValue=--}"
+                       TextAlignment="Left"
+                       FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Foreground="#e0e0e0"
+                       Margin="8,4"
+                       VerticalAlignment="Center"/>
+            
+            <WrapPanel Orientation="Horizontal" Margin="8,4" ItemSpacing="8">
+                <TextBlock Name="DirectionText"
+                           Text="{Binding InspectedPacket.Direction, FallbackValue=Unknown, StringFormat={}{0} Packet}"
+                           FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{Binding InspectedPacket.Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}, FallbackValue=White}"
+                           VerticalAlignment="Center"/>
+            
+                <TextBlock Text="{Binding InspectedPacket.Command, FallbackValue=00, StringFormat={}0x{0:X2}}"
+                           FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{Binding #DirectionText.Foreground}"
+                           VerticalAlignment="Center"/>
+            </WrapPanel>
+            
+            
+            <Border Classes="divider-h" Margin="0,4"/>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -32,6 +32,7 @@
                          Watermark="--"
                          Classes="read-only"
                          Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                         FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                          MinWidth="60"
                          Focusable="False"/>
             </StackPanel>
@@ -45,6 +46,7 @@
                          Watermark="--"
                          Classes="read-only"
                          Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
+                         FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                          MinWidth="60"
                          Focusable="False"/>
             </StackPanel>

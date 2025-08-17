@@ -117,6 +117,7 @@ public partial class RawHexViewModel : ViewModelBase
         RawHex = string.Join(" ", _payload.Select(b => b.ToString("X2")));
         DecodedText = GetAsciiText();
         
+        Command = packet.Command;
         Sequence = packet switch
         {
             ClientPacket clientPacket => clientPacket.Sequence,

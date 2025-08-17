@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using Arbiter.App.Models;
+using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia.Data.Converters;
@@ -19,9 +21,19 @@ public class PacketDirectionColorConverter : IValueConverter
     {
         return value switch
         {
-            ClientPacket => ClientBrush,
-            ServerPacket => ServerBrush,
-            _ => DefaultBrush
+            PacketDirection => value switch
+            {
+                PacketDirection.Client => ClientBrush,
+                PacketDirection.Server => ServerBrush,
+                _ => DefaultBrush
+            },
+            NetworkPacket => value switch
+            {
+                ClientPacket => ClientBrush,
+                ServerPacket => ServerBrush,
+                _ => DefaultBrush
+            },
+            _ => null
         };
     }
 

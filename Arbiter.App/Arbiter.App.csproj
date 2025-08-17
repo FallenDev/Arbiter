@@ -38,8 +38,4 @@
       <ProjectReference Include="..\Arbiter.Json\Arbiter.Json.csproj" />
       <ProjectReference Include="..\Arbiter.Net\Arbiter.Net.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\Packets\Client\" />
-    </ItemGroup>
 </Project>
