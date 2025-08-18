@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Arbiter.App.Annotations;
 using Arbiter.App.Models;
 using Arbiter.App.Models.Packets;
@@ -55,15 +58,81 @@ public partial class InspectorViewModel : ViewModelBase
             _ => "Unknown"
         };
 
-        InspectedPacket = new InspectorPacketViewModel
+        var vm = new InspectorPacketViewModel
         {
             DisplayName = GetPacketDisplayName(message) ?? fallbackName,
             Direction = packet is ClientPacket ? PacketDirection.Client : PacketDirection.Server,
             Command = packet.Command,
             Exception = exception
         };
+
+        foreach (var section in GetSections(message).Values.OrderBy(s => s.Order))
+        {
+            vm.Sections.Add(section);
+        }
+
+        InspectedPacket = vm;
     }
 
     private static string? GetPacketDisplayName(IPacketMessage message)
         => message.GetType().GetCustomAttribute<InspectPacketAttribute>()?.Name;
+
+    private static Dictionary<string, InspectorSectionViewModel> GetSections(IPacketMessage message)
+    {
+        var sections = new Dictionary<string, InspectorSectionViewModel>(StringComparer.OrdinalIgnoreCase);
+
+        // Default to the uncategorized section
+        var defaultSection = new InspectorSectionViewModel { Header = string.Empty };
+        var currentSection = defaultSection;
+
+        foreach (var property in message.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            var attr = property.GetCustomAttribute<InspectSectionAttribute>();
+
+            // Switch to a different section
+            if (attr is not null)
+            {
+                if (!sections.TryGetValue(attr.Header, out currentSection))
+                {
+                    currentSection = new InspectorSectionViewModel
+                    {
+                        Header = attr.Header,
+                        Order = attr.Order
+                    };
+
+                    sections.Add(attr.Header, currentSection);
+                }
+            }
+            
+            var itemViewModel = GetItemViewModel(property, message);
+            if (itemViewModel is not null)
+            {
+                currentSection.Items.Add(itemViewModel);
+            }
+        }
+
+        // Ensure the default section is always last
+        sections.Add(string.Empty, defaultSection);
+        return sections;
+    }
+
+    private static InspectorItemViewModel? GetItemViewModel(PropertyInfo property, IPacketMessage message)
+    {
+        // If the property is not decorated, skip it
+        var attr = property.GetCustomAttribute<InspectPropertyAttribute>();
+        if (attr is null)
+        {
+            return null;
+        }
+
+        var value = property.GetValue(message);
+
+        return new InspectorValueViewModel
+        {
+            Name = attr.Name ?? property.Name,
+            Value = value,
+            StringFormat = attr.StringFormat
+        };
+    }
+
 }

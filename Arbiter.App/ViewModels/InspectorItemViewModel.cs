@@ -3,8 +3,8 @@ namespace Arbiter.App.ViewModels;
 
 public abstract class InspectorItemViewModel : ViewModelBase
 {
-    private string _name;
-    private int _order;
+    private string _name = string.Empty;
+    private int _order = int.MaxValue;
 
     public string Name
     {
@@ -16,11 +16,5 @@ public abstract class InspectorItemViewModel : ViewModelBase
     {
         get => _order;
         set => SetProperty(ref _order, value);
-    }
-
-    protected InspectorItemViewModel(string name, int order = int.MaxValue)
-    {
-        Name = name;
-        Order = order;
     }
 }

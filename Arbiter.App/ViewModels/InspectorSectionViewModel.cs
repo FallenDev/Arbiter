@@ -1,19 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels;
 
 public partial class InspectorSectionViewModel : ViewModelBase
 {
+    [ObservableProperty] private bool _isExpanded = true;
+
     public required string Header { get; set; }
-    public int Order { get; set; }
+    public int Order { get; set; } = int.MaxValue;
 
-    [ObservableProperty] private bool _isExpanded;
-
-    public InspectorSectionViewModel(string header, int order = int.MaxValue, bool isExpanded = true)
-    {
-        Header = header;
-        Order = order;
-
-        _isExpanded = isExpanded;
-    }
+    public ObservableCollection<InspectorItemViewModel> Items { get; } = [];
 }
