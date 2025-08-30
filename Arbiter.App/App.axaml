@@ -26,10 +26,8 @@
             <converters:PacketDirectionColorConverter x:Key="PacketDirectionColorConverter"/>
             <converters:PacketDirectionNameConverter x:Key="PacketDirectionNameConverter"/>
             
-            <!-- Data Templates -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Themes/TalgoniteIcons.axaml"/>
-                <ResourceInclude Source="/DataTemplates/InspectorSectionTemplate.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

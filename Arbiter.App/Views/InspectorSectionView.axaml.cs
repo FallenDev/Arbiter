@@ -2,9 +2,9 @@
 
 namespace Arbiter.App.Views;
 
-public partial class ClientView : UserControl
+public partial class InspectorSectionView : UserControl
 {
-    public ClientView()
+    public InspectorSectionView()
     {
         InitializeComponent();
     }
