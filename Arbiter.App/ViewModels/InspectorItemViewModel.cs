@@ -1,7 +1,11 @@
-﻿
+﻿using System.Threading.Tasks;
+using Arbiter.App.Extensions;
+using Avalonia;
+using CommunityToolkit.Mvvm.Input;
+
 namespace Arbiter.App.ViewModels;
 
-public abstract class InspectorItemViewModel : ViewModelBase
+public abstract partial class InspectorItemViewModel : ViewModelBase
 {
     private string _name = string.Empty;
     private int _order = int.MaxValue;
@@ -17,4 +21,18 @@ public abstract class InspectorItemViewModel : ViewModelBase
         get => _order;
         set => SetProperty(ref _order, value);
     }
+
+    [RelayCommand]
+    private async Task RequestCopy()
+    {
+        var textToCopy = GetCopyableValue();
+
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is not null && textToCopy is not null)
+        {
+            await clipboard.SetTextAsync(textToCopy);
+        }
+    }
+
+    protected abstract string? GetCopyableValue();
 }

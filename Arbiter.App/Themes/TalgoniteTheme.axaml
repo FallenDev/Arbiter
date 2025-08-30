@@ -73,6 +73,15 @@
             <SolidColorBrush x:Key="Talgonite.Control.Background" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.Control.Foreground" Color="#e0e0e0"/>
             
+            <!-- Expander Resources -->
+            <SolidColorBrush x:Key="Talgonite.Expander.HeaderBackground" Color="#1e2228"/>
+            <SolidColorBrush x:Key="Talgonite.Expander.HeaderHoverBackground" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.Expander.HeaderPressedBackground" Color="#222831"/>
+            <SolidColorBrush x:Key="Talgonite.Expander.HeaderForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Expander.HeaderHoverForeground" Color="#e0e0e0"/>
+            <SolidColorBrush x:Key="Talgonite.Expander.HeaderPressedForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.Expander.BorderBrush" Color="#292d34"/>
+            
             <!-- GridSplitter Resources -->
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Background" Color="Transparent"/>
             <SolidColorBrush x:Key="Talgonite.GridSplitter.Foreground" Color="#4d535d"/>

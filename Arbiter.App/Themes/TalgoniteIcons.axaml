@@ -79,6 +79,11 @@
         M0,0 H12 L16,4 V16 H0 Z M4,0 H12 V7 H4 Z M4,10 H12 V16 H4 Z
     </Geometry>
     
+    <!-- Duplicate Icon -->
+    <Geometry x:Key="Talgonite.Icon.Duplicate">
+        M1,1 H11 V11 H1 Z M5,5 H15 V15 H5 Z
+    </Geometry>
+    
     <!-- Search Icon -->
     <Geometry x:Key="Talgonite.Icon.SearchMagnify">
         M6,0 A6,6 0 0,0 6,13 A6,6 0 0,0 6,0 Z M12,12 L16,16

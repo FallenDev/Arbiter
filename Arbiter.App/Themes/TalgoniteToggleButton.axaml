@@ -1,6 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style Selector="ToggleButton">
+    <Style Selector="ToggleButton:not(.expander)">
         <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.Foreground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -106,5 +106,53 @@
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="IsTabStop" Value="False"/>
         </Style>
+    </Style>
+    
+    <Style Selector="ToggleButton.expander">
+        <Setter Property="Background" Value="{StaticResource Talgonite.Expander.HeaderBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.Expander.HeaderForeground}"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderThickness="1"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Grid.Column="0"
+                                          Background="Transparent"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{Binding $parent[Expander].HeaderTemplate}"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Center"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        
+                        <Border Grid.Column="1" Background="Transparent">
+                            <Path Width="16" Height="8"
+                                  Stroke="{TemplateBinding Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.DownCaret}"
+                                  Margin="4,0"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <!-- Hover Style -->
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Expander.HeaderHoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Expander.HeaderHoverForeground}"/>
+        </Style>
+        
+        <!-- Pressed Style -->
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Expander.HeaderPressedBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Expander.HeaderPressedForeground}"/>
+        </Style>
+        
     </Style>
 </Styles>

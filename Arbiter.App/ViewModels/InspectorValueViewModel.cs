@@ -30,4 +30,6 @@ public class InspectorValueViewModel : InspectorItemViewModel
     }
 
     public string FormattedValue => string.Format(StringFormat ?? "{0}", Value);
+
+    protected override string GetCopyableValue() => FormattedValue;
 }

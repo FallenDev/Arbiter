@@ -13,6 +13,7 @@
     <StyleInclude Source="./TalgoniteComboBox.axaml"/>
     <StyleInclude Source="./TalgoniteComboBoxItem.axaml"/>
     <StyleInclude Source="./TalgoniteContextMenu.axaml"/>
+    <StyleInclude Source="./TalgoniteExpander.axaml"/>
     <StyleInclude Source="./TalgoniteGridSplitter.axaml"/>
     <StyleInclude Source="./TalgoniteItemsControl.axaml"/>
     <StyleInclude Source="./TalgoniteLabel.axaml"/>

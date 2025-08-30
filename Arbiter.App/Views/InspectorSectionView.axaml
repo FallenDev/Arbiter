@@ -2,24 +2,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.InspectorSectionView"
              x:DataType="vm:InspectorSectionViewModel">
-    <UserControl.Resources>
-        <SolidColorBrush x:Key="Talgonite.InspectorSection.HeaderBackground" Color="#1e2228"/>
-        <SolidColorBrush x:Key="Talgonite.InspectorSection.HeaderForeground" Color="#e0e0e0"/>
-    </UserControl.Resources>
-    
-    
-    <StackPanel>
-        <!-- Header -->
-        <Border Background="{StaticResource Talgonite.InspectorSection.HeaderBackground}"
-                Margin="2,4"
-                Padding="8,4">
-            <TextBlock Text="{Binding Header}"
-                       FontWeight="SemiBold"
-                       Foreground="{StaticResource Talgonite.InspectorSection.HeaderForeground}"/>
-        </Border>
-    </StackPanel>
+    <Grid>
+        <Expander Header="{Binding Header}"
+                  IsExpanded="{Binding IsExpanded}">
+            <!-- Header Template -->
+            <Expander.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{ReflectionBinding .}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Margin="8,4"/>
+                </DataTemplate>
+            </Expander.HeaderTemplate>
+            
+            <!-- Expandable Items -->
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="vm:InspectorValueViewModel">
+                        <v:InspectorValueView/>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+        </Expander>
+    </Grid>
 </UserControl>
