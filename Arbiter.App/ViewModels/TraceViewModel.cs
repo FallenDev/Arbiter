@@ -165,7 +165,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        var packetViewModel = new TracePacketViewModel(e.Packet, e.EncryptedPacket, e.Connection.Name)
+        var packetViewModel = new TracePacketViewModel(e.Packet, e.RawData, e.Connection.Name)
             { DisplayMode = _packetDisplayMode };
         _allPackets.Add(packetViewModel);
     }
