@@ -25,7 +25,8 @@
                  Classes.reveal="{Binding CanReveal}"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                 MinWidth="60" MinHeight="40">
+                 Width="200" Height="40"
+                 HorizontalAlignment="Right">
             <TextBox.InnerLeftContent>
                 <!-- Toggle Hex View -->
                 <ToggleButton IsChecked="{Binding ShowHex}"

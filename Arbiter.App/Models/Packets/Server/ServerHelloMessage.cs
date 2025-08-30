@@ -7,7 +7,7 @@ namespace Arbiter.App.Models.Packets.Server;
 [InspectPacket(ServerCommand.Hello)]
 public class ServerHelloMessage : IPacketMessage
 {
-    [InspectSection("Content")]
+    [InspectSection("Greeting")]
     [InspectProperty]
     public string Message { get; set; } = string.Empty;
 

@@ -132,7 +132,7 @@ public partial class InspectorViewModel : ViewModelBase
                 itemViewModel.MaskCharacter = maskedAttribute.MaskCharacter;
                 itemViewModel.IsRevealed = false;
             }
-
+            
             currentSection.Items.Add(itemViewModel);
         }
 
@@ -160,7 +160,8 @@ public partial class InspectorViewModel : ViewModelBase
         {
             Name = attr.Name ?? property.Name,
             Value = value,
-            StringFormat = attr.StringFormat
+            StringFormat = attr.StringFormat,
+            ShowHex = attr.ShowHex
         };
     }
 
