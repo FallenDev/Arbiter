@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
@@ -20,12 +21,17 @@
         <!-- Console Log List -->
         <ListBox Grid.Column="0"
                  ItemsSource="{Binding FilteredLogEntries}"
-                 ItemTemplate="{StaticResource LogEntryTemplate}"
                  FontFamily="{StaticResource Talgonite.Font.ConsoleFont}"
                  FontSize="{StaticResource Talgonite.FontSize.Console}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  behaviors:ScrollToEndBehavior.AutoScrollToEnd="True"
-                 behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"/>
+                 behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}">
+            <ListBox.DataTemplates>
+                <DataTemplate DataType="vm:LogEntryViewModel">
+                    <v:ConsoleLogEntryView/>
+                </DataTemplate>
+            </ListBox.DataTemplates>
+        </ListBox>
         <!-- Toolbar Area -->
         <StackPanel Grid.Column="1">
             <UniformGrid Columns="2" Rows="1"
