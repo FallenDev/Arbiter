@@ -60,8 +60,13 @@
                         </Button>
                     </WrapPanel>
                     <ListBox ItemsSource="{Binding ClientManager.Clients}"
-                             SelectedItem="{Binding SelectedClient}"
-                             ItemTemplate="{StaticResource ClientTemplate}"/>
+                             SelectedItem="{Binding SelectedClient}">
+                        <ListBox.DataTemplates>
+                            <DataTemplate DataType="vm:ClientViewModel">
+                                <v:ClientView/>
+                            </DataTemplate>
+                        </ListBox.DataTemplates>
+                    </ListBox>
                 </DockPanel>
             </TabItem>
         </TabControl>
