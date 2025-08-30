@@ -20,8 +20,10 @@ public abstract partial class InspectorItemViewModel : ViewModelBase
 
     public bool CanReveal => MaskCharacter is not null;
 
-    [RelayCommand]
-    private async Task RequestCopy()
+    private bool CheckCanCopy(object _) => CanCopyToClipboard();
+    
+    [RelayCommand(CanExecute = nameof(CheckCanCopy))]
+    private async Task CopyToClipboard(object _)
     {
         var textToCopy = GetCopyableValue();
 
@@ -33,4 +35,6 @@ public abstract partial class InspectorItemViewModel : ViewModelBase
     }
 
     protected abstract string? GetCopyableValue();
+
+    protected virtual bool CanCopyToClipboard() => true;
 }

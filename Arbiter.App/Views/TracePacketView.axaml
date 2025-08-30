@@ -71,7 +71,7 @@
             
             <Border.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copy" Command="{Binding CopyToClipboardCommand}" InputGesture="Ctrl+C" HotKey="Ctrl+C"/>
+                    <MenuItem Header="Copy" Command="{Binding CopyToClipboardCommand}"/>
                 </ContextMenu>
             </Border.ContextMenu>
         </Border>

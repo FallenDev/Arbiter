@@ -115,7 +115,13 @@ public partial class TracePacketViewModel(
         var clipboard = Application.Current?.TryGetClipboard();
         if (clipboard is not null)
         {
-           await clipboard.SetTextAsync(DisplayValue);
+            var textToCopy = DisplayMode switch
+            {
+                PacketDisplayMode.Decrypted => $"{Packet.Command:X2} {FormattedPayload}",
+                _ => FormattedPacket,
+            };
+
+            await clipboard.SetTextAsync(textToCopy);
         }
     }
 }

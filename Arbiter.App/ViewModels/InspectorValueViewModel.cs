@@ -31,4 +31,9 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
     public string FormattedValue => string.Format(ShowHex && IsInteger ? "0x{0:X}" : StringFormat ?? "{0}", Value);
 
     protected override string GetCopyableValue() => FormattedValue;
+
+    protected override bool CanCopyToClipboard()
+    {
+        return Value is not null && !string.IsNullOrWhiteSpace(FormattedValue);
+    }
 }

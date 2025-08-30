@@ -47,20 +47,11 @@
                     </Panel>
                 </ToggleButton>
             </TextBox.InnerLeftContent>
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}"/>
+                </ContextMenu>
+            </TextBox.ContextMenu>
         </TextBox>
-        
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
-            <!-- Copy Button -->
-            <Button Command="{Binding RequestCopyCommand}"
-                    IsEnabled="{Binding FormattedValue, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    ToolTip.Tip="Copy the value to the clipboard."
-                    MinWidth="40"
-                    Padding="4"
-                    Focusable="False">
-                <Path Width="16" Height="16"
-                      Stroke="{Binding $parent[Button].Foreground}"
-                      Data="{StaticResource Talgonite.Icon.Duplicate}"/>
-            </Button>
-        </StackPanel>
     </Grid>
 </UserControl>
