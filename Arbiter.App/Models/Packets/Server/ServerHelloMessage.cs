@@ -9,7 +9,6 @@ public class ServerHelloMessage : IPacketMessage
 {
     [InspectSection("Content")]
     [InspectProperty]
-    [InspectMasked]
     public string Message { get; set; } = string.Empty;
 
     public void ReadFrom(NetworkPacketReader reader)

@@ -112,31 +112,40 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.Foreground}"/>
         <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Padding" Value="4"/>
         <Setter Property="Cursor" Value="Arrow"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="SelectionBorder"
-                        BorderBrush="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Margin="{TemplateBinding Margin}">
-                    <ContentPresenter Name="PART_ContentPresenter"
-                                      Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      Background="{TemplateBinding Background}"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      BorderBrush="{TemplateBinding BorderBrush}"
-                                      BorderThickness="{TemplateBinding BorderThickness}"
-                                      CornerRadius="{TemplateBinding CornerRadius}"
-                                      Padding="{TemplateBinding Padding}"
-                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                <Border Background="Transparent"
+                        Margin="{TemplateBinding Margin}"
+                        Padding="{TemplateBinding Padding}">
+                    <Panel>
+                        <Path x:Name="PART_GlyphElement_Reveal"
+                              Width="16" Height="16"
+                              Stroke="{TemplateBinding Foreground}"
+                              Data="{StaticResource Talgonite.Icon.RevealEye}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                        <Path x:Name="PART_GlyphElement_Hide"
+                              Width="16" Height="16"
+                              Stroke="{TemplateBinding Foreground}"
+                              Data="{StaticResource Talgonite.Icon.HiddenEye}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <!-- Toggle Glyphs -->
+        <Style Selector="^:unchecked /template/ Path#PART_GlyphElement_Hide">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:checked /template/ Path#PART_GlyphElement_Reveal">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
         
         <!-- Hover Style -->
         <Style Selector="^:pointerover">

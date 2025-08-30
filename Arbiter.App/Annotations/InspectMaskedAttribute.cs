@@ -7,7 +7,7 @@ public class InspectMaskedAttribute : Attribute
 {
     public char MaskCharacter { get; set; }
 
-    public InspectMaskedAttribute(char maskCharacter = '*')
+    public InspectMaskedAttribute(char maskCharacter = '●')
     {
         MaskCharacter = maskCharacter;
     }

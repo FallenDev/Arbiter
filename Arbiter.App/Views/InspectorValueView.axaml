@@ -19,12 +19,13 @@
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
                  Watermark="&lt;empty&gt;"
-                 PasswordChar="{Binding MaskCharacter, FallbackValue=*}"
+                 PasswordChar="{Binding MaskCharacter, FallbackValue=●}"
                  RevealPassword="{Binding IsRevealed}"
-                 Classes="read-only reveal"
+                 Classes="read-only"
+                 Classes.reveal="{Binding CanReveal}"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                 MinWidth="60"/>
+                 MinWidth="60" MinHeight="32"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
             <!-- Copy Button -->
             <Button Command="{Binding RequestCopyCommand}"

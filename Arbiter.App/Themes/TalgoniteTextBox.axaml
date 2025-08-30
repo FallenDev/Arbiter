@@ -173,7 +173,7 @@
     <Style Selector="TextBox.reveal">
         <Setter Property="InnerRightContent">
             <Template>
-                <Panel Margin="4,0">
+                <Panel Margin="0,0,6,0">
                     <Panel.Styles>
                         <Style Selector="ToggleButton[IsChecked=True]">
                             <Setter Property="(ToolTip.Tip)" Value="Hide the value."/>
@@ -184,11 +184,7 @@
                     </Panel.Styles>
                     <ToggleButton IsChecked="{Binding $parent[TextBox].RevealPassword, Mode=TwoWay}"
                                   Classes="reveal"
-                                  ClipToBounds="True">
-                        <Path Width="16" Height="16"
-                              Stroke="{Binding $parent[ToggleButton].Foreground}"
-                              Data="{StaticResource Talgonite.Icon.RevealEye}"/>
-                    </ToggleButton>
+                                  ClipToBounds="True"/>
                 </Panel>
             </Template>
         </Setter>
