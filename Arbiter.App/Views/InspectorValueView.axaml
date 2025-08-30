@@ -25,12 +25,36 @@
                  Classes.reveal="{Binding CanReveal}"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                 MinWidth="60" MinHeight="32"/>
+                 MinWidth="60" MinHeight="40">
+            <TextBox.InnerLeftContent>
+                <!-- Toggle Hex View -->
+                <ToggleButton IsChecked="{Binding ShowHex}"
+                              IsVisible="{Binding IsInteger}"
+                              ToolTip.Tip="Toggle hexadecimal representation."
+                              Padding="4,0"
+                              Focusable="False">
+                    <Panel>
+                        <TextBlock Text="Dec"
+                                   TextAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   IsVisible="{Binding !$parent[ToggleButton].IsChecked}"/>
+                        <TextBlock Text="Hex"
+                                   TextAlignment="Center"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   IsVisible="{Binding $parent[ToggleButton].IsChecked}"/>
+                    </Panel>
+                </ToggleButton>
+            </TextBox.InnerLeftContent>
+        </TextBox>
+        
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
             <!-- Copy Button -->
             <Button Command="{Binding RequestCopyCommand}"
                     IsEnabled="{Binding FormattedValue, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                     ToolTip.Tip="Copy the value to the clipboard."
+                    MinWidth="40"
                     Padding="4"
                     Focusable="False">
                 <Path Width="16" Height="16"

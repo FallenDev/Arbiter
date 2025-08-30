@@ -12,6 +12,7 @@
         <Setter Property="MinHeight" Value="32"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Arrow"/>
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="SelectionBorder"
@@ -56,8 +57,6 @@
         <!-- Outline Button Style -->
         <Style Selector="^.outline">
             <Setter Property="Padding" Value="8"/>
-            <Setter Property="MinWidth" Value="40"/>
-            <Setter Property="MinHeight" Value="40"/>
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="IsTabStop" Value="False"/>
         </Style>
@@ -101,8 +100,6 @@
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.CheckedForeground}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
             <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="MinWidth" Value="40"/>
-            <Setter Property="MinHeight" Value="40"/>
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="IsTabStop" Value="False"/>
         </Style>
