@@ -1,18 +1,24 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vm="using:Arbiter.App.ViewModels"
-                    xmlns:converters="using:Arbiter.App.Converters">
-    <SolidColorBrush x:Key="Talgonite.TracePacket.TimestampForeground" Color="#717479"/>
-    <SolidColorBrush x:Key="Talgonite.TracePacket.ClientNameForeground" Color="#e0e0e0"/>
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:converters="using:Arbiter.App.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Arbiter.App.Views.TracePacketView"
+             x:DataType="vm:TracePacketViewModel">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.TracePacket.TimestampForeground" Color="#717479"/>
+        <SolidColorBrush x:Key="Talgonite.TracePacket.ClientNameForeground" Color="#e0e0e0"/>
     
-    <Geometry x:Key="Talgonite.TracePacket.LeftCaret">M 6,1 L 2,4 L 6,7 Z</Geometry>
-    <Geometry x:Key="Talgonite.TracePacket.RightCaret">M 2,1 L 6,4 L 2,7 Z</Geometry>
+        <Geometry x:Key="Talgonite.TracePacket.LeftCaret">M 6,1 L 2,4 L 6,7 Z</Geometry>
+        <Geometry x:Key="Talgonite.TracePacket.RightCaret">M 2,1 L 6,4 L 2,7 Z</Geometry>
     
-    <Geometry x:Key="Talgonite.TracePacket.LeftArrow">M11,4 H4 M4,1 L1,4 L4,7</Geometry>
-    <Geometry x:Key="Talgonite.TracePacket.RightArrow">M1,4 H8 M8,1 L11,4 L8,7</Geometry>
+        <Geometry x:Key="Talgonite.TracePacket.LeftArrow">M11,4 H4 M4,1 L1,4 L4,7</Geometry>
+        <Geometry x:Key="Talgonite.TracePacket.RightArrow">M1,4 H8 M8,1 L11,4 L8,7</Geometry>
+    </UserControl.Resources>
     
-    <DataTemplate x:Key="TracePacketTemplate" DataType="vm:TracePacketViewModel">
-        <Border Background="Transparent"
+    <Border Background="Transparent"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="4,2"
@@ -69,5 +75,4 @@
                 </ContextMenu>
             </Border.ContextMenu>
         </Border>
-    </DataTemplate>
-</ResourceDictionary>
+</UserControl>
