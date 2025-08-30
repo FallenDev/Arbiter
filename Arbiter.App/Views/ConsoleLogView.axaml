@@ -5,7 +5,7 @@
              xmlns:vm="using:Arbiter.App.ViewModels"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
-             x:Class="Arbiter.App.Controls.ConsoleLog"
+             x:Class="Arbiter.App.Views.ConsoleLogView"
              x:DataType="vm:ConsoleViewModel">
     
     <UserControl.Resources>

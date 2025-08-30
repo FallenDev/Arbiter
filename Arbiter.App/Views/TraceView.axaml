@@ -5,7 +5,7 @@
              xmlns:vm="using:Arbiter.App.ViewModels"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Arbiter.App.Controls.TraceLog"
+             x:Class="Arbiter.App.Views.TraceView"
              x:DataType="vm:TraceViewModel">
     
     <UserControl.Resources>

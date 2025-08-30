@@ -6,7 +6,7 @@
              xmlns:converters="using:Arbiter.App.Converters"
              xmlns:sys="using:System"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="580"
-             x:Class="Arbiter.App.Controls.RawHexDisplay"
+             x:Class="Arbiter.App.Views.HexView"
              x:DataType="vm:RawHexViewModel">
     <UserControl.Resources>
         <sys:Double x:Key="Talgonite.HexView.FontSize">16</sys:Double>

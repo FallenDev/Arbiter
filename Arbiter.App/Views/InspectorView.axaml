@@ -5,9 +5,10 @@
              xmlns:vm="using:Arbiter.App.ViewModels"
              xmlns:converters="using:Arbiter.App.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Arbiter.App.Controls.PacketInspector"
+             x:Class="Arbiter.App.Views.InspectorView"
              x:DataType="vm:InspectorViewModel">
-    <Grid RowDefinitions="Auto,*" Margin="0,4">
+    <Grid RowDefinitions="Auto,*"
+          Background="{StaticResource Talgonite.Control.Background}">
         
         <!-- Placeholder -->
         <TextBlock Grid.Row="1"
@@ -19,7 +20,8 @@
         
         <!-- Header Section -->
         <StackPanel Grid.Row="0"
-                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Margin="0,4">
             <TextBlock Text="{Binding InspectedPacket.DisplayName, FallbackValue=--}"
                        TextAlignment="Left"
                        FontFamily="{StaticResource Talgonite.Editor.FontFamily}"

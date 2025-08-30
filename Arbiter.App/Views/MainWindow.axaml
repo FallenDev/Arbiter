@@ -1,9 +1,10 @@
-<controls:TalgoniteWindow
+<ctl:TalgoniteWindow
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="using:Arbiter.App.Controls"
+        xmlns:ctl="using:Arbiter.App.Controls"
+        xmlns:v="using:Arbiter.App.Views"
         xmlns:vm="using:Arbiter.App.ViewModels"
         mc:Ignorable="d"
         x:Class="Arbiter.App.Views.MainWindow"
@@ -18,7 +19,7 @@
         Loaded="Window_OnLoaded"
         Closing="Window_OnClosing">
     <!-- Title Bar Content -->
-    <controls:TalgoniteWindow.TitleBarContent>
+    <ctl:TalgoniteWindow.TitleBarContent>
         <DockPanel>
             <Button Name="SettingsButton"
                     Command="{Binding ShowSettingsCommand}"
@@ -31,7 +32,7 @@
                       Data="{StaticResource Talgonite.Icon.SettingsGear}"/>
             </Button>
         </DockPanel>
-    </controls:TalgoniteWindow.TitleBarContent>
+    </ctl:TalgoniteWindow.TitleBarContent>
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
@@ -77,7 +78,7 @@
             
             <TabControl Grid.Row="0">
                 <TabItem Header="Trace">
-                    <controls:TraceLog DataContext="{Binding Trace}"/>
+                    <v:TraceView DataContext="{Binding Trace}"/>
                 </TabItem>
                 <TabItem Header="Filters">
                     <ListBox></ListBox>
@@ -92,7 +93,7 @@
             <TabControl Grid.Row="2">
                 <!-- Console Tab -->
                 <TabItem Header="Console Log">
-                    <controls:ConsoleLog DataContext="{Binding Console}"/>
+                    <v:ConsoleLogView DataContext="{Binding Console}"/>
                 </TabItem>
             </TabControl>
         </Grid>
@@ -102,13 +103,13 @@
         <!-- Right Panel Tabs -->
         <TabControl Name="RightPanelTabStrip" Grid.Column="4">
             <TabItem Header="Inspector" IsSelected="True">
-                <controls:PacketInspector DataContext="{Binding Inspector}"/>
+                <v:InspectorView DataContext="{Binding Inspector}"/>
             </TabItem>
             <TabItem Header="Hex">
-                <controls:RawHexDisplay DataContext="{Binding SelectedRawHex}"/>
+                <v:HexView DataContext="{Binding SelectedRawHex}"/>
             </TabItem>
         </TabControl>
     </Grid>
     
 
-</controls:TalgoniteWindow>
+</ctl:TalgoniteWindow>

@@ -38,4 +38,23 @@
       <ProjectReference Include="..\Arbiter.Json\Arbiter.Json.csproj" />
       <ProjectReference Include="..\Arbiter.Net\Arbiter.Net.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\ConsoleLogView.axaml.cs">
+        <DependentUpon>ConsoleLog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\InspectorView.axaml.cs">
+        <DependentUpon>PacketInspector.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\HexView.axaml.cs">
+        <DependentUpon>RawHexDisplay.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\TraceView.axaml.cs">
+        <DependentUpon>TraceLog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>

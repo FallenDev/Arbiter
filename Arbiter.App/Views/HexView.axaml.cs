@@ -5,14 +5,14 @@ using Arbiter.App.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Input;
 
-namespace Arbiter.App.Controls;
+namespace Arbiter.App.Views;
 
-public partial class RawHexDisplay : UserControl
+public partial class HexView : UserControl
 {
     private static readonly Key[] NavigationKeys =
         [Key.Left, Key.Right, Key.Up, Key.Down, Key.Home, Key.End, Key.PageUp, Key.PageDown];
     
-    public RawHexDisplay()
+    public HexView()
     {
         InitializeComponent();
         
