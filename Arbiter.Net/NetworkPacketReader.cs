@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Text;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 
 namespace Arbiter.Net;
 
@@ -8,7 +10,14 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     private int _position;
     private readonly byte[] _buffer = packet.Data;
     private readonly Encoding _encoding = encoding ?? Encoding.ASCII;
-
+    
+    public byte? Sequence => packet switch
+    {
+        ClientPacket clientPacket => clientPacket.Sequence,
+        ServerPacket serverPacket => serverPacket.Sequence,
+        _ => null
+    };
+    
     public int Position
     {
         get => _position;

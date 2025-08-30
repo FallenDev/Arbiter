@@ -12,7 +12,6 @@
 
     <ItemGroup>
       <Folder Include="Client\Messages\" />
-      <Folder Include="Server\Messages\" />
     </ItemGroup>
 
 </Project>
