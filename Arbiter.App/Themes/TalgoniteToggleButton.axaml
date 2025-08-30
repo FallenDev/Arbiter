@@ -181,10 +181,16 @@
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         
                         <Border Grid.Column="1" Background="Transparent">
-                            <Path Width="16" Height="8"
-                                  Stroke="{TemplateBinding Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.DownCaret}"
-                                  Margin="4,0"/>
+                            <Panel Margin="4,0">
+                                <Path Name="DownArrow"
+                                      Width="16" Height="8"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      Data="{StaticResource Talgonite.Icon.DownCaret}"/>
+                                <Path Name="UpArrow"
+                                      Width="16" Height="8"
+                                      Stroke="{TemplateBinding Foreground}"
+                                      Data="{StaticResource Talgonite.Icon.UpCaret}"/>
+                            </Panel>
                         </Border>
                     </Grid>
                 </Border>
@@ -203,5 +209,14 @@
             <Setter Property="Foreground" Value="{StaticResource Talgonite.Expander.HeaderPressedForeground}"/>
         </Style>
         
+        <!-- Unchecked Style -->
+        <Style Selector="^:unchecked /template/ Path#UpArrow">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        
+        <!-- Checked Style -->
+        <Style Selector="^:checked /template/ Path#DownArrow">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
     </Style>
 </Styles>
