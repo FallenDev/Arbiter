@@ -78,7 +78,8 @@ public partial class ProxyConnection
                     }
 
                     // Raise the event with the decrypted packet
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(NetworkAction.Receive, decrypted, packet.ToList()));
+                    var rawPacket = packet.ToList();
+                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(NetworkAction.Receive, decrypted, rawPacket));
                     await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
                 }
             }

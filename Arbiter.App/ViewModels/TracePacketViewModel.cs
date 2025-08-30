@@ -41,13 +41,13 @@ public partial class TracePacketViewModel(
     public string DisplayValue => DisplayMode switch
     {
         PacketDisplayMode.Decrypted => FormattedPayload,
-        _ => FormattedPacket
+        _ => FormattedRaw
     };
     
     public bool IsClient => Packet is ClientPacket;
     public bool IsServer => Packet is ServerPacket;
 
-    public string FormattedPacket => string.Join(' ', Packet.Select(x => x.ToString("X2")));
+    public string FormattedRaw => string.Join(' ', RawData.Select(x => x.ToString("X2")));
     public string FormattedPayload => string.Join(' ', Payload.Select(x => x.ToString("X2")));
 
     public TracePacket ToTracePacket()
@@ -59,7 +59,7 @@ public partial class TracePacketViewModel(
             ClientName = ClientName,
             Command = Packet.Command,
             Sequence = Sequence,
-            RawPacket = Packet.ToList(),
+            RawData = RawData,
             Payload = Payload,
             Checksum = Packet switch
             {
@@ -80,19 +80,8 @@ public partial class TracePacketViewModel(
                 { Sequence = tracePacket.Sequence },
             _ => throw new InvalidOperationException("Invalid packet direction")
         };
-
-        NetworkPacket encryptedPacket = tracePacket.Direction switch
-        {
-            PacketDirection.Client => new ClientPacket(tracePacket.Command,
-                    tracePacket.RawPacket.Skip(NetworkPacket.HeaderSize), tracePacket.Checksum)
-                { Sequence = tracePacket.Sequence },
-            PacketDirection.Server => new ServerPacket(tracePacket.Command,
-                    tracePacket.RawPacket.Skip(NetworkPacket.HeaderSize))
-                { Sequence = tracePacket.Sequence },
-            _ => throw new InvalidOperationException("Invalid packet direction")
-        };
-
-        return new TracePacketViewModel(decryptedPacket, encryptedPacket.ToList(), tracePacket.ClientName)
+        
+        return new TracePacketViewModel(decryptedPacket, tracePacket.RawData, tracePacket.ClientName)
         {
             Timestamp = tracePacket.Timestamp,
             DisplayMode = displayMode,
@@ -118,7 +107,7 @@ public partial class TracePacketViewModel(
             var textToCopy = DisplayMode switch
             {
                 PacketDisplayMode.Decrypted => $"{Packet.Command:X2} {FormattedPayload}",
-                _ => FormattedPacket,
+                _ => FormattedRaw,
             };
 
             await clipboard.SetTextAsync(textToCopy);

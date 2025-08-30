@@ -23,7 +23,7 @@ public class TracePacket
 
     [JsonPropertyName("raw")]
     [JsonConverter(typeof(HexByteEnumerableConverterFactory))]
-    public IReadOnlyCollection<byte> RawPacket { get; set; } = [];
+    public IReadOnlyList<byte> RawData { get; set; } = [];
 
     [JsonPropertyName("payload")]
     [JsonConverter(typeof(HexByteEnumerableConverterFactory))]
