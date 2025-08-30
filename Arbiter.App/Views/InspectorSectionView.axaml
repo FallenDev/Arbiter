@@ -9,7 +9,8 @@
              x:DataType="vm:InspectorSectionViewModel">
     <Grid>
         <Expander Header="{Binding Header}"
-                  IsExpanded="{Binding IsExpanded}">
+                  IsExpanded="{Binding IsExpanded}"
+                  Padding="4,8">
             <!-- Header Template -->
             <Expander.HeaderTemplate>
                 <DataTemplate>
