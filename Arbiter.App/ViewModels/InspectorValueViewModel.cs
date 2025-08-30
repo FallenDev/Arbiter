@@ -1,33 +1,14 @@
-﻿namespace Arbiter.App.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public class InspectorValueViewModel : InspectorItemViewModel
+namespace Arbiter.App.ViewModels;
+
+public partial class InspectorValueViewModel : InspectorItemViewModel
 {
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(FormattedValue))]
     private object? _value;
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(FormattedValue))]
     private string? _stringFormat;
-
-    public object? Value
-    {
-        get => _value;
-        set
-        {
-            if (SetProperty(ref _value, value))
-            {
-                OnPropertyChanged(nameof(FormattedValue));
-            }
-        }
-    }
-
-    public string? StringFormat
-    {
-        get => _stringFormat;
-        set
-        {
-            if (SetProperty(ref _stringFormat, value))
-            {
-                OnPropertyChanged(nameof(FormattedValue));
-            }
-        }
-    }
 
     public string FormattedValue => string.Format(StringFormat ?? "{0}", Value);
 

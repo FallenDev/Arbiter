@@ -168,4 +168,29 @@
         <Setter Property="Padding" Value="4"/>
         <Setter Property="Margin" Value="0,0,8,0"/>
     </Style>
+    
+    <!-- Reveal Style -->
+    <Style Selector="TextBox.reveal">
+        <Setter Property="InnerRightContent">
+            <Template>
+                <Panel Margin="4,0">
+                    <Panel.Styles>
+                        <Style Selector="ToggleButton[IsChecked=True]">
+                            <Setter Property="(ToolTip.Tip)" Value="Hide the value."/>
+                        </Style>
+                        <Style Selector="ToggleButton[IsChecked=False]">
+                            <Setter Property="(ToolTip.Tip)" Value="Reveal the value."/>
+                        </Style>
+                    </Panel.Styles>
+                    <ToggleButton IsChecked="{Binding $parent[TextBox].RevealPassword, Mode=TwoWay}"
+                                  Classes="reveal"
+                                  ClipToBounds="True">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[ToggleButton].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.RevealEye}"/>
+                    </ToggleButton>
+                </Panel>
+            </Template>
+        </Setter>
+    </Style>
 </Styles>

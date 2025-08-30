@@ -124,6 +124,14 @@ public partial class InspectorViewModel : ViewModelBase
             {
                 itemViewModel.ToolTip = toolTipAttribute.ToolTip;
             }
+            
+            // Do not reveal by default if masked
+            var maskedAttribute = property.GetCustomAttribute<InspectMaskedAttribute>();
+            if (maskedAttribute is not null)
+            {
+                itemViewModel.MaskCharacter = maskedAttribute.MaskCharacter;
+                itemViewModel.IsRevealed = false;
+            }
 
             currentSection.Items.Add(itemViewModel);
         }

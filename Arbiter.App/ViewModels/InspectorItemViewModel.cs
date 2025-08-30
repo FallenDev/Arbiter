@@ -8,22 +8,17 @@ namespace Arbiter.App.ViewModels;
 
 public abstract partial class InspectorItemViewModel : ViewModelBase
 {
-    private string _name = string.Empty;
-    private int _order = int.MaxValue;
+    [ObservableProperty] private string _name = string.Empty;
+    [ObservableProperty] private int _order = int.MaxValue;
 
     [ObservableProperty] private string? _toolTip;
-    
-    public string Name
-    {
-        get => _name;
-        set => SetProperty(ref _name, value);
-    }
 
-    public int Order
-    {
-        get => _order;
-        set => SetProperty(ref _order, value);
-    }
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(CanReveal))]
+    private char? _maskCharacter;
+
+    [ObservableProperty] private bool _isRevealed = true;
+
+    public bool CanReveal => MaskCharacter is not null;
 
     [RelayCommand]
     private async Task RequestCopy()

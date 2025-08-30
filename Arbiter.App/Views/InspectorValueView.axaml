@@ -19,19 +19,23 @@
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
                  Watermark="&lt;empty&gt;"
-                 Classes="read-only"
+                 PasswordChar="{Binding MaskCharacter, FallbackValue=*}"
+                 RevealPassword="{Binding IsRevealed}"
+                 Classes="read-only reveal"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                  MinWidth="60"/>
-        <Button Grid.Column="2"
-                Command="{Binding RequestCopyCommand}"
-                IsEnabled="{Binding FormattedValue, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                ToolTip.Tip="Copy the value to the clipboard."
-                Padding="4"
-                Focusable="False">
-            <Path Width="16" Height="16"
-                  Stroke="{Binding $parent[Button].Foreground}"
-                  Data="{StaticResource Talgonite.Icon.Duplicate}"/>
-        </Button>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+            <!-- Copy Button -->
+            <Button Command="{Binding RequestCopyCommand}"
+                    IsEnabled="{Binding FormattedValue, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    ToolTip.Tip="Copy the value to the clipboard."
+                    Padding="4"
+                    Focusable="False">
+                <Path Width="16" Height="16"
+                      Stroke="{Binding $parent[Button].Foreground}"
+                      Data="{StaticResource Talgonite.Icon.Duplicate}"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>
