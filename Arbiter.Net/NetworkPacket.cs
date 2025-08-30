@@ -44,7 +44,7 @@ public abstract class NetworkPacket : IEnumerable<byte>
         }
     }
 
-    public IEnumerator<byte> GetEnumerator()
+    public virtual IEnumerator<byte> GetEnumerator()
     {
         var size = Data.Length + 1;
 

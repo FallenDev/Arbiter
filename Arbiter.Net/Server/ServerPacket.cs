@@ -19,4 +19,24 @@ public class ServerPacket : NetworkPacket
     {
 
     }
+
+    public override IEnumerator<byte> GetEnumerator()
+    {
+        var size = Data.Length + (Sequence.HasValue ? 2 : 1);
+
+        yield return Marker;
+        yield return (byte)((size >> 8) & 0xFF);
+        yield return (byte)(size & 0xFF);
+        yield return (byte)Command;
+
+        if (Sequence is not null)
+        {
+            yield return Sequence.Value;
+        }
+
+        foreach (var dataByte in Data)
+        {
+            yield return dataByte;
+        }
+    }
 }
