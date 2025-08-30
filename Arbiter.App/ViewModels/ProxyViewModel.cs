@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
 
-public partial class ProxyViewModel : ViewModelBase
+public class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;

@@ -4,7 +4,7 @@ using Arbiter.App.Models;
 
 namespace Arbiter.App.ViewModels;
 
-public partial class InspectorPacketViewModel : ViewModelBase
+public class InspectorPacketViewModel : ViewModelBase
 {
     public string DisplayName { get; set; } = string.Empty;
     public PacketDirection Direction { get; set; }

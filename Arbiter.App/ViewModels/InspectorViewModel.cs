@@ -39,13 +39,7 @@ public partial class InspectorViewModel : ViewModelBase
 
     private void OnPacketSelected(NetworkPacket? packet)
     {
-        if (packet is null || !_packetMessageFactory.CanParse(packet))
-        {
-            InspectedPacket = null;
-            return;
-        }
-
-        if (!_packetMessageFactory.TryParsePacket(packet, out var message, out var exception))
+        if (packet is null)
         {
             InspectedPacket = null;
             return;
@@ -60,17 +54,28 @@ public partial class InspectorViewModel : ViewModelBase
 
         var vm = new InspectorPacketViewModel
         {
-            DisplayName = GetPacketDisplayName(message) ?? fallbackName,
+            DisplayName = fallbackName,
             Direction = packet is ClientPacket ? PacketDirection.Client : PacketDirection.Server,
-            Command = packet.Command,
-            Exception = exception
+            Command = packet.Command
         };
 
-        foreach (var section in GetSections(message).Values.OrderBy(s => s.Order))
+        if (_packetMessageFactory.CanParse(packet))
         {
-            if (section.Items.Count > 0)
+            if (!_packetMessageFactory.TryParsePacket(packet, out var message, out var exception))
             {
-                vm.Sections.Add(section);
+                vm.Exception = exception;
+            }
+            else
+            {
+                vm.DisplayName = GetPacketDisplayName(message) ?? fallbackName;
+
+                foreach (var section in GetSections(message).Values.OrderBy(s => s.Order))
+                {
+                    if (section.Items.Count > 0)
+                    {
+                        vm.Sections.Add(section);
+                    }
+                }
             }
         }
 
@@ -85,33 +90,42 @@ public partial class InspectorViewModel : ViewModelBase
         var sections = new Dictionary<string, InspectorSectionViewModel>(StringComparer.OrdinalIgnoreCase);
 
         // Default to the uncategorized section
-        var defaultSection = new InspectorSectionViewModel { Header = string.Empty };
+        var defaultSection = new InspectorSectionViewModel { Header = "Uncategorized" };
         var currentSection = defaultSection;
 
         foreach (var property in message.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            var attr = property.GetCustomAttribute<InspectSectionAttribute>();
+            var sectionAttribute = property.GetCustomAttribute<InspectSectionAttribute>();
 
             // Switch to a different section
-            if (attr is not null)
+            if (sectionAttribute is not null)
             {
-                if (!sections.TryGetValue(attr.Header, out currentSection))
+                if (!sections.TryGetValue(sectionAttribute.Header, out currentSection))
                 {
                     currentSection = new InspectorSectionViewModel
                     {
-                        Header = attr.Header,
-                        Order = attr.Order
+                        Header = sectionAttribute.Header,
+                        Order = sectionAttribute.Order
                     };
 
-                    sections.Add(attr.Header, currentSection);
+                    sections.Add(sectionAttribute.Header, currentSection);
                 }
             }
-            
+
             var itemViewModel = GetItemViewModel(property, message);
-            if (itemViewModel is not null)
+            if (itemViewModel is null)
             {
-                currentSection.Items.Add(itemViewModel);
+                continue;
             }
+
+            // Apply tooltip if specified
+            var toolTipAttribute = property.GetCustomAttribute<InspectToolTipAttribute>();
+            if (toolTipAttribute is not null && !string.IsNullOrWhiteSpace(toolTipAttribute.ToolTip))
+            {
+                itemViewModel.ToolTip = toolTipAttribute.ToolTip;
+            }
+
+            currentSection.Items.Add(itemViewModel);
         }
 
         // Ensure the default section is always last, if it has items

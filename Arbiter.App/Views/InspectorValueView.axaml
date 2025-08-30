@@ -13,17 +13,19 @@
     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
         <Label Grid.Column="0"
                Content="{Binding Name}"
+               ToolTip.Tip="{Binding ToolTip}"
                Margin="0,0,16,0"/>
         <TextBox Grid.Column="1"
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
-                 Watermark="--"
+                 Watermark="&lt;empty&gt;"
                  Classes="read-only"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                  MinWidth="60"/>
         <Button Grid.Column="2"
                 Command="{Binding RequestCopyCommand}"
+                IsEnabled="{Binding FormattedValue, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                 ToolTip.Tip="Copy the value to the clipboard."
                 Padding="4"
                 Focusable="False">

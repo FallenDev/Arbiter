@@ -4,7 +4,7 @@ using Arbiter.Net;
 
 namespace Arbiter.App.ViewModels;
 
-public partial class ClientManagerViewModel : ViewModelBase
+public class ClientManagerViewModel : ViewModelBase
 {
     private readonly ProxyServer _proxyServer;
 

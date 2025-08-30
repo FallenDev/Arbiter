@@ -13,7 +13,7 @@
         
         <!-- Placeholder -->
         <TextBlock Grid.Row="1"
-                   Text="Unknown packet structure"
+                   Text="No packet selected"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                    VerticalAlignment="Center"

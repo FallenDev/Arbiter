@@ -8,7 +8,8 @@ namespace Arbiter.App.Models.Packets.Server;
 public class ServerHelloMessage : IPacketMessage
 {
     [InspectSection("Content")]
-    [InspectProperty] public string Message { get; set; } = string.Empty;
+    [InspectProperty]
+    public string Message { get; set; } = string.Empty;
 
     public void ReadFrom(NetworkPacketReader reader)
     {
