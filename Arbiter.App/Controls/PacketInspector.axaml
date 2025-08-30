@@ -46,8 +46,12 @@
                            VerticalAlignment="Center"/>
             </WrapPanel>
             
-            
             <Border Classes="divider-h" Margin="0,4"/>
         </StackPanel>
+        
+        <!-- Sections -->
+        <ItemsControl Grid.Row="1"
+                      ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}"
+                      ItemTemplate="{StaticResource InspectorSectionTemplate}"/>
     </Grid>
 </UserControl>

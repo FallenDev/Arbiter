@@ -12,6 +12,4 @@ public partial class InspectorPacketViewModel : ViewModelBase
     public Exception? Exception { get; set; }
 
     public ObservableCollection<InspectorSectionViewModel> Sections { get; } = [];
-
-    public ObservableCollection<InspectorItemViewModel> Items { get; } = [];
 }

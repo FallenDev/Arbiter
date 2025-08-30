@@ -68,7 +68,10 @@ public partial class InspectorViewModel : ViewModelBase
 
         foreach (var section in GetSections(message).Values.OrderBy(s => s.Order))
         {
-            vm.Sections.Add(section);
+            if (section.Items.Count > 0)
+            {
+                vm.Sections.Add(section);
+            }
         }
 
         InspectedPacket = vm;
@@ -111,8 +114,12 @@ public partial class InspectorViewModel : ViewModelBase
             }
         }
 
-        // Ensure the default section is always last
-        sections.Add(string.Empty, defaultSection);
+        // Ensure the default section is always last, if it has items
+        if (defaultSection.Items.Count > 0)
+        {
+            sections.Add(string.Empty, defaultSection);
+        }
+
         return sections;
     }
 
