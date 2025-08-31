@@ -2,7 +2,7 @@
 using System.Linq;
 using Arbiter.Net;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Client;
 
 public class ClientManagerViewModel : ViewModelBase
 {

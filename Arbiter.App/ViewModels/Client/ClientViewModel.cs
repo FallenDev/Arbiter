@@ -1,5 +1,5 @@
 ﻿
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Client;
 
 public class ClientViewModel : ViewModelBase
 {

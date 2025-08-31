@@ -6,6 +6,7 @@
         xmlns:ctl="using:Arbiter.App.Controls"
         xmlns:v="using:Arbiter.App.Views"
         xmlns:vm="using:Arbiter.App.ViewModels"
+        xmlns:vmc="using:Arbiter.App.ViewModels.Client"
         mc:Ignorable="d"
         x:Class="Arbiter.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -62,7 +63,7 @@
                     <ListBox ItemsSource="{Binding ClientManager.Clients}"
                              SelectedItem="{Binding SelectedClient}">
                         <ListBox.DataTemplates>
-                            <DataTemplate DataType="vm:ClientViewModel">
+                            <DataTemplate DataType="vmc:ClientViewModel">
                                 <v:ClientView/>
                             </DataTemplate>
                         </ListBox.DataTemplates>
