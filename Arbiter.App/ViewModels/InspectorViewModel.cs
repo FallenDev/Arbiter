@@ -118,21 +118,6 @@ public partial class InspectorViewModel : ViewModelBase
             {
                 continue;
             }
-
-            // Apply tooltip if specified
-            var toolTipAttribute = property.GetCustomAttribute<InspectToolTipAttribute>();
-            if (toolTipAttribute is not null && !string.IsNullOrWhiteSpace(toolTipAttribute.ToolTip))
-            {
-                itemViewModel.ToolTip = toolTipAttribute.ToolTip;
-            }
-            
-            // Do not reveal by default if masked
-            var maskedAttribute = property.GetCustomAttribute<InspectMaskedAttribute>();
-            if (maskedAttribute is not null)
-            {
-                itemViewModel.MaskCharacter = maskedAttribute.MaskCharacter;
-                itemViewModel.IsRevealed = false;
-            }
             
             currentSection.Items.Add(itemViewModel);
         }
@@ -155,15 +140,57 @@ public partial class InspectorViewModel : ViewModelBase
             return null;
         }
 
+        // If the property is a list, build a list model instead
+        if (property.PropertyType.IsAssignableTo(typeof(IEnumerable<object>)))
+        {
+            return BuildListModel(property, message);
+        }
+
         var value = property.GetValue(message);
 
+        // Apply tooltip if specified
+        var toolTipAttribute = property.GetCustomAttribute<InspectToolTipAttribute>();
+        
+        // Do not reveal by default if masked
+        var maskedAttribute = property.GetCustomAttribute<InspectMaskedAttribute>();
+        
         return new InspectorValueViewModel
         {
             Name = attr.Name ?? property.Name.ToNaturalWording(),
             Value = value,
             StringFormat = attr.StringFormat,
-            ShowHex = attr.ShowHex
+            ShowHex = attr.ShowHex,
+            ToolTip = toolTipAttribute?.ToolTip,
+            MaskCharacter = maskedAttribute?.MaskCharacter,
+            IsRevealed = maskedAttribute is null
         };
+    }
+    
+    private static InspectorListViewModel BuildListModel(PropertyInfo property, IPacketMessage message)
+    {
+        var attr = property.GetCustomAttribute<InspectPropertyAttribute>()!;
+        var listViewModel = new InspectorListViewModel
+        {
+            Name = attr.Name ?? property.Name.ToNaturalWording(),
+            Order = attr.Order
+        };
+
+        var objectCollection = property.GetValue(message) as IEnumerable<object> ?? [];
+        var index = 0;
+        foreach (var item in objectCollection)
+        {
+            var objType = item.GetType();
+            
+            listViewModel.Items.Add(new InspectorValueViewModel
+            {
+                Name = $"Element {index++}",
+                Value = item,
+                StringFormat = attr.StringFormat,
+                ShowHex = attr.ShowHex,
+            });
+        }
+        
+        return listViewModel;
     }
 
 }

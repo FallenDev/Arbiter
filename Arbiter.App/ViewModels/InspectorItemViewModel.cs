@@ -11,15 +11,6 @@ public abstract partial class InspectorItemViewModel : ViewModelBase
     [ObservableProperty] private string _name = string.Empty;
     [ObservableProperty] private int _order = int.MaxValue;
 
-    [ObservableProperty] private string? _toolTip;
-
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(CanReveal))]
-    private char? _maskCharacter;
-
-    [ObservableProperty] private bool _isRevealed = true;
-
-    public bool CanReveal => MaskCharacter is not null;
-
     private bool CheckCanCopy(object _) => CanCopyToClipboard();
     
     [RelayCommand(CanExecute = nameof(CheckCanCopy))]
