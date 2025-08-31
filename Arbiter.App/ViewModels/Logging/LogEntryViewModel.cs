@@ -2,7 +2,7 @@
 using Arbiter.App.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Logging;
 
 public class LogEntryViewModel(ArbiterLogEntry logEntry) : ViewModelBase
 {

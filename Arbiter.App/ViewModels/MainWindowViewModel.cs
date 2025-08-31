@@ -5,6 +5,7 @@ using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.App.ViewModels.Inspector;
+using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
 using Avalonia.Controls;
