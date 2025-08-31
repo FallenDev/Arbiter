@@ -9,4 +9,5 @@ public class InspectPropertyAttribute : Attribute
     public int Order { get; set; } = int.MaxValue;
     public string? StringFormat { get; set; }
     public bool ShowHex { get; set; }
+    public bool ShowMultiline { get; set; }
 }

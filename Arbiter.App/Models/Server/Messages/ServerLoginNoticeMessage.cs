@@ -10,10 +10,10 @@ namespace Arbiter.App.Models.Server.Messages;
 public class ServerLoginNoticeMessage : IPacketMessage
 {
     [InspectSection("Server Notice")]
-    [InspectProperty]
+    [InspectProperty(ShowHex = true)]
     public uint? Checksum { get; set; }
     
-    [InspectProperty]
+    [InspectProperty(ShowMultiline = true)]
     public string? Notice { get; set; }
 
     public void ReadFrom(NetworkPacketReader reader)
