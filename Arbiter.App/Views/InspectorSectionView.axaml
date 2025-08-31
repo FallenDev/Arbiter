@@ -28,6 +28,9 @@
                     <DataTemplate DataType="vm:InspectorValueViewModel">
                         <v:InspectorValueView/>
                     </DataTemplate>
+                    <DataTemplate DataType="vm:InspectorListViewModel">
+                        <v:InspectorListView/>
+                    </DataTemplate>
                 </ItemsControl.DataTemplates>
             </ItemsControl>
         </Expander>
