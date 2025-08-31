@@ -19,7 +19,8 @@ public class ServerRedirectMessage : IPacketMessage
     [InspectProperty]
     public byte Seed { get; set; }
 
-    [InspectProperty] public IReadOnlyList<byte> PrivateKey { get; set; } = [];
+    [InspectProperty(ShowMultiline = true)]
+    public IReadOnlyList<byte> PrivateKey { get; set; } = [];
 
     [InspectSection("Connection")]
     [InspectProperty(Name = "Id")]

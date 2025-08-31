@@ -16,7 +16,8 @@ public class ServerServerListMessage : IPacketMessage
     [InspectProperty]
     public byte Seed { get; set; }
 
-    [InspectProperty] public IReadOnlyList<byte> PrivateKey { get; set; } = [];
+    [InspectProperty(ShowMultiline = true)]
+    public IReadOnlyList<byte> PrivateKey { get; set; } = [];
 
     public void ReadFrom(NetworkPacketReader reader)
     {

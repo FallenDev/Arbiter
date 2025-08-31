@@ -11,7 +11,7 @@ public class ServerServerInfoMessage : IPacketMessage
     [InspectProperty]
     public ServerInfoType DataType { get; set; }
     
-    [InspectProperty]
+    [InspectProperty(ShowMultiline = true)]
     public string? Value { get; set; }
 
     public void ReadFrom(NetworkPacketReader reader)

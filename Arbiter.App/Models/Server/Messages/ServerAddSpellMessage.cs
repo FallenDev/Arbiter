@@ -11,7 +11,7 @@ public class ServerAddSpellMessage : IPacketMessage
     [InspectProperty]
     public byte Slot { get; set; }
     
-    [InspectProperty]
+    [InspectProperty(ShowHex = true)]
     public ushort Icon { get; set; }
     
     [InspectProperty(ShowMultiline = true)]
