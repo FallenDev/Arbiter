@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using Arbiter.App.Models;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Inspector;
 
 public class InspectorPacketViewModel : ViewModelBase
 {

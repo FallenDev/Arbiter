@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Inspector;
 
 public class InspectorListViewModel : InspectorItemViewModel
 {

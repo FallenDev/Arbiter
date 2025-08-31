@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Inspector;
 
 public partial class InspectorSectionViewModel : ViewModelBase
 {

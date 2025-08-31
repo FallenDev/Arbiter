@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:v="using:Arbiter.App.Views"
-             xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:vm="using:Arbiter.App.ViewModels.Inspector"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.InspectorSectionView"
              x:DataType="vm:InspectorSectionViewModel">
@@ -30,6 +30,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="vm:InspectorListViewModel">
                         <v:InspectorListView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="vm:InspectorDictionaryViewModel">
+                        <v:InspectorDictionaryView/>
                     </DataTemplate>
                 </ItemsControl.DataTemplates>
             </ItemsControl>

@@ -11,7 +11,7 @@ using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Inspector;
 
 public partial class InspectorViewModel : ViewModelBase
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Inspector;
 
 public partial class InspectorValueViewModel : InspectorItemViewModel
 {
