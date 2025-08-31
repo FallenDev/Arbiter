@@ -9,7 +9,7 @@ namespace Arbiter.App.Models.Server.Messages;
 [InspectPacket(ServerCommand.LoginNotice)]
 public class ServerLoginNoticeMessage : IPacketMessage
 {
-    [InspectSection("Server Notice")]
+    [InspectSection("Login Notice")]
     [InspectProperty(ShowHex = true)]
     public uint? Checksum { get; set; }
     

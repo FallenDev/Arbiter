@@ -20,6 +20,8 @@
                Content="{Binding Name}"
                ToolTip.Tip="{Binding ToolTip}"
                Margin="0"/>
+        
+        <!-- Single Line Value -->
         <TextBox Grid.Row="0" Grid.Column="1"
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
@@ -61,6 +63,7 @@
             </TextBox.ContextMenu>
         </TextBox>
         
+        <!-- Multiline Textbox -->
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                  Text="{Binding FormattedValue}"
                  PasswordChar="{Binding MaskCharacter, FallbackValue=●}"
