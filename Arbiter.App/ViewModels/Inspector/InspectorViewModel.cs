@@ -174,7 +174,8 @@ public partial class InspectorViewModel : ViewModelBase
             ShowHex = showHex,
             ToolTip = toolTipAttribute?.ToolTip,
             MaskCharacter = maskedAttribute?.MaskCharacter,
-            IsRevealed = maskedAttribute is null
+            IsRevealed = maskedAttribute is null,
+            IsMultiline = attr.ShowMultiline
         };
     }
 
@@ -255,7 +256,8 @@ public partial class InspectorViewModel : ViewModelBase
                 Order = attr.Order,
                 Value = value,
                 StringFormat = attr.StringFormat,
-                ShowHex = attr.ShowHex
+                ShowHex = attr.ShowHex,
+                IsMultiline = attr.ShowMultiline
             };
 
             keyValues.Add(keyValueViewModel);

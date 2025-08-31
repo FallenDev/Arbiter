@@ -23,6 +23,8 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
 
     [ObservableProperty] private bool _isRevealed = true;
 
+    [ObservableProperty] private bool _isMultiline;
+
     public bool CanReveal => MaskCharacter is not null;
 
     public bool IsInteger => Value is sbyte or byte or short or ushort or int or uint or long or ulong;

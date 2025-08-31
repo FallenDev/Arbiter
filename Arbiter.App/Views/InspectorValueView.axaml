@@ -10,17 +10,17 @@
         <SolidColorBrush x:Key="Talgonite.InspectorValue.Background" Color="#1e2228"/>
     </UserControl.Resources>
     
-    <Grid ColumnSpacing="4">
+    <Grid ColumnSpacing="4" RowDefinitions="Auto,Auto">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MinWidth="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        <Label Grid.Column="0"
+
+        <Label Grid.Row="0" Grid.Column="0"
                Content="{Binding Name}"
                ToolTip.Tip="{Binding ToolTip}"
                Margin="0"/>
-        <TextBox Grid.Column="1"
+        <TextBox Grid.Row="0" Grid.Column="1"
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
                  Watermark="&lt;unset&gt;"
@@ -31,7 +31,8 @@
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                  Height="40"
-                 HorizontalAlignment="Stretch">
+                 HorizontalAlignment="Stretch"
+                 IsVisible="{Binding !IsMultiline}">
             <TextBox.InnerLeftContent>
                 <!-- Toggle Hex View -->
                 <ToggleButton IsChecked="{Binding ShowHex}"
@@ -53,6 +54,26 @@
                     </Panel>
                 </ToggleButton>
             </TextBox.InnerLeftContent>
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}"/>
+                </ContextMenu>
+            </TextBox.ContextMenu>
+        </TextBox>
+        
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                 Text="{Binding FormattedValue}"
+                 PasswordChar="{Binding MaskCharacter, FallbackValue=●}"
+                 RevealPassword="{Binding IsRevealed}"
+                 Classes="read-only editor"
+                 Background="{StaticResource Talgonite.InspectorValue.Background}"
+                 FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                 Margin="4"
+                 MinHeight="120" MaxHeight="360"
+                 HorizontalAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 IsVisible="{Binding IsMultiline}">
             <TextBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}"/>

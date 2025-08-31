@@ -53,13 +53,16 @@
         </StackPanel>
         
         <!-- Sections -->
-        <ItemsControl Grid.Row="1"
-                      ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
-            <ItemsControl.DataTemplates>
-                <DataTemplate DataType="vm:InspectorSectionViewModel">
-                    <v:InspectorSectionView/>
-                </DataTemplate>
-            </ItemsControl.DataTemplates>
-        </ItemsControl>
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="vm:InspectorSectionViewModel">
+                        <v:InspectorSectionView/>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
