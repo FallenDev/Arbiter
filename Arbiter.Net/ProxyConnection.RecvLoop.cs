@@ -60,7 +60,7 @@ public partial class ProxyConnection
                     switch (decrypted)
                     {
                         // Handle server encryption, we need to update encryption parameters
-                        case ServerPacket { Command: ServerCommand.SetEncryption }:
+                        case ServerPacket { Command: ServerCommand.ServerList }:
                             HandleServerSetEncryption(decrypted);
                             break;
                         // Handle server redirects, we need to hijack the redirect

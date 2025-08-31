@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Arbiter.App.Annotations;
+using Arbiter.App.Extensions;
 using Arbiter.App.Models;
 using Arbiter.App.Models.Packets;
 using Arbiter.Net;
@@ -158,7 +159,7 @@ public partial class InspectorViewModel : ViewModelBase
 
         return new InspectorValueViewModel
         {
-            Name = attr.Name ?? property.Name,
+            Name = attr.Name ?? property.Name.ToNaturalWording(),
             Value = value,
             StringFormat = attr.StringFormat,
             ShowHex = attr.ShowHex

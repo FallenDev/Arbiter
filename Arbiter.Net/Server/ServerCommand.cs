@@ -2,7 +2,7 @@
 
 public enum ServerCommand : byte
 {
-    SetEncryption = 0x00,
+    ServerList = 0x00,
     LoginMessage = 0x02,
     Redirect = 0x03,
     Location = 0x04,
