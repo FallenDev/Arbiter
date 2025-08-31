@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Inspector;
+using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;

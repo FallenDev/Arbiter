@@ -7,6 +7,7 @@ using Arbiter.App.Services;
 using Avalonia.Markup.Xaml;
 using Arbiter.App.ViewModels;
 using Arbiter.App.ViewModels.Inspector;
+using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
 using Arbiter.Net;
 using Avalonia.Controls;

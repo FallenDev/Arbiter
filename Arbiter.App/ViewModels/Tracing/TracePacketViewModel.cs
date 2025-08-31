@@ -11,7 +11,7 @@ using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TracePacketViewModel(
     NetworkPacket packet,

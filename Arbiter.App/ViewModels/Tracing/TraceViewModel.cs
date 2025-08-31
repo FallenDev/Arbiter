@@ -18,7 +18,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel : ViewModelBase
 {
