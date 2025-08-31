@@ -34,7 +34,13 @@
                          Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                          FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                          MinWidth="60"
-                         Focusable="False"/>
+                         Focusable="False">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="command"/>
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
             </StackPanel>
             
             <!-- Sequence Byte -->
@@ -48,7 +54,13 @@
                          Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                          FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                          MinWidth="60"
-                         Focusable="False"/>
+                         Focusable="False">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="sequence"/>
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
             </StackPanel>
         </UniformGrid>
         
@@ -79,7 +91,14 @@
                  Classes="editor"
                  IsReadOnly="True"
                  FontSize="16"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Selection" Command="{Binding CopyToClipboardCommand}" CommandParameter="hex-selection"/>
+                    <MenuItem Header="Copy All" Command="{Binding CopyToClipboardCommand}" CommandParameter="hex-all"/>
+                </ContextMenu>
+            </TextBox.ContextMenu>
+        </TextBox>
         
         <!-- ASCII Text View -->
         <Label Grid.Row="4"
@@ -95,7 +114,14 @@
                  ClearSelectionOnLostFocus="False"
                  Classes="editor"
                  FontSize="16"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Selection" Command="{Binding CopyToClipboardCommand}" CommandParameter="ascii-selection"/>
+                    <MenuItem Header="Copy All" Command="{Binding CopyToClipboardCommand}" CommandParameter="ascii-all"/>
+                </ContextMenu>
+            </TextBox.ContextMenu>
+        </TextBox>
         
         <!-- Integer Values View -->
         <UniformGrid Grid.Row="6" Rows="6" Columns="2">
@@ -139,6 +165,11 @@
                                ToolTip.Tip="Signed 8-bit value of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="i8"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Unsigned 8-bit -->
@@ -162,6 +193,11 @@
                                ToolTip.Tip="Unsigned 8-bit value of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="u8"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Signed 16-bit -->
@@ -185,6 +221,11 @@
                                ToolTip.Tip="Signed 16-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="i16"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Unsigned 16-bit -->
@@ -208,6 +249,11 @@
                                ToolTip.Tip="Unsigned 16-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="u16"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Signed 32-bit -->
@@ -231,6 +277,11 @@
                                ToolTip.Tip="Signed 32-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="i32"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Unsigned 32-bit -->
@@ -254,6 +305,11 @@
                                ToolTip.Tip="Unsigned 32-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="u32"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
              <!-- Signed 64-bit -->
@@ -277,6 +333,11 @@
                                ToolTip.Tip="Signed 64-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="i64"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Unsigned 64-bit -->
@@ -300,6 +361,11 @@
                                ToolTip.Tip="Unsigned 64-bit value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="u64"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Ipv4 Address -->
@@ -323,6 +389,11 @@
                                ToolTip.Tip="IPv4 address value of the selected bytes."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="ipv4"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
             
             <!-- Bitflags -->
@@ -346,6 +417,11 @@
                                ToolTip.Tip="Bit flag representation of the first selected byte."/>
                     </Border>
                 </TextBox.InnerLeftContent>
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="flags"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
             </TextBox>
         </UniformGrid>
     </Grid>

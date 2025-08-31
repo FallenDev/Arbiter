@@ -2,9 +2,12 @@
 using System.Buffers;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Arbiter.App.Extensions;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -277,6 +280,62 @@ public partial class RawHexViewModel : ViewModelBase
     {
         HexSelectionStart = 0;
         HexSelectionEnd = 0;
+    }
+    
+    private bool CanCopyToClipboard(string fieldName)
+    {
+        return fieldName switch
+        {
+            "command" => true,
+            "sequence" => Sequence.HasValue,
+            "hex-selection" => SelectedByteCount > 0,
+            "hex-all" => RawHex.Length > 0,
+            "ascii-selection" => SelectedByteCount > 0,
+            "ascii-all" => DecodedText.Length > 0,
+            "i8" or "u8" => SelectedByteCount > 0,
+            "i16" or "u16" => SelectedByteCount >= 2,
+            "i32" or "u32" => SelectedByteCount >= 4,
+            "i64" or "u64" => SelectedByteCount >= 8,
+            "ip" => SelectedByteCount >= 4,
+            "bits" => SelectedByteCount > 0,
+            _ => false
+        };
+    }
+    
+    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
+    private async Task CopyToClipboard(string fieldName)
+    {
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is null)
+        {
+            return;
+        }
+
+        var textToCopy = fieldName switch
+        {
+            "command" => FormattedCommand,
+            "sequence" => FormattedSequence,
+            "i8" => FormattedSignedByte,
+            "u8" => FormattedUnsignedByte,
+            "i16" => FormattedSignedShort,
+            "u16" => FormattedUnsignedShort,
+            "i32" => FormattedSignedInt,
+            "u32" => FormattedUnsignedInt,
+            "i64" => FormattedSignedLong,
+            "u64" => FormattedUnsignedLong,
+            "ipv4" => FormattedIpAddress,
+            "flags" => FormattedBitFlags,
+            "hex-selection" => RawHex.Substring(HexSelectionStart, HexSelectionEnd - HexSelectionStart),
+            "hex-all" => RawHex,
+            "ascii-selection" => DecodedText.Substring(TextSelectionStart, TextSelectionEnd - TextSelectionStart),
+            "ascii-all" => DecodedText,
+            _ => null
+        };
+
+        if (!string.IsNullOrEmpty(textToCopy))
+        {
+            await clipboard.SetTextAsync(textToCopy);
+        }
     }
 
     private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ', int maxBytes = 4)
