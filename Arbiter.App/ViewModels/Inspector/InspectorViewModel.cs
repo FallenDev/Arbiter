@@ -211,14 +211,45 @@ public partial class InspectorViewModel : ViewModelBase
         return listViewModel;
     }
 
-    private static InspectorDictionaryViewModel BuildDictionaryModel(string name, object value, int order = int.MaxValue)
+    private static InspectorDictionaryViewModel BuildDictionaryModel(string name, object objValue,
+        int order = int.MaxValue)
     {
         var dictViewModel = new InspectorDictionaryViewModel
         {
             Name = name,
             Order = order
         };
-        
+
+        List<InspectorValueViewModel> keyValues = [];
+        foreach (var property in objValue.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            var attr = property.GetCustomAttribute<InspectPropertyAttribute>();
+            if (attr is null)
+            {
+                continue;
+            }
+
+            var key = attr.Name ?? property.Name.ToNaturalWording();
+            var value = property.GetValue(objValue);
+            
+            var keyValueViewModel = new InspectorValueViewModel
+            {
+                Name = key,
+                Order = attr.Order,
+                Value = value,
+                StringFormat = attr.StringFormat,
+                ShowHex = attr.ShowHex
+            };
+            
+            keyValues.Add(keyValueViewModel);
+        }
+
+        // Ensure they are in their right order, ascending
+        foreach (var viewModel in keyValues.OrderBy(k => k.Order))
+        {
+            dictViewModel.Values.Add(viewModel);
+        }
+
         return dictViewModel;
     }
 }
