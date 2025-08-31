@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using Arbiter.App.Annotations;
 using Arbiter.App.Models;
@@ -118,7 +119,7 @@ public partial class InspectorViewModel : ViewModelBase
             {
                 continue;
             }
-            
+
             currentSection.Items.Add(itemViewModel);
         }
 
@@ -144,23 +145,24 @@ public partial class InspectorViewModel : ViewModelBase
         var stringFormat = attr.StringFormat;
         var showHex = attr.ShowHex;
 
+        var type = property.PropertyType;
         var value = property.GetValue(message);
 
         // If the property is a list, build a list model instead
-        if (property.PropertyType.IsAssignableTo(typeof(IEnumerable<object>)))
+        if (type.IsAssignableTo(typeof(IEnumerable<object>)))
         {
             return BuildListModel(name, value, attr.Order, stringFormat, showHex);
         }
 
         // If the property is an object, build a dictionary model instead
-        if (property.PropertyType.IsClass && value is not null)
+        if (IsCustomType(type) && value is not null)
         {
             return BuildDictionaryModel(name, value, attr.Order);
         }
 
         // Apply tooltip if specified
         var toolTipAttribute = property.GetCustomAttribute<InspectToolTipAttribute>();
-        
+
         // Do not reveal by default if masked
         var maskedAttribute = property.GetCustomAttribute<InspectMaskedAttribute>();
 
@@ -192,7 +194,7 @@ public partial class InspectorViewModel : ViewModelBase
         {
             var objType = item.GetType();
 
-            if (objType.IsClass)
+            if (IsCustomType(objType))
             {
                 var displayName = $"Element {index++}";
                 listViewModel.Items.Add(BuildDictionaryModel(displayName, item));
@@ -220,6 +222,22 @@ public partial class InspectorViewModel : ViewModelBase
             Order = order
         };
 
+        // If the object is a dictionary, build a dictionary model instead
+        if (objValue is IDictionary<string, object?> dictionary)
+        {
+            foreach (var (key, value) in dictionary)
+            {
+                dictViewModel.Values.Add(new InspectorValueViewModel
+                {
+                    Name = key,
+                    Value = value
+                });
+            }
+
+            return dictViewModel;
+        }
+
+        // Build a dictionary model from the object's properties
         List<InspectorValueViewModel> keyValues = [];
         foreach (var property in objValue.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
@@ -231,7 +249,7 @@ public partial class InspectorViewModel : ViewModelBase
 
             var key = attr.Name ?? property.Name.ToNaturalWording();
             var value = property.GetValue(objValue);
-            
+
             var keyValueViewModel = new InspectorValueViewModel
             {
                 Name = key,
@@ -240,16 +258,18 @@ public partial class InspectorViewModel : ViewModelBase
                 StringFormat = attr.StringFormat,
                 ShowHex = attr.ShowHex
             };
-            
+
             keyValues.Add(keyValueViewModel);
         }
 
         // Ensure they are in their right order, ascending
-        foreach (var viewModel in keyValues.OrderBy(k => k.Order))
+        foreach (var viewModel in keyValues.OrderBy(kv => kv.Order))
         {
             dictViewModel.Values.Add(viewModel);
         }
 
         return dictViewModel;
     }
+
+    private static bool IsCustomType(Type type) => type.IsClass && type != typeof(string) && type != typeof(IPAddress);
 }
