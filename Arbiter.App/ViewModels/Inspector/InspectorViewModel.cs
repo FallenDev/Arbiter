@@ -19,8 +19,12 @@ public partial class InspectorViewModel : ViewModelBase
 
     private NetworkPacket? _selectedPacket;
 
-    [ObservableProperty] private InspectorPacketViewModel? _inspectedPacket;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsEmpty))]
+    private InspectorPacketViewModel? _inspectedPacket;
 
+    public bool IsEmpty => InspectedPacket is not null && InspectedPacket.Sections.Count == 0;
+    
     public NetworkPacket? SelectedPacket
     {
         get => _selectedPacket;

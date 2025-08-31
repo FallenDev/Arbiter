@@ -16,8 +16,18 @@
                    Text="No packet selected"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                   FontSize="18"
                    VerticalAlignment="Center"
                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}"/>
+        
+        <!-- Placeholder -->
+        <TextBlock Grid.Row="1"
+                   Text="No properties to show"
+                   TextAlignment="Center"
+                   Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                   FontSize="18"
+                   VerticalAlignment="Center"
+                   IsVisible="{Binding IsEmpty}"/>
         
         <!-- Header Section -->
         <StackPanel Grid.Row="0"

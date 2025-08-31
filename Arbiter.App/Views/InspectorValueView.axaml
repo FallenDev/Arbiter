@@ -72,7 +72,7 @@
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                  Margin="4"
-                 MinHeight="120" MaxHeight="360"
+                 MinHeight="60" MaxHeight="360"
                  HorizontalAlignment="Stretch"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
