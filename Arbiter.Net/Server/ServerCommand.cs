@@ -53,7 +53,7 @@ public enum ServerCommand : byte
     ServerTable = 0x56,
     MapLoaded = 0x58,
     LoginNotice = 0x60,
-    LoginInfo = 0x66,
+    ServerInfo = 0x66,
     MapChanging = 0x67,
     Metadata = 0x6F,
     Hello = 0x7E,

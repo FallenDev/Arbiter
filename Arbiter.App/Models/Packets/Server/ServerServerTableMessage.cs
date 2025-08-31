@@ -15,9 +15,9 @@ public class ServerServerTableMessage : IPacketMessage
 
     public void ReadFrom(NetworkPacketReader reader)
     {
+        // The server table is compressed with zlib
         var contentLength = reader.ReadUInt16();
         var compressed = reader.ReadBytes(contentLength);
-
         var decompressed = Zlib.Decompress(compressed);
 
         var tableReader = new SpanReader(Endianness.BigEndian);

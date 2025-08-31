@@ -23,7 +23,7 @@
         <TextBox Grid.Column="1"
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
-                 Watermark="&lt;empty&gt;"
+                 Watermark="&lt;unset&gt;"
                  PasswordChar="{Binding MaskCharacter, FallbackValue=●}"
                  RevealPassword="{Binding IsRevealed}"
                  Classes="read-only"
