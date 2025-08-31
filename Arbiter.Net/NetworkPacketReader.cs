@@ -160,7 +160,6 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
 
     public void Skip(int length)
     {
-        EnsureCanRead(length);
         _position += length;
     }
 

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Arbiter.App.Extensions;
+namespace Arbiter.Common.Extensions;
 
 public static class StringExtensions
 {

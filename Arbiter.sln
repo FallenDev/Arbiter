@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.Net", "Arbiter.Net\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.Json", "Arbiter.Json\Arbiter.Json.csproj", "{1FB09D7F-D6D3-4871-B5D2-83A92119DCF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.Common", "Arbiter.Common\Arbiter.Common.csproj", "{FB7F189F-5960-439A-B3DF-D073E10DCD92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{1FB09D7F-D6D3-4871-B5D2-83A92119DCF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FB09D7F-D6D3-4871-B5D2-83A92119DCF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FB09D7F-D6D3-4871-B5D2-83A92119DCF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB7F189F-5960-439A-B3DF-D073E10DCD92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB7F189F-5960-439A-B3DF-D073E10DCD92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB7F189F-5960-439A-B3DF-D073E10DCD92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB7F189F-5960-439A-B3DF-D073E10DCD92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

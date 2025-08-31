@@ -7,7 +7,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-        <Company>Aiseirigh Team</Company>
+        <Company>Erik 'SiLo' Rogers</Company>
         <Product>Arbiter</Product>
         <AssemblyVersion>0.1.0</AssemblyVersion>
         <FileVersion>0.1.0</FileVersion>
@@ -34,6 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Arbiter.Common\Arbiter.Common.csproj" />
       <ProjectReference Include="..\Arbiter.Interop\Arbiter.Interop.csproj" />
       <ProjectReference Include="..\Arbiter.Json\Arbiter.Json.csproj" />
       <ProjectReference Include="..\Arbiter.Net\Arbiter.Net.csproj" />

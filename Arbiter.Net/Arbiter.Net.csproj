@@ -4,7 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Company>Aiseirigh Team</Company>
+        <Company>Erik 'SiLo' Rogers</Company>
         <Product>Arbiter Network Library</Product>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>

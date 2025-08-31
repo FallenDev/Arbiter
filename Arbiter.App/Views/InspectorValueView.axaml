@@ -10,11 +10,16 @@
         <SolidColorBrush x:Key="Talgonite.InspectorValue.Background" Color="#1e2228"/>
     </UserControl.Resources>
     
-    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
+    <Grid ColumnSpacing="4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
         <Label Grid.Column="0"
                Content="{Binding Name}"
                ToolTip.Tip="{Binding ToolTip}"
-               Margin="0,0,16,0"/>
+               Margin="0"/>
         <TextBox Grid.Column="1"
                  Text="{Binding FormattedValue}"
                  TextAlignment="Right"
@@ -25,8 +30,8 @@
                  Classes.reveal="{Binding CanReveal}"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                 Width="200" Height="40"
-                 HorizontalAlignment="Right">
+                 Height="40"
+                 HorizontalAlignment="Stretch">
             <TextBox.InnerLeftContent>
                 <!-- Toggle Hex View -->
                 <ToggleButton IsChecked="{Binding ShowHex}"

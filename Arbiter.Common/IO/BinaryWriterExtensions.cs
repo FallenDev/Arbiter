@@ -1,7 +1,6 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 
-namespace Arbiter.App.Extensions;
+namespace Arbiter.Common.IO;
 
 public static class BinaryWriterExtensions
 {

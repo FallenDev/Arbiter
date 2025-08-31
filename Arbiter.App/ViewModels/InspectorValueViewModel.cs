@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels;
 
@@ -28,7 +30,18 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
         }
     }
 
-    public string FormattedValue => string.Format(ShowHex && IsInteger ? "0x{0:X}" : StringFormat ?? "{0}", Value);
+    public string FormattedValue
+    {
+        get
+        {
+            if (Value is IEnumerable<byte> bytes)
+            {
+                return string.Join(' ', bytes.Select(x => x.ToString("X2")));
+            }
+
+            return string.Format(ShowHex && IsInteger ? "0x{0:X}" : StringFormat ?? "{0}", Value);
+        }
+    }
 
     protected override string GetCopyableValue() => FormattedValue;
 

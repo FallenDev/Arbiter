@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Company>Erik 'SiLo' Rogers</Company>
-        <Product>Arbiter JSON Library</Product>
+        <Product>Arbiter Common Library</Product>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
