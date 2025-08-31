@@ -2,7 +2,7 @@
 
 namespace Arbiter.App.Views;
 
-public class InspectorListView : UserControl
+public partial class InspectorListView : UserControl
 {
     public InspectorListView()
     {

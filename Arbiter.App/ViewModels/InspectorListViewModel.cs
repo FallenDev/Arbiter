@@ -8,6 +8,6 @@ public class InspectorListViewModel : InspectorItemViewModel
 
     public int Count => Items.Count;
 
-    protected override bool CanCopyToClipboard() => false;
-    protected override string? GetCopyableValue() => null;
+    protected override bool CanCopyToClipboard() => true;
+    protected override string? GetCopyableValue() => Items.Count.ToString();
 }
