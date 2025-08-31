@@ -3,7 +3,7 @@
 public enum ServerCommand : byte
 {
     ServerList = 0x00,
-    LoginMessage = 0x02,
+    LoginResult = 0x02,
     Redirect = 0x03,
     Location = 0x04,
     UserId = 0x05,

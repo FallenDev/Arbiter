@@ -3,9 +3,9 @@
 public enum ClientCommand : byte
 {
     ClientVersion = 0x00,
-    CreateCharacterA = 0x01,
+    CreateCharacterName = 0x02,
     Login = 0x03,
-    CreateCharacterB = 0x04,
+    CreateCharacterAppearance = 0x04,
     RequestMapData = 0x05,
     Walk = 0x06,
     PickupItem = 0x07,
