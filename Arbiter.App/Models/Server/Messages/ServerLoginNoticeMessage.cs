@@ -1,11 +1,10 @@
 ﻿using System.Text;
 using Arbiter.App.Annotations;
-using Arbiter.Common.IO;
 using Arbiter.Common.IO.Compression;
 using Arbiter.Net;
 using Arbiter.Net.Server;
 
-namespace Arbiter.App.Models.Packets.Server;
+namespace Arbiter.App.Models.Server.Messages;
 
 [InspectPacket(ServerCommand.LoginNotice)]
 public class ServerLoginNoticeMessage : IPacketMessage

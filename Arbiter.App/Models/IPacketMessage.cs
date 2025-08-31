@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Arbiter.Net;
 
-namespace Arbiter.App.Models.Packets;
+namespace Arbiter.App.Models;
 
 public interface IPacketMessage
 {

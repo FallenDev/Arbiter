@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using Arbiter.App.Annotations;
 using Arbiter.Net;
-using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 
-namespace Arbiter.App.Models.Packets.Client;
+namespace Arbiter.App.Models.Server.Messages;
 
-[InspectPacket(ClientCommand.Authenticate)]
-public class ClientAuthenticateMessage : IPacketMessage
+[InspectPacket(ServerCommand.Redirect)]
+public class ServerRedirectMessage : IPacketMessage
 {
+    [InspectSection("Destination")]
+    [InspectProperty]
+    public IPAddress Address { get; set; } = IPAddress.None;
+
+    [InspectProperty] public ushort Port { get; set; }
+
     [InspectSection("Encryption")]
     [InspectProperty]
     public byte Seed { get; set; }
@@ -22,9 +29,15 @@ public class ClientAuthenticateMessage : IPacketMessage
 
     public void ReadFrom(NetworkPacketReader reader)
     {
+        Address = reader.ReadIPv4Address();
+        Port = reader.ReadUInt16();
+
+        reader.Skip(1); // remaining count
+
         Seed = reader.ReadByte();
         var keyLength = reader.ReadByte();
         PrivateKey = reader.ReadBytes(keyLength);
+
         Name = reader.ReadString8();
         ConnectionId = reader.ReadUInt32();
     }

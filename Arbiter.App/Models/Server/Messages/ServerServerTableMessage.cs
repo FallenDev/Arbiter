@@ -5,7 +5,7 @@ using Arbiter.Common.IO.Compression;
 using Arbiter.Net;
 using Arbiter.Net.Server;
 
-namespace Arbiter.App.Models.Packets.Server;
+namespace Arbiter.App.Models.Server.Messages;
 
 [InspectPacket(ServerCommand.ServerTable)]
 public class ServerServerTableMessage : IPacketMessage

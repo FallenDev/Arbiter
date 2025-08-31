@@ -1,32 +1,31 @@
 ﻿using System.Collections.Generic;
 using Arbiter.App.Annotations;
 using Arbiter.Net;
-using Arbiter.Net.Server;
+using Arbiter.Net.Client;
 
-namespace Arbiter.App.Models.Packets.Server;
+namespace Arbiter.App.Models.Client.Messages;
 
-[InspectPacket(ServerCommand.ServerList)]
-public class ServerServerListMessage : IPacketMessage
+[InspectPacket(ClientCommand.Authenticate)]
+public class ClientAuthenticateMessage : IPacketMessage
 {
-    [InspectSection("Server Table")]
-    [InspectProperty(ShowHex = true)]
-    public uint Checksum { get; set; }
-    
     [InspectSection("Encryption")]
     [InspectProperty]
     public byte Seed { get; set; }
 
     [InspectProperty] public IReadOnlyList<byte> PrivateKey { get; set; } = [];
 
+    [InspectSection("Connection")]
+    [InspectProperty(Name = "Id")]
+    public uint ConnectionId { get; set; }
+
+    [InspectProperty] public string Name { get; set; } = string.Empty;
+
     public void ReadFrom(NetworkPacketReader reader)
     {
-        // Not sure what this byte is for
-        reader.Skip(1);
-
-        Checksum = reader.ReadUInt32();
-        
         Seed = reader.ReadByte();
         var keyLength = reader.ReadByte();
         PrivateKey = reader.ReadBytes(keyLength);
+        Name = reader.ReadString8();
+        ConnectionId = reader.ReadUInt32();
     }
 }

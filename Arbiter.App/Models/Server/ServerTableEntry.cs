@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Arbiter.App.Annotations;
 
-namespace Arbiter.App.Models;
+namespace Arbiter.App.Models.Server;
 
 public class ServerTableEntry
 {

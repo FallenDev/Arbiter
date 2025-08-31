@@ -2,7 +2,7 @@
 using Arbiter.Net;
 using Arbiter.Net.Server;
 
-namespace Arbiter.App.Models.Packets.Server;
+namespace Arbiter.App.Models.Server.Messages;
 
 [InspectPacket(ServerCommand.Hello)]
 public class ServerHelloMessage : IPacketMessage

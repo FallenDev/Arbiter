@@ -5,7 +5,6 @@ using System.Net;
 using System.Reflection;
 using Arbiter.App.Annotations;
 using Arbiter.App.Models;
-using Arbiter.App.Models.Packets;
 using Arbiter.Common.Extensions;
 using Arbiter.Net;
 using Arbiter.Net.Client;

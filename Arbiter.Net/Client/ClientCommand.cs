@@ -10,7 +10,7 @@ public enum ClientCommand : byte
     Walk = 0x06,
     PickupItem = 0x07,
     DropItem = 0x08,
-    Exit = 0x0B,
+    RequestExit = 0x0B,
     ShowEntity = 0x0C,
     IgnoreUser = 0x0D,
     Say = 0x0E,

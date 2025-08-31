@@ -9,7 +9,7 @@ using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 
-namespace Arbiter.App.Models.Packets;
+namespace Arbiter.App.Models;
 
 public class PacketMessageFactory
 {

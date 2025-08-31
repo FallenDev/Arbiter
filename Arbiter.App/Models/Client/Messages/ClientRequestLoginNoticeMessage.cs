@@ -2,7 +2,7 @@
 using Arbiter.Net;
 using Arbiter.Net.Client;
 
-namespace Arbiter.App.Models.Packets.Client;
+namespace Arbiter.App.Models.Client.Messages;
 
 [InspectPacket(ClientCommand.RequestLoginNotice)]
 public class ClientRequestLoginNoticeMessage : IPacketMessage
