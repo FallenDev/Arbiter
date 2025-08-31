@@ -140,57 +140,85 @@ public partial class InspectorViewModel : ViewModelBase
             return null;
         }
 
+        var name = attr.Name ?? property.Name.ToNaturalWording();
+        var stringFormat = attr.StringFormat;
+        var showHex = attr.ShowHex;
+
+        var value = property.GetValue(message);
+
         // If the property is a list, build a list model instead
         if (property.PropertyType.IsAssignableTo(typeof(IEnumerable<object>)))
         {
-            return BuildListModel(property, message);
+            return BuildListModel(name, value, attr.Order, stringFormat, showHex);
         }
 
-        var value = property.GetValue(message);
+        // If the property is an object, build a dictionary model instead
+        if (property.PropertyType.IsClass && value is not null)
+        {
+            return BuildDictionaryModel(name, value, attr.Order);
+        }
 
         // Apply tooltip if specified
         var toolTipAttribute = property.GetCustomAttribute<InspectToolTipAttribute>();
         
         // Do not reveal by default if masked
         var maskedAttribute = property.GetCustomAttribute<InspectMaskedAttribute>();
-        
+
         return new InspectorValueViewModel
         {
-            Name = attr.Name ?? property.Name.ToNaturalWording(),
+            Name = name,
+            Order = attr.Order,
             Value = value,
-            StringFormat = attr.StringFormat,
-            ShowHex = attr.ShowHex,
+            StringFormat = stringFormat,
+            ShowHex = showHex,
             ToolTip = toolTipAttribute?.ToolTip,
             MaskCharacter = maskedAttribute?.MaskCharacter,
             IsRevealed = maskedAttribute is null
         };
     }
-    
-    private static InspectorListViewModel BuildListModel(PropertyInfo property, IPacketMessage message)
+
+    private static InspectorListViewModel BuildListModel(string name, object? value, int order = int.MaxValue,
+        string? stringFormat = null, bool showHex = false)
     {
-        var attr = property.GetCustomAttribute<InspectPropertyAttribute>()!;
         var listViewModel = new InspectorListViewModel
         {
-            Name = attr.Name ?? property.Name.ToNaturalWording(),
-            Order = attr.Order
+            Name = name,
+            Order = order
         };
 
-        var objectCollection = property.GetValue(message) as IEnumerable<object> ?? [];
+        var objectCollection = value as IEnumerable<object> ?? [];
         var index = 0;
         foreach (var item in objectCollection)
         {
             var objType = item.GetType();
-            
+
+            if (objType.IsClass)
+            {
+                var displayName = $"Element {index++}";
+                listViewModel.Items.Add(BuildDictionaryModel(displayName, item));
+                continue;
+            }
+
             listViewModel.Items.Add(new InspectorValueViewModel
             {
                 Name = $"Element {index++}",
                 Value = item,
-                StringFormat = attr.StringFormat,
-                ShowHex = attr.ShowHex,
+                StringFormat = stringFormat,
+                ShowHex = showHex
             });
         }
-        
+
         return listViewModel;
     }
 
+    private static InspectorDictionaryViewModel BuildDictionaryModel(string name, object value, int order = int.MaxValue)
+    {
+        var dictViewModel = new InspectorDictionaryViewModel
+        {
+            Name = name,
+            Order = order
+        };
+        
+        return dictViewModel;
+    }
 }

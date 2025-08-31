@@ -1,5 +1,15 @@
 ﻿using System.Net;
+using Arbiter.App.Annotations;
 
 namespace Arbiter.App.Models;
 
-public record ServerTableEntry(int Id, string Name, IPAddress Address, ushort Port);
+public class ServerTableEntry
+{
+    [InspectProperty] public byte Id { get; set; }
+
+    [InspectProperty] public string Name { get; set; } = string.Empty;
+
+    [InspectProperty] public required IPAddress Address { get; set; }
+
+    [InspectProperty] public ushort Port { get; set; }
+}

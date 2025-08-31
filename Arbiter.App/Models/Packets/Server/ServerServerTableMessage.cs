@@ -30,7 +30,13 @@ public class ServerServerTableMessage : IPacketMessage
             var serverPort = tableReader.ReadUInt16(decompressed);
             var serverName = tableReader.ReadNullTerminatedString(decompressed);
 
-            Servers.Add(new ServerTableEntry(serverId, serverName, serverAddress, serverPort));
+            Servers.Add(new ServerTableEntry
+            {
+                Id = serverId,
+                Address = serverAddress,
+                Port = serverPort,
+                Name = serverName,
+            });
         }
     }
 }
