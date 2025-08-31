@@ -3,12 +3,7 @@
              xmlns:converters="using:Arbiter.App.Converters"
              xmlns:avalonia="using:Avalonia.Controls.Converters"
              x:Class="Arbiter.App.App"
-             xmlns:local="using:Arbiter.App"
              RequestedThemeVariant="Default">
-
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
              
     <Application.Styles>
         <StyleInclude Source="/Themes/TalgoniteStyles.axaml"/>
