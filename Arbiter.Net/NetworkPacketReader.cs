@@ -31,6 +31,8 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
             _position = value;
         }
     }
+    
+    public int Length => _buffer.Length;
 
     public bool ReadBoolean() => ReadByte() != 0;
 
@@ -156,6 +158,12 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
         EnsureCanRead(count);
         _buffer.AsSpan(_position, count).CopyTo(buffer);
         _position += count;
+    }
+
+    public byte[] ReadToEnd()
+    {
+        var length = Length - _position;
+        return ReadBytes(length);
     }
 
     public void Skip(int length)
