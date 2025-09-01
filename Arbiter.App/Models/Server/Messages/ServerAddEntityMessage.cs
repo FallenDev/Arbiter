@@ -50,7 +50,7 @@ public class ServerAddEntityMessage : IPacketMessage
             }
             else
             {
-                var color = (ItemColor)reader.ReadByte();
+                var color = (DyeColor)reader.ReadByte();
                 var unknown = reader.ReadUInt16();
 
                 Entities.Add(new ServerItemEntity
@@ -59,7 +59,7 @@ public class ServerAddEntityMessage : IPacketMessage
                     X = x,
                     Y = y,
                     Sprite = sprite,
-                    Color = color,
+                    DyeColor = color,
                     Unknown = unknown,
                 });
             }

@@ -23,7 +23,7 @@ public class ServerAddItemMessage : IPacketMessage
     
     [InspectSection("Traits")]
     [InspectProperty]
-    public ItemColor Color { get; set; }
+    public DyeColor DyeColor { get; set; }
     
     [InspectProperty]
     public bool IsStackable { get; set; }
@@ -39,7 +39,7 @@ public class ServerAddItemMessage : IPacketMessage
     {
         Slot = reader.ReadByte();
         Sprite = reader.ReadUInt16();
-        Color = (ItemColor)reader.ReadByte();
+        DyeColor = (DyeColor)reader.ReadByte();
         Name = reader.ReadString8();
         Quantity = reader.ReadUInt32();
         IsStackable = reader.ReadBoolean();

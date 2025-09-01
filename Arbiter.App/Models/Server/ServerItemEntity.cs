@@ -6,7 +6,7 @@ namespace Arbiter.App.Models.Server;
 [InspectTypeName("ItemEntity")]
 public class ServerItemEntity : ServerEntityObject
 {
-    [InspectProperty] public ItemColor Color { get; set; }
+    [InspectProperty] public DyeColor DyeColor { get; set; }
 
     [InspectProperty(ShowHex = true)] public ushort Unknown { get; set; }
 }

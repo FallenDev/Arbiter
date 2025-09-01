@@ -20,7 +20,7 @@ public class ServerSetEquipmentMessage : IPacketMessage
     
     [InspectSection("Traits")]
     [InspectProperty]
-    public ItemColor Color { get; set; }
+    public DyeColor DyeColor { get; set; }
     
     [InspectSection("Durability")]
     [InspectProperty]
@@ -33,7 +33,7 @@ public class ServerSetEquipmentMessage : IPacketMessage
     {
         Slot = (EquipmentSlot)reader.ReadByte();
         Sprite = reader.ReadUInt16();
-        Color = (ItemColor)reader.ReadByte();
+        DyeColor = (DyeColor)reader.ReadByte();
         Name = reader.ReadString8();
         
         reader.Skip(1); // always zero, not sure what it is

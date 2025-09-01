@@ -1,6 +1,6 @@
 ﻿namespace Arbiter.App.Models.Game;
 
-public enum ItemColor : byte
+public enum DyeColor : byte
 {
     Default,
     Black,

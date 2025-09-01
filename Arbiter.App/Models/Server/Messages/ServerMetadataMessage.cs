@@ -19,7 +19,7 @@ public class ServerMetadataMessage : IPacketMessage
     [InspectProperty(ShowHex = true)]
     public uint? Checksum { get; set; }
 
-    [InspectProperty(ShowMultiline = true)] public IReadOnlyCollection<byte>? Data { get; set; }
+    [InspectProperty(ShowMultiline = true)] public IReadOnlyList<byte>? Data { get; set; }
 
     [InspectSection("Listing", IsExpandedHandler = nameof(ShouldExpandListing))]
     [InspectProperty]
