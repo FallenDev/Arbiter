@@ -8,10 +8,14 @@ namespace Arbiter.App.Models.Client.Messages;
 public class ClientRequestMetadataMessage : IPacketMessage
 {
     [InspectSection("Request")]
-    [InspectProperty] public bool NeedsMetadata { get; set; }
+    [InspectProperty]
+    public ClientMetadataRequestType RequestType { get; set; }
+
+    [InspectProperty] public string? Name { get; set; }
 
     public void ReadFrom(NetworkPacketReader reader)
     {
-        NeedsMetadata = reader.ReadBoolean();
+        RequestType = (ClientMetadataRequestType)reader.ReadByte();
+        Name = reader.ReadString8();
     }
 }
