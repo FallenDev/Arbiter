@@ -47,7 +47,7 @@ public enum ServerCommand : byte
     MapTransfer = 0x3C,
     Cooldown = 0x3F,
     CancelCast = 0x48,
-    RequestProfile = 0x49,
+    RequestUserPortrait = 0x49,
     ForcePacket = 0x4B,
     ExitResponse = 0x4C,
     ServerTable = 0x56,
