@@ -1,4 +1,5 @@
 ﻿using Arbiter.App.Annotations;
+using Arbiter.App.Models.Game;
 using Arbiter.Net;
 using Arbiter.Net.Server;
 

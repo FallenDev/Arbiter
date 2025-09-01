@@ -1,4 +1,4 @@
-﻿namespace Arbiter.App.Models;
+﻿namespace Arbiter.App.Models.Game;
 
 public enum SpellTargetType : byte
 {
