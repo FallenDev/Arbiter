@@ -13,7 +13,7 @@ public class ServerSetEquipmentMessage : IPacketMessage
     public EquipmentSlot Slot { get; set; }
     
     [InspectProperty(ShowHex = true)]
-    public ushort Icon { get; set; }
+    public ushort Sprite { get; set; }
     
     [InspectProperty(ShowMultiline = true)]
     public string Name { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ public class ServerSetEquipmentMessage : IPacketMessage
     public void ReadFrom(NetworkPacketReader reader)
     {
         Slot = (EquipmentSlot)reader.ReadByte();
-        Icon = reader.ReadUInt16();
+        Sprite = reader.ReadUInt16();
         Color = (ItemColor)reader.ReadByte();
         Name = reader.ReadString8();
         

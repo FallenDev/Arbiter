@@ -4,13 +4,13 @@ using Arbiter.Net.Client;
 
 namespace Arbiter.App.Models.Client.Messages;
 
-[InspectPacket(ClientCommand.RequestLegend)]
-public class ClientRequestLegendMessage : IPacketMessage
+[InspectPacket(ClientCommand.RequestProfile)]
+public class ClientRequestProfileMessage : IPacketMessage
 {
     // Nothing to show
     
     public void ReadFrom(NetworkPacketReader reader)
     {
-        
+        // Nothing to read
     }
 }

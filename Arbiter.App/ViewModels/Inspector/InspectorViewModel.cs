@@ -98,7 +98,7 @@ public partial class InspectorViewModel : ViewModelBase
         var defaultSection = new InspectorSectionViewModel { Header = "Uncategorized" };
         var currentSection = defaultSection;
 
-        foreach (var property in message.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var property in message.GetType().GetPropertiesInDerivedOrder())
         {
             var sectionAttribute = property.GetCustomAttribute<InspectSectionAttribute>();
 
@@ -246,7 +246,7 @@ public partial class InspectorViewModel : ViewModelBase
 
         // Build a dictionary model from the object's properties
         List<InspectorValueViewModel> keyValues = [];
-        foreach (var property in objValue.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var property in objValue.GetType().GetPropertiesInDerivedOrder())
         {
             var attr = property.GetCustomAttribute<InspectPropertyAttribute>();
             if (attr is null)

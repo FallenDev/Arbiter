@@ -13,7 +13,7 @@ public class ServerAddItemMessage : IPacketMessage
     public byte Slot { get; set; }
     
     [InspectProperty(ShowHex = true)]
-    public ushort Icon { get; set; }
+    public ushort Sprite { get; set; }
     
     [InspectProperty(ShowMultiline = true)]
     public string Name { get; set; } = string.Empty;
@@ -38,7 +38,7 @@ public class ServerAddItemMessage : IPacketMessage
     public void ReadFrom(NetworkPacketReader reader)
     {
         Slot = reader.ReadByte();
-        Icon = reader.ReadUInt16();
+        Sprite = reader.ReadUInt16();
         Color = (ItemColor)reader.ReadByte();
         Name = reader.ReadString8();
         Quantity = reader.ReadUInt32();

@@ -27,7 +27,7 @@ public enum ClientCommand : byte
     ChangePassword = 0x26,
     GiveCreatureItem = 0x29,
     GIveCreatureGold = 0x2A,
-    RequestLegend = 0x2D,
+    RequestProfile = 0x2D,
     GroupInvite = 0x2E,
     ToggleGroup = 0x2F,
     SwapSlot = 0x30,
