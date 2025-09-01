@@ -32,6 +32,7 @@
                  Classes.reveal="{Binding CanReveal}"
                  Background="{StaticResource Talgonite.InspectorValue.Background}"
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                 Margin="0,0,4,0"
                  Height="40"
                  HorizontalAlignment="Stretch"
                  IsVisible="{Binding !IsMultiline}">
@@ -66,6 +67,7 @@
         <!-- Multiline Textbox -->
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                  Text="{Binding FormattedValue}"
+                 TextWrapping="WrapWithOverflow"
                  PasswordChar="{Binding MaskCharacter, FallbackValue=●}"
                  RevealPassword="{Binding IsRevealed}"
                  Classes="read-only editor"
@@ -73,7 +75,6 @@
                  FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                  Margin="4"
                  MinHeight="60" MaxHeight="360"
-                 HorizontalAlignment="Stretch"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  IsVisible="{Binding IsMultiline}">

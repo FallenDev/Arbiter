@@ -74,6 +74,7 @@
             <SolidColorBrush x:Key="Talgonite.Control.Foreground" Color="#e0e0e0"/>
             
             <!-- Expander Resources -->
+            <SolidColorBrush x:Key="Talgonite.Expander.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.Expander.HeaderBackground" Color="#1e2228"/>
             <SolidColorBrush x:Key="Talgonite.Expander.HeaderHoverBackground" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.Expander.HeaderPressedBackground" Color="#222831"/>

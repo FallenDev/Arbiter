@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -27,7 +28,7 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
 
     public bool CanReveal => MaskCharacter is not null;
 
-    public bool IsInteger => Value is sbyte or byte or short or ushort or int or uint or long or ulong;
+    public bool IsInteger => Value is sbyte or byte or short or ushort or int or uint or long or ulong || Value?.GetType().IsEnum == true;
 
     public bool ShowHex
     {
@@ -48,6 +49,16 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
             if (Value is IEnumerable<byte> bytes)
             {
                 return string.Join(' ', bytes.Select(x => x.ToString("X2")));
+            }
+
+            if (Value is not null && Value.GetType().IsEnum)
+            {
+                var displayName = Value.ToString();
+                var numericValue = ShowHex ?
+                        "0x" + Enum.Format(Value.GetType(), Value, "X")
+                    : Enum.Format(Value.GetType(), Value, "D");
+
+                return $"{displayName} ({numericValue})";
             }
 
             return string.Format(ShowHex && IsInteger ? "0x{0:X}" : StringFormat ?? "{0}", Value);

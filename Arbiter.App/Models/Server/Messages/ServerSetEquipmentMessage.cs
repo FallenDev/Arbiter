@@ -5,12 +5,12 @@ using Arbiter.Net.Server;
 
 namespace Arbiter.App.Models.Server.Messages;
 
-[InspectPacket(ServerCommand.AddItem)]
-public class ServerAddItemMessage : IPacketMessage
+[InspectPacket(ServerCommand.SetEquipment)]
+public class ServerSetEquipmentMessage : IPacketMessage
 {
-    [InspectSection("Item")]
+    [InspectSection("Equipment")]
     [InspectProperty]
-    public byte Slot { get; set; }
+    public EquipmentSlot Slot { get; set; }
     
     [InspectProperty(ShowHex = true)]
     public ushort Icon { get; set; }
@@ -18,15 +18,9 @@ public class ServerAddItemMessage : IPacketMessage
     [InspectProperty(ShowMultiline = true)]
     public string Name { get; set; } = string.Empty;
     
-    [InspectProperty]
-    public uint Quantity { get; set; }
-    
     [InspectSection("Traits")]
     [InspectProperty]
     public ItemColor Color { get; set; }
-    
-    [InspectProperty]
-    public bool IsStackable { get; set; }
     
     [InspectSection("Durability")]
     [InspectProperty]
@@ -37,12 +31,13 @@ public class ServerAddItemMessage : IPacketMessage
     
     public void ReadFrom(NetworkPacketReader reader)
     {
-        Slot = reader.ReadByte();
+        Slot = (EquipmentSlot)reader.ReadByte();
         Icon = reader.ReadUInt16();
         Color = (ItemColor)reader.ReadByte();
         Name = reader.ReadString8();
-        Quantity = reader.ReadUInt32();
-        IsStackable = reader.ReadBoolean();
+        
+        reader.Skip(1); // always zero, not sure what it is
+        
         MaxDurability = reader.ReadUInt32();
         Durability = reader.ReadUInt32();
     }

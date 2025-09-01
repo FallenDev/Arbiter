@@ -29,6 +29,7 @@
                      Classes="read-only"
                      Background="{StaticResource Talgonite.InspectorList.Background}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     Margin="0,0,4,0"
                      Height="40"
                      HorizontalAlignment="Stretch">
                 <TextBox.ContextMenu>

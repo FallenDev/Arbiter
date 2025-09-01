@@ -7,13 +7,19 @@
              x:Class="Arbiter.App.Views.InspectorDictionaryView"
              x:DataType="vm:Inspector.InspectorDictionaryViewModel">
     <Expander Header="{Binding Name}"
-              Margin="4">
-        <StackPanel>
-            <Border>
-                <ItemsControl ItemsSource="{Binding Values}">
-                    
-                </ItemsControl>
-            </Border>
-        </StackPanel>
+              Margin="4"
+              Padding="4,8">
+        <!-- Header Template -->
+        <Expander.HeaderTemplate>
+            <DataTemplate>
+                <TextBlock Text="{ReflectionBinding .}"
+                           TextAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"
+                           Margin="8,4"/>
+            </DataTemplate>
+        </Expander.HeaderTemplate>
+        
+        <ItemsControl ItemsSource="{Binding Values}"/>
     </Expander>
 </UserControl>

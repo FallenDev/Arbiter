@@ -1,10 +1,10 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style Selector="Expander">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="{StaticResource Talgonite.Expander.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Expander.BorderBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Margin" Value="0,4"/>
         <Setter Property="Padding" Value="4"/>
@@ -15,6 +15,15 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Grid RowDefinitions="Auto,*">
+                        <Border Grid.Row="1"
+                                Classes="sunken-shadow"
+                                CornerRadius="0,0,8,8"
+                                IsVisible="{TemplateBinding IsExpanded}"/>
+                        <Border Grid.Row="1"
+                                Classes="sunken-highlight"
+                                CornerRadius="0,0,8,8"
+                                IsVisible="{TemplateBinding IsExpanded}"/>
+                        
                         <ToggleButton Name="PART_Toggle"
                                       Grid.Row="0"
                                       Classes="expander"
