@@ -8,6 +8,8 @@ public class InspectSectionAttribute : Attribute
     public string Header { get; set; }
     public int Order { get; set; }
 
+    public string? IsExpandedHandler { get; set; }
+
     public InspectSectionAttribute(string header, int order = int.MaxValue)
     {
         Header = header;

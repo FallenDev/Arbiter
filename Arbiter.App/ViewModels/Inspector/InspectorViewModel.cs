@@ -107,10 +107,13 @@ public partial class InspectorViewModel : ViewModelBase
             {
                 if (!sections.TryGetValue(sectionAttribute.Header, out currentSection))
                 {
+                    var isExpanded = InspectSectionHelpers.EvaluateIsExpanded(sectionAttribute, message) ?? true;
+                    
                     currentSection = new InspectorSectionViewModel
                     {
                         Header = sectionAttribute.Header,
-                        Order = sectionAttribute.Order
+                        Order = sectionAttribute.Order,
+                        IsExpanded = isExpanded
                     };
 
                     sections.Add(sectionAttribute.Header, currentSection);
