@@ -223,10 +223,13 @@ public partial class InspectorViewModel : ViewModelBase
     private static InspectorDictionaryViewModel BuildDictionaryModel(string name, object objValue,
         int order = int.MaxValue)
     {
+        var typeNameAttribute = objValue.GetType().GetCustomAttribute<InspectTypeNameAttribute>();
+        
         var dictViewModel = new InspectorDictionaryViewModel
         {
             Name = name,
-            Order = order
+            Order = order,
+            TypeName = typeNameAttribute?.Name
         };
 
         // If the object is a dictionary, build a dictionary model instead

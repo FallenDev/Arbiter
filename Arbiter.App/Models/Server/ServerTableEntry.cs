@@ -3,6 +3,7 @@ using Arbiter.App.Annotations;
 
 namespace Arbiter.App.Models.Server;
 
+[InspectTypeName("ServerTableEntry")]
 public class ServerTableEntry
 {
     [InspectProperty] public byte Id { get; set; }

@@ -8,7 +8,7 @@ namespace Arbiter.App.ViewModels.Inspector;
 public partial class InspectorValueViewModel : InspectorItemViewModel
 {
     private bool _showHex;
-
+    
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FormattedValue))]
     [NotifyPropertyChangedFor(nameof(IsInteger))]
@@ -25,7 +25,7 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
     [ObservableProperty] private bool _isRevealed = true;
 
     [ObservableProperty] private bool _isMultiline;
-
+    
     public bool CanReveal => MaskCharacter is not null;
 
     public bool IsInteger => Value is sbyte or byte or short or ushort or int or uint or long or ulong || Value?.GetType().IsEnum == true;

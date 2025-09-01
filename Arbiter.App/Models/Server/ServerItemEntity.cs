@@ -3,6 +3,7 @@ using Arbiter.App.Models.Game;
 
 namespace Arbiter.App.Models.Server;
 
+[InspectTypeName("ItemEntity")]
 public class ServerItemEntity : ServerEntityObject
 {
     [InspectProperty] public ItemColor Color { get; set; }
