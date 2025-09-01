@@ -5,7 +5,7 @@ public enum ServerCommand : byte
     ServerList = 0x00,
     LoginResult = 0x02,
     Redirect = 0x03,
-    Location = 0x04,
+    MapLocation = 0x04,
     UserId = 0x05,
     AddEntity = 0x07,
     UpdateStats = 0x08,

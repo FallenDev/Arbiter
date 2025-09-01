@@ -80,9 +80,9 @@ public class ServerUpdateStatsMessage : IPacketMessage
 
     [InspectSection("Weight", IsExpandedHandler = nameof(ShouldExpandWeight))]
     [InspectProperty]
-    public short? Weight { get; set; }
+    public ushort? Weight { get; set; }
 
-    [InspectProperty] public short? MaxWeight { get; set; }
+    [InspectProperty] public ushort? MaxWeight { get; set; }
 
     [InspectSection("Status", IsExpandedHandler = nameof(ShouldExpandStatus))]
     [InspectProperty]
@@ -122,8 +122,8 @@ public class ServerUpdateStatsMessage : IPacketMessage
             Dexterity = reader.ReadByte();
             HasStatPoints = reader.ReadBoolean();
             StatPoints = reader.ReadByte();
-            MaxWeight = reader.ReadInt16();
-            Weight = reader.ReadInt16();
+            MaxWeight = reader.ReadUInt16();
+            Weight = reader.ReadUInt16();
 
             // unknown bytes always 0x42 0x00 0x88 0x2E
             Unknown = reader.ReadUInt32();
