@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Arbiter.App.Logging;
+using Arbiter.App.Mappings;
 using Arbiter.App.Services;
 using Avalonia.Markup.Xaml;
 using Arbiter.App.ViewModels;
@@ -84,6 +85,7 @@ public class App : Application
     private static void RegisterServices(IServiceCollection services)
     {
         // Singletons
+        services.AddSingleton<InspectorMappingRegistry>();
         services.AddSingleton<ProxyServer>();
         
         // Transients

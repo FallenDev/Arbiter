@@ -5,30 +5,46 @@ namespace Arbiter.Net.Client.Messages;
 public class ClientMessageFactory : IClientMessageFactory
 {
     public static IClientMessageFactory Default { get; } = new ClientMessageFactory();
-    
-    public Type? GetMessageType(ClientCommand command) => command switch
+
+    private readonly Dictionary<ClientCommand, Type> _typeMappings = new();
+
+    public ClientMessageFactory()
     {
-        ClientCommand.Assail => typeof(ClientAssailMessage),
-        ClientCommand.Authenticate => typeof(ClientAuthenticateMessage),
-        ClientCommand.ChangePassword => typeof(ClientChangePasswordMessage),
-        ClientCommand.CreateCharacterName => typeof(ClientCreateCharacterNameMessage),
-        ClientCommand.DropItem => typeof(ClientDropItemMessage),
-        ClientCommand.Heartbeat => typeof(ClientHeartbeatMessage),
-        ClientCommand.Login => typeof(ClientLoginMessage),
-        ClientCommand.PickupItem => typeof(ClientPickupItemMessage),
-        ClientCommand.RequestExit => typeof(ClientRequestExitMessage),
-        ClientCommand.RequestHomepage => typeof(ClientRequestHomepageMessage),
-        ClientCommand.RequestLoginNotice => typeof(ClientRequestLoginNoticeMessage),
-        ClientCommand.RequestMetadata => typeof(ClientRequestMetadataMessage),
-        ClientCommand.RequestProfile => typeof(ClientRequestProfileMessage),
-        ClientCommand.RequestSequence => typeof(ClientRequestSequenceMessage),
-        ClientCommand.RequestServerTable => typeof(ClientRequestServerTableMessage),
-        ClientCommand.Turn => typeof(ClientTurnMessage),
-        ClientCommand.UserPortrait => typeof(ClientUserPortraitMessage),
-        ClientCommand.Version => typeof(ClientVersionMessage),
-        ClientCommand.Walk => typeof(ClientWalkMessage),
-        _ => null
-    };
+        _typeMappings.Add(ClientCommand.Assail, typeof(ClientAssailMessage));
+        _typeMappings.Add(ClientCommand.Authenticate, typeof(ClientAuthenticateMessage));
+        _typeMappings.Add(ClientCommand.ChangePassword, typeof(ClientChangePasswordMessage));
+        _typeMappings.Add(ClientCommand.CreateCharacterName, typeof(ClientCreateCharacterNameMessage));
+        _typeMappings.Add(ClientCommand.DropItem, typeof(ClientDropItemMessage));
+        _typeMappings.Add(ClientCommand.Heartbeat, typeof(ClientHeartbeatMessage));
+        _typeMappings.Add(ClientCommand.Login, typeof(ClientLoginMessage));
+        _typeMappings.Add(ClientCommand.PickupItem, typeof(ClientPickupItemMessage));
+        _typeMappings.Add(ClientCommand.RequestExit, typeof(ClientRequestExitMessage));
+        _typeMappings.Add(ClientCommand.RequestHomepage, typeof(ClientRequestHomepageMessage));
+        _typeMappings.Add(ClientCommand.RequestLoginNotice, typeof(ClientRequestLoginNoticeMessage));
+        _typeMappings.Add(ClientCommand.RequestMetadata, typeof(ClientRequestMetadataMessage));
+        _typeMappings.Add(ClientCommand.RequestProfile, typeof(ClientRequestProfileMessage));
+        _typeMappings.Add(ClientCommand.RequestSequence, typeof(ClientRequestSequenceMessage));
+        _typeMappings.Add(ClientCommand.RequestServerTable, typeof(ClientRequestServerTableMessage));
+        _typeMappings.Add(ClientCommand.Turn, typeof(ClientTurnMessage));
+        _typeMappings.Add(ClientCommand.UserPortrait, typeof(ClientUserPortraitMessage));
+        _typeMappings.Add(ClientCommand.Version, typeof(ClientVersionMessage));
+        _typeMappings.Add(ClientCommand.Walk, typeof(ClientWalkMessage));
+    }
+
+    public Type? GetMessageType(ClientCommand command) => _typeMappings.GetValueOrDefault(command);
+
+    public ClientCommand? GetMessageCommand(Type messageType)
+    {
+        foreach (var (key, value) in _typeMappings)
+        {
+            if (value == messageType)
+            {
+                return key;
+            }
+        }
+
+        return null;
+    }
 
     public IClientMessage? Create(ClientPacket packet)
     {

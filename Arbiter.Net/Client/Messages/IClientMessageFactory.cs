@@ -5,6 +5,7 @@ namespace Arbiter.Net.Client.Messages;
 public interface IClientMessageFactory
 {
     Type? GetMessageType(ClientCommand command);
+    ClientCommand? GetMessageCommand(Type messageType);
     
     IClientMessage? Create(ClientPacket packet);
     
