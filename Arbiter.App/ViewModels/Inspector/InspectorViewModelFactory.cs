@@ -1,6 +1,205 @@
-﻿namespace Arbiter.App.ViewModels.Inspector;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Arbiter.App.Extensions;
+using Arbiter.App.Mappings;
+using Arbiter.App.Models;
+using Arbiter.Net;
+using Arbiter.Net.Client;
+using Arbiter.Net.Client.Messages;
+using Arbiter.Net.Server;
+using Arbiter.Net.Server.Messages;
+
+namespace Arbiter.App.ViewModels.Inspector;
 
 public class InspectorViewModelFactory
 {
+    private readonly InspectorMappingRegistry _registry;
     
+    public InspectorViewModelFactory(InspectorMappingRegistry registry)
+    {
+        _registry = registry;
+    }
+
+    public InspectorPacketViewModel? Create(NetworkPacket packet)
+    {
+        var displayName = packet switch
+        {
+            ClientPacket cp => cp.Command.ToString(),
+            ServerPacket sp => sp.Command.ToString(),
+            _ => string.Empty
+        };
+
+        var vm = new InspectorPacketViewModel
+        {
+            DisplayName = displayName,
+            Direction = packet is ClientPacket ? PacketDirection.Client : PacketDirection.Server,
+            Command = packet.Command
+        };
+
+        object? message = null;
+        if (packet is ClientPacket clientPacket &&
+            ClientMessageFactory.Default.TryCreate(clientPacket, out var clientMessage))
+        {
+            message = clientMessage;
+        }
+
+        if (packet is ServerPacket serverPacket &&
+            ServerMessageFactory.Default.TryCreate(serverPacket, out var serverMessage))
+        {
+            message = serverMessage;
+        }
+
+        if (message is null)
+        {
+            return vm;
+        }
+
+        foreach (var section in GetSectionsForMessage(message))
+        {
+            vm.Sections.Add(section);
+        }
+
+        return vm;
+    }
+
+    private IEnumerable<InspectorSectionViewModel> GetSectionsForMessage(object message)
+    {
+        var messageType = message.GetType();
+        if (!_registry.TryGetMapping(messageType, out var mapping))
+        {
+            yield break;
+        }
+
+        foreach (var section in mapping.Sections)
+        {
+            var sectionVm = new InspectorSectionViewModel
+                { Header = section.Header, IsExpanded = section.IsExpanded(message) };
+
+            foreach (var prop in section.Properties)
+            {
+                InspectorItemViewModel itemVm;
+
+                var value = prop.Getter(message);
+
+                if (prop.Formatter is not null)
+                {
+                    var formatted = value is not null ? prop.Formatter(value) : string.Empty;
+
+                    itemVm = new InspectorValueViewModel
+                    {
+                        Name = prop.Name,
+                        Value = formatted,
+                        ShowHex = false,
+                        IsMultiline = prop.ShowMultiline,
+                        ToolTip = prop.ToolTip
+                    };
+                }
+                else
+                {
+                    itemVm = CreateItemViewModel(value, prop);
+                }
+                
+                sectionVm.Items.Add(itemVm);
+            }
+            
+            yield return sectionVm;
+        }
+    }
+
+    private static InspectorItemViewModel CreateItemViewModel(object? value, InspectorPropertyMapping propMapping)
+    {
+        var showHex = propMapping.ShowHex;
+        var isMultiline = propMapping.ShowMultiline;
+        var toolTip = propMapping.ToolTip;
+
+        if (value is null)
+        {
+            return CreateValueViewModel(value, propMapping);
+        }
+
+        if (IsByteEnumerable(value))
+        {
+            return new InspectorValueViewModel
+            {
+                Name = propMapping.Name,
+                Value = value,
+                ShowHex = showHex,
+                IsMultiline = isMultiline,
+                ToolTip = toolTip
+            };
+        }
+
+        if (value is IDictionary dict)
+        {
+            return CreateDictionaryViewModel(dict, propMapping);
+        }
+
+        if (value is IEnumerable list and not string and not char[])
+        {
+            return CreateListViewModel(list, propMapping);
+        }
+
+        return CreateValueViewModel(value, propMapping);
+    }
+
+    private static InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping)
+    {
+        var vm = new InspectorListViewModel
+        {
+            Name = propMapping.Name,
+        };
+
+        var index = 0;
+        foreach (var item in list)
+        {
+            var child = CreateItemViewModel(item, propMapping);
+            child.Name = $"Element {index}";
+
+            vm.Items.Add(child);
+            index++;
+        }
+
+        return vm;
+    }
+
+    private static InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict, InspectorPropertyMapping propMapping)
+    {
+        var vm = new InspectorDictionaryViewModel
+        {
+            Name = propMapping.Name,
+            TypeName = propMapping.PropertyType.Name
+        };
+
+        foreach (DictionaryEntry kv in dict)
+        {
+            var key = kv.Key.ToString()?.ToNaturalWording() ?? "<null>";
+            var child = CreateItemViewModel(kv.Value, propMapping);
+
+            if (child is InspectorValueViewModel valueVm)
+            {
+                vm.Values.Add(valueVm);
+            }
+        }
+
+        return vm;
+    }
+
+    private static InspectorValueViewModel CreateValueViewModel(object? value, InspectorPropertyMapping propMapping)
+    {
+        return new InspectorValueViewModel
+        {
+            Name = propMapping.Name,
+            Value = value,
+            ShowHex = propMapping.ShowHex,
+            IsMultiline = propMapping.ShowMultiline,
+            ToolTip = propMapping.ToolTip
+        };
+    }
+
+    private static bool IsByteEnumerable(object value) => value switch
+    {
+        byte[] => true,
+        IEnumerable<byte> => true,
+        _ => false
+    };
 }

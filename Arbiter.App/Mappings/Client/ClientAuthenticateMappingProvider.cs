@@ -9,7 +9,7 @@ public class ClientAuthenticateMappingProvider : IInspectorMappingProvider
         registry.Register<ClientAuthenticateMessage>(b =>
         {
             b.Section("Connection")
-                .Property(m => m.ConnectionId)
+                .Property(m => m.ConnectionId, p => p.ShowHex())
                 .Property(m => m.Name);
 
             b.Section("Encryption")

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Net;
-using Arbiter.App.Mappings;
-using Arbiter.App.Models;
-using Arbiter.Net;
-using Arbiter.Net.Client;
+﻿using Arbiter.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Inspector;
 
 public partial class InspectorViewModel : ViewModelBase
 {
-    private readonly InspectorViewModelFactory _factory = new();
-    private readonly InspectorMappingRegistry _mappingRegistry;
+    private readonly InspectorViewModelFactory _factory;
     private NetworkPacket? _selectedPacket;
 
     [ObservableProperty]
@@ -32,26 +26,13 @@ public partial class InspectorViewModel : ViewModelBase
         }
     }
 
-    public InspectorViewModel(InspectorMappingRegistry mappingRegistry)
+    public InspectorViewModel(InspectorViewModelFactory factory)
     {
-        _mappingRegistry = mappingRegistry;
+        _factory = factory;
     }
 
     private void OnPacketSelected(NetworkPacket? packet)
     {
-        InspectedPacket = null;
-
-        if (packet is null)
-        {
-            return;
-        }
-        
-        var vm = new InspectorPacketViewModel
-        {
-            Command = packet.Command,
-            Direction = packet is ClientPacket ? PacketDirection.Client : PacketDirection.Server,
-        };
-
-        InspectedPacket = vm;
+        InspectedPacket = packet is not null ? _factory.Create(packet) : null;
     }
 }

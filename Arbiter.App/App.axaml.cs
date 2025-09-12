@@ -86,6 +86,7 @@ public class App : Application
     {
         // Singletons
         services.AddSingleton<InspectorMappingRegistry>();
+        services.AddSingleton<InspectorViewModelFactory>();
         services.AddSingleton<ProxyServer>();
         
         // Transients

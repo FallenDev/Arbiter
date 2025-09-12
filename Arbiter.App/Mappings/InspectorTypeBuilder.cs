@@ -7,7 +7,7 @@ public class InspectorTypeBuilder<T>
 {
     private readonly List<InspectorSectionBuilder<T>> _sections = [];
 
-    private string _displayName;
+    private string? _displayName;
 
     public InspectorTypeBuilder()
     {
@@ -30,6 +30,6 @@ public class InspectorTypeBuilder<T>
     public InspectorTypeMapping Build()
     {
         var sections = _sections.Select(s => s.Build());
-        return new InspectorTypeMapping(typeof(T), _displayName, sections);
+        return new InspectorTypeMapping(typeof(T), sections, _displayName);
     }
 }

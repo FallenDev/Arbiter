@@ -13,9 +13,10 @@ public class InspectorPropertyMapping
     public bool ShowHex { get; }
     public bool ShowMultiline { get; }
     public Func<object, string>? Formatter { get; }
+    public string? ToolTip { get; }
 
     public InspectorPropertyMapping(string name, MemberInfo member, Type propertyType, Func<object, object?> getter,
-        bool showHex = false, bool showMultiline = false, Func<object, string>? formatter = null)
+        bool showHex = false, bool showMultiline = false, Func<object, string>? formatter = null, string? toolTip = null)
     {
         Name = name;
         Member = member;
@@ -24,5 +25,6 @@ public class InspectorPropertyMapping
         ShowHex = showHex;
         ShowMultiline = showMultiline;
         Formatter = formatter;
+        ToolTip = toolTip;
     }
 }

@@ -15,6 +15,7 @@ public class InspectorPropertyBuilder<T>
     private bool _showMultiline;
     private string? _name;
     private Func<object, string>? _formatter;
+    private string? _toolTip;
 
     internal InspectorPropertyBuilder(MemberInfo member, Type propertyType, Func<object, object?> getter)
     {
@@ -47,6 +48,12 @@ public class InspectorPropertyBuilder<T>
         return this;
     }
     
+    public InspectorPropertyBuilder<T> ToolTip(string toolTip)
+    {
+        _toolTip = toolTip;
+        return this;
+    }
+    
     public InspectorPropertyMapping Build()
     {
         var displayName = _name ?? _member.Name.ToNaturalWording();
@@ -70,17 +77,19 @@ public class InspectorPropertyBuilder<T, TProp>
     private static MemberInfo GetMemberFromExpression(Expression<Func<T, TProp>> expression)
     {
         var body = expression.Body;
-        if (body is UnaryExpression { NodeType: ExpressionType.Convert } unaryExpression)
+        while (body is UnaryExpression { NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked } ue)
         {
-            body = unaryExpression.Operand as MemberExpression;
+            body = ue.Operand;
         }
 
-        if (body is MemberExpression memberExpression)
+        return body switch
         {
-            return memberExpression.Member;
-        }
-
-        throw new ArgumentException("Expression must be a simple member accessor");
+            MemberExpression me => me.Member,
+            MethodCallExpression mce => mce.Method,
+            IndexExpression ie => ie.Indexer?.GetMethod ??
+                                  throw new ArgumentException("Expression must be a member access."),
+            _ => throw new ArgumentException("Expression must be a simple member accessor")
+        };
     }
 
     private static Func<object, object?> CreateGetter(Expression<Func<T, TProp>> expression)
@@ -129,5 +138,11 @@ public class InspectorPropertyBuilder<T, TProp>
 
             return formatter((TProp)value);
         }
+    }
+
+    public InspectorPropertyBuilder<T, TProp> ToolTip(string toolTip)
+    {
+        Untyped.ToolTip(toolTip);
+        return this;
     }
 }

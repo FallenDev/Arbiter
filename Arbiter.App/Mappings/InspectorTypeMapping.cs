@@ -7,10 +7,11 @@ namespace Arbiter.App.Mappings;
 public class InspectorTypeMapping
 {
     public Type MessageType { get; set; }
-    public string DisplayName { get; set; }
+    public string? DisplayName { get; set; }
     public IReadOnlyList<InspectorSectionMapping> Sections { get; set; }
 
-    public InspectorTypeMapping(Type messageType, string displayName, IEnumerable<InspectorSectionMapping> sections)
+    public InspectorTypeMapping(Type messageType, IEnumerable<InspectorSectionMapping> sections,
+        string? displayName = null)
     {
         MessageType = messageType;
         DisplayName = displayName;
