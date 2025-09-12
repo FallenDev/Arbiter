@@ -2,17 +2,19 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerHelloMessage : INetworkSerializable
+public class ServerHelloMessage : ServerMessage
 {
     public string Message { get; set; } = string.Empty;
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         reader.Skip(1);
         Message = reader.ReadLine();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

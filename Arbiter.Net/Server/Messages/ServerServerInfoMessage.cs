@@ -2,18 +2,20 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerServerInfoMessage : INetworkSerializable
+public class ServerServerInfoMessage : ServerMessage
 {
     public ServerInfoType DataType { get; set; }
     public string? Value { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         DataType = (ServerInfoType)reader.ReadByte();
         Value = reader.ReadString8();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

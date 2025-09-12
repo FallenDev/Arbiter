@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerMapInfoMessage : INetworkSerializable
+public class ServerMapInfoMessage : ServerMessage
 {
     public ushort MapId { get; set; }
     public MapWeatherFlags Weather { get; set; }
@@ -12,8 +12,10 @@ public class ServerMapInfoMessage : INetworkSerializable
     public ushort Checksum { get; set; }
     public string Name { get; set; } = string.Empty;
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         MapId = reader.ReadUInt16();
 
         var widthLo = reader.ReadByte();
@@ -35,7 +37,7 @@ public class ServerMapInfoMessage : INetworkSerializable
         Name = reader.ReadString8();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

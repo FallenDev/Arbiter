@@ -2,14 +2,16 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerPlaySoundMessage : INetworkSerializable
+public class ServerPlaySoundMessage : ServerMessage
 {
     public byte? Effect { get; set; }
     public byte? Track { get; set; }
     public ushort? Unknown { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         var sound = reader.ReadByte();
         if (sound == 0xFF)
         {
@@ -22,7 +24,7 @@ public class ServerPlaySoundMessage : INetworkSerializable
         }
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

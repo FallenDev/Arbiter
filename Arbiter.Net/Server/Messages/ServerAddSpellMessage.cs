@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerAddSpellMessage : INetworkSerializable
+public class ServerAddSpellMessage : ServerMessage
 {
     public byte Slot { get; set; }
     public ushort Icon { get; set; }
@@ -12,8 +12,10 @@ public class ServerAddSpellMessage : INetworkSerializable
     public string Prompt { get; set; } = string.Empty;
     public byte CastLines { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+
         Slot = reader.ReadByte();
         Icon = reader.ReadUInt16();
         TargetType = (SpellTargetType)reader.ReadByte();
@@ -22,7 +24,7 @@ public class ServerAddSpellMessage : INetworkSerializable
         CastLines = reader.ReadByte();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

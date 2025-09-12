@@ -2,18 +2,20 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerMapChangingMessage : INetworkSerializable
+public class ServerMapChangingMessage : ServerMessage
 {
     public byte ChangeType { get; set; }
     public uint Unknown { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         ChangeType = reader.ReadByte();
         Unknown = reader.ReadUInt32();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

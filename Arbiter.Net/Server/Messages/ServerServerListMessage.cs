@@ -2,14 +2,16 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerServerListMessage : INetworkSerializable
+public class ServerServerListMessage : ServerMessage
 {
     public uint Checksum { get; set; }
     public byte Seed { get; set; }
     public IReadOnlyList<byte> PrivateKey { get; set; } = [];
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         // Not sure what this byte is for
         reader.Skip(1);
 
@@ -20,7 +22,7 @@ public class ServerServerListMessage : INetworkSerializable
         PrivateKey = reader.ReadBytes(keyLength);
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

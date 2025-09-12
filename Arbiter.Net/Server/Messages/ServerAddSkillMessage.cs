@@ -2,20 +2,22 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerAddSkillMessage : INetworkSerializable
+public class ServerAddSkillMessage : ServerMessage
 {
     public byte Slot { get; set; }
     public ushort Icon { get; set; }
     public string Name { get; set; } = string.Empty;
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Slot = reader.ReadByte();
         Icon = reader.ReadUInt16();
         Name = reader.ReadString8();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

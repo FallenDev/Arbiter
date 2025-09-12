@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerUpdateStatsMessage : INetworkSerializable
+public class ServerUpdateStatsMessage : ServerMessage
 {
     public StatsFieldFlags Fields { get; set; }
 
@@ -50,10 +50,10 @@ public class ServerUpdateStatsMessage : INetworkSerializable
     public bool? HasUnreadMail { get; set; }
     public bool? HasUnreadParcels { get; set; }
 
-    public uint? Unknown { get; set; }
-
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Fields = (StatsFieldFlags)reader.ReadByte();
 
         IsAdmin = Fields.HasFlag(StatsFieldFlags.GameMasterA) &&
@@ -78,7 +78,7 @@ public class ServerUpdateStatsMessage : INetworkSerializable
             Weight = reader.ReadUInt16();
 
             // unknown bytes always 0x42 0x00 0x88 0x2E
-            Unknown = reader.ReadUInt32();
+            reader.Skip(4);
         }
 
         if (Fields.HasFlag(StatsFieldFlags.Vitals))
@@ -117,7 +117,7 @@ public class ServerUpdateStatsMessage : INetworkSerializable
         }
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

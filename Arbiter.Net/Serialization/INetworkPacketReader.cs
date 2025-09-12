@@ -4,6 +4,7 @@ namespace Arbiter.Net.Serialization;
 
 public interface INetworkPacketReader
 {
+    byte Command { get; }
     byte? Sequence { get; }
     
     int Position { get; set; }

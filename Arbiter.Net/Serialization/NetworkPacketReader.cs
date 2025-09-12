@@ -10,6 +10,8 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     private int _position;
     private readonly byte[] _buffer = packet.Data;
     private readonly Encoding _encoding = encoding ?? Encoding.ASCII;
+
+    public byte Command { get; } = packet.Command;
     
     public byte? Sequence => packet switch
     {

@@ -27,11 +27,6 @@ public partial class InspectorViewModel : ViewModelBase
         }
     }
 
-    public InspectorViewModel()
-    {
-        // _packetMessageFactory.RegisterFromAssembly();
-    }
-
     private void OnPacketSelected(NetworkPacket? packet)
     {
         InspectedPacket = null;

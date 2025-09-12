@@ -2,7 +2,7 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerMetadataMessage : INetworkSerializable
+public class ServerMetadataMessage : ServerMessage
 {
     public ServerMetadataResponseType ResponseType { get; set; }
     public string? Name { get; set; }
@@ -10,8 +10,10 @@ public class ServerMetadataMessage : INetworkSerializable
     public IReadOnlyList<byte>? Data { get; set; }
     public List<ServerMetadataEntry>? MetadataFiles { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         ResponseType = (ServerMetadataResponseType)reader.ReadByte();
 
         if (ResponseType == ServerMetadataResponseType.Metadata)
@@ -38,7 +40,7 @@ public class ServerMetadataMessage : INetworkSerializable
         }
     }
     
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

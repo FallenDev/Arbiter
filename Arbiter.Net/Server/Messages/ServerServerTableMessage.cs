@@ -3,12 +3,14 @@ using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerServerTableMessage : INetworkSerializable
+public class ServerServerTableMessage : ServerMessage
 {
     public List<ServerTableEntry> Servers { get; set; } = [];
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         // The server table is compressed with zlib
         var contentLength = reader.ReadUInt16();
         var compressed = reader.ReadBytes(contentLength);
@@ -34,7 +36,7 @@ public class ServerServerTableMessage : INetworkSerializable
         }
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

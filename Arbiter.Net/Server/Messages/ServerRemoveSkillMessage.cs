@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerRemoveSkillMessage : INetworkSerializable
+public class ServerRemoveSkillMessage : ServerMessage
 {
     public byte Slot { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Slot = reader.ReadByte();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

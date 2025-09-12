@@ -4,13 +4,15 @@ using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerLoginNoticeMessage : INetworkSerializable
+public class ServerLoginNoticeMessage : ServerMessage
 {
     public uint? Checksum { get; set; }
     public string? Notice { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         var hasContent = reader.ReadBoolean();
 
         if (!hasContent)
@@ -27,7 +29,7 @@ public class ServerLoginNoticeMessage : INetworkSerializable
         Notice = Encoding.UTF8.GetString(decompressed);
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

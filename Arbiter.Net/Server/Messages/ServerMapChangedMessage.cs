@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerMapChangedMessage : INetworkSerializable
+public class ServerMapChangedMessage : ServerMessage
 {
     public ushort Result { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Result = reader.ReadUInt16();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

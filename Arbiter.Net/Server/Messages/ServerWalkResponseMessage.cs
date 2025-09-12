@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerWalkResponseMessage : INetworkSerializable
+public class ServerWalkResponseMessage : ServerMessage
 {
     public WorldDirection Direction { get; set; }
     public ushort PreviousX { get; set; }
@@ -12,8 +12,10 @@ public class ServerWalkResponseMessage : INetworkSerializable
     public ushort UnknownY { get; set; }
     public byte Unknown { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Direction = (WorldDirection)reader.ReadByte();
         PreviousX = reader.ReadUInt16();
         PreviousY = reader.ReadUInt16();
@@ -24,7 +26,7 @@ public class ServerWalkResponseMessage : INetworkSerializable
         Unknown = reader.ReadByte();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

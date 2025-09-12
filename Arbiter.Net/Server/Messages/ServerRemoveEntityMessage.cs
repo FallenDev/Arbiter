@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerRemoveEntityMessage : INetworkSerializable
+public class ServerRemoveEntityMessage : ServerMessage
 {
     public uint EntityId { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         EntityId = reader.ReadUInt32();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerAddItemMessage : INetworkSerializable
+public class ServerAddItemMessage : ServerMessage
 {
     public byte Slot { get; set; }
     public ushort Sprite { get; set; }
@@ -14,8 +14,10 @@ public class ServerAddItemMessage : INetworkSerializable
     public uint Durability { get; set; }
     public uint MaxDurability { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Slot = reader.ReadByte();
         Sprite = reader.ReadUInt16();
         DyeColor = (DyeColor)reader.ReadByte();
@@ -26,7 +28,7 @@ public class ServerAddItemMessage : INetworkSerializable
         Durability = reader.ReadUInt32();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

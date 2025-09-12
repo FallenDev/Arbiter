@@ -3,12 +3,14 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerMapDoorMessage : INetworkSerializable
+public class ServerMapDoorMessage : ServerMessage
 {
     public List<ServerMapDoor> Doors { get; set; } = [];
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         var count = reader.ReadByte();
 
         for (var i = 0; i < count; i++)
@@ -25,7 +27,7 @@ public class ServerMapDoorMessage : INetworkSerializable
         }
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

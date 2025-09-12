@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerRequestUserPortraitMessage : INetworkSerializable
+public class ServerRequestUserPortraitMessage : ServerMessage
 {
     public ushort Unknown { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Unknown = reader.ReadUInt16();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

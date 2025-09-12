@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerShowPlayerMessage : INetworkSerializable
+public class ServerShowPlayerMessage : ServerMessage
 {
     public ushort X { get; set; }
     public ushort Y { get; set; }
@@ -44,8 +44,10 @@ public class ServerShowPlayerMessage : INetworkSerializable
     public string? Name { get; set; }
     public string? GroupBox { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         X = reader.ReadUInt16();
         Y = reader.ReadUInt16();
         Direction = (WorldDirection)reader.ReadByte();
@@ -119,7 +121,7 @@ public class ServerShowPlayerMessage : INetworkSerializable
         }
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

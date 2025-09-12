@@ -3,12 +3,14 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerAddEntityMessage : INetworkSerializable
+public class ServerAddEntityMessage : ServerMessage
 {
     public List<ServerEntityObject> Entities { get; set; } = [];
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         var entityCount = reader.ReadUInt16();
 
         for (var i = 0; i < entityCount; i++)
@@ -60,7 +62,7 @@ public class ServerAddEntityMessage : INetworkSerializable
         }
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }
