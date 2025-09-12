@@ -1,0 +1,29 @@
+﻿using Arbiter.Net.Serialization;
+using Arbiter.Net.Types;
+
+namespace Arbiter.Net.Server.Messages;
+
+public class ServerAddSpellMessage : INetworkSerializable
+{
+    public byte Slot { get; set; }
+    public ushort Icon { get; set; }
+    public SpellTargetType TargetType { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Prompt { get; set; } = string.Empty;
+    public byte CastLines { get; set; }
+
+    public void Deserialize(INetworkPacketReader reader)
+    {
+        Slot = reader.ReadByte();
+        Icon = reader.ReadUInt16();
+        TargetType = (SpellTargetType)reader.ReadByte();
+        Name = reader.ReadString8();
+        Prompt = reader.ReadString8();
+        CastLines = reader.ReadByte();
+    }
+
+    public void Serialize(INetworkPacketBuilder builder)
+    {
+        throw new NotImplementedException();
+    }
+}

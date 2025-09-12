@@ -34,7 +34,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Arbiter.Common\Arbiter.Common.csproj" />
       <ProjectReference Include="..\Arbiter.Interop\Arbiter.Interop.csproj" />
       <ProjectReference Include="..\Arbiter.Json\Arbiter.Json.csproj" />
       <ProjectReference Include="..\Arbiter.Net\Arbiter.Net.csproj" />
@@ -57,5 +56,9 @@
         <DependentUpon>TraceLog.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Server\Messages\" />
     </ItemGroup>
 </Project>
