@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Arbiter.App.Extensions;
 using Arbiter.App.Mappings;
@@ -106,15 +107,12 @@ public class InspectorViewModelFactory
         }
     }
 
-    private static InspectorItemViewModel CreateItemViewModel(object? value, InspectorPropertyMapping propMapping)
+    private static InspectorItemViewModel CreateItemViewModel(object? value, InspectorPropertyMapping propMapping,
+        Type? valueType = null)
     {
-        var showHex = propMapping.ShowHex;
-        var isMultiline = propMapping.ShowMultiline;
-        var toolTip = propMapping.ToolTip;
-
         if (value is null)
         {
-            return CreateValueViewModel(value, propMapping);
+            return CreateScalarViewModel(value, propMapping);
         }
 
         if (IsByteEnumerable(value))
@@ -123,26 +121,26 @@ public class InspectorViewModelFactory
             {
                 Name = propMapping.Name,
                 Value = value,
-                ShowHex = showHex,
-                IsMultiline = isMultiline,
-                ToolTip = toolTip
+                ShowHex = propMapping.ShowHex,
+                IsMultiline = propMapping.ShowMultiline,
+                ToolTip = propMapping.ToolTip
             };
         }
 
         if (value is IDictionary dict)
         {
-            return CreateDictionaryViewModel(dict, propMapping);
+            return CreateDictionaryViewModel(dict, propMapping, value.GetType());
         }
 
         if (value is IEnumerable list and not string and not char[])
         {
-            return CreateListViewModel(list, propMapping);
+            return CreateListViewModel(list, propMapping, value.GetType());
         }
 
-        return CreateValueViewModel(value, propMapping);
+        return CreateScalarViewModel(value, propMapping, value.GetType());
     }
 
-    private static InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping)
+    private static InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping, Type? listType = null)
     {
         var vm = new InspectorListViewModel
         {
@@ -152,7 +150,7 @@ public class InspectorViewModelFactory
         var index = 0;
         foreach (var item in list)
         {
-            var child = CreateItemViewModel(item, propMapping);
+            var child = CreateItemViewModel(item, propMapping, item?.GetType());
             child.Name = $"Element {index}";
 
             vm.Items.Add(child);
@@ -162,7 +160,7 @@ public class InspectorViewModelFactory
         return vm;
     }
 
-    private static InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict, InspectorPropertyMapping propMapping)
+    private static InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict, InspectorPropertyMapping propMapping, Type? dictType = null)
     {
         var vm = new InspectorDictionaryViewModel
         {
@@ -173,10 +171,11 @@ public class InspectorViewModelFactory
         foreach (DictionaryEntry kv in dict)
         {
             var key = kv.Key.ToString()?.ToNaturalWording() ?? "<null>";
-            var child = CreateItemViewModel(kv.Value, propMapping);
+            var child = CreateItemViewModel(kv.Value, propMapping, kv.Value?.GetType());
 
             if (child is InspectorValueViewModel valueVm)
             {
+                valueVm.Name = key;
                 vm.Values.Add(valueVm);
             }
         }
@@ -184,7 +183,7 @@ public class InspectorViewModelFactory
         return vm;
     }
 
-    private static InspectorValueViewModel CreateValueViewModel(object? value, InspectorPropertyMapping propMapping)
+    private static InspectorValueViewModel CreateScalarViewModel(object? value, InspectorPropertyMapping propMapping, Type? valueType = null)
     {
         return new InspectorValueViewModel
         {
