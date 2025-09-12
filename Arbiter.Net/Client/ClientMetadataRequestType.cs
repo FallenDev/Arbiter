@@ -1,4 +1,4 @@
-﻿namespace Arbiter.App.Models.Client;
+﻿namespace Arbiter.Net.Client;
 
 public enum ClientMetadataRequestType : byte
 {

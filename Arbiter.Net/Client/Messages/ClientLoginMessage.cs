@@ -1,27 +1,15 @@
-﻿using Arbiter.App.Annotations;
-using Arbiter.Net;
-using Arbiter.Net.Client;
+﻿using Arbiter.Net.Serialization;
 
-namespace Arbiter.App.Models.Client.Messages;
+namespace Arbiter.Net.Client.Messages;
 
-[InspectPacket(ClientCommand.Login)]
-public class ClientLoginMessage : IPacketMessage
+public class ClientLoginMessage : INetworkSerializable
 {
-    [InspectSection("Credentials")]
-    [InspectProperty]
     public string Name { get; set; } = string.Empty;
-    
-    [InspectProperty]
-    [InspectMasked]
     public string Password { get; set; } = string.Empty;
-    
-    [InspectSection("Client")]
-    [InspectProperty(ShowHex = true)]
     public uint ClientId { get; set; }
-    [InspectProperty(ShowHex = true)]
     public ushort Checksum { get; set; }
 
-    public void ReadFrom(NetworkPacketReader reader)
+    public void Deserialize(INetworkPacketReader reader)
     {
         Name = reader.ReadString8();
         Password = reader.ReadString8();
@@ -34,6 +22,11 @@ public class ClientLoginMessage : IPacketMessage
 
         ClientId = DecodeClientId(encodedClientId, key1, key2);
         Checksum = DecodeChecksum(encodedChecksum, key1, key2);
+    }
+    
+    public void Serialize(INetworkPacketBuilder builder)
+    {
+        throw new NotImplementedException();
     }
 
     private static uint DecodeClientId(uint encoded, byte key1, byte key2)

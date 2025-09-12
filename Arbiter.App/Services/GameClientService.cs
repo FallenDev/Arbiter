@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Arbiter.Common.IO;
+using Arbiter.App.Extensions;
 using Arbiter.Interop.Process;
 
 namespace Arbiter.App.Services;

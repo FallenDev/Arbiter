@@ -57,8 +57,4 @@
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\Server\Messages\" />
-    </ItemGroup>
 </Project>
