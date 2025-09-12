@@ -3,16 +3,18 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientTurnMessage : INetworkSerializable
+public class ClientTurnMessage : ClientMessage
 {
     public WorldDirection Direction { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Direction = (WorldDirection)reader.ReadByte();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

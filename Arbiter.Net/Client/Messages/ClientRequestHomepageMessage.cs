@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientRequestHomepageMessage : INetworkSerializable
+public class ClientRequestHomepageMessage : ClientMessage
 {
     public bool NeedsHomepage { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         NeedsHomepage = reader.ReadBoolean();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

@@ -2,15 +2,17 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientLoginMessage : INetworkSerializable
+public class ClientLoginMessage : ClientMessage
 {
     public string Name { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public uint ClientId { get; set; }
     public ushort Checksum { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Name = reader.ReadString8();
         Password = reader.ReadString8();
 
@@ -24,7 +26,7 @@ public class ClientLoginMessage : INetworkSerializable
         Checksum = DecodeChecksum(encodedChecksum, key1, key2);
     }
     
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

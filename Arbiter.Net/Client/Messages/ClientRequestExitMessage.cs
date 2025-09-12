@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientRequestExitMessage : INetworkSerializable
+public class ClientRequestExitMessage : ClientMessage
 {
     public ClientExitReason Reason { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Reason = (ClientExitReason)reader.ReadByte();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

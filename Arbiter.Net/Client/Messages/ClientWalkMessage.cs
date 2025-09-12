@@ -3,18 +3,20 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientWalkMessage : INetworkSerializable
+public class ClientWalkMessage : ClientMessage
 {
     public WorldDirection Direction { get; set; }
     public byte StepCount { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Direction = (WorldDirection)reader.ReadByte();
         StepCount = reader.ReadByte();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

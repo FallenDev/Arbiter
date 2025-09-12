@@ -2,21 +2,19 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientRequestSequenceMessage : INetworkSerializable
+public class ClientRequestSequenceMessage : ClientMessage
 {
-    public byte Sequence { get; set; }
     public uint Unknown { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
-        // The sequence of the packet is the sequence being requested
-        Sequence = reader.Sequence ?? 0x00;
+        base.Deserialize(reader);
         
-        // Unknown
+        // always the same value?
         Unknown = reader.ReadUInt32();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         // Nothing to write
     }

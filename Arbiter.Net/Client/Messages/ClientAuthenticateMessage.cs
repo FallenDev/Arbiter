@@ -2,15 +2,17 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientAuthenticateMessage : INetworkSerializable
+public class ClientAuthenticateMessage : ClientMessage
 {
     public byte Seed { get; set; }
     public IReadOnlyList<byte> PrivateKey { get; set; } = [];
     public string Name { get; set; } = string.Empty;
     public uint ConnectionId { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Seed = reader.ReadByte();
         var keyLength = reader.ReadByte();
         PrivateKey = reader.ReadBytes(keyLength);
@@ -18,7 +20,7 @@ public class ClientAuthenticateMessage : INetworkSerializable
         ConnectionId = reader.ReadUInt32();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

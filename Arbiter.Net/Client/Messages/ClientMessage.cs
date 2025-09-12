@@ -1,15 +1,15 @@
 ﻿using Arbiter.Net.Serialization;
 
-namespace Arbiter.Net.Server.Messages;
+namespace Arbiter.Net.Client.Messages;
 
-public abstract class ServerMessage : IServerMessage
+public abstract class ClientMessage : IClientMessage
 {
-    public ServerCommand Command { get; private set; }
+    public ClientCommand Command { get; private set; }
     public byte? Sequence { get; private set; }
 
     public virtual void Deserialize(INetworkPacketReader reader)
     {
-        Command = (ServerCommand)reader.Command;
+        Command = (ClientCommand)reader.Command;
         Sequence = reader.Sequence;
     }
 

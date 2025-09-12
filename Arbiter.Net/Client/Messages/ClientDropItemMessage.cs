@@ -2,7 +2,7 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientDropItemMessage : INetworkSerializable
+public class ClientDropItemMessage : ClientMessage
 {
     public byte Slot { get; set; }
     public ushort X { get; set; }
@@ -10,15 +10,17 @@ public class ClientDropItemMessage : INetworkSerializable
 
     public uint Quantity { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Slot = reader.ReadByte();
         X = reader.ReadUInt16();
         Y = reader.ReadUInt16();
         Quantity = reader.ReadUInt32();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

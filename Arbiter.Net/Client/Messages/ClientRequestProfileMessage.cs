@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientRequestProfileMessage : INetworkSerializable
+public class ClientRequestProfileMessage : ClientMessage
 {
     // Nothing to show
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         // Nothing to read
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         // Nothing to write
     }

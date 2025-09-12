@@ -2,16 +2,18 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientRequestServerTableMessage : INetworkSerializable
+public class ClientRequestServerTableMessage : ClientMessage
 {
     public bool NeedsServerTable { get; set; }
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         NeedsServerTable = reader.ReadBoolean();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

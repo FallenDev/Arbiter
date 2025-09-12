@@ -2,20 +2,22 @@
 
 namespace Arbiter.Net.Client.Messages;
 
-public class ClientChangePasswordMessage : INetworkSerializable
+public class ClientChangePasswordMessage : ClientMessage
 {
     public string Name { get; set; } = string.Empty;
     public string CurrentPassword { get; set; } = string.Empty;
     public string NewPassword { get; set; } = string.Empty;
 
-    public void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(INetworkPacketReader reader)
     {
+        base.Deserialize(reader);
+        
         Name = reader.ReadString8();
         CurrentPassword = reader.ReadString8();
         NewPassword = reader.ReadString8();
     }
 
-    public void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }
