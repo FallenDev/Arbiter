@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Reflection;
 using Arbiter.App.Extensions;
 using Arbiter.App.Mappings;
 using Arbiter.App.Models;
@@ -15,13 +18,13 @@ namespace Arbiter.App.ViewModels.Inspector;
 public class InspectorViewModelFactory
 {
     private readonly InspectorMappingRegistry _registry;
-    
+
     public InspectorViewModelFactory(InspectorMappingRegistry registry)
     {
         _registry = registry;
     }
 
-    public InspectorPacketViewModel? Create(NetworkPacket packet)
+    public InspectorPacketViewModel Create(NetworkPacket packet)
     {
         var displayName = packet switch
         {
@@ -99,10 +102,10 @@ public class InspectorViewModelFactory
                 {
                     itemVm = CreateItemViewModel(value, prop);
                 }
-                
+
                 sectionVm.Items.Add(itemVm);
             }
-            
+
             yield return sectionVm;
         }
     }
@@ -137,10 +140,16 @@ public class InspectorViewModelFactory
             return CreateListViewModel(list, propMapping, value.GetType());
         }
 
+        if (valueType is not null && IsCustomType(valueType))
+        {
+            return CreateClassViewModel(value, propMapping, valueType);
+        }
+
         return CreateScalarViewModel(value, propMapping, value.GetType());
     }
 
-    private static InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping, Type? listType = null)
+    private static InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping,
+        Type? listType = null)
     {
         var vm = new InspectorListViewModel
         {
@@ -160,7 +169,8 @@ public class InspectorViewModelFactory
         return vm;
     }
 
-    private static InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict, InspectorPropertyMapping propMapping, Type? dictType = null)
+    private static InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict,
+        InspectorPropertyMapping propMapping, Type? dictType = null)
     {
         var vm = new InspectorDictionaryViewModel
         {
@@ -183,7 +193,34 @@ public class InspectorViewModelFactory
         return vm;
     }
 
-    private static InspectorValueViewModel CreateScalarViewModel(object? value, InspectorPropertyMapping propMapping, Type? valueType = null)
+    private static InspectorDictionaryViewModel CreateClassViewModel(object value, InspectorPropertyMapping propMapping,
+        Type classType)
+    {
+        var vm = new InspectorDictionaryViewModel
+        {
+            Name = propMapping.Name,
+            TypeName = classType.Name
+        };
+
+        var properties = classType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.GetMethod is not null);
+
+        foreach (var property in properties)
+        {
+            var child = CreateItemViewModel(property.GetValue(value), propMapping, property.PropertyType);
+
+            if (child is InspectorValueViewModel valueVm)
+            {
+                valueVm.Name = property.Name.ToNaturalWording();
+                vm.Values.Add(valueVm);
+            }
+        }
+
+        return vm;
+    }
+
+    private static InspectorValueViewModel CreateScalarViewModel(object? value, InspectorPropertyMapping propMapping,
+        Type? valueType = null)
     {
         return new InspectorValueViewModel
         {
@@ -201,4 +238,6 @@ public class InspectorViewModelFactory
         IEnumerable<byte> => true,
         _ => false
     };
+
+    private static bool IsCustomType(Type type) => type.IsClass && type != typeof(string) && type != typeof(IPAddress);
 }
