@@ -4,6 +4,8 @@ namespace Arbiter.Net.Server.Messages;
 
 public class ServerMessageFactory : IServerMessageFactory
 {
+    public static IServerMessageFactory Default { get; } = new ServerMessageFactory();
+    
     public Type? GetMessageType(ServerCommand command) => command switch
     {
         ServerCommand.AddEntity => typeof(ServerAddEntityMessage),

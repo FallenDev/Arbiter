@@ -4,6 +4,8 @@ namespace Arbiter.Net.Client.Messages;
 
 public class ClientMessageFactory : IClientMessageFactory
 {
+    public static IClientMessageFactory Default { get; } = new ClientMessageFactory();
+    
     public Type? GetMessageType(ClientCommand command) => command switch
     {
         ClientCommand.Assail => typeof(ClientAssailMessage),
