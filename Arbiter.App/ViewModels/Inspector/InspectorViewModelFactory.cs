@@ -202,7 +202,7 @@ public class InspectorViewModelFactory
             TypeName = classType.Name
         };
 
-        var properties = classType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        var properties = classType.GetPropertiesInDerivedOrder()
             .Where(p => p.GetMethod is not null);
 
         foreach (var property in properties)

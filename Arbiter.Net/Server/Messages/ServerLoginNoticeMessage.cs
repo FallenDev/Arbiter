@@ -7,7 +7,7 @@ namespace Arbiter.Net.Server.Messages;
 public class ServerLoginNoticeMessage : ServerMessage
 {
     public uint? Checksum { get; set; }
-    public string? Notice { get; set; }
+    public string? Content { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
@@ -26,7 +26,7 @@ public class ServerLoginNoticeMessage : ServerMessage
         var compressed = reader.ReadBytes(contentLength);
 
         var decompressed = Zlib.Decompress(compressed);
-        Notice = Encoding.UTF8.GetString(decompressed);
+        Content = Encoding.UTF8.GetString(decompressed);
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
