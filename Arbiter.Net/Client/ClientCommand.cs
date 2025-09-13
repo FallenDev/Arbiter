@@ -2,7 +2,7 @@
 
 public enum ClientCommand : byte
 {
-    ClientVersion = 0x00,
+    Version = 0x00,
     CreateCharacterName = 0x02,
     Login = 0x03,
     CreateCharacterAppearance = 0x04,

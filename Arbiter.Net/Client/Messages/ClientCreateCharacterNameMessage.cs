@@ -1,0 +1,26 @@
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
+
+namespace Arbiter.Net.Client.Messages;
+
+[NetworkCommand(ClientCommand.CreateCharacterName)]
+public class ClientCreateCharacterNameMessage : ClientMessage
+{
+    public string Name { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+
+    public override void Deserialize(INetworkPacketReader reader)
+    {
+        base.Deserialize(reader);
+        
+        Name = reader.ReadString8();
+        Password = reader.ReadString8();
+        Email = reader.ReadString8();
+    }
+
+    public override void Serialize(INetworkPacketBuilder builder)
+    {
+        throw new NotImplementedException();
+    }
+}

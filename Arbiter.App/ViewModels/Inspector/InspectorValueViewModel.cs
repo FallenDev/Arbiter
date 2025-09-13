@@ -21,8 +21,10 @@ public partial class InspectorValueViewModel : InspectorItemViewModel
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(CanReveal))]
     private char? _maskCharacter;
-
-    [ObservableProperty] private bool _isRevealed = true;
+    
+    [ObservableProperty] 
+    [NotifyPropertyChangedFor(nameof(FormattedValue))]
+    private bool _isRevealed = true;
 
     [ObservableProperty] private bool _isMultiline;
     

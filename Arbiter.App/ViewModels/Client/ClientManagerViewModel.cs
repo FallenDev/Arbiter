@@ -22,19 +22,22 @@ public class ClientManagerViewModel : ViewModelBase
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)
     {
         var connection = e.Connection;
-        var client = new ClientViewModel { Id = connection.Id, Name = connection.Name ?? string.Empty };
+        var client = new ClientViewModel(connection) { Id = connection.Id, Name = connection.Name ?? string.Empty };
 
+        client.Subscribe();
         Clients.Add(client);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
     {
-
+        // Do nothing for now
     }
 
     private void OnClientDisconnected(object? sender, ProxyConnectionEventArgs e)
     {
         var client = Clients.FirstOrDefault(c => c.Id == e.Connection.Id);
+        client?.Unsubscribe();
+
         if (client is not null)
         {
             Clients.Remove(client);

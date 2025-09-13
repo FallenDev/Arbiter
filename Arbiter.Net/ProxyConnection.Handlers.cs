@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Arbiter.Net.Security;
+using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net;
 
