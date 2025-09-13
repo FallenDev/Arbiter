@@ -1,7 +1,9 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.MapLocation)]
 public class ServerMapLocationMessage : ServerMessage
 {
     public ushort X { get; set; }

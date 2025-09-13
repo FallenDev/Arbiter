@@ -1,8 +1,10 @@
 ﻿using System.Net;
+using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.Redirect)]
 public class ServerRedirectMessage : ServerMessage
 {
     public IPAddress Address { get; set; } = IPAddress.None;

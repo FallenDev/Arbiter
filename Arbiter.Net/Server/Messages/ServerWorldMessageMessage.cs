@@ -1,8 +1,10 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.WorldMessage)]
 public class ServerWorldMessageMessage : ServerMessage
 {
     public WorldMessageType MessageType { get; set; }

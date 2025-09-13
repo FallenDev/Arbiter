@@ -1,7 +1,9 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.WorldMap)]
 public class ServerWorldMapMessage : ServerMessage
 {
     public string FieldName { get; set; } = string.Empty;

@@ -1,9 +1,11 @@
 ﻿using System.Text;
+using Arbiter.Net.Annotations;
 using Arbiter.Net.Compression;
 using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.LoginNotice)]
 public class ServerLoginNoticeMessage : ServerMessage
 {
     public uint? Checksum { get; set; }

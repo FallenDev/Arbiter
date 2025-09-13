@@ -1,7 +1,9 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Client.Messages;
 
+[NetworkCommand(ClientCommand.RequestServerTable)]
 public class ClientRequestServerTableMessage : ClientMessage
 {
     public bool NeedsServerTable { get; set; }

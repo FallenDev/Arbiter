@@ -25,6 +25,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientRequestServerTableMapping(registry);
         RegisterClientSwapSlotMapping(registry);
         RegisterClientTurnMapping(registry);
+        RegisterClientUnequipItemMapping(registry);
+        RegisterClientUseItem(registry);
         RegisterClientUserPortraitMapping(registry);
         RegisterClientVersionMapping(registry);
         RegisterClientWalkMapping(registry);
@@ -224,6 +226,24 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Movement")
                 .Property(m => m.Direction);
+        });
+    }
+
+    private static void RegisterClientUnequipItemMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientUnequipItemMessage>(b =>
+        {
+            b.Section("Equipment")
+                .Property(m => m.Slot);
+        });   
+    }
+
+    private static void RegisterClientUseItem(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientUseItemMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot);
         });
     }
 

@@ -1,18 +1,19 @@
 ﻿using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
+using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
-[NetworkCommand(ClientCommand.Heartbeat)]
-public class ClientHeartbeatMessage : ClientMessage
+[NetworkCommand(ClientCommand.UnequipItem)]
+public class ClientUnequipItemMessage : ClientMessage
 {
-    public ushort Reply { get; set; }
+    public EquipmentSlot Slot { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
-        Reply = reader.ReadUInt16();
+
+        Slot = (EquipmentSlot)reader.ReadByte();
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

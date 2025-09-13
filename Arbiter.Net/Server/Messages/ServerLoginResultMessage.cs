@@ -1,7 +1,9 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.LoginResult)]
 public class ServerLoginResultMessage : ServerMessage
 {
     public ServerLoginMessageType MessageType { get; set; }

@@ -1,8 +1,10 @@
-﻿using Arbiter.Net.Compression;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Compression;
 using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.ServerTable)]
 public class ServerServerTableMessage : ServerMessage
 {
     public List<ServerTableEntry> Servers { get; set; } = [];

@@ -3,16 +3,16 @@ using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Client.Messages;
 
-[NetworkCommand(ClientCommand.Heartbeat)]
-public class ClientHeartbeatMessage : ClientMessage
+[NetworkCommand(ClientCommand.UseItem)]
+public class ClientUseItemMessage : ClientMessage
 {
-    public ushort Reply { get; set; }
+    public byte Slot { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
-        Reply = reader.ReadUInt16();
+
+        Slot = reader.ReadByte();
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

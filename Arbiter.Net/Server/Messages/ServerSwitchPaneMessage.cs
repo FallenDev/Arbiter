@@ -1,8 +1,10 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.SwitchPane)]
 public class ServerSwitchPaneMessage : ServerMessage
 {
     public InterfacePane Pane { get; set; }

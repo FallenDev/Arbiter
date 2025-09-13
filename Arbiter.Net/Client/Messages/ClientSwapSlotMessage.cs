@@ -1,8 +1,10 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
+[NetworkCommand(ClientCommand.SwapSlot)]
 public class ClientSwapSlotMessage : ClientMessage
 {
     public InterfacePane Pane { get; set; }

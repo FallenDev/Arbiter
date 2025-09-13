@@ -1,8 +1,10 @@
-﻿using Arbiter.Net.Serialization;
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
 using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
+[NetworkCommand(ServerCommand.AddSpell)]
 public class ServerAddSpellMessage : ServerMessage
 {
     public byte Slot { get; set; }
