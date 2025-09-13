@@ -19,6 +19,7 @@ public class ServerMessageFactory : IServerMessageFactory
         _typeMappings.Add(ServerCommand.EntityTurn, typeof(ServerEntityTurnMessage));
         _typeMappings.Add(ServerCommand.EntityWalk, typeof(ServerEntityWalkMessage));
         _typeMappings.Add(ServerCommand.ExitResponse, typeof(ServerExitResponseMessage));
+        _typeMappings.Add(ServerCommand.HealthBar, typeof(ServerHealthBarMessage));
         _typeMappings.Add(ServerCommand.Heartbeat, typeof(ServerHeartbeatMessage));
         _typeMappings.Add(ServerCommand.Hello, typeof(ServerHelloMessage));
         _typeMappings.Add(ServerCommand.LightLevel, typeof(ServerLightLevelMessage));
@@ -28,12 +29,14 @@ public class ServerMessageFactory : IServerMessageFactory
         _typeMappings.Add(ServerCommand.MapChanging, typeof(ServerMapChangingMessage));
         _typeMappings.Add(ServerCommand.MapDoor, typeof(ServerMapDoorMessage));
         _typeMappings.Add(ServerCommand.MapInfo, typeof(ServerMapInfoMessage));
+        _typeMappings.Add(ServerCommand.MapLocation, typeof(ServerMapLocationMessage));
         _typeMappings.Add(ServerCommand.MapTransfer, typeof(ServerMapTransferMessage));
         _typeMappings.Add(ServerCommand.MapTransferComplete, typeof(ServerMapTransferCompleteMessage));
         _typeMappings.Add(ServerCommand.Metadata, typeof(ServerMetadataMessage));
         _typeMappings.Add(ServerCommand.PlaySound, typeof(ServerPlaySoundMessage));
         _typeMappings.Add(ServerCommand.PublicMessage, typeof(ServerPublicMessageMessage));
         _typeMappings.Add(ServerCommand.Redirect, typeof(ServerRedirectMessage));
+        _typeMappings.Add(ServerCommand.RefreshComplete, typeof(ServerRefreshCompleteMessage));
         _typeMappings.Add(ServerCommand.RemoveEntity, typeof(ServerRemoveEntityMessage));
         _typeMappings.Add(ServerCommand.RemoveItem, typeof(ServerRemoveItemMessage));
         _typeMappings.Add(ServerCommand.RemoveSkill, typeof(ServerRemoveSkillMessage));
@@ -43,6 +46,8 @@ public class ServerMessageFactory : IServerMessageFactory
         _typeMappings.Add(ServerCommand.ServerList, typeof(ServerServerListMessage));
         _typeMappings.Add(ServerCommand.ServerTable, typeof(ServerServerTableMessage));
         _typeMappings.Add(ServerCommand.SetEquipment, typeof(ServerSetEquipmentMessage));
+        _typeMappings.Add(ServerCommand.ShowEffect, typeof(ServerShowEffectMessage));
+        _typeMappings.Add(ServerCommand.ShowNotepad, typeof(ServerShowNotepadMessage));
         _typeMappings.Add(ServerCommand.ShowPlayer, typeof(ServerShowPlayerMessage));
         _typeMappings.Add(ServerCommand.UpdateStats, typeof(ServerUpdateStatsMessage));
         _typeMappings.Add(ServerCommand.UserId, typeof(ServerUserIdMessage));

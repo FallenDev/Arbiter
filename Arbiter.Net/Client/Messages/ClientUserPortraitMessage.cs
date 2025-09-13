@@ -27,8 +27,4 @@ public class ClientUserPortraitMessage : ClientMessage
     {
         throw new NotImplementedException();
     }
-
-    // Migrate these
-    private bool ShouldShowPortrait() => Portrait.Count > 0;
-    private bool ShouldShowBio() => !string.IsNullOrEmpty(Bio);
 }

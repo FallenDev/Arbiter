@@ -4,7 +4,7 @@ namespace Arbiter.Net.Server.Messages;
 
 public class ServerPlaySoundMessage : ServerMessage
 {
-    public byte? Effect { get; set; }
+    public byte Sound { get; set; }
     public byte? Track { get; set; }
     public ushort? Unknown { get; set; }
 
@@ -12,15 +12,12 @@ public class ServerPlaySoundMessage : ServerMessage
     {
         base.Deserialize(reader);
         
-        var sound = reader.ReadByte();
-        if (sound == 0xFF)
+        Sound = reader.ReadByte();
+        
+        if (Sound == 0xFF)
         {
             Track = reader.ReadByte();
             Unknown = reader.ReadUInt16();
-        }
-        else
-        {
-            Effect = sound;
         }
     }
 
@@ -28,8 +25,4 @@ public class ServerPlaySoundMessage : ServerMessage
     {
         throw new NotImplementedException();
     }
-
-    // Migrate these
-    private bool ShouldShowSound() => Effect.HasValue;
-    private bool ShouldShowMusic() => Track.HasValue;
 }

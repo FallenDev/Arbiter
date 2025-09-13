@@ -125,9 +125,4 @@ public class ServerShowPlayerMessage : ServerMessage
     {
         throw new NotImplementedException();
     }
-
-    // Migrate these
-    private bool IsHumanForm() => HeadSprite != 0xFFFF;
-
-    private bool IsMonsterForm() => HeadSprite == 0xFFFF;
 }

@@ -17,6 +17,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerEntityTurnMapping(registry);
         RegisterServerEntityWalkMapping(registry);
         RegisterServerExitResponseMapping(registry);
+        RegisterServerHealthBarMapping(registry);
         RegisterServerHeartbeatMapping(registry);
         RegisterServerHelloMapping(registry);
         RegisterServerLightLevelMapping(registry);
@@ -26,12 +27,14 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerMapChangingMapping(registry);
         RegisterServerMapDoorMapping(registry);
         RegisterServerMapInfoMapping(registry);
+        RegisterServerMapLocationMapping(registry);
         RegisterServerMapTransferCompleteMapping(registry);
         RegisterServerMapTransferMapping(registry);
         RegisterServerMetadataMapping(registry);
         RegisterServerPlaySoundMapping(registry);
         RegisterServerPublicMessageMapping(registry);
         RegisterServerRedirectMapping(registry);
+        RegisterServerRefreshCompletedMapping(registry);
         RegisterServerRemoveEntityMapping(registry);
         RegisterServerRemoveItemMapping(registry);
         RegisterServerRemoveSkillMapping(registry);
@@ -41,6 +44,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerServerListMapping(registry);
         RegisterServerServerTableMapping(registry);
         RegisterServerSetEquipmentMapping(registry);
+        RegisterServerShowEffectMapping(registry);
+        RegisterServerShowNotepadMapping(registry);
         RegisterServerShowPlayerMapping(registry);
         RegisterServerUpdateStatsMapping(registry);
         RegisterServerUserIdMapping(registry);
@@ -93,7 +98,6 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Icon)
                 .Property(m => m.Name, p => p.ShowMultiline())
                 .Property(m => m.CastLines);
-
             b.Section("Target")
                 .Property(m => m.TargetType)
                 .Property(m => m.Prompt, p => p.ShowMultiline());
@@ -106,13 +110,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Entity")
                 .Property(m => m.EntityId, p => p.ShowHex());
-            
             b.Section("Animation")
                 .Property(m => m.Animation)
                 .Property(m => m.Speed);
-            
-            b.Section("Effect")
-                .Property(m => m.Effect);
+            b.Section("Sound")
+                .Property(m => m.Sound)
+                .IsExpanded(m => m.Sound != 0xFF);
         });
     }
 
@@ -160,6 +163,22 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Response")
                 .Property(m => m.Result)
+                .Property(m => m.Unknown, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerHealthBarMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerHealthBarMessage>(b =>
+        {
+            b.Section("Entity")
+                .Property(m => m.EntityId, p => p.ShowHex());
+            b.Section("Health Bar")
+                .Property(m => m.Percent);
+            b.Section("Sound")
+                .Property(m => m.Sound)
+                .IsExpanded(m => m.Sound != 0xFF);
+            b.Section("Unknown")
                 .Property(m => m.Unknown, p => p.ShowHex());
         });
     }
@@ -250,13 +269,24 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.MapId)
                 .Property(m => m.Name)
                 .Property(m => m.Checksum, p => p.ShowHex());
-
             b.Section("Dimensions")
                 .Property(m => m.Width)
                 .Property(m => m.Height);
-
             b.Section("Weather")
                 .Property(m => m.Weather);
+        });
+    }
+
+    private static void RegisterServerMapLocationMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerMapLocationMessage>(b =>
+        {
+            b.Section("Position")
+                .Property(m => m.X)
+                .Property(m => m.Y);
+            b.Section("Unknown")
+                .Property(m => m.UnknownX, p => p.ShowHex())
+                .Property(m => m.UnknownY, p => p.ShowHex());
         });
     }
 
@@ -286,13 +316,11 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Response")
                 .Property(m => m.ResponseType);
-            
             b.Section("Metadata")
                 .Property(m => m.Name)
                 .Property(m => m.Checksum, p => p.ShowHex())
                 .Property(m => m.Data, p => p.ShowMultiline())
                 .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Metadata);
-            
             b.Section("Listing")
                 .Property(m => m.MetadataFiles)
                 .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Listing);
@@ -304,13 +332,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerPlaySoundMessage>(b =>
         {
             b.Section("Sound")
-                .Property(m => m.Effect)
-                .IsExpanded(m => m.Effect != 0xFF);
-            
+                .Property(m => m.Sound)
+                .IsExpanded(m => m.Sound != 0xFF);
             b.Section("Music")
                 .Property(m => m.Track)
                 .Property(m => m.Unknown, p => p.ShowHex())
-                .IsExpanded(m => m.Track.HasValue && m.Track != 0xFF);
+                .IsExpanded(m => m.Sound == 0xFF);
         });
     }
 
@@ -332,14 +359,20 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Server")
                 .Property(m => m.Address)
                 .Property(m => m.Port);
-
             b.Section("Encryption")
                 .Property(m => m.Seed)
                 .Property(m => m.PrivateKey, p => p.ShowMultiline());
-
             b.Section("Connection")
                 .Property(m => m.ConnectionId, p => p.ShowHex())
                 .Property(m => m.Name);
+        });
+    }
+
+    private static void RegisterServerRefreshCompletedMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerRefreshCompleteMessage>(b =>
+        {
+            // Nothing to map
         });
     }
 
@@ -404,7 +437,6 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Server List")
                 .Property(m => m.Checksum, p => p.ShowHex());
-
             b.Section("Encryption")
                 .Property(m => m.Seed)
                 .Property(m => m.PrivateKey, p => p.ShowMultiline());
@@ -429,11 +461,46 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Sprite, p => p.ShowHex())
                 .Property(m => m.DyeColor)
                 .Property(m => m.Name, p => p.ShowMultiline());
-
             b.Section("Durability")
                 .Property(m => m.Durability)
                 .Property(m => m.MaxDurability)
                 .IsExpanded(m => m.MaxDurability > 0);
+        });
+    }
+
+    private static void RegisterServerShowEffectMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowEffectMessage>(b =>
+        {
+            b.Section("Target Entity")
+                .Property(m => m.TargetId, p => p.ShowHex())
+                .IsExpanded(m => m.TargetId != 0);
+            b.Section("Target Location")
+                .Property(m => m.TargetX)
+                .Property(m => m.TargetY)
+                .IsExpanded(m => m.TargetId == 0);
+            b.Section("Source Entity")
+                .Property(m => m.SourceId, p => p.ShowHex())
+                .IsExpanded(m => m.TargetId != 0);
+            b.Section("Animation")
+                .Property(m => m.TargetAnimation)
+                .Property(m => m.SourceAnimation)
+                .Property(m => m.AnimationSpeed);
+        });
+    }
+
+    private static void RegisterServerShowNotepadMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowNotepadMessage>(b =>
+        {
+            b.Section("Notepad")
+                .Property(m => m.Slot)
+                .Property(m => m.Style);
+            b.Section("Dimensions")
+                .Property(m => m.Width)
+                .Property(m => m.Height);
+            b.Section("Content")
+                .Property(m => m.Content, p => p.ShowMultiline());
         });
     }
 
@@ -446,24 +513,20 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.NameStyle)
                 .Property(m => m.Name)
                 .Property(m => m.GroupBox, p => p.ShowMultiline());
-            
             b.Section("Position")
                 .Property(m => m.X)
                 .Property(m => m.Y)
                 .Property(m => m.Direction);
-
             b.Section("Body")
                 .Property(m => m.HeadSprite, p => p.ShowHex())
                 .Property(m => m.FaceShape)
                 .Property(m => m.HairColor)
                 .Property(m => m.BodySprite, p => p.ShowHex())
                 .Property(m => m.SkinColor);
-
             b.Section("Visibility")
                 .Property(m => m.IsTransparent)
                 .Property(m => m.IsHidden)
                 .IsExpanded(m => m.IsTransparent || m.IsHidden);
-
             b.Section("Equipment")
                 .Property(m => m.Armor1Sprite, p => p.ShowHex())
                 .Property(m => m.Armor2Sprite, p => p.ShowHex())
@@ -482,11 +545,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.OvercoatSprite, p => p.ShowHex())
                 .Property(m => m.Lantern)
                 .IsExpanded(m => m.HeadSprite != 0xFFFF);
-
             b.Section("Resting")
                 .Property(m => m.RestPosition)
                 .IsExpanded(m => m.RestPosition != RestPosition.None);
-
             b.Section("Monster Form")
                 .Property(m => m.MonsterSprite, p => p.ShowHex())
                 .Property(m => m.MonsterUnknown)
@@ -500,23 +561,19 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Fields")
                 .Property(m => m.Fields);
-            
             b.Section("Flags")
                 .Property(m => m.IsAdmin)
                 .Property(m => m.IsSwimming);
-
             b.Section("Level")
                 .Property(m => m.Level)
                 .Property(m => m.AbilityLevel)
                 .IsExpanded(m => m.Level.HasValue);
-
             b.Section("Vitals")
                 .Property(m => m.Health)
                 .Property(m => m.MaxHealth)
                 .Property(m => m.Mana)
                 .Property(m => m.MaxMana)
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Vitals));
-
             b.Section("Stats")
                 .Property(m => m.Strength)
                 .Property(m => m.Intelligence)
@@ -526,7 +583,6 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.HasStatPoints)
                 .Property(m => m.StatPoints)
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
-            
             b.Section("Modifiers")
                 .Property(m => m.ArmorClass)
                 .Property(m => m.MagicResist)
@@ -537,24 +593,20 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.IsBlinded)
                 .Property(m => m.CanMove)
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Modifiers));
-
             b.Section("Experience")
                 .Property(m => m.TotalExperience)
                 .Property(m => m.ToNextLevel)
                 .Property(m => m.TotalAbility)
                 .Property(m => m.ToNextAbility)
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.ExperienceGold));
-
             b.Section("Currency")
                 .Property(m => m.Gold)
                 .Property(m => m.GamePoints)
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.ExperienceGold));
-
             b.Section("Weight")
                 .Property(m => m.Weight)
                 .Property(m => m.MaxWeight)
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
-
             b.Section("Mail")
                 .Property(m => m.HasUnreadMail)
                 .Property(m => m.HasUnreadParcels)
@@ -569,10 +621,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("User")
                 .Property(m => m.UserId, p => p.ShowHex())
                 .Property(m => m.Class);
-            
             b.Section("Movement")
                 .Property(m => m.Direction);
-
             b.Section("Guild")
                 .Property(m => m.HasGuild);
         });
@@ -584,11 +634,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Movement")
                 .Property(m => m.Direction);
-            
-            b.Section("Previous Position")
+            b.Section("Position")
                 .Property(m => m.PreviousX)
                 .Property(m => m.PreviousY);
-            
             b.Section("Unknown")
                 .Property(m => m.UnknownX, p => p.ShowHex())
                 .Property(m => m.UnknownY, p => p.ShowHex())

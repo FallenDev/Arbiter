@@ -198,10 +198,12 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientUserPortraitMessage>(b =>
         {
             b.Section("Portrait")
-                .Property(m => m.Portrait, p => p.ShowMultiline());
-            
+                .Property(m => m.Portrait, p => p.ShowMultiline())
+                .IsExpanded(m => m.Portrait.Count > 0);
+
             b.Section("Bio")
-                .Property(m => m.Bio, p => p.ShowMultiline());
+                .Property(m => m.Bio, p => p.ShowMultiline())
+                .IsExpanded(m => !string.IsNullOrEmpty(m.Bio));
         });
     }
     

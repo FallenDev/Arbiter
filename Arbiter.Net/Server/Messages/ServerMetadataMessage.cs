@@ -44,8 +44,4 @@ public class ServerMetadataMessage : ServerMessage
     {
         throw new NotImplementedException();
     }
-
-    // Migrate these
-    private bool ShouldExpandMetadata() => ResponseType == ServerMetadataResponseType.Metadata;
-    private bool ShouldExpandListing() => ResponseType == ServerMetadataResponseType.Listing;
 }

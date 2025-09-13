@@ -1,22 +1,21 @@
 ﻿using Arbiter.Net.Serialization;
-using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerAnimateEntityMessage : ServerMessage
+public class ServerHealthBarMessage : ServerMessage
 {
     public uint EntityId { get; set; }
-    public BodyAnimation Animation { get; set; }
-    public ushort Speed { get; set; }
+    public byte Percent { get; set; }
     public byte Sound { get; set; }
-
+    public byte Unknown { get; set; }
+    
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-
+        
         EntityId = reader.ReadUInt32();
-        Animation = (BodyAnimation)reader.ReadByte();
-        Speed = reader.ReadUInt16();
+        Unknown = reader.ReadByte();
+        Percent = reader.ReadByte();
         Sound = reader.ReadByte();
     }
 
