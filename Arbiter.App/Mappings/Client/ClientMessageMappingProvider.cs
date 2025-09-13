@@ -9,11 +9,22 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientAssailMapping(registry);
         RegisterClientAuthenticateMapping(registry);
         RegisterClientChangePasswordMapping(registry);
+        RegisterClientCreateCharacterNameMapping(registry);
+        RegisterClientDropItemMapping(registry);
+        RegisterClientHeartbeatMapping(registry);
+        RegisterClientLoginMapping(registry);
+        RegisterClientPickupItemMapping(registry);
         RegisterClientRequestExitMapping(registry);
         RegisterClientRequestHomepageMapping(registry);
+        RegisterClientRequestLoginNoticeMapping(registry);
+        RegisterClientRequestMetadataMapping(registry);
+        RegisterClientRequestProfileMapping(registry);
         RegisterClientRequestSequenceMapping(registry);
         RegisterClientRequestServerTableMapping(registry);
+        RegisterClientTurnMapping(registry);
+        RegisterClientUserPortraitMapping(registry);
         RegisterClientVersionMapping(registry);
+        RegisterClientWalkMapping(registry);
     }
 
     private static void RegisterClientAssailMapping(InspectorMappingRegistry registry)
@@ -48,6 +59,67 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.NewPassword, p => p.Mask());
         });
     }
+
+    private static void RegisterClientCreateCharacterNameMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientCreateCharacterNameMessage>(b =>
+        {
+            b.Section("Credentials")
+                .Property(m => m.Name)
+                .Property(m => m.Password, p => p.Mask())
+                .Property(m => m.Email);
+        });
+    }
+
+    private static void RegisterClientDropItemMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientDropItemMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot)
+                .Property(m => m.Quantity);
+
+            b.Section("Position")
+                .Property(m => m.X)
+                .Property(m => m.Y);
+        });
+    }
+
+    private static void RegisterClientHeartbeatMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientHeartbeatMessage>(b =>
+        {
+            b.Section("Heartbeat")
+                .Property(m => m.Reply, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterClientLoginMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientLoginMessage>(b =>
+        {
+            b.Section("Credentials")
+                .Property(m => m.Name)
+                .Property(m => m.Password, p => p.Mask());
+
+            b.Section("Client")
+                .Property(m => m.ClientId)
+                .Property(m => m.Checksum, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterClientPickupItemMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientPickupItemMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot);
+
+            b.Section("Position")
+                .Property(m => m.X)
+                .Property(m => m.Y);
+        });
+    }
     
     private static void RegisterClientRequestExitMapping(InspectorMappingRegistry registry)
     {
@@ -64,6 +136,32 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Request")
                 .Property(m => m.NeedsHomepage);
+        });
+    }
+
+    private static void RegisterClientRequestLoginNoticeMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientRequestLoginNoticeMessage>(b =>
+        {
+            // No mappings
+        });
+    }
+
+    private static void RegisterClientRequestMetadataMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientRequestMetadataMessage>(b =>
+        {
+            b.Section("Request")
+                .Property(m => m.RequestType)
+                .Property(m => m.Name);
+        });
+    }
+
+    private static void RegisterClientRequestProfileMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientRequestProfileMessage>(b =>
+        {
+            // No mappings
         });
     }
     
@@ -85,6 +183,27 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.NeedsServerTable);
         });
     }
+
+    private static void RegisterClientTurnMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientTurnMessage>(b =>
+        {
+            b.Section("Movement")
+                .Property(m => m.Direction);
+        });
+    }
+
+    private static void RegisterClientUserPortraitMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientUserPortraitMessage>(b =>
+        {
+            b.Section("Portrait")
+                .Property(m => m.Portrait, p => p.ShowMultiline());
+            
+            b.Section("Bio")
+                .Property(m => m.Bio, p => p.ShowMultiline());
+        });
+    }
     
     private static void RegisterClientVersionMapping(InspectorMappingRegistry registry)
     {
@@ -93,6 +212,16 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Client Version")
                 .Property(m => m.Version)
                 .Property(m => m.Checksum, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterClientWalkMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientWalkMessage>(b =>
+        {
+            b.Section("Movement")
+                .Property(m => m.Direction)
+                .Property(m => m.StepCount);
         });
     }
 }

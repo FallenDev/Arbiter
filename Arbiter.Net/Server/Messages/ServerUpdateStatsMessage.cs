@@ -121,18 +121,4 @@ public class ServerUpdateStatsMessage : ServerMessage
     {
         throw new NotImplementedException();
     }
-
-    // Migrate these
-    private bool ShouldExpandLevel() => Fields.HasFlag(StatsFieldFlags.Stats);
-
-    private bool ShouldExpandVitals() => Fields.HasFlag(StatsFieldFlags.Stats) ||
-                                         Fields.HasFlag(StatsFieldFlags.Vitals);
-
-    private bool ShouldExpandStats() => Fields.HasFlag(StatsFieldFlags.Stats);
-    private bool ShouldExpandModifiers() => Fields.HasFlag(StatsFieldFlags.Modifiers);
-    private bool ShouldExpandExperience() => Fields.HasFlag(StatsFieldFlags.ExperienceGold);
-    private bool ShouldExpandCurrency() => Fields.HasFlag(StatsFieldFlags.ExperienceGold);
-    private bool ShouldExpandWeight() => Fields.HasFlag(StatsFieldFlags.Stats);
-    private bool ShouldExpandStatus() => Fields.HasFlag(StatsFieldFlags.Modifiers);
-    private bool ShouldExpandMail() => Fields.HasFlag(StatsFieldFlags.Modifiers);
 }
