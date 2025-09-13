@@ -47,6 +47,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerShowEffectMapping(registry);
         RegisterServerShowNotepadMapping(registry);
         RegisterServerShowPlayerMapping(registry);
+        RegisterServerStatusEffectMapping(registry);
+        RegisterServerSwitchPaneMapping(registry);
         RegisterServerUpdateStatsMapping(registry);
         RegisterServerUserIdMapping(registry);
         RegisterServerWalkResponseMapping(registry);
@@ -69,13 +71,17 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Item")
                 .Property(m => m.Slot)
-                .Property(m => m.Sprite)
+                .Property(m => m.Sprite, p => p.ShowHex())
                 .Property(m => m.DyeColor)
-                .Property(m => m.Name)
+                .Property(m => m.Name, p => p.ShowMultiline());
+            b.Section("Quantity")
                 .Property(m => m.Quantity)
                 .Property(m => m.IsStackable)
+                .IsExpanded(m => m.Quantity > 1);
+            b.Section("Durability")
                 .Property(m => m.Durability)
-                .Property(m => m.MaxDurability);
+                .Property(m => m.MaxDurability)
+                .IsExpanded(m => m.MaxDurability > 0);
         });
     }
 
@@ -125,7 +131,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerCooldownMessage>(b =>
         {
             b.Section("Cooldown")
-                .Property(m => m.Pane)
+                .Property(m => m.Type)
                 .Property(m => m.Slot)
                 .Property(m => m.Seconds);
         });
@@ -556,6 +562,25 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerStatusEffectMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerStatusEffectMessage>(b =>
+        {
+            b.Section("Effect")
+                .Property(m => m.Icon)
+                .Property(m => m.Duration);
+        });    
+    }
+
+    private static void RegisterServerSwitchPaneMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerSwitchPaneMessage>(b =>
+        {
+            b.Section("Interface")
+                .Property(m => m.Pane);
+        });
+    }
+    
     private static void RegisterServerUpdateStatsMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerUpdateStatsMessage>(b =>

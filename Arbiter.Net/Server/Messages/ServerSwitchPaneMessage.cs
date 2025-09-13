@@ -3,19 +3,15 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerCooldownMessage : ServerMessage
+public class ServerSwitchPaneMessage : ServerMessage
 {
-    public AbilityType Type { get; set; }
-    public byte Slot { get; set; }
-    public uint Seconds { get; set; }
+    public InterfacePane Pane { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
-        Type = (AbilityType)reader.ReadByte();
-        Slot = reader.ReadByte();
-        Seconds = reader.ReadUInt32();
+
+        Pane = (InterfacePane)reader.ReadByte();
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

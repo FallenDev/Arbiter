@@ -23,6 +23,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientRequestProfileMapping(registry);
         RegisterClientRequestSequenceMapping(registry);
         RegisterClientRequestServerTableMapping(registry);
+        RegisterClientSwapSlotMapping(registry);
         RegisterClientTurnMapping(registry);
         RegisterClientUserPortraitMapping(registry);
         RegisterClientVersionMapping(registry);
@@ -202,6 +203,18 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Request")
                 .Property(m => m.NeedsServerTable);
+        });
+    }
+
+    private static void RegisterClientSwapSlotMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientSwapSlotMessage>(b =>
+        {
+            b.Section("Interface")
+                .Property(m => m.Pane);
+            b.Section("Slot")
+                .Property(m => m.SourceSlot)
+                .Property(m => m.TargetSlot);
         });
     }
 

@@ -3,19 +3,17 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-public class ServerCooldownMessage : ServerMessage
+public class ServerStatusEffectMessage : ServerMessage
 {
-    public AbilityType Type { get; set; }
-    public byte Slot { get; set; }
-    public uint Seconds { get; set; }
+    public ushort Icon { get; set; }
+    public StatusEffectDuration Duration { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
-        Type = (AbilityType)reader.ReadByte();
-        Slot = reader.ReadByte();
-        Seconds = reader.ReadUInt32();
+
+        Icon = reader.ReadUInt16();
+        Duration = (StatusEffectDuration)reader.ReadByte();
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

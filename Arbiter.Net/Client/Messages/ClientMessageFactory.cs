@@ -26,6 +26,7 @@ public class ClientMessageFactory : IClientMessageFactory
         _typeMappings.Add(ClientCommand.RequestProfile, typeof(ClientRequestProfileMessage));
         _typeMappings.Add(ClientCommand.RequestSequence, typeof(ClientRequestSequenceMessage));
         _typeMappings.Add(ClientCommand.RequestServerTable, typeof(ClientRequestServerTableMessage));
+        _typeMappings.Add(ClientCommand.SwapSlot, typeof(ClientSwapSlotMessage));
         _typeMappings.Add(ClientCommand.Turn, typeof(ClientTurnMessage));
         _typeMappings.Add(ClientCommand.UserPortrait, typeof(ClientUserPortraitMessage));
         _typeMappings.Add(ClientCommand.Version, typeof(ClientVersionMessage));

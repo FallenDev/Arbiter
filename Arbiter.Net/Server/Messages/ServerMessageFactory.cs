@@ -49,6 +49,8 @@ public class ServerMessageFactory : IServerMessageFactory
         _typeMappings.Add(ServerCommand.ShowEffect, typeof(ServerShowEffectMessage));
         _typeMappings.Add(ServerCommand.ShowNotepad, typeof(ServerShowNotepadMessage));
         _typeMappings.Add(ServerCommand.ShowPlayer, typeof(ServerShowPlayerMessage));
+        _typeMappings.Add(ServerCommand.StatusEffect, typeof(ServerStatusEffectMessage));
+        _typeMappings.Add(ServerCommand.SwitchPane, typeof(ServerSwitchPaneMessage));
         _typeMappings.Add(ServerCommand.UpdateStats, typeof(ServerUpdateStatsMessage));
         _typeMappings.Add(ServerCommand.UserId, typeof(ServerUserIdMessage));
         _typeMappings.Add(ServerCommand.WalkResponse, typeof(ServerWalkResponseMessage));
