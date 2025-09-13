@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using Arbiter.App.Extensions;
 using Arbiter.App.Mappings;
 using Arbiter.App.Models;
@@ -80,26 +81,42 @@ public class InspectorViewModelFactory
 
             foreach (var prop in section.Properties)
             {
-                InspectorItemViewModel itemVm;
+                // Lookup overrides for this property on the containing message type
+                _registry.TryGetPropertyOverride(messageType, prop.Member.Name, out var o);
 
                 var value = prop.Getter(message);
+                var formatter = o?.Formatter ?? prop.Formatter;
+                var displayName = o?.DisplayName ?? prop.Name;
+                var showMultiline = o?.ShowMultiline ?? prop.ShowMultiline;
+                var toolTip = o?.ToolTip ?? prop.ToolTip;
 
-                if (prop.Formatter is not null)
+                InspectorItemViewModel itemVm;
+                if (formatter is not null)
                 {
-                    var formatted = value is not null ? prop.Formatter(value) : string.Empty;
-
+                    var formatted = value is not null ? formatter(value) : string.Empty;
                     itemVm = new InspectorValueViewModel
                     {
-                        Name = prop.Name,
+                        Name = displayName,
                         Value = formatted,
                         ShowHex = false,
-                        IsMultiline = prop.ShowMultiline,
-                        ToolTip = prop.ToolTip
+                        IsMultiline = showMultiline,
+                        ToolTip = toolTip
                     };
                 }
                 else
                 {
-                    itemVm = CreateItemViewModel(value, prop, value?.GetType());
+                    itemVm = CreateItemViewModel(value, prop, value?.GetType(), messageType);
+                    // Ensure name reflects display override for container/scalar created below
+                    if (itemVm is InspectorValueViewModel v)
+                    {
+                        v.Name = displayName;
+                        v.IsMultiline = showMultiline;
+                        v.ToolTip = toolTip;
+                    }
+                    else
+                    {
+                        itemVm.Name = displayName;
+                    }
                 }
 
                 sectionVm.Items.Add(itemVm);
@@ -109,8 +126,8 @@ public class InspectorViewModelFactory
         }
     }
 
-    private static InspectorItemViewModel CreateItemViewModel(object? value, InspectorPropertyMapping propMapping,
-        Type? valueType = null)
+    private InspectorItemViewModel CreateItemViewModel(object? value, InspectorPropertyMapping propMapping,
+        Type? valueType = null, Type? containingType = null)
     {
         if (value is null)
         {
@@ -119,46 +136,51 @@ public class InspectorViewModelFactory
 
         if (IsByteEnumerable(value))
         {
+            // Merge overrides for byte sequences based on containing type
+            bool showHex = MergeBool(containingType, propMapping, static (o, p) => o?.ShowHex ?? p.ShowHex);
+            bool showMultiline = MergeBool(containingType, propMapping, static (o, p) => o?.ShowMultiline ?? p.ShowMultiline);
+            var toolTip = MergeValue(containingType, propMapping, static (o, p) => o?.ToolTip ?? p.ToolTip);
+
             return new InspectorValueViewModel
             {
-                Name = propMapping.Name,
+                Name = MergeDisplayName(containingType, propMapping),
                 Value = value,
-                ShowHex = propMapping.ShowHex,
-                IsMultiline = propMapping.ShowMultiline,
-                ToolTip = propMapping.ToolTip
+                ShowHex = showHex,
+                IsMultiline = showMultiline,
+                ToolTip = toolTip
             };
         }
 
         if (value is IDictionary dict)
         {
-            return CreateDictionaryViewModel(dict, propMapping, value.GetType());
+            return CreateDictionaryViewModel(dict, propMapping, value.GetType(), containingType);
         }
 
         if (value is IEnumerable list and not string and not char[])
         {
-            return CreateListViewModel(list, propMapping, value.GetType());
+            return CreateListViewModel(list, propMapping, value.GetType(), containingType);
         }
 
         if (valueType is not null && IsCustomType(valueType))
         {
-            return CreateClassViewModel(value, propMapping, valueType);
+            return CreateClassViewModel(value, propMapping, valueType, containingType);
         }
 
-        return CreateScalarViewModel(value, propMapping, value.GetType());
+        return CreateScalarViewModel(value, propMapping, value.GetType(), containingType);
     }
 
-    private static InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping,
-        Type? listType = null)
+    private InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping,
+        Type? listType = null, Type? containingType = null)
     {
         var vm = new InspectorListViewModel
         {
-            Name = propMapping.Name,
+            Name = MergeDisplayName(containingType, propMapping),
         };
 
         var index = 0;
         foreach (var item in list)
         {
-            var child = CreateItemViewModel(item, propMapping, item?.GetType());
+            var child = CreateItemViewModel(item, propMapping, item?.GetType(), containingType);
             child.Name = $"Element {index}";
 
             vm.Items.Add(child);
@@ -168,19 +190,19 @@ public class InspectorViewModelFactory
         return vm;
     }
 
-    private static InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict,
-        InspectorPropertyMapping propMapping, Type? dictType = null)
+    private InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict,
+        InspectorPropertyMapping propMapping, Type? dictType = null, Type? containingType = null)
     {
         var vm = new InspectorDictionaryViewModel
         {
-            Name = propMapping.Name,
+            Name = MergeDisplayName(containingType, propMapping),
             TypeName = propMapping.PropertyType.Name
         };
 
         foreach (DictionaryEntry kv in dict)
         {
             var key = kv.Key.ToString()?.ToNaturalWording() ?? "<null>";
-            var child = CreateItemViewModel(kv.Value, propMapping, kv.Value?.GetType());
+            var child = CreateItemViewModel(kv.Value, propMapping, kv.Value?.GetType(), containingType);
 
             if (child is InspectorValueViewModel valueVm)
             {
@@ -192,44 +214,70 @@ public class InspectorViewModelFactory
         return vm;
     }
 
-    private static InspectorDictionaryViewModel CreateClassViewModel(object value, InspectorPropertyMapping propMapping,
-        Type classType)
+    private InspectorDictionaryViewModel CreateClassViewModel(object value, InspectorPropertyMapping propMapping,
+        Type classType, Type? containingType = null)
     {
         var vm = new InspectorDictionaryViewModel
         {
-            Name = propMapping.Name,
+            Name = MergeDisplayName(containingType, propMapping),
             TypeName = classType.Name
         };
 
-        var properties = classType.GetPropertiesInDerivedOrder()
-            .Where(p => p.GetMethod is not null);
-
-        foreach (var property in properties)
+        if (_registry.TryGetMapping(classType, out var typeMapping))
         {
-            var child = CreateItemViewModel(property.GetValue(value), propMapping, property.PropertyType);
-
-            if (child is InspectorValueViewModel valueVm)
+            foreach (var section in typeMapping.Sections)
             {
-                valueVm.Name = property.Name.ToNaturalWording();
-                vm.Values.Add(valueVm);
+                foreach (var nestedProp in section.Properties)
+                {
+                    var nestedValue = nestedProp.Getter(value);
+                    var child = CreateItemViewModel(nestedValue, nestedProp, nestedValue?.GetType(), classType);
+
+                    if (child is InspectorValueViewModel valueVm)
+                    {
+                        vm.Values.Add(valueVm);
+                    }
+                }
+            }
+        }
+        else
+        {
+            var properties = classType.GetPropertiesInDerivedOrder()
+                .Where(p => p.GetMethod is not null);
+
+            foreach (var property in properties)
+            {
+                var tempMapping = CreateMappingFromPropertyInfo(property);
+                var child = CreateItemViewModel(property.GetValue(value), tempMapping, property.PropertyType, classType);
+
+                if (child is InspectorValueViewModel valueVm)
+                {
+                    vm.Values.Add(valueVm);
+                }
             }
         }
 
         return vm;
     }
 
-    private static InspectorValueViewModel CreateScalarViewModel(object? value, InspectorPropertyMapping propMapping,
-        Type? valueType = null)
+    private InspectorValueViewModel CreateScalarViewModel(object? value, InspectorPropertyMapping propMapping,
+        Type? valueType = null, Type? containingType = null)
     {
+        var showHex = MergeBool(containingType, propMapping, static (o, p) => o?.ShowHex ?? p.ShowHex);
+        var showMultiline = MergeBool(containingType, propMapping, static (o, p) => o?.ShowMultiline ?? p.ShowMultiline);
+        var isMasked = MergeBool(containingType, propMapping, static (o, p) => o?.IsMasked ?? p.IsMasked);
+        var maskChar = MergeValue(containingType, propMapping, static (o, p) => o?.MaskCharacter ?? p.MaskCharacter);
+        var toolTip = MergeValue(containingType, propMapping, static (o, p) => o?.ToolTip ?? p.ToolTip);
+        var name = MergeDisplayName(containingType, propMapping);
+
         return new InspectorValueViewModel
         {
-            Name = propMapping.Name,
+            Name = name,
             Value = value,
-            ShowHex = propMapping.ShowHex,
-            IsMultiline = propMapping.ShowMultiline,
-            IsRevealed = !propMapping.IsMasked,
-            MaskCharacter = propMapping.MaskCharacter,
-            ToolTip = propMapping.ToolTip
+            ShowHex = showHex,
+            IsMultiline = showMultiline,
+            IsRevealed = !isMasked,
+            MaskCharacter = maskChar,
+            ToolTip = toolTip
         };
     }
 
@@ -241,4 +289,56 @@ public class InspectorViewModelFactory
     };
 
     private static bool IsCustomType(Type type) => type.IsClass && type != typeof(string) && type != typeof(IPAddress);
+
+
+    private static InspectorPropertyMapping CreateMappingFromPropertyInfo(PropertyInfo property)
+    {
+        // Create a simple getter
+        object? Getter(object instance)
+        {
+            if (instance is null)
+            {
+                return null;
+            }
+
+            return property.GetValue(instance);
+        }
+
+        return new InspectorPropertyMapping(property.Name.ToNaturalWording(), property, property.PropertyType, Getter)
+        {
+            ShowHex = false,
+            ShowMultiline = false,
+            IsMasked = false,
+            MaskCharacter = null,
+            Formatter = null,
+            ToolTip = null
+        };
+    }
+
+    // Helper methods to merge override values with base mapping without cloning
+    private bool MergeBool(Type? containingType, InspectorPropertyMapping prop,
+        Func<InspectorPropertyOverrides?, InspectorPropertyMapping, bool> selector)
+    {
+        if (containingType is not null && _registry.TryGetPropertyOverride(containingType, prop.Member.Name, out var o))
+        {
+            return selector(o, prop);
+        }
+        return selector(null, prop);
+    }
+
+    private T? MergeValue<T>(Type? containingType, InspectorPropertyMapping prop,
+        Func<InspectorPropertyOverrides?, InspectorPropertyMapping, T?> selector)
+    {
+        if (containingType is not null && _registry.TryGetPropertyOverride(containingType, prop.Member.Name, out var o))
+        {
+            return selector(o, prop);
+        }
+        return selector(null, prop);
+    }
+
+    private string MergeDisplayName(Type? containingType, InspectorPropertyMapping prop)
+    {
+        var name = MergeValue(containingType, prop, static (o, p) => o?.DisplayName ?? p.Name);
+        return name ?? prop.Name;
+    }
 }

@@ -103,7 +103,7 @@ public class InspectorPropertyBuilder<T, TProp>
             MemberExpression me => me.Member,
             MethodCallExpression mce => mce.Method,
             IndexExpression ie => ie.Indexer?.GetMethod ??
-                                  throw new ArgumentException("Expression must be a member access."),
+                                  throw new ArgumentException("Expression must be a member access"),
             _ => throw new ArgumentException("Expression must be a simple member accessor")
         };
     }
