@@ -228,6 +228,8 @@ public class InspectorViewModelFactory
             Value = value,
             ShowHex = propMapping.ShowHex,
             IsMultiline = propMapping.ShowMultiline,
+            IsRevealed = !propMapping.IsMasked,
+            MaskCharacter = propMapping.MaskCharacter,
             ToolTip = propMapping.ToolTip
         };
     }

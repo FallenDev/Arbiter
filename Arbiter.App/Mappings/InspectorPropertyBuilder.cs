@@ -15,6 +15,8 @@ public class InspectorPropertyBuilder<T>
     private bool _showMultiline;
     private string? _name;
     private Func<object, string>? _formatter;
+    private bool _isMasked;
+    private char? _maskChar;
     private string? _toolTip;
 
     internal InspectorPropertyBuilder(MemberInfo member, Type propertyType, Func<object, object?> getter)
@@ -47,7 +49,14 @@ public class InspectorPropertyBuilder<T>
         _formatter = formatter;
         return this;
     }
-    
+
+    public InspectorPropertyBuilder<T> Mask(char maskChar = '*')
+    {
+        _isMasked = true;
+        _maskChar = maskChar;
+        return this;
+    }
+
     public InspectorPropertyBuilder<T> ToolTip(string toolTip)
     {
         _toolTip = toolTip;
@@ -57,8 +66,15 @@ public class InspectorPropertyBuilder<T>
     public InspectorPropertyMapping Build()
     {
         var displayName = _name ?? _member.Name.ToNaturalWording();
-        return new InspectorPropertyMapping(displayName, _member, _propertyType, _getter, _showHex,
-            _showMultiline, _formatter);
+        return new InspectorPropertyMapping(displayName, _member, _propertyType, _getter)
+        {
+            ShowHex = _showHex,
+            ShowMultiline = _showMultiline,
+            Formatter = _formatter,
+            IsMasked = _isMasked,
+            MaskCharacter = _maskChar,
+            ToolTip = _toolTip,
+        };
     }
 }
 
@@ -138,6 +154,12 @@ public class InspectorPropertyBuilder<T, TProp>
 
             return formatter((TProp)value);
         }
+    }
+    
+    public InspectorPropertyBuilder<T, TProp> Mask(char maskChar = '●')
+    {
+        Untyped.Mask(maskChar);
+        return this;
     }
 
     public InspectorPropertyBuilder<T, TProp> ToolTip(string toolTip)
