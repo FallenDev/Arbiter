@@ -16,6 +16,7 @@ public class ClientMessageFactory : IClientMessageFactory
         _typeMappings.Add(ClientCommand.CreateCharacterName, typeof(ClientCreateCharacterNameMessage));
         _typeMappings.Add(ClientCommand.DropItem, typeof(ClientDropItemMessage));
         _typeMappings.Add(ClientCommand.Heartbeat, typeof(ClientHeartbeatMessage));
+        _typeMappings.Add(ClientCommand.Interact, typeof(ClientInteractMessage));
         _typeMappings.Add(ClientCommand.Login, typeof(ClientLoginMessage));
         _typeMappings.Add(ClientCommand.PickupItem, typeof(ClientPickupItemMessage));
         _typeMappings.Add(ClientCommand.RequestExit, typeof(ClientRequestExitMessage));
@@ -29,6 +30,7 @@ public class ClientMessageFactory : IClientMessageFactory
         _typeMappings.Add(ClientCommand.UserPortrait, typeof(ClientUserPortraitMessage));
         _typeMappings.Add(ClientCommand.Version, typeof(ClientVersionMessage));
         _typeMappings.Add(ClientCommand.Walk, typeof(ClientWalkMessage));
+        _typeMappings.Add(ClientCommand.WorldMapClick, typeof(ClientWorldMapClickMessage));
     }
 
     public Type? GetMessageType(ClientCommand command) => _typeMappings.GetValueOrDefault(command);

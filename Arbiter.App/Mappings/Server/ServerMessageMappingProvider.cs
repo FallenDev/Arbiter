@@ -50,6 +50,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerUpdateStatsMapping(registry);
         RegisterServerUserIdMapping(registry);
         RegisterServerWalkResponseMapping(registry);
+        RegisterServerWorldMapMapping(registry);
         RegisterServerWorldMessageMapping(registry);
     }
 
@@ -641,6 +642,18 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.UnknownX, p => p.ShowHex())
                 .Property(m => m.UnknownY, p => p.ShowHex())
                 .Property(m => m.Unknown, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerWorldMapMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerWorldMapMessage>(b =>
+        {
+            b.Section("Field")
+                .Property(m => m.FieldIndex)
+                .Property(m => m.FieldName);
+            b.Section("Locations")
+                .Property(m => m.Locations);
         });
     }
 

@@ -1,4 +1,5 @@
 ﻿using Arbiter.Net.Client.Messages;
+using Arbiter.Net.Types;
 
 namespace Arbiter.App.Mappings.Client;
 
@@ -12,6 +13,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientCreateCharacterNameMapping(registry);
         RegisterClientDropItemMapping(registry);
         RegisterClientHeartbeatMapping(registry);
+        RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
         RegisterClientPickupItemMapping(registry);
         RegisterClientRequestExitMapping(registry);
@@ -25,6 +27,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientUserPortraitMapping(registry);
         RegisterClientVersionMapping(registry);
         RegisterClientWalkMapping(registry);
+        RegisterClientWorldMapClickMapping(registry);
     }
 
     private static void RegisterClientAssailMapping(InspectorMappingRegistry registry)
@@ -94,6 +97,24 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientInteractMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientInteractMessage>(b =>
+        {
+            b.Section("Interaction")
+                .Property(m => m.InteractionType);
+
+            b.Section("Target Entity")
+                .Property(m => m.TargetId, p => p.ShowHex())
+                .IsExpanded(m => m.InteractionType == InteractionType.Entity);
+
+            b.Section("Target Tile")
+                .Property(m => m.TargetX)
+                .Property(m => m.TargetY)
+                .IsExpanded(m => m.InteractionType == InteractionType.Tile);
+        });
+    }
+    
     private static void RegisterClientLoginMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientLoginMessage>(b =>
@@ -224,6 +245,19 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Movement")
                 .Property(m => m.Direction)
                 .Property(m => m.StepCount);
+        });
+    }
+    
+    private static void RegisterClientWorldMapClickMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientWorldMapClickMessage>(b =>
+        {
+            b.Section("Location")
+                .Property(m => m.MapId)
+                .Property(m => m.X)
+                .Property(m => m.Y);
+            b.Section("Checksum")
+                .Property(m => m.Checksum, p => p.ShowHex());
         });
     }
 }

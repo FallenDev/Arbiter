@@ -52,6 +52,7 @@ public class ServerMessageFactory : IServerMessageFactory
         _typeMappings.Add(ServerCommand.UpdateStats, typeof(ServerUpdateStatsMessage));
         _typeMappings.Add(ServerCommand.UserId, typeof(ServerUserIdMessage));
         _typeMappings.Add(ServerCommand.WalkResponse, typeof(ServerWalkResponseMessage));
+        _typeMappings.Add(ServerCommand.WorldMap, typeof(ServerWorldMapMessage));
         _typeMappings.Add(ServerCommand.WorldMessage, typeof(ServerWorldMessageMessage));
     }
     
