@@ -100,7 +100,7 @@ public class InspectorViewModelFactory
                 }
                 else
                 {
-                    itemVm = CreateItemViewModel(value, prop);
+                    itemVm = CreateItemViewModel(value, prop, value?.GetType());
                 }
 
                 sectionVm.Items.Add(itemVm);

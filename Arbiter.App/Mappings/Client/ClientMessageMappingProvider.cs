@@ -12,6 +12,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientChangePasswordMapping(registry);
         RegisterClientCreateCharacterNameMapping(registry);
         RegisterClientDropItemMapping(registry);
+        RegisterClientGroupInviteMapping(registry);
         RegisterClientHeartbeatMapping(registry);
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
@@ -91,6 +92,20 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientGroupInviteMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientGroupInviteMessage>(b =>
+        {
+            b.Section("Action")
+                .Property(m => m.GroupAction);
+            b.Section("Target")
+                .Property(m => m.TargetName);
+            b.Section("Group Box")
+                .Property(m => m.GroupBox)
+                .IsExpanded(m => m.GroupBox is not null);
+        });
+    }
+    
     private static void RegisterClientHeartbeatMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientHeartbeatMessage>(b =>
