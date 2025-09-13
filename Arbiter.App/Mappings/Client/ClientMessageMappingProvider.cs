@@ -88,8 +88,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.EntityType)
                 .Property(m => m.EntityId, p => p.ShowHex());
             b.Section("Dialog")
-                .Property(m => m.DialogId, p => p.ShowHex())
-                .Property(m => m.PursuitId, p => p.ShowHex());
+                .Property(m => m.DialogId)
+                .Property(m => m.PursuitId);
             b.Section("Arguments")
                 .Property(m => m.ArgsType)
                 .Property(m => m.MenuChoice)
@@ -175,7 +175,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.EntityType)
                 .Property(m => m.EntityId, p => p.ShowHex());
             b.Section("Menu")
-                .Property(m => m.PursuitId, p => p.ShowHex());
+                .Property(m => m.PursuitId);
             b.Section("Menu Choice")
                 .Property(m => m.MenuChoice)
                 .IsExpanded(m => m.MenuChoice.HasValue);

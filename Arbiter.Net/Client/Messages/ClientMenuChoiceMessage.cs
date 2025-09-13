@@ -29,10 +29,7 @@ public class ClientMenuChoiceMessage : ClientMessage
         else
         {
             reader.Position -= 1;
-            while (!reader.IsEndOfPacket())
-            {
-                TextInputs.Add(reader.ReadString8());
-            }
+            TextInputs = reader.ReadStringArgs8().ToList();
         }
     }
 

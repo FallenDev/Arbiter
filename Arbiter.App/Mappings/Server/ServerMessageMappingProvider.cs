@@ -483,8 +483,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Dialog")
                 .Property(m => m.DialogType)
-                .Property(m => m.DialogId, p => p.ShowHex())
-                .Property(m => m.PursuitId, p => p.ShowHex());
+                .Property(m => m.DialogId)
+                .Property(m => m.PursuitId);
             b.Section("Source")
                 .Property(m => m.EntityType)
                 .Property(m => m.SourceId, p => p.ShowHex())
@@ -494,7 +494,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Sprite, p => p.ShowHex())
                 .Property(m => m.Color)
                 .Property(m => m.Content, p => p.ShowMultiline())
-                .Property(m => m.HideGraphic)
+                .Property(m => m.ShowGraphic)
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Menu Choices")
                 .Property(m => m.MenuChoices)
@@ -540,7 +540,38 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerShowMenuMessage>(b =>
         {
             b.Section("Menu")
-                .Property(m => m.MenuType);
+                .Property(m => m.MenuType)
+                .Property(m => m.PursuitId);
+            b.Section("Source")
+                .Property(m => m.EntityType)
+                .Property(m => m.SourceId, p => p.ShowHex())
+                .Property(m => m.Name);
+            b.Section("Content")
+                .Property(m => m.Sprite, p => p.ShowHex())
+                .Property(m => m.Color)
+                .Property(m => m.Content, p => p.ShowMultiline())
+                .Property(m => m.ShowGraphic);
+            b.Section("Arguments")
+                .Property(m => m.Args, p => p.ShowMultiline())
+                .IsExpanded(m => m.MenuType is DialogMenuType.MenuWithArgs or DialogMenuType.TextInputWithArgs);
+            b.Section("Menu Choices")
+                .Property(m => m.MenuChoices)
+                .IsExpanded(m => m.MenuType is DialogMenuType.Menu or DialogMenuType.MenuWithArgs);
+            b.Section("Item Choices")
+                .Property(m => m.ItemChoices)
+                .IsExpanded(m => m.MenuType == DialogMenuType.ItemChoices);
+            b.Section("Skill Choices")
+                .Property(m => m.SkillChoices)
+                .IsExpanded(m => m.MenuType == DialogMenuType.SkillChoices);
+            b.Section("Spell Choices")
+                .Property(m => m.SpellChoices)
+                .IsExpanded(m => m.MenuType == DialogMenuType.SpellChoices);
+            b.Section("Player Inventory")
+                .Property(m => m.InventorySlots)
+                .IsExpanded(m => m.MenuType == DialogMenuType.PlayerInventory);
+            b.Section("Unknown")
+                .Property(m => m.Unknown1, p => p.ShowHex())
+                .Property(m => m.Unknown2, p => p.ShowHex());
         });
     }
 

@@ -39,11 +39,7 @@ public class ClientDialogChoiceMessage : ClientMessage
         }
         else if (ArgsType == DialogArgsType.TextInput)
         {
-            while (!reader.IsEndOfPacket())
-            {
-                var text = reader.ReadString8();
-                TextInputs.Add(text);
-            }
+            TextInputs = reader.ReadStringArgs8().ToList();
         }
     }
 

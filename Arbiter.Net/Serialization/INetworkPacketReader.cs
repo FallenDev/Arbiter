@@ -34,4 +34,28 @@ public interface INetworkPacketReader
     void Skip(int length);
     bool CanRead(int length);
     bool IsEndOfPacket();
+
+    IEnumerable<string> ReadStringArgs8()
+    {
+        while(!IsEndOfPacket())
+        {
+            var text = ReadString8();
+            if (!string.IsNullOrEmpty(text))
+            {
+                yield return text;
+            }
+        }
+    }
+    
+    IEnumerable<string> ReadStringArgs16()
+    {
+        while(!IsEndOfPacket())
+        {
+            var text = ReadString16();
+            if (!string.IsNullOrEmpty(text))
+            {
+                yield return text;
+            }
+        }
+    }
 }

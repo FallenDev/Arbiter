@@ -16,7 +16,7 @@ public class ServerShowDialogMessage : ServerMessage
     public ushort? DialogId { get; set; }
     public bool HasPreviousButton { get; set; }
     public bool HasNextButton { get; set; }
-    public bool HideGraphic { get; set; }
+    public bool ShowGraphic { get; set; }
     public string? Name { get; set; }
     public string? Content { get; set; }
     public List<string> MenuChoices { get; set; } = [];
@@ -52,7 +52,7 @@ public class ServerShowDialogMessage : ServerMessage
 
         HasPreviousButton = reader.ReadBoolean();
         HasNextButton = reader.ReadBoolean();
-        HideGraphic = reader.ReadBoolean();
+        ShowGraphic = !reader.ReadBoolean();    // inverted for some reason
 
         Name = reader.ReadString8();
         Content = reader.ReadString16();
