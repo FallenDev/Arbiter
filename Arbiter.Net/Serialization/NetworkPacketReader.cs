@@ -178,10 +178,14 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     {
         _position += length;
     }
+    
+    public bool CanRead(int length) => _position + length <= _buffer.Length;
+    
+    public bool IsEndOfPacket() => _position >= Length;
 
     private void EnsureCanRead(int length)
     {
-        if (_position + length > _buffer.Length)
+        if (!CanRead(length))
         {
             throw new IndexOutOfRangeException("Cannot read past end of buffer");
         }

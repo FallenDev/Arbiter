@@ -30,8 +30,8 @@
                      Background="{StaticResource Talgonite.InspectorList.Background}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                      Margin="0,0,4,0"
-                     Height="40"
-                     HorizontalAlignment="Stretch">
+                     Height="40" MinWidth="50" MaxWidth="100"
+                     HorizontalAlignment="Right">
                 <TextBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Copy Value" Command="{Binding CopyToClipboardCommand}" CommandParameter="count"/>

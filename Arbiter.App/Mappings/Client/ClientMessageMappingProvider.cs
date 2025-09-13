@@ -11,11 +11,13 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientAuthenticateMapping(registry);
         RegisterClientChangePasswordMapping(registry);
         RegisterClientCreateCharacterNameMapping(registry);
+        RegisterClientDialogChoiceMapping(registry);
         RegisterClientDropItemMapping(registry);
         RegisterClientGroupInviteMapping(registry);
         RegisterClientHeartbeatMapping(registry);
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
+        RegisterClientMenuChoiceMapping(registry);
         RegisterClientPickupItemMapping(registry);
         RegisterClientRequestExitMapping(registry);
         RegisterClientRequestHomepageMapping(registry);
@@ -75,6 +77,24 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Name)
                 .Property(m => m.Password, p => p.Mask())
                 .Property(m => m.Email);
+        });
+    }
+
+    private static void RegisterClientDialogChoiceMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientDialogChoiceMessage>(b =>
+        {
+            b.Section("Entity")
+                .Property(m => m.EntityType)
+                .Property(m => m.EntityId, p => p.ShowHex());
+            b.Section("Dialog")
+                .Property(m => m.DialogId, p => p.ShowHex())
+                .Property(m => m.PursuitId, p => p.ShowHex());
+            b.Section("Arguments")
+                .Property(m => m.ArgsType)
+                .Property(m => m.MenuChoice)
+                .Property(m => m.TextInputs, p => p.ShowMultiline())
+                .IsExpanded(m => m.ArgsType != DialogArgsType.None);
         });
     }
 
@@ -144,6 +164,24 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Client")
                 .Property(m => m.ClientId)
                 .Property(m => m.Checksum, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterClientMenuChoiceMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientMenuChoiceMessage>(b =>
+        {
+            b.Section("Entity")
+                .Property(m => m.EntityType)
+                .Property(m => m.EntityId, p => p.ShowHex());
+            b.Section("Menu")
+                .Property(m => m.PursuitId, p => p.ShowHex());
+            b.Section("Menu Choice")
+                .Property(m => m.MenuChoice)
+                .IsExpanded(m => m.MenuChoice.HasValue);
+            b.Section("Text Input")
+                .Property(m => m.TextInputs, p => p.ShowMultiline())
+                .IsExpanded(m => m.TextInputs.Count > 0);
         });
     }
 

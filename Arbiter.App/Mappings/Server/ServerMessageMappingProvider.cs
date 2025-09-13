@@ -44,7 +44,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerServerListMapping(registry);
         RegisterServerServerTableMapping(registry);
         RegisterServerSetEquipmentMapping(registry);
+        RegisterServerShowDialogMapping(registry);
         RegisterServerShowEffectMapping(registry);
+        RegisterServerShowMenuMapping(registry);
         RegisterServerShowNotepadMapping(registry);
         RegisterServerShowPlayerMapping(registry);
         RegisterServerStatusEffectMapping(registry);
@@ -475,6 +477,43 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerShowDialogMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowDialogMessage>(b =>
+        {
+            b.Section("Dialog")
+                .Property(m => m.DialogType)
+                .Property(m => m.DialogId, p => p.ShowHex())
+                .Property(m => m.PursuitId, p => p.ShowHex());
+            b.Section("Source")
+                .Property(m => m.EntityType)
+                .Property(m => m.SourceId, p => p.ShowHex())
+                .Property(m => m.Name)
+                .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
+            b.Section("Content")
+                .Property(m => m.Sprite, p => p.ShowHex())
+                .Property(m => m.Color)
+                .Property(m => m.Content, p => p.ShowMultiline())
+                .Property(m => m.HideGraphic)
+                .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
+            b.Section("Menu Choices")
+                .Property(m => m.MenuChoices)
+                .IsExpanded(m => m.DialogType is DialogType.Menu or DialogType.CreatureMenu);
+            b.Section("Text Input")
+                .Property(m => m.InputPrompt)
+                .Property(m => m.InputMaxLength)
+                .IsExpanded(m => m.DialogType == DialogType.TextInput);
+            b.Section("Navigation")
+                .Property(m => m.HasPreviousButton)
+                .Property(m => m.HasNextButton)
+                .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
+            b.Section("Unknown")
+                .Property(m => m.Unknown1, p => p.ShowHex())
+                .Property(m => m.Unknown2, p => p.ShowHex())
+                .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
+        });
+    }
+
     private static void RegisterServerShowEffectMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerShowEffectMessage>(b =>
@@ -493,6 +532,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.TargetAnimation)
                 .Property(m => m.SourceAnimation)
                 .Property(m => m.AnimationSpeed);
+        });
+    }
+
+    private static void RegisterServerShowMenuMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowMenuMessage>(b =>
+        {
+            b.Section("Menu")
+                .Property(m => m.MenuType);
         });
     }
 

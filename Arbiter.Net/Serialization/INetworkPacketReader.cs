@@ -32,4 +32,6 @@ public interface INetworkPacketReader
     void ReadToEnd(Span<byte> destination);
     
     void Skip(int length);
+    bool CanRead(int length);
+    bool IsEndOfPacket();
 }

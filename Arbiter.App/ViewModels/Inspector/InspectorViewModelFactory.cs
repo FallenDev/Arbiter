@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using Arbiter.App.Extensions;
 using Arbiter.App.Mappings;
 using Arbiter.App.Models;
