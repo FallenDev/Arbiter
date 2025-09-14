@@ -12,6 +12,7 @@ using Arbiter.App.Services;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +33,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private readonly ILogger<TraceViewModel> _logger;
     private readonly IStorageProvider _storageProvider;
+    private readonly IKeyboardService _keyboardService;
     private readonly IDialogService _dialogService;
     private readonly ITraceService _traceService;
     private readonly ProxyServer _proxyServer;
@@ -85,10 +87,12 @@ public partial class TraceViewModel : ViewModelBase
     }
 
     public TraceViewModel(ILogger<TraceViewModel> logger, IStorageProvider storageProvider,
+        IKeyboardService keyboardService,
         IDialogService dialogService, ITraceService traceService, ProxyServer proxyServer)
     {
         _logger = logger;
         _storageProvider = storageProvider;
+        _keyboardService = keyboardService;
         _dialogService = dialogService;
         _traceService = traceService;
         _proxyServer = proxyServer;
@@ -170,13 +174,17 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Add(packetViewModel);
     }
 
-    public async Task LoadFromFileAsync(string inputPath)
+    public async Task LoadFromFileAsync(string inputPath, bool append= false)
     {
         var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
         var packets = traceFile.Packets;
 
         StopTracing();
-        _allPackets.Clear();
+
+        if (!append)
+        {
+            _allPackets.Clear();
+        }
 
         foreach (var packet in packets)
         {
@@ -227,6 +235,8 @@ public partial class TraceViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadTrace()
     {
+        var append = _keyboardService.IsModifierPressed(KeyModifiers.Shift);
+        
         var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
         var result = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -248,7 +258,9 @@ public partial class TraceViewModel : ViewModelBase
             {
                 Title = "Confirm Load Trace",
                 Message = "You have an active trace running.\nAre you sure you want to load?",
-                Description = "This will stop and replace your current trace.",
+                Description = append
+                    ? "This will stop your current trace."
+                    : "This will stop and replace your current trace.",
                 Style = MessageBoxStyle.YesNo
             });
 
@@ -261,7 +273,7 @@ public partial class TraceViewModel : ViewModelBase
         var inputPath = result[0].Path.AbsolutePath;
         var filename = Path.GetFileName(inputPath);
 
-        await LoadFromFileAsync(inputPath);
+        await LoadFromFileAsync(inputPath, append);
         _logger.LogInformation("Trace loaded from {Filename}", filename);
     }
 

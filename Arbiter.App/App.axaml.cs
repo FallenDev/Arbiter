@@ -85,6 +85,7 @@ public class App : Application
     private static void RegisterServices(IServiceCollection services)
     {
         // Singletons
+        services.AddSingleton<IKeyboardService, KeyboardService>();
         services.AddSingleton<InspectorMappingRegistry>();
         services.AddSingleton<InspectorViewModelFactory>();
         services.AddSingleton<ProxyServer>();
