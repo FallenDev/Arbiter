@@ -212,7 +212,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientGroupInviteMessage>(b =>
         {
             b.Section("Action")
-                .Property(m => m.GroupAction);
+                .Property(m => m.Action);
             b.Section("Target")
                 .Property(m => m.TargetName);
             b.Section("Group Box")

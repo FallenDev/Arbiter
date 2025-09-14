@@ -7,7 +7,7 @@ namespace Arbiter.Net.Client.Messages;
 [NetworkCommand(ClientCommand.GroupInvite)]
 public class ClientGroupInviteMessage : ClientMessage
 {
-    public GroupInviteAction GroupAction { get; set; }
+    public ClientGroupAction Action { get; set; }
     public string TargetName { get; set; } = string.Empty;
     
     public ClientGroupBox? GroupBox { get; set; }
@@ -16,10 +16,10 @@ public class ClientGroupInviteMessage : ClientMessage
     {
         base.Deserialize(reader);
 
-        GroupAction = (GroupInviteAction)reader.ReadByte();
+        Action = (ClientGroupAction)reader.ReadByte();
         TargetName = reader.ReadString8();
 
-        if (GroupAction == GroupInviteAction.CreateGroupBox)
+        if (Action == ClientGroupAction.RecruitStart)
         {
             GroupBox = new ClientGroupBox
             {

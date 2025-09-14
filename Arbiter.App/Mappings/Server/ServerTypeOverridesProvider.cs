@@ -8,6 +8,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
     {
         registry.RegisterOverrides<ServerCreatureEntity>(b =>
         {
+            b.Property(m => m.Id, p => p.ShowHex());
             b.Property(m => m.Sprite, p => p.ShowHex());
             b.Property(m => m.Unknown, p => p.ShowHex());
         });
@@ -15,6 +16,12 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerDialogMenuChoice>(b =>
         {
             b.Property(m => m.Text, p => p.ShowMultiline());
+        });
+
+        registry.RegisterOverrides<ServerGroupBox>(b =>
+        {
+            b.Property(m => m.Name, p => p.ShowMultiline());
+            b.Property(m => m.Note, p => p.ShowMultiline());
         });
 
         registry.RegisterOverrides<ServerItemEntity>(b =>
@@ -28,6 +35,11 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
             b.Property(m => m.Sprite, p => p.ShowHex());
             b.Property(m => m.Name, p => p.ShowMultiline());
             b.Property(m => m.Description, p => p.ShowMultiline());
+        });
+        
+        registry.RegisterOverrides<ServerLegendMark>(b =>
+        {
+            b.Property(m => m.Text, p => p.ShowMultiline());
         });
 
         registry.RegisterOverrides<ServerMetadataEntry>(b =>

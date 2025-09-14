@@ -17,6 +17,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerEntityTurnMapping(registry);
         RegisterServerEntityWalkMapping(registry);
         RegisterServerExitResponseMapping(registry);
+        RegisterServerGroupMapping(registry);
         RegisterServerHealthBarMapping(registry);
         RegisterServerHeartbeatMapping(registry);
         RegisterServerHelloMapping(registry);
@@ -41,6 +42,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerRemoveSkillMapping(registry);
         RegisterServerRemoveSpellMapping(registry);
         RegisterServerRequestUserPortraitMapping(registry);
+        RegisterServerSelfProfileMapping(registry);
         RegisterServerServerInfoMapping(registry);
         RegisterServerServerListMapping(registry);
         RegisterServerServerTableMapping(registry);
@@ -174,6 +176,19 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Response")
                 .Property(m => m.Result)
                 .Property(m => m.Unknown, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerGroupMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerGroupMessage>(b =>
+        {
+            b.Section("Action")
+                .Property(m => m.Action);
+            b.Section("User")
+                .Property(m => m.Name);
+            b.Section("Group Box")
+                .Property(m => m.GroupBox);
         });
     }
 
@@ -440,6 +455,34 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerSelfProfileMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerSelfProfileMessage>(b =>
+        {
+            b.Section("Profile")
+                .Property(m => m.Class)
+                .Property(m => m.DisplayClass)
+                .Property(m => m.Guild)
+                .Property(m => m.GuildRank)
+                .Property(m => m.Title);
+            b.Section("Citizenship")
+                .Property(m => m.Nation);
+            b.Section("Group")
+                .Property(m => m.IsGroupOpen)
+                .Property(m => m.HasGroupInvite)
+                .Property(m => m.GroupMembers, p => p.ShowMultiline());
+            b.Section("Group Box")
+                .Property(m => m.GroupBox, p => p.ShowMultiline())
+                .IsExpanded(m => m.HasGroupInvite);
+            b.Section("Metadata")
+                .Property(m => m.ShowMasterMetadata)
+                .Property(m => m.ShowAbilityMetadata);
+            b.Section("Legend")
+                .Property(m => m.LegendMarks)
+                .IsExpanded(_ => false);
+        });
+    }
+    
     private static void RegisterServerServerInfoMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerServerInfoMessage>(b =>
@@ -607,7 +650,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Player")
                 .Property(m => m.EntityId, p => p.ShowHex())
                 .Property(m => m.NameStyle)
-                .Property(m => m.Name)
+                .Property(m => m.Name);
+            b.Section("Group Box")
                 .Property(m => m.GroupBox, p => p.ShowMultiline());
             b.Section("Position")
                 .Property(m => m.X)
