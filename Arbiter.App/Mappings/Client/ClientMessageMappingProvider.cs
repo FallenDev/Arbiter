@@ -15,9 +15,13 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientCreateCharacterAppearance(registry);
         RegisterClientCreateCharacterNameMapping(registry);
         RegisterClientDialogChoiceMapping(registry);
+        RegisterClientDropGoldMapping(registry);
         RegisterClientDropItemMapping(registry);
+        RegisterClientGiveCreatureGoldMapping(registry);
+        RegisterClientGiveCreatureItemMapping(registry);
         RegisterClientGroupInviteMapping(registry);
         RegisterClientHeartbeatMapping(registry);
+        RegisterClientIgnoreUserMapping(registry);
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
         RegisterClientMenuChoiceMapping(registry);
@@ -34,6 +38,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientSetStatusMapping(registry);
         RegisterClientSpellChantMapping(registry);
         RegisterClientSwapSlotMapping(registry);
+        RegisterClientToggleSettingMapping(registry);
         RegisterClientTurnMapping(registry);
         RegisterClientUnequipItemMapping(registry);
         RegisterClientUseItem(registry);
@@ -142,6 +147,18 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientDropGoldMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientDropGoldMessage>(b =>
+        {
+            b.Section("Gold")
+                .Property(m => m.Amount);
+            b.Section("Position")
+                .Property(m => m.X)
+                .Property(m => m.Y);
+        });
+    }
+    
     private static void RegisterClientDropItemMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientDropItemMessage>(b =>
@@ -149,10 +166,32 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Item")
                 .Property(m => m.Slot)
                 .Property(m => m.Quantity);
-
             b.Section("Position")
                 .Property(m => m.X)
                 .Property(m => m.Y);
+        });
+    }
+    
+    private static void RegisterClientGiveCreatureGoldMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientGiveCreatureGoldMessage>(b =>
+        {
+            b.Section("Gold")
+                .Property(m => m.Amount);
+            b.Section("Entity")
+                .Property(m => m.EntityId, p => p.ShowHex());
+        });
+    }
+    
+    private static void RegisterClientGiveCreatureItemMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientGiveCreatureItemMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot)
+                .Property(m => m.Quantity);
+            b.Section("Entity")
+                .Property(m => m.EntityId, p => p.ShowHex());
         });
     }
 
@@ -179,17 +218,25 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientIgnoreUserMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientIgnoreUserMessage>(b =>
+        {
+            b.Section("Ignore")
+                .Property(m => m.Action)
+                .Property(m => m.Name);
+        });
+    }
+
     private static void RegisterClientInteractMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientInteractMessage>(b =>
         {
             b.Section("Interaction")
                 .Property(m => m.InteractionType);
-
             b.Section("Target Entity")
                 .Property(m => m.TargetId, p => p.ShowHex())
                 .IsExpanded(m => m.InteractionType == InteractionType.Entity);
-
             b.Section("Target Tile")
                 .Property(m => m.TargetX)
                 .Property(m => m.TargetY)
@@ -204,7 +251,6 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Credentials")
                 .Property(m => m.Name)
                 .Property(m => m.Password, p => p.Mask());
-
             b.Section("Client")
                 .Property(m => m.ClientId)
                 .Property(m => m.Checksum, p => p.ShowHex());
@@ -235,7 +281,6 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Item")
                 .Property(m => m.Slot);
-
             b.Section("Position")
                 .Property(m => m.X)
                 .Property(m => m.Y);
@@ -353,6 +398,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientToggleSettingMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientToggleSettingMessage>(b =>
+        {
+            b.Section("Setting")
+                .Property(m => m.OptionIndex);
+        });
+    }
+
     private static void RegisterClientTurnMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientTurnMessage>(b =>
@@ -387,7 +441,6 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Portrait")
                 .Property(m => m.Portrait, p => p.ShowMultiline())
                 .IsExpanded(m => m.Portrait.Count > 0);
-
             b.Section("Bio")
                 .Property(m => m.Bio, p => p.ShowMultiline())
                 .IsExpanded(m => !string.IsNullOrEmpty(m.Bio));
