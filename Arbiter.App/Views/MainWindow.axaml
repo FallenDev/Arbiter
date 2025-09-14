@@ -41,7 +41,7 @@
             <ColumnDefinition Width="8"/>
             <ColumnDefinition Width="*" MinWidth="560"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="460" MinWidth="320"/>
+            <ColumnDefinition Width="480" MinWidth="320"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->

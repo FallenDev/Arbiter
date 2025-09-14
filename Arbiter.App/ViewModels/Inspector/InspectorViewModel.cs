@@ -1,4 +1,5 @@
-﻿using Arbiter.Net;
+﻿using System;
+using Arbiter.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Inspector;
@@ -12,7 +13,12 @@ public partial class InspectorViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
     private InspectorPacketViewModel? _inspectedPacket;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasError))]
+    private InspectorExceptionViewModel? _exception;
+    
     public bool IsEmpty => InspectedPacket is not null && InspectedPacket.Sections.Count == 0;
+    public bool HasError => Exception is not null;
     
     public NetworkPacket? SelectedPacket
     {
@@ -33,6 +39,18 @@ public partial class InspectorViewModel : ViewModelBase
 
     private void OnPacketSelected(NetworkPacket? packet)
     {
-        InspectedPacket = packet is not null ? _factory.Create(packet) : null;
+        try
+        {
+            InspectedPacket = packet is not null ? _factory.Create(packet) : null;
+            Exception = null;
+        }
+        catch (Exception ex)
+        {
+            InspectedPacket = null;
+            Exception = new InspectorExceptionViewModel
+            {
+                Exception = ex
+            };
+        }
     }
 }
