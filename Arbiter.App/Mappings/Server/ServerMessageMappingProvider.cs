@@ -36,6 +36,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerRedirectMapping(registry);
         RegisterServerRefreshCompletedMapping(registry);
         RegisterServerRemoveEntityMapping(registry);
+        RegisterServerRemoveEquipmentMapping(registry);
         RegisterServerRemoveItemMapping(registry);
         RegisterServerRemoveSkillMapping(registry);
         RegisterServerRemoveSpellMapping(registry);
@@ -391,6 +392,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Entity")
                 .Property(m => m.EntityId, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerRemoveEquipmentMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerRemoveEquipmentMessage>(b =>
+        {
+            b.Section("Equipment")
+                .Property(m => m.Slot);
         });
     }
 

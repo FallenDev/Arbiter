@@ -17,6 +17,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientDialogChoiceMapping(registry);
         RegisterClientDropGoldMapping(registry);
         RegisterClientDropItemMapping(registry);
+        RegisterClientEmoteMapping(registry);
         RegisterClientGiveCreatureGoldMapping(registry);
         RegisterClientGiveCreatureItemMapping(registry);
         RegisterClientGroupInviteMapping(registry);
@@ -35,6 +36,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientRequestProfileMapping(registry);
         RegisterClientRequestSequenceMapping(registry);
         RegisterClientRequestServerTableMapping(registry);
+        RegisterClientSayMapping(registry);
         RegisterClientSetStatusMapping(registry);
         RegisterClientSpellChantMapping(registry);
         RegisterClientSwapSlotMapping(registry);
@@ -46,6 +48,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientUseSkillMapping(registry);
         RegisterClientVersionMapping(registry);
         RegisterClientWalkMapping(registry);
+        RegisterClientWhisperMapping(registry);
         RegisterClientWorldMapClickMapping(registry);
     }
 
@@ -169,6 +172,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Position")
                 .Property(m => m.X)
                 .Property(m => m.Y);
+        });
+    }
+
+    private static void RegisterClientEmoteMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientEmoteMessage>(b =>
+        {
+            b.Section("Emote")
+                .Property(m => m.Emote);
         });
     }
     
@@ -368,6 +380,16 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientSayMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientSayMessage>(b =>
+        {
+            b.Section("Message")
+                .Property(m => m.MessageType)
+                .Property(m => m.Content, p => p.ShowMultiline());
+        });
+    }
+
     private static void RegisterClientSetStatusMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientSetStatusMessage>(b =>
@@ -473,6 +495,16 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Movement")
                 .Property(m => m.Direction)
                 .Property(m => m.StepCount);
+        });
+    }
+    
+    private static void RegisterClientWhisperMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientWhisperMessage>(b =>
+        {
+            b.Section("Whisper")
+                .Property(m => m.Target)
+                .Property(m => m.Content, p => p.ShowMultiline());
         });
     }
     
