@@ -56,6 +56,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerSwitchPaneMapping(registry);
         RegisterServerUpdateStatsMapping(registry);
         RegisterServerUserIdMapping(registry);
+        RegisterServerUserProfileMapping(registry);
         RegisterServerWalkResponseMapping(registry);
         RegisterServerWorldMapMapping(registry);
         RegisterServerWorldMessageMapping(registry);
@@ -784,6 +785,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Direction);
             b.Section("Guild")
                 .Property(m => m.HasGuild);
+        });
+    }
+
+    private static void RegisterServerUserProfileMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerUserProfileMessage>(b =>
+        {
+            b.Section("Entity")
+                .Property(m => m.EntityId, p => p.ShowHex());
         });
     }
 
