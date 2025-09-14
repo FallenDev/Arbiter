@@ -1,0 +1,27 @@
+﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Serialization;
+using Arbiter.Net.Types;
+
+namespace Arbiter.Net.Client.Messages;
+
+[NetworkCommand(ClientCommand.CreateCharacterAppearance)]
+public class ClientCreateCharacterAppearanceMessage : ClientMessage
+{
+    public byte HairStyle { get; set; }
+    public GenderFlags Gender { get; set; }
+    public DyeColor HairColor { get; set; }
+
+    public override void Deserialize(INetworkPacketReader reader)
+    {
+        base.Deserialize(reader);    
+        
+        HairStyle = reader.ReadByte();
+        Gender = (GenderFlags)reader.ReadByte();
+        HairColor = (DyeColor)reader.ReadByte();
+    }
+    
+    public override void Serialize(INetworkPacketBuilder builder)
+    {
+        throw new NotImplementedException();
+    }
+}

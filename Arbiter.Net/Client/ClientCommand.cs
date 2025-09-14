@@ -11,7 +11,7 @@ public enum ClientCommand : byte
     PickupItem = 0x07,
     DropItem = 0x08,
     RequestExit = 0x0B,
-    ShowEntity = 0x0C,
+    RequestEntity = 0x0C,
     IgnoreUser = 0x0D,
     Say = 0x0E,
     CastSpell = 0x0F,

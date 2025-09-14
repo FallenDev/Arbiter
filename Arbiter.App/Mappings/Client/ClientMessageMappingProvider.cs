@@ -9,7 +9,10 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
     {
         RegisterClientAssailMapping(registry);
         RegisterClientAuthenticateMapping(registry);
+        RegisterClientBeginSpellCastMapping(registry);
+        RegisterClientCastSpellMapping(registry);
         RegisterClientChangePasswordMapping(registry);
+        RegisterClientCreateCharacterAppearance(registry);
         RegisterClientCreateCharacterNameMapping(registry);
         RegisterClientDialogChoiceMapping(registry);
         RegisterClientDropItemMapping(registry);
@@ -19,6 +22,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientLoginMapping(registry);
         RegisterClientMenuChoiceMapping(registry);
         RegisterClientPickupItemMapping(registry);
+        RegisterClientRaiseStatMapping(registry);
+        RegisterClientRequestEntityMapping(registry);
         RegisterClientRequestExitMapping(registry);
         RegisterClientRequestHomepageMapping(registry);
         RegisterClientRequestLoginNoticeMapping(registry);
@@ -26,11 +31,14 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientRequestProfileMapping(registry);
         RegisterClientRequestSequenceMapping(registry);
         RegisterClientRequestServerTableMapping(registry);
+        RegisterClientSetStatusMapping(registry);
+        RegisterClientSpellChantMapping(registry);
         RegisterClientSwapSlotMapping(registry);
         RegisterClientTurnMapping(registry);
         RegisterClientUnequipItemMapping(registry);
         RegisterClientUseItem(registry);
         RegisterClientUserPortraitMapping(registry);
+        RegisterClientUseSkillMapping(registry);
         RegisterClientVersionMapping(registry);
         RegisterClientWalkMapping(registry);
         RegisterClientWorldMapClickMapping(registry);
@@ -51,11 +59,36 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Connection")
                 .Property(m => m.ConnectionId, p => p.ShowHex())
                 .Property(m => m.Name);
-
             b.Section("Encryption")
                 .Property(m => m.Seed)
                 .Property(m => m.PrivateKey, p => p.ShowMultiline());
         });   
+    }
+
+    private static void RegisterClientBeginSpellCastMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientBeginSpellCastMessage>(b =>
+        {
+            b.Section("Spell")
+                .Property(m => m.LineCount);
+        });
+    }
+
+    private static void RegisterClientCastSpellMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientCastSpellMessage>(b =>
+        {
+            b.Section("Spell")
+                .Property(m => m.Slot);
+            b.Section("Target")
+                .Property(m => m.TargetId, p => p.ShowHex())
+                .Property(m => m.TargetX)
+                .Property(m => m.TargetY)
+                .IsExpanded(m => m.TargetId.HasValue);
+            b.Section("Text Input")
+                .Property(m => m.TextInput, p => p.ShowMultiline())
+                .IsExpanded(m => !string.IsNullOrEmpty(m.TextInput));
+        });
     }
     
     private static void RegisterClientChangePasswordMapping(InspectorMappingRegistry registry)
@@ -66,6 +99,17 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Name)
                 .Property(m => m.CurrentPassword, p => p.Mask())
                 .Property(m => m.NewPassword, p => p.Mask());
+        });
+    }
+
+    private static void RegisterClientCreateCharacterAppearance(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientCreateCharacterAppearanceMessage>(b =>
+        {
+            b.Section("Appearance")
+                .Property(m => m.HairStyle)
+                .Property(m => m.Gender)
+                .Property(m => m.HairColor);
         });
     }
 
@@ -197,7 +241,25 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Y);
         });
     }
-    
+
+    private static void RegisterClientRaiseStatMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientRaiseStatMessage>(b =>
+        {
+            b.Section("Stat")
+                .Property(m => m.Stat);
+        });
+    }
+
+    private static void RegisterClientRequestEntityMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientRequestEntityMessage>(b =>
+        {
+            b.Section("Entity")
+                .Property(m => m.EntityId, p => p.ShowHex());
+        });
+    }
+
     private static void RegisterClientRequestExitMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientRequestExitMessage>(b =>
@@ -261,6 +323,24 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientSetStatusMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientSetStatusMessage>(b =>
+        {
+            b.Section("Status")
+                .Property(m => m.Status);
+        });
+    }
+
+    private static void RegisterClientSpellChantMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientSpellChantMessage>(b =>
+        {
+            b.Section("Message")
+                .Property(m => m.Content);
+        });
+    }
+
     private static void RegisterClientSwapSlotMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientSwapSlotMessage>(b =>
@@ -311,6 +391,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Bio")
                 .Property(m => m.Bio, p => p.ShowMultiline())
                 .IsExpanded(m => !string.IsNullOrEmpty(m.Bio));
+        });
+    }
+
+    private static void RegisterClientUseSkillMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientUseSkillMessage>(b =>
+        {
+            b.Section("Skill")
+                .Property(m => m.Slot);
         });
     }
     

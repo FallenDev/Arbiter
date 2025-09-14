@@ -65,7 +65,8 @@
         <!-- Sections -->
         <ScrollViewer Grid.Row="1"
                       HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Auto"
+                      IsVisible="{Binding !HasError}">
             <ItemsControl ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
                 <ItemsControl.DataTemplates>
                     <DataTemplate DataType="vm:InspectorSectionViewModel">
@@ -73,6 +74,14 @@
                     </DataTemplate>
                 </ItemsControl.DataTemplates>
             </ItemsControl>
+        </ScrollViewer>
+        
+        <!-- Exception -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                      IsVisible="{Binding HasError}">
+            <v:InspectorExceptionView DataContext="{Binding Exception}"/>
         </ScrollViewer>
     </Grid>
 </UserControl>
