@@ -7,11 +7,13 @@ public class InspectorTypeOverrideMapping
 {
     public Type TargetType { get; }
     public IReadOnlyDictionary<string, InspectorPropertyOverrides> Properties { get; }
+    public Func<object, string>? DisplayNameSelector { get; }
 
-    public InspectorTypeOverrideMapping(Type targetType, IDictionary<string, InspectorPropertyOverrides> properties)
+    public InspectorTypeOverrideMapping(Type targetType, IDictionary<string, InspectorPropertyOverrides> properties, Func<object, string>? displayNameSelector = null)
     {
         TargetType = targetType;
         Properties = new Dictionary<string, InspectorPropertyOverrides>(properties, StringComparer.Ordinal);
+        DisplayNameSelector = displayNameSelector;
     }
 
     public bool TryGetProperty(string propertyName, out InspectorPropertyOverrides? overrides)

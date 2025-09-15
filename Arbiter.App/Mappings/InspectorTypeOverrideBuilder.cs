@@ -8,6 +8,7 @@ namespace Arbiter.App.Mappings;
 public class InspectorTypeOverrideBuilder<T>
 {
     private readonly Dictionary<string, InspectorPropertyOverrides> _properties = new(StringComparer.Ordinal);
+    private Func<object, string>? _displayNameSelector;
 
     public InspectorTypeOverrideBuilder<T> Property<TProp>(Expression<Func<T, TProp>> expression,
         Action<InspectorTypeOverridePropertyBuilder<T, TProp>>? configure = null)
@@ -20,9 +21,15 @@ public class InspectorTypeOverrideBuilder<T>
         return this;
     }
 
+    public InspectorTypeOverrideBuilder<T> DisplayName(Func<T, string> selector)
+    {
+        _displayNameSelector = o => o is null ? string.Empty : selector((T)o);
+        return this;
+    }
+
     internal InspectorTypeOverrideMapping Build()
     {
-        return new InspectorTypeOverrideMapping(typeof(T), _properties);
+        return new InspectorTypeOverrideMapping(typeof(T), _properties, _displayNameSelector);
     }
 
     private static MemberInfo GetMemberFromExpression<TProp>(Expression<Func<T, TProp>> expression)

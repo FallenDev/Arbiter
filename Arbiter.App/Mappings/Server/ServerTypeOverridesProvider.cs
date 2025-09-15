@@ -1,4 +1,5 @@
-﻿using Arbiter.Net.Server;
+﻿using Arbiter.App.Extensions;
+using Arbiter.Net.Server;
 
 namespace Arbiter.App.Mappings.Server;
 
@@ -21,6 +22,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerEquipmentInfo>(b =>
         {
             b.Property(m => m.Sprite, p => p.ShowHex());
+            b.DisplayName(m => m.Slot.ToString().ToNaturalWording());
         });
 
         registry.RegisterOverrides<ServerGroupBox>(b =>

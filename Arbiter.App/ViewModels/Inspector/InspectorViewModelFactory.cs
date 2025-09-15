@@ -180,8 +180,27 @@ public class InspectorViewModelFactory
         var index = 0;
         foreach (var item in list)
         {
-            var child = CreateItemViewModel(item, propMapping, item?.GetType(), containingType);
-            child.Name = $"Element {index}";
+            var itemType = item?.GetType();
+            var child = CreateItemViewModel(item, propMapping, itemType, containingType);
+
+            string? nameOverride = null;
+            if (itemType is not null && _registry.TryGetOverrides(itemType, out var typeOverrides))
+            {
+                var selector = typeOverrides.DisplayNameSelector;
+                if (selector is not null)
+                {
+                    try
+                    {
+                        nameOverride = selector(item!);
+                    }
+                    catch
+                    {
+                        // ignore selector failures and fallback to default naming
+                    }
+                }
+            }
+
+            child.Name = nameOverride ?? $"Element {index}";
 
             vm.Items.Add(child);
             index++;
