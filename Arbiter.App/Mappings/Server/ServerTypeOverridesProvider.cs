@@ -1,5 +1,6 @@
 ﻿using Arbiter.App.Extensions;
 using Arbiter.Net.Server;
+using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.App.Mappings.Server;
 
@@ -64,6 +65,12 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         {
             b.Property(m => m.Sprite, p => p.ShowHex());
             b.Property(m => m.Name, p => p.ShowMultiline());
+        });
+        
+        registry.RegisterOverrides<ServerWorldListUser>(b =>
+        {
+            b.Property(m => m.Flags, p => p.ShowHex());
+            b.DisplayName(m => m.Name);
         });
 
         registry.RegisterOverrides<ServerWorldMapNode>(b =>

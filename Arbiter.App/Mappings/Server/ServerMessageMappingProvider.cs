@@ -58,6 +58,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerUserIdMapping(registry);
         RegisterServerUserProfileMapping(registry);
         RegisterServerWalkResponseMapping(registry);
+        RegisterServerWorldListMapping(registry);
         RegisterServerWorldMapMapping(registry);
         RegisterServerWorldMessageMapping(registry);
     }
@@ -833,6 +834,18 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.UnknownX, p => p.ShowHex())
                 .Property(m => m.UnknownY, p => p.ShowHex())
                 .Property(m => m.Unknown, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerWorldListMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerWorldListMessage>(b =>
+        {
+            b.Section("Totals")
+                .Property(m => m.WorldCount)
+                .Property(m => m.CountryCount);
+            b.Section("Users")
+                .Property(m => m.Users);
         });
     }
 
