@@ -812,7 +812,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.LegendMarks)
                 .IsExpanded(_ => false);
             b.Section("Portrait")
-                .Property(m => m.Portrait, p => p.ShowHex())
+                .Property(m => m.Portrait, p => p.ShowMultiline())
                 .IsExpanded(m => m.Portrait is not null && m.Portrait.Count > 0);
             b.Section("Bio")
                 .Property(m => m.Bio, p => p.ShowMultiline())

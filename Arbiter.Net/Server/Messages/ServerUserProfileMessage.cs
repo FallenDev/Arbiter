@@ -70,7 +70,7 @@ public class ServerUserProfileMessage : ServerMessage
         }
 
         var remaining = reader.ReadUInt16();
-        if (remaining >= 4)
+        if (remaining < 4)
         {
             return;
         }
