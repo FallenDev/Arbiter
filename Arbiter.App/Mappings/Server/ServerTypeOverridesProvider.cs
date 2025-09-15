@@ -17,6 +17,11 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         {
             b.Property(m => m.Text, p => p.ShowMultiline());
         });
+        
+        registry.RegisterOverrides<ServerEquipmentInfo>(b =>
+        {
+            b.Property(m => m.Sprite, p => p.ShowHex());
+        });
 
         registry.RegisterOverrides<ServerGroupBox>(b =>
         {

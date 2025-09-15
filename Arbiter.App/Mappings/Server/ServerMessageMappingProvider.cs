@@ -794,6 +794,29 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Entity")
                 .Property(m => m.EntityId, p => p.ShowHex());
+            b.Section("Profile")
+                .Property(m => m.Name)
+                .Property(m => m.DisplayClass)
+                .Property(m => m.Guild)
+                .Property(m => m.GuildRank)
+                .Property(m => m.Title);
+            b.Section("Citizenship")
+                .Property(m => m.Nation);
+            b.Section("Status")
+                .Property(m => m.Status)
+                .Property(m => m.IsGroupOpen);
+            b.Section("Equipment")
+                .Property(m => m.Equipment)
+                .IsExpanded(_ => false);
+            b.Section("Legend")
+                .Property(m => m.LegendMarks)
+                .IsExpanded(_ => false);
+            b.Section("Portrait")
+                .Property(m => m.Portrait, p => p.ShowHex())
+                .IsExpanded(m => m.Portrait is not null && m.Portrait.Count > 0);
+            b.Section("Bio")
+                .Property(m => m.Bio, p => p.ShowMultiline())
+                .IsExpanded(m => !string.IsNullOrEmpty(m.Bio));
         });
     }
 
