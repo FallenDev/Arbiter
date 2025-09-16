@@ -5,6 +5,10 @@ Network Analyzer Tool for Dark Ages
 Written in .NET + [Avalonia](https://docs.avaloniaui.net/docs/welcome), using [MVVM](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) patterns.
 Custom UI styling based on [Godot's](https://godotengine.org/) UI look and feel.
 
+> [!WARNING]
+> This project is in early development!  
+> Some features may not work as expected or are subject to change.
+
 ---
 
 <img src="docs/src/screenshots/Arbiter.png"/>
