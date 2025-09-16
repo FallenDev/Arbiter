@@ -87,10 +87,28 @@
                     <v:TraceView DataContext="{Binding Trace}"/>
                 </TabItem>
                 <TabItem Header="Filters">
-                    <ListBox></ListBox>
+                    <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Border Classes="sunken-shadow" CornerRadius="4" Background="{StaticResource Talgonite.ListBox.Background}"/>
+                        <Border Classes="sunken-highlight" CornerRadius="4"/>
+                        <TextBlock Foreground="{StaticResource Talgonite.TextBlock.DimForeground}" 
+                                   FontSize="16"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                            Coming Soon
+                        </TextBlock>
+                    </Panel>
                 </TabItem>
-                <TabItem Header="Scripts">
-                    <ListBox></ListBox>
+                <TabItem Header="Triggers">
+                    <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Border Classes="sunken-shadow" CornerRadius="4" Background="{StaticResource Talgonite.ListBox.Background}"/>
+                        <Border Classes="sunken-highlight" CornerRadius="4"/>
+                        <TextBlock Foreground="{StaticResource Talgonite.TextBlock.DimForeground}" 
+                                   FontSize="16"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                            Coming Soon
+                        </TextBlock>
+                    </Panel>
                 </TabItem>
             </TabControl>
             
