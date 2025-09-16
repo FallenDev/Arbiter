@@ -34,6 +34,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
 
         registry.RegisterOverrides<ServerItemEntity>(b =>
         {
+            b.Property(m => m.Id, p => p.ShowHex());
             b.Property(m => m.Sprite, p => p.ShowHex());
             b.Property(m => m.Unknown, p => p.ShowHex());
         });
