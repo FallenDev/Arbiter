@@ -6,6 +6,8 @@ namespace Arbiter.App.ViewModels.Inspector;
 public partial class InspectorDictionaryViewModel : InspectorItemViewModel
 {
     [ObservableProperty] private string? _typeName;
+    
+    [ObservableProperty] private bool _isExpanded = true;
 
     public ObservableCollection<InspectorValueViewModel> Values { get; } = [];
 

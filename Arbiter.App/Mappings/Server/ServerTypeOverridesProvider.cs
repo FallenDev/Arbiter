@@ -14,10 +14,17 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .DisplayName(m => m.Name);
         });
 
-        registry.RegisterOverrides<ServerMessageBoardPost>(b =>
+        registry.RegisterOverrides<ServerMessageBoardPostListing>(b =>
         {
             b.Property(m => m.Subject, p => p.ShowMultiline())
                 .DisplayName(m => $"Post {m.Id}");
+        });
+
+        registry.RegisterOverrides<ServerMessageBoardPost>(b =>
+        {
+            b.Property(m => m.Subject, p => p.ShowMultiline())
+                .Property(m => m.Body, p => p.ShowMultiline())
+                .DisplayName(m => m.Subject);
         });
 
         registry.RegisterOverrides<ServerCreatureEntity>(b =>

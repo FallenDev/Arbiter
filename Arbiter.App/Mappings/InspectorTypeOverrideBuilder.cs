@@ -9,6 +9,7 @@ public class InspectorTypeOverrideBuilder<T>
 {
     private readonly Dictionary<string, InspectorPropertyOverrides> _properties = new(StringComparer.Ordinal);
     private Func<object, string>? _displayNameSelector;
+    private Func<object, bool>? _isExpandedPredicate;
 
     public InspectorTypeOverrideBuilder<T> Property<TProp>(Expression<Func<T, TProp>> expression,
         Action<InspectorTypeOverridePropertyBuilder<T, TProp>>? configure = null)
@@ -24,6 +25,12 @@ public class InspectorTypeOverrideBuilder<T>
     public InspectorTypeOverrideBuilder<T> DisplayName(Func<T, string> selector)
     {
         _displayNameSelector = o => o is null ? string.Empty : selector((T)o);
+        return this;
+    }
+
+    public InspectorTypeOverrideBuilder<T> IsExpanded(Func<T, bool> predicate)
+    {
+        _isExpandedPredicate = o => o is null ? false : predicate((T)o);
         return this;
     }
 
@@ -62,6 +69,7 @@ public class InspectorTypeOverridePropertyBuilder<T, TProp>
     private char? _maskChar;
     private string? _toolTip;
     private string? _displayName;
+    private bool? _isExpanded;
 
     internal InspectorTypeOverridePropertyBuilder(MemberInfo member)
     {
@@ -83,6 +91,12 @@ public class InspectorTypeOverridePropertyBuilder<T, TProp>
     public InspectorTypeOverridePropertyBuilder<T, TProp> Name(string displayName)
     {
         _displayName = displayName;
+        return this;
+    }
+    
+    public InspectorTypeOverridePropertyBuilder<T, TProp> IsExpanded(bool isExpanded)
+    {
+        _isExpanded = isExpanded;
         return this;
     }
 
@@ -115,7 +129,8 @@ public class InspectorTypeOverridePropertyBuilder<T, TProp>
             IsMasked = _isMasked,
             MaskCharacter = _maskChar,
             ToolTip = _toolTip,
-            DisplayName = _displayName
+            DisplayName = _displayName,
+            IsExpanded = _isExpanded,
         };
     }
 }

@@ -145,12 +145,22 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.ResultType)
                 .Property(m => m.ResultSuccess)
                 .Property(m => m.ResultMessage, p => p.ShowMultiline());
-            b.Section("Boards")
+            b.Section("Board List")
                 .Property(m => m.Boards)
                 .IsExpanded(m => m.Boards.Count > 0);
-            b.Section("Posts")
+            b.Section("Board")
+                .Property(m => m.BoardId)
+                .Property(m => m.BoardName, p => p.ShowMultiline())
+                .IsExpanded(m => m.ResultType is MessageBoardResult.Board or MessageBoardResult.Mailbox);
+            b.Section("Post List")
                 .Property(m => m.Posts)
                 .IsExpanded(m => m.Posts.Count > 0);
+            b.Section("Post")
+                .Property(m => m.Post)
+                .IsExpanded(m => m.Post is not null);
+            b.Section("Navigation")
+                .Property(m => m.CanNavigatePrev)
+                .IsExpanded(m => m.ResultType is MessageBoardResult.Post or MessageBoardResult.MailLetter);
         });
     }
 

@@ -16,6 +16,7 @@ public class InspectorPropertyOverrides
     public char? MaskCharacter { get; set; }
     public string? ToolTip { get; set; }
     public string? DisplayName { get; set; }
+    public bool? IsExpanded { get; set; }
 
     public InspectorPropertyOverrides(string propertyName, MemberInfo? member = null)
     {

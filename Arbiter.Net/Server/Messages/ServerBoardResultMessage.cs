@@ -12,7 +12,9 @@ public class ServerBoardResultMessage : ServerMessage
     public MessageBoardSource? Source { get; set; }
     public ushort? BoardId { get; set; }
     public string? BoardName { get; set; }
-    public List<ServerMessageBoardPost> Posts { get; set; } = [];
+    public List<ServerMessageBoardPostListing> Posts { get; set; } = [];
+    public ServerMessageBoardPost? Post { get; set; }
+    public bool? CanNavigatePrev { get; set; }
     public bool? ResultSuccess { get; set; }
     public string? ResultMessage { get; set; }
 
@@ -43,7 +45,7 @@ public class ServerBoardResultMessage : ServerMessage
             var postCount = reader.ReadByte();
             for (var i = 0; i < postCount; i++)
             {
-                Posts.Add(new ServerMessageBoardPost
+                Posts.Add(new ServerMessageBoardPostListing
                 {
                     IsHighlighted = reader.ReadBoolean(),
                     Id = reader.ReadInt16(),
@@ -54,9 +56,20 @@ public class ServerBoardResultMessage : ServerMessage
                 });
             }
         }
-        else if (ResultType == MessageBoardResult.MailLetter)
+        else if (ResultType is MessageBoardResult.Post or MessageBoardResult.MailLetter)
         {
+            CanNavigatePrev = reader.ReadBoolean();
             
+            Post = new ServerMessageBoardPost
+            {
+                IsHighlighted = reader.ReadBoolean(),
+                Id = reader.ReadInt16(),
+                Author = reader.ReadString8(),
+                Month = reader.ReadByte(),
+                Day = reader.ReadByte(),
+                Subject = reader.ReadString8(),
+                Body = reader.ReadString16()
+            };
         }
         else if (ResultType is MessageBoardResult.PostSubmitted or MessageBoardResult.PostDeleted
                  or MessageBoardResult.PostHighlighted)

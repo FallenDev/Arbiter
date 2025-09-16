@@ -137,8 +137,8 @@ public class InspectorViewModelFactory
         if (IsByteEnumerable(value))
         {
             // Merge overrides for byte sequences based on containing type
-            bool showHex = MergeBool(containingType, propMapping, static (o, p) => o?.ShowHex ?? p.ShowHex);
-            bool showMultiline = MergeBool(containingType, propMapping, static (o, p) => o?.ShowMultiline ?? p.ShowMultiline);
+            var showHex = MergeBool(containingType, propMapping, static (o, p) => o?.ShowHex ?? p.ShowHex);
+            var showMultiline = MergeBool(containingType, propMapping, static (o, p) => o?.ShowMultiline ?? p.ShowMultiline);
             var toolTip = MergeValue(containingType, propMapping, static (o, p) => o?.ToolTip ?? p.ToolTip);
 
             return new InspectorValueViewModel
@@ -172,6 +172,8 @@ public class InspectorViewModelFactory
     private InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping,
         Type? listType = null, Type? containingType = null)
     {
+        var isExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
+        
         var vm = new InspectorListViewModel
         {
             Name = MergeDisplayName(containingType, propMapping),
@@ -212,10 +214,13 @@ public class InspectorViewModelFactory
     private InspectorDictionaryViewModel CreateDictionaryViewModel(IDictionary dict,
         InspectorPropertyMapping propMapping, Type? dictType = null, Type? containingType = null)
     {
+        var isExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
+        
         var vm = new InspectorDictionaryViewModel
         {
             Name = MergeDisplayName(containingType, propMapping),
-            TypeName = propMapping.PropertyType.Name
+            TypeName = propMapping.PropertyType.Name,
+            IsExpanded = isExpanded,
         };
 
         foreach (DictionaryEntry kv in dict)
@@ -236,10 +241,13 @@ public class InspectorViewModelFactory
     private InspectorDictionaryViewModel CreateClassViewModel(object value, InspectorPropertyMapping propMapping,
         Type classType, Type? containingType = null)
     {
+        var isExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
+        
         var vm = new InspectorDictionaryViewModel
         {
             Name = MergeDisplayName(containingType, propMapping),
-            TypeName = classType.Name
+            TypeName = classType.Name,
+            IsExpanded = isExpanded,
         };
 
         if (_registry.TryGetMapping(classType, out var typeMapping))
@@ -287,7 +295,7 @@ public class InspectorViewModelFactory
         var maskChar = MergeValue(containingType, propMapping, static (o, p) => o?.MaskCharacter ?? p.MaskCharacter);
         var toolTip = MergeValue(containingType, propMapping, static (o, p) => o?.ToolTip ?? p.ToolTip);
         var name = MergeDisplayName(containingType, propMapping);
-
+        
         return new InspectorValueViewModel
         {
             Name = name,
@@ -296,7 +304,7 @@ public class InspectorViewModelFactory
             IsMultiline = showMultiline,
             IsRevealed = !isMasked,
             MaskCharacter = maskChar,
-            ToolTip = toolTip
+            ToolTip = toolTip,
         };
     }
 
