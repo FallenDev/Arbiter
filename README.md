@@ -34,6 +34,32 @@ Custom UI styling based on [Godot's](https://godotengine.org/) UI look and feel.
 
 TBD
 
+## Roadmap 📌
+
+### v1.0
+
+- [ ] Character View
+  - [ ] Name
+  - [ ] Level + Class
+  - [ ] HP / MP
+  - [ ] Map Location
+- [ ] Raw Packet Injection
+  - [ ] To Client
+  - [ ] To Server
+
+### v1.1
+
+- [ ] Filter Rules
+    - [ ] Simple Conditions
+    - [ ] Lua Scripting
+- [ ] Trigger Rules
+    - [ ] Simple Conditions
+    - [ ] Lua Scripting
+
+### v1.2
+
+- [ ] Custom Scripts
+
 ## Contributing 👨🏻‍💻
 
 Contributions are welcomed for this project! Please open an issue or pull request if you have any suggestions, fixes, or improvements.
