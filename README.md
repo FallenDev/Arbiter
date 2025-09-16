@@ -32,7 +32,7 @@ TBD
 
 ## Contributing 👨🏻‍💻
 
-I welcome contributions to this project! Please open an issue or pull request if you have any suggestions, fixes, or improvements.
+Contributions are welcomed for this project! Please open an issue or pull request if you have any suggestions, fixes, or improvements.
 
 I personally use JetBrains Rider for development, but any editor should work as long as you install the appropriate Avalonia plugins.
 
@@ -44,6 +44,8 @@ To package and deploy the application binary as a single-file executable, use th
 cd Arbiter.App
 dotnet publish -r win-x64 -c Release -p:PublishSingleFile=true --self-contained false
 ```
+
+You can use the platform of your choice, but the `win-x64` target is recommended.
 
 > [!IMPORTANT]
 > You must include the published `.dll` files with the executable.
