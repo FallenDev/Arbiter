@@ -13,10 +13,11 @@ Custom UI styling based on [Godot's](https://godotengine.org/) UI look and feel.
 
 - [Dark Ages](https://www.darkages.com) Client 7.41 (current latest)
 - [.NET 9.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- macOS[^1], Linux[^1], Windows
+- Windows, macOS*, Linux*
 
-[^1]: Launching a game client is only supported on Windows.
-  You can still analyze network packet dumps or redirect clients from other platforms or VMs.
+> [!NOTE]
+> Launching a game client is only supported on Windows, as it uses Win32 APIs.  
+> You can still analyze network packet dumps or redirect clients from other platforms or VMs.
 
 ## Installation 💾
 
