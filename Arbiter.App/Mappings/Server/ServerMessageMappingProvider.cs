@@ -16,7 +16,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerCooldownMapping(registry);
         RegisterServerEntityTurnMapping(registry);
         RegisterServerEntityWalkMapping(registry);
+        RegisterServerExchangeMapping(registry);
         RegisterServerExitResponseMapping(registry);
+        RegisterServerForcePacketMapping(registry);
         RegisterServerGroupMapping(registry);
         RegisterServerHealthBarMapping(registry);
         RegisterServerHeartbeatMapping(registry);
@@ -54,6 +56,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerShowPlayerMapping(registry);
         RegisterServerStatusEffectMapping(registry);
         RegisterServerSwitchPaneMapping(registry);
+        RegisterServerSyncTicksMapping(registry);
         RegisterServerUpdateStatsMapping(registry);
         RegisterServerUserIdMapping(registry);
         RegisterServerUserProfileMapping(registry);
@@ -171,6 +174,33 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerExchangeMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerExchangeMessage>(b =>
+        {
+            b.Section("Event")
+                .Property(m => m.Event)
+                .Property(m => m.Party)
+                .Property(m => m.Message, p => p.ShowMultiline());
+            b.Section("Target")
+                .Property(m => m.TargetId, p => p.ShowHex())
+                .Property(m => m.TargetName)
+                .IsExpanded(m => m.Event == ExchangeServerEventType.Started);
+            b.Section("Inventory")
+                .Property(m => m.Slot)
+                .IsExpanded(m => m.Event == ExchangeServerEventType.QuantityPrompt);
+            b.Section("Item")
+                .Property(m => m.ItemIndex)
+                .Property(m => m.ItemSprite, p => p.ShowHex())
+                .Property(m => m.ItemColor)
+                .Property(m => m.ItemName, p => p.ShowMultiline())
+                .IsExpanded(m => m.Event == ExchangeServerEventType.ItemAdded);
+            b.Section("Gold")
+                .Property(m => m.GoldAmount)
+                .IsExpanded(m => m.Event == ExchangeServerEventType.GoldAdded);
+        });
+    }
+
     private static void RegisterServerExitResponseMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerExitResponseMessage>(b =>
@@ -178,6 +208,17 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Response")
                 .Property(m => m.Result)
                 .Property(m => m.Unknown, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerForcePacketMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerForcePacketMessage>(b =>
+        {
+            b.Section("Command")
+                .Property(m => m.ClientCommand, p => p.ShowHex());
+            b.Section("Data")
+                .Property(m => m.Data, p => p.ShowMultiline());
         });
     }
 
@@ -713,6 +754,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Interface")
                 .Property(m => m.Pane);
+        });
+    }
+
+    private static void RegisterServerSyncTicksMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerSyncTicksMessage>(b =>
+        {
+            b.Section("Ticks")
+                .Property(m => m.TickCount);
         });
     }
     

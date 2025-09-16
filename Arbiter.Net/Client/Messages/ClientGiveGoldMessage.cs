@@ -3,22 +3,20 @@ using Arbiter.Net.Serialization;
 
 namespace Arbiter.Net.Client.Messages;
 
-[NetworkCommand(ClientCommand.GiveCreatureItem)]
-public class ClientGiveCreatureItemMessage : ClientMessage
+[NetworkCommand(ClientCommand.GiveGold)]
+public class ClientGiveGoldMessage : ClientMessage
 {
-    public byte Slot { get; set; }
+    public uint Amount { get; set; }
     public uint EntityId { get; set; }
-    public byte Quantity { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-
-        Slot = reader.ReadByte();
+        
+        Amount = reader.ReadUInt32();
         EntityId = reader.ReadUInt32();
-        Quantity = reader.ReadByte();
     }
-
+    
     public override void Serialize(INetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
