@@ -4,8 +4,8 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
-[NetworkCommand(ClientCommand.Exchange)]
-public class ClientExchangeMessage : ClientMessage
+[NetworkCommand(ClientCommand.ExchangeAction)]
+public class ClientExchangeActionMessage : ClientMessage
 {
     public ExchangeClientActionType Action { get; set; }
     public uint TargetId { get; set; }

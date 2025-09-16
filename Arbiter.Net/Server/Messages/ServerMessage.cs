@@ -15,6 +15,6 @@ public abstract class ServerMessage : IServerMessage
 
     public virtual void Serialize(INetworkPacketBuilder builder)
     {
-
+        
     }
 }

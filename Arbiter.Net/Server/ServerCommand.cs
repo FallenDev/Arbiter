@@ -34,7 +34,7 @@ public enum ServerCommand : byte
     WorldMap = 0x2E,
     ShowMenu = 0x2F,
     ShowDialog = 0x30,
-    ShowBoard = 0x31,
+    BoardResult = 0x31,
     MapDoor = 0x32,
     ShowPlayer = 0x33,
     UserProfile = 0x34,

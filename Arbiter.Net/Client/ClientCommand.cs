@@ -43,7 +43,7 @@ public enum ClientCommand : byte
     UnequipItem = 0x44,
     Heartbeat = 0x45,
     RaiseStat = 0x47,
-    Exchange = 0x4A,
+    ExchangeAction = 0x4A,
     RequestLoginNotice = 0x4B,
     BeginSpellCast = 0x4D,
     SpellChant = 0x4E,

@@ -13,6 +13,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerAddSkillMapping(registry);
         RegisterServerAddSpellMapping(registry);
         RegisterServerAnimateEntityMapping(registry);
+        RegisterServerBoardResultMapping(registry);
         RegisterServerCooldownMapping(registry);
         RegisterServerEntityTurnMapping(registry);
         RegisterServerEntityWalkMapping(registry);
@@ -133,6 +134,23 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Sound")
                 .Property(m => m.Sound)
                 .IsExpanded(m => m.Sound != 0xFF);
+        });
+    }
+
+    private static void RegisterServerBoardResultMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerBoardResultMessage>(b =>
+        {
+            b.Section("Result")
+                .Property(m => m.ResultType)
+                .Property(m => m.ResultSuccess)
+                .Property(m => m.ResultMessage, p => p.ShowMultiline());
+            b.Section("Boards")
+                .Property(m => m.Boards)
+                .IsExpanded(m => m.Boards.Count > 0);
+            b.Section("Posts")
+                .Property(m => m.Posts)
+                .IsExpanded(m => m.Posts.Count > 0);
         });
     }
 

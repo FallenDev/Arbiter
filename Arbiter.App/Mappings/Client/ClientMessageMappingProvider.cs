@@ -10,6 +10,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientAssailMapping(registry);
         RegisterClientAuthenticateMapping(registry);
         RegisterClientBeginSpellCastMapping(registry);
+        RegisterClientBoardActionMapping(registry);
         RegisterClientCastSpellMapping(registry);
         RegisterClientChangePasswordMapping(registry);
         RegisterClientCreateCharacterAppearance(registry);
@@ -17,8 +18,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientDialogChoiceMapping(registry);
         RegisterClientDropGoldMapping(registry);
         RegisterClientDropItemMapping(registry);
+        RegisterClientEditNotepadMapping(registry);
         RegisterClientEmoteMapping(registry);
-        RegisterClientExchangeMapping(registry);
+        RegisterClientExchangeActionMapping(registry);
         RegisterClientGiveGoldMapping(registry);
         RegisterClientGiveItemMapping(registry);
         RegisterClientGroupInviteMapping(registry);
@@ -81,6 +83,37 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Spell")
                 .Property(m => m.LineCount);
+        });
+    }
+
+    private static void RegisterClientBoardActionMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientBoardActionMessage>(b =>
+        {
+            b.Section("Action")
+                .Property(m => m.Action);
+            b.Section("Board")
+                .Property(m => m.BoardId)
+                .Property(m => m.StartPostId)
+                .IsExpanded(m => m.BoardId.HasValue && m.Action != MessageBoardAction.SendMail);
+            b.Section("Post")
+                .Property(m => m.PostId)
+                .IsExpanded(m => m.PostId.HasValue);
+            b.Section("Navigation")
+                .Property(m => m.Navigation)
+                .IsExpanded(m => m.Action == MessageBoardAction.ViewPost);
+            b.Section("Create Post")
+                .Property(m => m.Subject, p => p.ShowMultiline())
+                .Property(m => m.Body, p => p.ShowMultiline())
+                .IsExpanded(m => m.Action == MessageBoardAction.CreatePost);
+            b.Section("Send Mail")
+                .Property(m => m.Recipient)
+                .Property(m => m.MailSubject, p => p.ShowMultiline())
+                .Property(m => m.MailBody, p => p.ShowMultiline())
+                .IsExpanded(m => m.Action == MessageBoardAction.SendMail);
+            b.Section("Unknown")
+                .Property(m => m.Unknown, p => p.ShowHex())
+                .IsExpanded(m => m.Action == MessageBoardAction.ViewBoard);
         });
     }
 
@@ -177,6 +210,17 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientEditNotepadMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientEditNotepadMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot);
+            b.Section("Content")
+                .Property(m => m.Content, p => p.ShowMultiline());
+        });
+    }
+
     private static void RegisterClientEmoteMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientEmoteMessage>(b =>
@@ -186,9 +230,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
-    private static void RegisterClientExchangeMapping(InspectorMappingRegistry registry)
+    private static void RegisterClientExchangeActionMapping(InspectorMappingRegistry registry)
     {
-        registry.Register<ClientExchangeMessage>(b =>
+        registry.Register<ClientExchangeActionMessage>(b =>
         {
             b.Section("Action")
                 .Property(m => m.Action);
