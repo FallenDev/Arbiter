@@ -218,7 +218,7 @@ public class InspectorViewModelFactory
         
         var vm = new InspectorDictionaryViewModel
         {
-            Name = MergeDisplayName(containingType, propMapping),
+            Name = MergeDisplayName(dictType, propMapping),
             TypeName = propMapping.PropertyType.Name,
             IsExpanded = isExpanded,
         };
@@ -245,7 +245,7 @@ public class InspectorViewModelFactory
         
         var vm = new InspectorDictionaryViewModel
         {
-            Name = MergeDisplayName(containingType, propMapping),
+            Name = MergeDisplayName(classType, propMapping),
             TypeName = classType.Name,
             IsExpanded = isExpanded,
         };

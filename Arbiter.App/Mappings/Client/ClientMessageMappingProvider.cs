@@ -20,6 +20,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientDropItemMapping(registry);
         RegisterClientEditNotepadMapping(registry);
         RegisterClientEmoteMapping(registry);
+        RegisterClientExceptionMapping(registry);
         RegisterClientExchangeActionMapping(registry);
         RegisterClientGiveGoldMapping(registry);
         RegisterClientGiveItemMapping(registry);
@@ -227,6 +228,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Emote")
                 .Property(m => m.Emote);
+        });
+    }
+
+    private static void RegisterClientExceptionMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientExceptionMessage>(b =>
+        {
+            b.Section("Exception")
+                .Property(m => m.Message, p => p.ShowMultiline());
         });
     }
 

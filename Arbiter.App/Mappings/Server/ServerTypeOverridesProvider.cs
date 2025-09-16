@@ -23,8 +23,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerMessageBoardPost>(b =>
         {
             b.Property(m => m.Subject, p => p.ShowMultiline())
-                .Property(m => m.Body, p => p.ShowMultiline())
-                .DisplayName(m => m.Subject);
+                .Property(m => m.Body, p => p.ShowMultiline());
         });
 
         registry.RegisterOverrides<ServerCreatureEntity>(b =>
