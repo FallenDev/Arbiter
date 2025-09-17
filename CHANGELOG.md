@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Severity level labels in console messages
+- Console message right-click context menu for copy to clipboard
+
+### Changed
+
+- Console exception messages are now one text run for easy text selection
 
 ## [0.9.1] - 2025-09-17
 

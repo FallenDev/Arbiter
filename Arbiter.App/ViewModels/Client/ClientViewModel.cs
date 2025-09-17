@@ -13,23 +13,6 @@ namespace Arbiter.App.ViewModels.Client;
 
 public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
 {
-    public static ClientViewModel DesignInstance => new(new ProxyConnection(0, new TcpClient()))
-    {
-        EntityId = 0xFEEDBEEF,
-        Name = "VeryLongName",
-        Class = "Summoner",
-        MapName = "Black Dragon Vestibule",
-        Level = 99,
-        AbilityLevel = 99,
-        MapId = 99999,
-        MapX = 100,
-        MapY = 100,
-        CurrentHealth = 123_456,
-        MaxHealth = 234_789,
-        CurrentMana = 123_456,
-        MaxMana = 234_789,
-    };
-    
     public int Id { get; init; }
     public required string Name { get; set; }
 
