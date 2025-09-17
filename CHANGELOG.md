@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ClientAuthenticated` event now invoked when client sends `0x10` packet
 - Clear login state when client explicitly exits
 - Remove `Unknown` from `ServerRequestPortraitMessage` packet/mapping
+- Fixed `Name` property for `ServerShowPlayerMessage` message when in monster form
 
 ## [0.9.0] - 2025-09-16
 

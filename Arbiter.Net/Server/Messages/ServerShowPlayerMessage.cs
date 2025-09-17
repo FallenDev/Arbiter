@@ -66,7 +66,6 @@ public class ServerShowPlayerMessage : ServerMessage
 
             // Not sure what these are for
             MonsterUnknown = reader.ReadBytes(6);
-            return;
         }
         else
         {
