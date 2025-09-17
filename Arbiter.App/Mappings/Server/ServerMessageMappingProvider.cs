@@ -521,8 +521,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
     {
         registry.Register<ServerRequestUserPortraitMessage>(b =>
         {
-            b.Section("Request")
-                .Property(m => m.Unknown, p => p.ShowHex());
+            // Nothing to map    
         });
     }
 
