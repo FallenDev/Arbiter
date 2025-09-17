@@ -22,6 +22,7 @@ public class ClientManagerViewModel : ViewModelBase
 
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
+        _proxyServer.ClientLoggedOut += OnClientLoggedOut;
         _proxyServer.ClientRedirected += OnClientRedirected;
         _proxyServer.ClientDisconnected += OnClientDisconnected;
     }
@@ -52,6 +53,20 @@ public class ClientManagerViewModel : ViewModelBase
         Dispatcher.UIThread.Invoke(() => Clients.Add(client));
     }
 
+    private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
+    {
+        using var _ = _clientLock.EnterScope();
+        var client = _clientMap.GetValueOrDefault(e.Connection.Id);
+
+        if (client is null)
+        {
+            return;
+        }
+
+        // We are fully logged out and can remove the client
+        Dispatcher.UIThread.Invoke(() => Clients.Remove(client));
+    }
+
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
     {
         // Do nothing for now
@@ -67,6 +82,7 @@ public class ClientManagerViewModel : ViewModelBase
             return;
         }
         
+        // Try removing the client from the list
         Dispatcher.UIThread.Invoke(() => Clients.Remove(client));
         
         using var _ = _clientLock.EnterScope();
