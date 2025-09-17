@@ -8,6 +8,7 @@ using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
+using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -24,6 +25,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly IGameClientService _gameClientService;
     private readonly ISettingsService _settingsService;
+    private readonly Window _mainWindow;
 
     [ObservableProperty] private string _title = "Arbiter";
     [ObservableProperty] private ClientViewModel? _selectedClient;
@@ -40,13 +42,15 @@ public partial class MainWindowViewModel : ViewModelBase
         IServiceProvider serviceProvider,
         IDialogService dialogService,
         IGameClientService gameClientService,
-        ISettingsService settingsService)
+        ISettingsService settingsService,
+        Window mainWindow)
     {
         _logger = logger;
 
         _dialogService = dialogService;
         _gameClientService = gameClientService;
         _settingsService = settingsService;
+        _mainWindow = mainWindow;
 
         ClientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
@@ -134,6 +138,11 @@ public partial class MainWindowViewModel : ViewModelBase
     internal async Task OnOpened()
     {
         Settings = await _settingsService.LoadFromFileAsync();
+
+        if (Settings.StartupLocation is not null)
+        {
+            RestoreWindowPosition(Settings.StartupLocation);
+        }
     }
 
     internal async Task OnLoaded()
@@ -146,14 +155,50 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    internal Task<bool> OnClosing(WindowCloseReason reason)
+    internal async Task<bool> OnClosing(WindowCloseReason reason)
     {
+        await SaveWindowPositionAsync();
+        
         if (Trace.IsRunning)
         {
             Trace.StopTracing();
         }
-        
-        return Task.FromResult(true);
+
+        return true;
+    }
+
+    private async Task SaveWindowPositionAsync()
+    {
+        Settings.StartupLocation = new WindowRect
+        {
+            X = _mainWindow.Position.X,
+            Y = _mainWindow.Position.Y,
+            Width = (int)_mainWindow.Width,
+            Height = (int)_mainWindow.Height,
+            IsMaximized = _mainWindow.WindowState == WindowState.Maximized
+        };
+
+        await _settingsService.SaveToFileAsync(Settings);
+    }
+
+    private void RestoreWindowPosition(WindowRect rect)
+    {
+        if (rect is { X: >= 0, Y: >= 0 })
+        {
+            _mainWindow.Position = new PixelPoint(rect.X.Value, rect.Y.Value);
+        }
+
+        if (rect.Width is > 0)
+        {
+            _mainWindow.Width = rect.Width.Value;
+        }
+
+        if (rect.Height is > 0)
+        {
+            _mainWindow.Height = rect.Height.Value;       
+        }
+
+        _mainWindow.WindowState = rect.IsMaximized ? WindowState.Maximized : WindowState.Normal;
     }
 }
 

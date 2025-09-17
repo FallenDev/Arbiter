@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Severity level labels in console messages
 - Console message right-click context menu for copy to clipboard
+- Remember last size and position when opening application
 
 ### Changed
 
