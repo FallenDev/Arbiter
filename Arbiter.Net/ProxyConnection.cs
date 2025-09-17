@@ -40,6 +40,7 @@ public partial class ProxyConnection : IDisposable
 
     public event EventHandler? ClientAuthenticated;
     public event EventHandler? ClientLoggedIn;
+    public event EventHandler? ClientLoggedOut;
     public event EventHandler? ClientDisconnected;
     public event EventHandler? ServerConnected;
     public event EventHandler? ServerDisconnected;

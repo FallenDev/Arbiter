@@ -25,6 +25,7 @@ public class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionEventArgs>? ServerConnected;
     public event EventHandler<ProxyConnectionEventArgs>? ClientAuthenticated;
     public event EventHandler<ProxyConnectionEventArgs>? ClientLoggedIn;
+    public event EventHandler<ProxyConnectionEventArgs>? ClientLoggedOut;
     public event EventHandler<ProxyConnectionEventArgs>? ClientDisconnected;
     public event EventHandler<ProxyConnectionEventArgs>? ServerDisconnected;
     public event EventHandler<ProxyConnectionRedirectEventArgs>? ClientRedirected;
@@ -101,6 +102,7 @@ public class ProxyServer : IDisposable
     {
         connection.ClientAuthenticated += OnClientAuthenticated;
         connection.ClientLoggedIn += OnClientLoggedIn;
+        connection.ClientLoggedOut += OnClientLoggedOut;
         connection.ClientDisconnected += OnClientDisconnected;
         connection.ServerConnected += OnServerConnected;
         connection.ServerDisconnected += OnServerDisconnected;
@@ -120,6 +122,7 @@ public class ProxyServer : IDisposable
         {
             connection.ClientAuthenticated -= OnClientAuthenticated;
             connection.ClientLoggedIn -= OnClientLoggedIn;
+            connection.ClientLoggedOut -= OnClientLoggedOut;
             connection.ClientDisconnected -= OnClientDisconnected;
             connection.ServerConnected -= OnServerConnected;
             connection.ServerDisconnected -= OnServerDisconnected;
@@ -138,6 +141,9 @@ public class ProxyServer : IDisposable
 
     private void OnClientLoggedIn(object? sender, EventArgs e) =>
         ClientLoggedIn?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
+    
+    private void OnClientLoggedOut(object? sender, EventArgs e) =>
+        ClientLoggedOut?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
     private void OnClientDisconnected(object? sender, EventArgs e) =>
         ClientDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));

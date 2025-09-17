@@ -31,6 +31,7 @@ public class ProxyViewModel : ViewModelBase
         _proxyServer.ServerDisconnected += OnServerDisconnected;
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
+        _proxyServer.ClientLoggedOut += OnClientLoggedOut;
         _proxyServer.ClientRedirected += OnClientRedirected;
 
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
@@ -71,6 +72,12 @@ public class ProxyViewModel : ViewModelBase
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client logged in", name);
+    }
+    
+    private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
+    {
+        var name = e.Connection.Name ?? e.Connection.Id.ToString();
+        _logger.LogInformation("[{Name}] Client logged out", name);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)

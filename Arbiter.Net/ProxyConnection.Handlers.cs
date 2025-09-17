@@ -90,6 +90,18 @@ public partial class ProxyConnection
         ClientLoggedIn?.Invoke(this, EventArgs.Empty);
     }
 
+    private void HandleServerExitResponse(NetworkPacket packet)
+    {
+        var reader = new NetworkPacketReader(packet);
+        var result = reader.ReadByte();
+
+        IsLoggedIn = false;
+        HasAuthenticated = false;
+        UserId = null;
+
+        ClientLoggedOut?.Invoke(this, EventArgs.Empty);
+    }
+
     private void SetEncryptionParameters(int seed, ReadOnlySpan<byte> privateKey, string? name = null)
     {
         var encryptionParameters = new NetworkEncryptionParameters(seed, privateKey, name);

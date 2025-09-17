@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exception view for inspector view
 - Improved client view with map location and stats
 - `ClientLoggedIn` event for `ProxyServer`, invoked when server sends `0x05` packet
+- `ClientLoggedOut` event for `ProxyServer`, invoked when server sends `0x4C` packet
 
 ### Changed
 
 - Renamed `DyeColor` to `Color`
 - `ClientAuthenticated` event now invoked when client sends `0x10` packet
+- Clear login state when client explicitly exits
 
 ## [0.9.0] - 2025-09-16
 
