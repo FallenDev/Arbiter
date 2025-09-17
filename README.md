@@ -38,11 +38,14 @@ TBD
 
 ### v1.0
 
-- [ ] Character View
-  - [ ] Name
-  - [ ] Level + Class
-  - [ ] HP / MP
-  - [ ] Map Location
+- [x] Character View
+  - [x] Name
+  - [x] Level + Class
+  - [x] HP / MP
+  - [x] Map Location
+- [ ] Inspector Tooltips
+- [ ] Find by Command (Next/Prev)
+- [ ] Delete Trace Packets
 - [ ] Raw Packet Injection
   - [ ] To Client
   - [ ] To Server
