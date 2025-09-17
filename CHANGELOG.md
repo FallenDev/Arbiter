@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remember last size and position when opening application
 - Text view of `ServerLegendMark` listing on `ServerUserProfileMessage` and `ServerSelfProfileMessage` inpsector views
 - Text view of `ServerWorldListUser` listing on `ServerWorldListMessage` inspector view
+- Copy to JSON representation from inspector
 
 ### Changed
 

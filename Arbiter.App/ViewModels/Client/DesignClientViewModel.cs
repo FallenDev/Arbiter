@@ -3,6 +3,7 @@ using Arbiter.Net;
 
 namespace Arbiter.App.ViewModels.Client;
 
+// This is only used at design-time to make it easier to adjust XAML view layout.
 public class DesignClientViewModel : ClientViewModel
 {
     public DesignClientViewModel()

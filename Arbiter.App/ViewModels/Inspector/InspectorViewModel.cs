@@ -1,5 +1,7 @@
-﻿using Arbiter.Net;
+﻿using System.Threading.Tasks;
+using Arbiter.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Inspector;
@@ -12,6 +14,7 @@ public partial class InspectorViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
+    [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
     private InspectorPacketViewModel? _inspectedPacket;
 
     [ObservableProperty]
@@ -62,4 +65,12 @@ public partial class InspectorViewModel : ViewModelBase
             InspectorException = null;
         }
     }
+
+    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
+    private async Task CopyToClipboard()
+    {
+        
+    }
+
+    private bool CanCopyToClipboard() => !IsEmpty;
 }

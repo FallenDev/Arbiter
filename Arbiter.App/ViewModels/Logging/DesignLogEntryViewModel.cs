@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Logging;
 
+// This is only used at design-time to make it easier to adjust XAML view layout.
 public class DesignLogEntryViewModel : LogEntryViewModel
 {
     private static readonly ArbiterLogEntry MockLogEntry = new()

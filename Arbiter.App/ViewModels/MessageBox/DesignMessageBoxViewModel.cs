@@ -2,6 +2,7 @@
 
 namespace Arbiter.App.ViewModels.MessageBox;
 
+// This is only used at design-time to make it easier to adjust XAML view layout.
 public class DesignMessageBoxViewModel : MessageBoxViewModel
 {
     public DesignMessageBoxViewModel()
