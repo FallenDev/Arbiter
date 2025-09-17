@@ -6,7 +6,7 @@ namespace Arbiter.App.Mappings;
 public class InspectorPropertyMapping
 {
     public string Name { get; set; }
-    public MemberInfo Member { get; }
+    public MemberInfo? Member { get; }
     public Type PropertyType { get; }
     public Func<object, object?> Getter { get; }
     
@@ -17,7 +17,7 @@ public class InspectorPropertyMapping
     public char? MaskCharacter { get; set; }
     public string? ToolTip { get; set; }
 
-    public InspectorPropertyMapping(string name, MemberInfo member, Type propertyType, Func<object, object?> getter)
+    public InspectorPropertyMapping(string name, MemberInfo? member, Type propertyType, Func<object, object?> getter)
     {
         Name = name;
         Member = member;

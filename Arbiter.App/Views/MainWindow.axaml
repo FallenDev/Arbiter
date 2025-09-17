@@ -13,7 +13,7 @@
         Icon="/Assets/aiseirigh.ico"
         Title="{Binding Title}"
         Width="1280" Height="720"
-        MinWidth="1024" MinHeight="576"
+        MinWidth="1280" MinHeight="640"
         CanResize="True"
         WindowStartupLocation="CenterScreen"
         Opened="Window_OnOpened"
@@ -37,11 +37,11 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" MinWidth="200" MaxWidth="360"/>
+            <ColumnDefinition Width="*" MinWidth="200" MaxWidth="360"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="660"/>
+            <ColumnDefinition Width="2*" MinWidth="660"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="360" MinWidth="320" MaxWidth="480"/>
+            <ColumnDefinition Width="*" MinWidth="320" MaxWidth="480"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->

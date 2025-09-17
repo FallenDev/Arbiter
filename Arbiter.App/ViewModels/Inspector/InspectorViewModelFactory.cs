@@ -86,7 +86,8 @@ public class InspectorViewModelFactory
             foreach (var prop in section.Properties)
             {
                 // Lookup overrides for this property on the containing message type
-                _registry.TryGetPropertyOverride(messageType, prop.Member.Name, out var o);
+                var overrideKey = prop.Member?.Name ?? prop.Name;
+                _registry.TryGetPropertyOverride(messageType, overrideKey, out var o);
 
                 var value = prop.Getter(message);
                 var formatter = o?.Formatter ?? prop.Formatter;
@@ -350,9 +351,13 @@ public class InspectorViewModelFactory
     private bool MergeBool(Type? containingType, InspectorPropertyMapping prop,
         Func<InspectorPropertyOverrides?, InspectorPropertyMapping, bool> selector)
     {
-        if (containingType is not null && _registry.TryGetPropertyOverride(containingType, prop.Member.Name, out var o))
+        if (containingType is not null)
         {
-            return selector(o, prop);
+            var overrideKey = prop.Member?.Name ?? prop.Name;
+            if (_registry.TryGetPropertyOverride(containingType, overrideKey, out var o))
+            {
+                return selector(o, prop);
+            }
         }
         return selector(null, prop);
     }
@@ -360,9 +365,13 @@ public class InspectorViewModelFactory
     private T? MergeValue<T>(Type? containingType, InspectorPropertyMapping prop,
         Func<InspectorPropertyOverrides?, InspectorPropertyMapping, T?> selector)
     {
-        if (containingType is not null && _registry.TryGetPropertyOverride(containingType, prop.Member.Name, out var o))
+        if (containingType is not null)
         {
-            return selector(o, prop);
+            var overrideKey = prop.Member?.Name ?? prop.Name;
+            if (_registry.TryGetPropertyOverride(containingType, overrideKey, out var o))
+            {
+                return selector(o, prop);
+            }
         }
         return selector(null, prop);
     }

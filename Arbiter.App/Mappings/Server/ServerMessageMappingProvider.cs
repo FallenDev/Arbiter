@@ -1,4 +1,5 @@
-﻿using Arbiter.Net.Server;
+﻿using System.Linq;
+using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -550,6 +551,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Legend")
                 .Property(m => m.LegendMarks)
                 .IsExpanded(_ => false);
+            b.Section("Legend (Text)")
+                .Computed("Text", m => string.Join(System.Environment.NewLine, m.LegendMarks.Select(l => l.Text)),
+                    p => p.ShowMultiline());
         });
     }
     
@@ -889,6 +893,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Legend")
                 .Property(m => m.LegendMarks)
                 .IsExpanded(_ => false);
+            b.Section("Legend (Text)")
+                .Computed("Text", m => string.Join(System.Environment.NewLine, m.LegendMarks.Select(l => l.Text)),
+                    p => p.ShowMultiline());
             b.Section("Portrait")
                 .Property(m => m.Portrait, p => p.ShowMultiline())
                 .IsExpanded(m => m.Portrait is not null && m.Portrait.Count > 0);
@@ -922,7 +929,11 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.WorldCount)
                 .Property(m => m.CountryCount);
             b.Section("Users")
-                .Property(m => m.Users);
+                .Property(m => m.Users)
+                .IsExpanded(_ => false);
+            b.Section("Users (Text)")
+                .Computed("Text", m => string.Join(System.Environment.NewLine, m.Users.Select(l => l.Name)),
+                    p => p.ShowMultiline());
         });
     }
 

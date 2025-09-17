@@ -46,7 +46,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
-    [ObservableProperty] private bool _showFilterBar = true;
+    [ObservableProperty] private bool _showFilterBar;
 
     public event Action<TracePacketViewModel?>? SelectedPacketChanged;
 

@@ -12,12 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Severity level labels in console messages
 - Console message right-click context menu for copy to clipboard
 - Remember last size and position when opening application
+- Text view of `ServerLegendMark` listing on `ServerUserProfileMessage` and `ServerSelfProfileMessage` inpsector views
+- Text view of `ServerWorldListUser` listing on `ServerWorldListMessage` inspector view
 
 ### Changed
 
 - Console exception messages are now one text run for easy text selection
 - Reduced initial window size and layout splits
 - Adjusted trace view toolbar layout for resizing
+- Hide filter bar by default on trace
+- Collapse `Users` on `ServerWorldListMessage` by default in inspector
 
 ## [0.9.1] - 2025-09-17
 

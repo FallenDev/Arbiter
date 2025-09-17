@@ -7,7 +7,7 @@ namespace Arbiter.App.Mappings;
 
 public class InspectorPropertyBuilder<T>
 {
-    private readonly MemberInfo _member;
+    private readonly MemberInfo? _member;
     private readonly Type _propertyType;
     private readonly Func<object, object?> _getter;
 
@@ -19,7 +19,7 @@ public class InspectorPropertyBuilder<T>
     private char? _maskChar;
     private string? _toolTip;
 
-    internal InspectorPropertyBuilder(MemberInfo member, Type propertyType, Func<object, object?> getter)
+    internal InspectorPropertyBuilder(MemberInfo? member, Type propertyType, Func<object, object?> getter)
     {
         _member = member;
         _propertyType = propertyType;
@@ -65,7 +65,7 @@ public class InspectorPropertyBuilder<T>
     
     public InspectorPropertyMapping Build()
     {
-        var displayName = _name ?? _member.Name.ToNaturalWording();
+        var displayName = _name ?? (_member?.Name.ToNaturalWording() ?? string.Empty);
         return new InspectorPropertyMapping(displayName, _member, _propertyType, _getter)
         {
             ShowHex = _showHex,
@@ -88,6 +88,21 @@ public class InspectorPropertyBuilder<T, TProp>
         var getter = CreateGetter(expression);
 
         Untyped = new InspectorPropertyBuilder<T>(member, typeof(TProp), getter);
+    }
+
+    // Constructor for computed properties (no backing MemberInfo)
+    internal InspectorPropertyBuilder(string name, Func<T, TProp> getter)
+    {
+        Func<object, object?> wrapped = obj =>
+        {
+            if (obj is null)
+            {
+                return default(TProp);
+            }
+            return getter((T)obj);
+        };
+        Untyped = new InspectorPropertyBuilder<T>(null, typeof(TProp), wrapped);
+        Untyped.Name(name);
     }
 
     private static MemberInfo GetMemberFromExpression(Expression<Func<T, TProp>> expression)
