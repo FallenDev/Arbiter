@@ -5,7 +5,7 @@
              xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels.Tracing"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.TraceView"
              x:DataType="vm:TraceViewModel">
     
@@ -16,7 +16,7 @@
     <Grid RowDefinitions="Auto,Auto,*" Background="{StaticResource Talgonite.Trace.Background}">
        <!-- Toolbar Area -->
        <Border Grid.Row="0" Padding="4">
-            <Grid ColumnDefinitions="*,*,*">
+            <Grid ColumnDefinitions="Auto,*,Auto">
                 <!-- Left Side Buttons -->
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4">
                     <!-- Start Trace Button -->
@@ -151,72 +151,75 @@
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="0,8">
-            <Grid ColumnDefinitions="*,*,*">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <!-- Direction Filter -->
-                        <Label Content="Direction"
-                               ToolTip.Tip="Allows filtering by packet direction."/>
-                        <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}" 
-                                  SelectedValue="{Binding FilterParameters.PacketDirection}"
-                                  PlaceholderText="No Selection"
-                                  Width="140">
-                            <ComboBox.SelectionBoxItemTemplate>
-                                <DataTemplate>
+            <WrapPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <!-- Direction Filter -->
+                    <Label Content="Direction"
+                           ToolTip.Tip="Allows filtering by packet direction."
+                           VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}" 
+                              SelectedValue="{Binding FilterParameters.PacketDirection}"
+                              PlaceholderText="No Selection"
+                              Width="130">
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding .}"
+                                           Padding="8,4"/>
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="4">
                                     <TextBlock Text="{Binding .}"
-                                               Padding="8,4"/>
-                                </DataTemplate>
-                            </ComboBox.SelectionBoxItemTemplate>
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
-                                            BorderThickness="0,0,0,1"
-                                            Padding="4">
-                                        <TextBlock Text="{Binding .}"
-                                                   Padding="8,2"/>
-                                    </Border>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <!-- Character Filter -->
-                        <Label Content="Clients"
-                               ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."/>
-                        <TextBox Text="{Binding FilterParameters.NameFilter}"
-                                 Width="160">
-                            <TextBox.InnerRightContent>
-                                <Button Command="{Binding FilterParameters.ClearNameFilterCommand}"
-                                        IsVisible="{Binding FilterParameters.NameFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                        Classes="clear destructive">
-                                    <Path Width="12" Height="12"
-                                          Stroke="{Binding $parent[Button].Foreground}"
-                                          Data="M1,1 L11,11 M11,1 L1,11"/>
-                                </Button>
-                            </TextBox.InnerRightContent>
-                        </TextBox>
-                    </StackPanel>
-                    
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <!-- Command Filter -->
-                        <Label Content="Commands"
-                               ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."/>
-                        <TextBox Text="{Binding FilterParameters.CommandFilter}"
-                                 Width="180">
-                            <TextBox.InnerRightContent>
-                                <Button Command="{Binding FilterParameters.ClearCommandFilterCommand}"
-                                        IsVisible="{Binding FilterParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                        Classes="clear destructive">
-                                    <Path Width="12" Height="12"
-                                          Stroke="{Binding $parent[Button].Foreground}"
-                                          Data="M1,1 L11,11 M11,1 L1,11"/>
-                                </Button>
-                            </TextBox.InnerRightContent>
-                        </TextBox>
-                    </StackPanel>
+                                               Padding="8,2"/>
+                                </Border>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
-            </Grid>
+                
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <!-- Character Filter -->
+                    <Label Content="Clients"
+                           ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."
+                           VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterParameters.NameFilter}"
+                             Width="140"
+                             Height="36">
+                        <TextBox.InnerRightContent>
+                            <Button Command="{Binding FilterParameters.ClearNameFilterCommand}"
+                                    IsVisible="{Binding FilterParameters.NameFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                    Classes="clear destructive">
+                                <Path Width="12" Height="12"
+                                      Stroke="{Binding $parent[Button].Foreground}"
+                                      Data="M1,1 L11,11 M11,1 L1,11"/>
+                            </Button>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <!-- Command Filter -->
+                    <Label Content="Commands"
+                           ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."
+                           VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterParameters.CommandFilter}"
+                             Width="120"
+                             Height="36">
+                        <TextBox.InnerRightContent>
+                            <Button Command="{Binding FilterParameters.ClearCommandFilterCommand}"
+                                    IsVisible="{Binding FilterParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                    Classes="clear destructive">
+                                <Path Width="12" Height="12"
+                                      Stroke="{Binding $parent[Button].Foreground}"
+                                      Data="M1,1 L11,11 M11,1 L1,11"/>
+                            </Button>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </StackPanel>
+            </WrapPanel>
         </Border>
         <!-- Trace List -->
         <ListBox Grid.Row="2"

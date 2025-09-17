@@ -12,7 +12,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/aiseirigh.ico"
         Title="{Binding Title}"
-        Width="1920" Height="1080"
+        Width="1280" Height="720"
         MinWidth="1024" MinHeight="576"
         CanResize="True"
         WindowStartupLocation="CenterScreen"
@@ -26,7 +26,7 @@
                     Command="{Binding ShowSettingsCommand}"
                     HotKey="F10"
                     Classes="control-box"
-                    ToolTip.Tip = "Opens the Settings window.">
+                    ToolTip.Tip="Opens the Settings window.">
                 <Path Width="16"
                       Height="16"
                       Stroke="{Binding $parent[Button].Foreground}"
@@ -37,11 +37,11 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" MinWidth="200" MaxWidth="360"/>
+            <ColumnDefinition Width="200" MinWidth="200" MaxWidth="360"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="560"/>
+            <ColumnDefinition Width="*" MinWidth="660"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="480" MinWidth="320"/>
+            <ColumnDefinition Width="360" MinWidth="320" MaxWidth="480"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->

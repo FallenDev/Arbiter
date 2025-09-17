@@ -55,20 +55,6 @@ public partial class MainWindowViewModel : ViewModelBase
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
 
         Trace.SelectedPacketChanged += OnPacketSelected;
-        
-        _logger.LogInformation("This is an information message");
-        _logger.LogWarning("This is a warning message");
-        _logger.LogError("This is an error message");
-        _logger.LogDebug("This is a debug message");
-
-        try
-        {
-            throw new Exception("This is an exception");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "This is an exception message");
-        }
     }
 
     private void OnPacketSelected(TracePacketViewModel? viewModel)

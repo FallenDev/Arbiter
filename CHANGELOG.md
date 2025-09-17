@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Console exception messages are now one text run for easy text selection
+- Reduced initial window size and layout splits
+- Adjusted trace view toolbar layout for resizing
 
 ## [0.9.1] - 2025-09-17
 
