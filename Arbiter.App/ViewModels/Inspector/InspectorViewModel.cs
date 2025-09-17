@@ -1,5 +1,4 @@
-﻿using System;
-using Arbiter.Net;
+﻿using Arbiter.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 
@@ -17,10 +16,11 @@ public partial class InspectorViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
-    private InspectorExceptionViewModel? _exception;
+    [NotifyPropertyChangedFor(nameof(IsEmpty))]
+    private InspectorExceptionViewModel? _inspectorException;
     
-    public bool IsEmpty => InspectedPacket is not null && InspectedPacket.Sections.Count == 0;
-    public bool HasError => Exception is not null;
+    public bool IsEmpty => InspectedPacket is not null && InspectedPacket.Sections.Count == 0 && !HasError;
+    public bool HasError => InspectorException is not null;
     
     public NetworkPacket? SelectedPacket
     {
@@ -42,20 +42,24 @@ public partial class InspectorViewModel : ViewModelBase
 
     private void OnPacketSelected(NetworkPacket? packet)
     {
-        try
+        if (packet is null)
         {
-            InspectedPacket = packet is not null ? _factory.Create(packet) : null;
-            Exception = null;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to generate inspector view model for packet");
-            
             InspectedPacket = null;
-            Exception = new InspectorExceptionViewModel
-            {
-                Exception = ex
-            };
+            InspectorException = null;
+            return;
+        }
+
+        var (vm, exception) = _factory.Create(packet);
+        InspectedPacket = vm;
+        
+        if (exception is not null)
+        {
+            _logger.LogError(exception, "Failed to generate inspector view");
+            InspectorException = new InspectorExceptionViewModel { Exception = exception };
+        }
+        else
+        {
+            InspectorException = null;
         }
     }
 }

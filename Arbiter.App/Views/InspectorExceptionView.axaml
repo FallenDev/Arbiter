@@ -6,5 +6,61 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.InspectorExceptionView"
              x:DataType="vm:InspectorExceptionViewModel">
-    There was an error.
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.Inspector.ErrorBackground" Color="#260e0b"/>
+        <SolidColorBrush x:Key="Talgonite.Inspector.ErrorBrush" Color="#ee8071"/>
+        <SolidColorBrush x:Key="Talgonite.Inspector.ErrorSelectionBrush" Color="#80ed6a5e"/>
+    </UserControl.Resources>
+    
+    <Panel HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="8">
+        <Border Background="{StaticResource Talgonite.Inspector.ErrorBackground}"
+                BorderBrush="{StaticResource Talgonite.Inspector.ErrorBrush}"
+                BorderThickness="2"
+                CornerRadius="8"
+                Padding="8,16">
+            <StackPanel Spacing="8">
+                <Grid Width="64" Height="64">
+                    <!-- Circle outline (thin) -->
+                    <Path
+                        Width="64" Height="64" Stretch="None"
+                        Data="M32,4 A28,28 0 1 1 32,60 A28,28 0 1 1 32,4 Z"
+                        Stroke="{StaticResource Talgonite.Inspector.ErrorBrush}" StrokeThickness="4"
+                        Fill="Transparent" />
+
+                    <!-- Exclamation (fatter stroke) -->
+                    <Path
+                        Width="64" Height="64" Stretch="None"
+                        Data="M32,16 L32,38 M32,48 L32,50"
+                        Stroke="{StaticResource Talgonite.Inspector.ErrorBrush}" StrokeThickness="6"
+                        Fill="Transparent" />
+                </Grid>
+                
+                <!-- Exception Name -->
+                <TextBlock Text="{Binding ExceptionName}"
+                           TextAlignment="Center"
+                           Foreground="{StaticResource Talgonite.Inspector.ErrorBrush}"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           FontFamily="{StaticResource Talgonite.Editor.FontFamily}"/>
+                
+                <!-- Exception Message -->
+                <TextBlock Text="{Binding Message}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource Talgonite.Inspector.ErrorBrush}"
+                           FontSize="16"
+                           FontFamily="{StaticResource Talgonite.Editor.FontFamily}"/>
+                
+                <!-- Stack Trace -->
+                <SelectableTextBlock Text="{Binding FormattedStackTrace}"
+                                     SelectionBrush="{StaticResource Talgonite.Inspector.ErrorSelectionBrush}"
+                                     TextAlignment="Left"
+                                     TextWrapping="Wrap"
+                                     Foreground="{StaticResource Talgonite.Inspector.ErrorBrush}"
+                                     FontSize="14"
+                                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                     Margin="16,8"/>
+            </StackPanel>
+        </Border>
+    </Panel>
 </UserControl>

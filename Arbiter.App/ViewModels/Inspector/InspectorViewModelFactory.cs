@@ -24,7 +24,7 @@ public class InspectorViewModelFactory
         _registry = registry;
     }
 
-    public InspectorPacketViewModel Create(NetworkPacket packet)
+    public (InspectorPacketViewModel, Exception?) Create(NetworkPacket packet)
     {
         var displayName = packet switch
         {
@@ -40,30 +40,34 @@ public class InspectorViewModelFactory
             Command = packet.Command
         };
 
-        object? message = null;
-        if (packet is ClientPacket clientPacket &&
-            ClientMessageFactory.Default.TryCreate(clientPacket, out var clientMessage))
+        Exception? exception = null;
+        try
         {
-            message = clientMessage;
+            object? message = null;
+            if (packet is ClientPacket clientPacket)
+            {
+                message = ClientMessageFactory.Default.Create(clientPacket);
+            }
+
+            if (packet is ServerPacket serverPacket)
+            {
+                message = ServerMessageFactory.Default.Create(serverPacket);
+            }
+
+            if (message is not null)
+            {
+                foreach (var section in GetSectionsForMessage(message))
+                {
+                    vm.Sections.Add(section);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            exception = ex;
         }
 
-        if (packet is ServerPacket serverPacket &&
-            ServerMessageFactory.Default.TryCreate(serverPacket, out var serverMessage))
-        {
-            message = serverMessage;
-        }
-
-        if (message is null)
-        {
-            return vm;
-        }
-
-        foreach (var section in GetSectionsForMessage(message))
-        {
-            vm.Sections.Add(section);
-        }
-
-        return vm;
+        return (vm, exception);
     }
 
     private IEnumerable<InspectorSectionViewModel> GetSectionsForMessage(object message)

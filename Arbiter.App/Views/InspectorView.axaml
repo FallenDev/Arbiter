@@ -81,7 +81,7 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       IsVisible="{Binding HasError}">
-            <v:InspectorExceptionView DataContext="{Binding Exception}"/>
+            <v:InspectorExceptionView DataContext="{Binding InspectorException, FallbackValue={x:Null}}"/>
         </ScrollViewer>
     </Grid>
 </UserControl>
