@@ -57,7 +57,7 @@ public class ServerAddEntityMessage : ServerMessage
                     X = x,
                     Y = y,
                     Sprite = sprite,
-                    DyeColor = color,
+                    Color = color,
                     Unknown = unknown,
                 });
             }

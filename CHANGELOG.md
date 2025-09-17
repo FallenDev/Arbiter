@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Exception view for inspector view
+
+### Changed
+
+- Renamed `DyeColor` to `Color`
 
 ## [0.9.0] - 2025-09-16
 

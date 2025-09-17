@@ -9,7 +9,7 @@ public class ServerSetEquipmentMessage : ServerMessage
 {
     public EquipmentSlot Slot { get; set; }
     public ushort Sprite { get; set; }
-    public DyeColor DyeColor { get; set; }
+    public DyeColor Color { get; set; }
     public string Name { get; set; } = string.Empty;
     public uint Durability { get; set; }
     public uint MaxDurability { get; set; }
@@ -20,7 +20,7 @@ public class ServerSetEquipmentMessage : ServerMessage
         
         Slot = (EquipmentSlot)reader.ReadByte();
         Sprite = reader.ReadUInt16();
-        DyeColor = (DyeColor)reader.ReadByte();
+        Color = (DyeColor)reader.ReadByte();
         Name = reader.ReadString8();
 
         reader.Skip(1); // always zero, not sure what it is
