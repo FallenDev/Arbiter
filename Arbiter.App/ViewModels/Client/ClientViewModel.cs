@@ -16,7 +16,7 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
     public static ClientViewModel DesignInstance => new(new ProxyConnection(0, new TcpClient()))
     {
         EntityId = 0xFEEDBEEF,
-        Name = "SiLo",
+        Name = "VeryLongName",
         Class = "Summoner",
         MapName = "Black Dragon Vestibule",
         Level = 99,
@@ -63,18 +63,22 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HealthPercent))]
+    [NotifyPropertyChangedFor(nameof(BoundedHealthPercent))]
     private uint _currentHealth;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HealthPercent))]
+    [NotifyPropertyChangedFor(nameof(BoundedHealthPercent))]
     private uint _maxHealth;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
+    [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
     private uint _currentMana;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
+    [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
     private uint _maxMana;
 
     public bool IsLoggedIn => EntityId is not null;
@@ -94,6 +98,8 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
         }
     }
     
+    public double BoundedHealthPercent => Math.Clamp(HealthPercent, 0, 100);
+    
     public double ManaPercent
     {
         get
@@ -103,6 +109,8 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
             return Math.Round(current * 100.0 / max, 1, MidpointRounding.AwayFromZero);
         }
     }
+    
+    public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
     
     public void Subscribe()
     {

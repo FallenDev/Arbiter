@@ -37,7 +37,7 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" MinWidth="240" MaxWidth="360"/>
+            <ColumnDefinition Width="300" MinWidth="200" MaxWidth="360"/>
             <ColumnDefinition Width="8"/>
             <ColumnDefinition Width="*" MinWidth="560"/>
             <ColumnDefinition Width="8"/>

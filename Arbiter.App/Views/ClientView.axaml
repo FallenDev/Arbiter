@@ -3,63 +3,117 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels.Client"
-             mc:Ignorable="d" d:DesignWidth="240" d:DesignHeight="120"
+             mc:Ignorable="d" d:DesignWidth="280"
              d:DataContext="{x:Static vm:ClientViewModel.DesignInstance}"
              x:Class="Arbiter.App.Views.ClientView"
              x:DataType="vm:ClientViewModel">
-    <Border Background="{StaticResource Talgonite.Control.Background}"
-            Padding="8,4">
-        <StackPanel Spacing="4">
-            <Grid ColumnDefinitions="*,Auto">
-            <!-- Name -->
-            <TextBlock Grid.Row="0" Grid.Column="0"
-                       Text="{Binding Name}"
-                       FontSize="24"
-                       VerticalAlignment="Bottom"/>
-            
-                <!-- Level and Class -->
-                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
-                    <TextBlock Text="{Binding DisplayLevel}"
-                               TextAlignment="Right"
-                               FontSize="12"
-                               VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding Class}"
-                               TextAlignment="Right"
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.Client.NameForeground" Color="#e0e0e0"/>
+        <SolidColorBrush x:Key="Talgonite.Client.LevelForeground" Color="#7b7e85"/>
+        <SolidColorBrush x:Key="Talgonite.Client.MapForeground" Color="#cdcfd2"/>
+        <SolidColorBrush x:Key="Talgonite.Client.TextForeground" Color="#cdcfd2"/>
+        <SolidColorBrush x:Key="Talgonite.Client.HealthForeground" Color="#ee8071"/>
+        <SolidColorBrush x:Key="Talgonite.Client.ManaForeground" Color="#82baf7"/>
+    </UserControl.Resources>
+    
+    <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="8,4"
+                Margin="0,0,0,4">
+            <StackPanel Spacing="4">
+                <Grid ColumnDefinitions="*,Auto">
+                <!-- Name -->
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="{Binding Name}"
+                           FontSize="24"
+                           Foreground="{StaticResource Talgonite.Client.NameForeground}"
+                           VerticalAlignment="Bottom"/>
+                
+                    <!-- Level and Class -->
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
+                        <TextBlock Text="{Binding DisplayLevel}"
+                                   TextAlignment="Right"
+                                   FontSize="14"
+                                   Foreground="{StaticResource Talgonite.Client.LevelForeground}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Class}"
+                                   TextAlignment="Right"
+                                   FontSize="14"
+                                   Foreground="{StaticResource Talgonite.Client.LevelForeground}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+                
+                <!-- Map Location -->
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="{Binding MapName}"
                                FontSize="14"
-                               VerticalAlignment="Center"/>
+                               Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
+                    <TextBlock Text="{Binding MapPosition, StringFormat={}({0})}"
+                               FontSize="14"
+                               Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
                 </StackPanel>
-            </Grid>
-            
-            <!-- Map Location -->
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <TextBlock Text="{Binding MapName}"
-                           FontSize="14"/>
-                <TextBlock Text="{Binding MapPosition, StringFormat={}({0})}"
-                           FontSize="14"/>
+                
+                <Border Classes="divider-h" Background="{StaticResource Talgonite.Border.DividerBrush}"
+                        Margin="0,4"/>
+                
+                <!-- HP Amount -->
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0"
+                               Text="HP"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource Talgonite.Client.TextForeground}"
+                               Margin="0,0,4,0"/>
+                    
+                    <!-- Current and Max -->
+                    <TextBlock Grid.Column="1"
+                               FontSize="14"
+                               Foreground="{StaticResource Talgonite.Client.TextForeground}"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding CurrentHealth}"/>
+                        <Run Text="/"/>
+                        <Run Text="{Binding MaxHealth}"/>
+                    </TextBlock>
+                </Grid>
+                
+                <!-- HP Bar -->
+                <ProgressBar Minimum="0" Maximum="100"
+                             Value="{Binding BoundedHealthPercent}"
+                             ShowProgressText="False"
+                             Foreground="{StaticResource Talgonite.Client.HealthForeground}"/>
+                
+                <!-- MP Amount -->
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0"
+                               Text="MP"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource Talgonite.Client.TextForeground}"
+                               Margin="0,0,4,0"/>
+                    
+                    <!-- Current and Max -->
+                    <TextBlock Grid.Column="1"
+                               FontSize="14"
+                               Foreground="{StaticResource Talgonite.Client.TextForeground}"
+                               TextAlignment="Right"
+                               VerticalAlignment="Center">
+                        <Run Text="{Binding CurrentMana}"/>
+                        <Run Text="/"/>
+                        <Run Text="{Binding MaxMana}"/>
+                    </TextBlock>
+                </Grid>
+                
+                <!-- MP Bar -->
+                <ProgressBar Minimum="0" Maximum="100"
+                             Value="{Binding BoundedManaPercent}"
+                             ShowProgressText="False"
+                             Foreground="{StaticResource Talgonite.Client.ManaForeground}"/>
+                
+                <!-- Spacing -->
+                <Panel Margin="0,4"/>
             </StackPanel>
-            
-            <!-- HP Amount -->
-            <Grid ColumnDefinitions="Auto,*,Auto">
-                <TextBlock Grid.Column="0"
-                           Text="HP"
-                           FontWeight="SemiBold"
-                           Margin="0,0,4,0"/>
-                
-                <!-- Current and Max -->
-                <TextBlock Grid.Column="1"
-                           FontWeight="SemiBold"
-                           TextAlignment="Right">
-                    <Run Text="{Binding CurrentHealth}"/>
-                    <Run Text="/"/>
-                    <Run Text="{Binding MaxHealth}"/>
-                </TextBlock>
-                
-                <!-- Percentage -->
-                <TextBlock Grid.Column="2"
-                           Text="{Binding HealthPercent, StringFormat={}({0:F1}%)}"
-                           Margin="4,0,0,0"/>
-            </Grid>
-            
-        </StackPanel>
-    </Border>
+        </Border>
+    </Panel>
 </UserControl>

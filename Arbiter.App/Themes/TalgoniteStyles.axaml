@@ -22,6 +22,7 @@
     <StyleInclude Source="./TalgoniteMenuItem.axaml"/>
     <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgonitePath.axaml"/>
+    <StyleInclude Source="./TalgoniteProgressBar.axaml"/>
     <StyleInclude Source="./TalgonitePopupRoot.axaml"/>
     <StyleInclude Source="./TalgoniteRadioButton.axaml"/>
     <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
