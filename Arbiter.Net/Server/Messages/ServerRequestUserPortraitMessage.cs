@@ -6,13 +6,11 @@ namespace Arbiter.Net.Server.Messages;
 [NetworkCommand(ServerCommand.RequestUserPortrait)]
 public class ServerRequestUserPortraitMessage : ServerMessage
 {
-    public ushort Unknown { get; set; }
-
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
-        Unknown = reader.ReadUInt16();
+        // Nothing to read
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

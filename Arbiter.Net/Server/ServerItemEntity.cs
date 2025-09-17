@@ -4,7 +4,7 @@ namespace Arbiter.Net.Server;
 
 public class ServerItemEntity : ServerEntityObject
 {
-    public DyeColor DyeColor { get; set; }
+    public DyeColor Color { get; set; }
 
     public ushort Unknown { get; set; }
 }

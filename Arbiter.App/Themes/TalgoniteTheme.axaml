@@ -120,6 +120,12 @@
             <SolidColorBrush x:Key="Talgonite.MenuItem.BorderBrush" Color="#292d34"/>
             <SolidColorBrush x:Key="Talgonite.MenuItem.SelectedBorderBrush" Color="#373d49"/>
             
+            <!-- ProgressBar Resources -->
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.Background" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.TextForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.BorderBrush" Color="#373d49"/>
+            
             <!-- RadioButton Resources -->
             <SolidColorBrush x:Key="Talgonite.RadioButton.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.RadioButton.Foreground" Color="#cdcfd2"/>

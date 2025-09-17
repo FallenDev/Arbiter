@@ -14,7 +14,7 @@ public class ProxyServer : IDisposable
     private readonly List<ProxyConnection> _connections = [];
     private int _nextConnectionId;
     private readonly ConcurrentQueue<IPEndPoint> _pendingRedirects = new();
-    
+
     public bool IsRunning => _listener is not null;
     public IPEndPoint? LocalEndpoint => _listener?.LocalEndpoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _remoteEndpoint;
@@ -24,6 +24,8 @@ public class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionEventArgs>? ClientConnected;
     public event EventHandler<ProxyConnectionEventArgs>? ServerConnected;
     public event EventHandler<ProxyConnectionEventArgs>? ClientAuthenticated;
+    public event EventHandler<ProxyConnectionEventArgs>? ClientLoggedIn;
+    public event EventHandler<ProxyConnectionEventArgs>? ClientLoggedOut;
     public event EventHandler<ProxyConnectionEventArgs>? ClientDisconnected;
     public event EventHandler<ProxyConnectionEventArgs>? ServerDisconnected;
     public event EventHandler<ProxyConnectionRedirectEventArgs>? ClientRedirected;
@@ -99,6 +101,8 @@ public class ProxyServer : IDisposable
     private async Task HandleConnectionAsync(ProxyConnection connection, CancellationToken token)
     {
         connection.ClientAuthenticated += OnClientAuthenticated;
+        connection.ClientLoggedIn += OnClientLoggedIn;
+        connection.ClientLoggedOut += OnClientLoggedOut;
         connection.ClientDisconnected += OnClientDisconnected;
         connection.ServerConnected += OnServerConnected;
         connection.ServerDisconnected += OnServerDisconnected;
@@ -108,7 +112,7 @@ public class ProxyServer : IDisposable
 
         // Check for any pending redirects, use that first
         var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : RemoteEndpoint!;
-        
+
         try
         {
             await connection.ConnectToRemoteAsync(remoteEndpoint, token).ConfigureAwait(false);
@@ -117,6 +121,8 @@ public class ProxyServer : IDisposable
         finally
         {
             connection.ClientAuthenticated -= OnClientAuthenticated;
+            connection.ClientLoggedIn -= OnClientLoggedIn;
+            connection.ClientLoggedOut -= OnClientLoggedOut;
             connection.ClientDisconnected -= OnClientDisconnected;
             connection.ServerConnected -= OnServerConnected;
             connection.ServerDisconnected -= OnServerDisconnected;
@@ -132,7 +138,13 @@ public class ProxyServer : IDisposable
 
     private void OnClientAuthenticated(object? sender, EventArgs e) =>
         ClientAuthenticated?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
+
+    private void OnClientLoggedIn(object? sender, EventArgs e) =>
+        ClientLoggedIn?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
     
+    private void OnClientLoggedOut(object? sender, EventArgs e) =>
+        ClientLoggedOut?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
+
     private void OnClientDisconnected(object? sender, EventArgs e) =>
         ClientDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
@@ -149,11 +161,11 @@ public class ProxyServer : IDisposable
     private void OnSend(object? sender, NetworkPacketEventArgs e) =>
         PacketSent?.Invoke(this,
             new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Action, e.Packet, e.RawData));
-    
+
     private void OnClientRedirected(object? sender, NetworkRedirectEventArgs e)
     {
         _pendingRedirects.Enqueue(e.RemoteEndpoint);
-        
+
         ClientRedirected?.Invoke(this,
             new ProxyConnectionRedirectEventArgs((sender as ProxyConnection)!, e.Name, e.RemoteEndpoint));
     }

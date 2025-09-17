@@ -9,7 +9,7 @@ public class ServerAddItemMessage : ServerMessage
 {
     public byte Slot { get; set; }
     public ushort Sprite { get; set; }
-    public DyeColor DyeColor { get; set; }
+    public DyeColor Color { get; set; }
     public string Name { get; set; } = string.Empty;
     public uint Quantity { get; set; }
     public bool IsStackable { get; set; }
@@ -22,7 +22,7 @@ public class ServerAddItemMessage : ServerMessage
         
         Slot = reader.ReadByte();
         Sprite = reader.ReadUInt16();
-        DyeColor = (DyeColor)reader.ReadByte();
+        Color = (DyeColor)reader.ReadByte();
         Name = reader.ReadString8();
         Quantity = reader.ReadUInt32();
         IsStackable = reader.ReadBoolean();

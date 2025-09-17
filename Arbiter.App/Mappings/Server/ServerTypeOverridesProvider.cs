@@ -61,7 +61,11 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.Description, p => p.ShowMultiline());
         });
 
-        registry.RegisterOverrides<ServerLegendMark>(b => { b.Property(m => m.Text, p => p.ShowMultiline()); });
+        registry.RegisterOverrides<ServerLegendMark>(b =>
+        {
+            b.Property(m => m.Text, p => p.ShowMultiline())
+                .IsExpanded(_ => false);
+        });
 
         registry.RegisterOverrides<ServerMetadataEntry>(b => { b.Property(m => m.Checksum, p => p.ShowHex()); });
 
@@ -80,7 +84,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerWorldListUser>(b =>
         {
             b.Property(m => m.Flags, p => p.ShowHex())
-                .DisplayName(m => m.Name);
+                .DisplayName(m => m.Name)
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerWorldMapNode>(b =>

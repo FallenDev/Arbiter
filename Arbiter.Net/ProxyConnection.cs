@@ -29,7 +29,8 @@ public partial class ProxyConnection : IDisposable
     public int Id { get; }
     public string? Name { get; set; }
     public long? UserId { get; set; }
-    public bool IsAuthenticated { get; private set; }
+    public bool HasAuthenticated { get; private set; }
+    public bool IsLoggedIn { get; private set; }
     
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _server?.Client.RemoteEndPoint as IPEndPoint;
@@ -38,6 +39,8 @@ public partial class ProxyConnection : IDisposable
     public bool IsServerConnected => _server?.Connected ?? false;
 
     public event EventHandler? ClientAuthenticated;
+    public event EventHandler? ClientLoggedIn;
+    public event EventHandler? ClientLoggedOut;
     public event EventHandler? ClientDisconnected;
     public event EventHandler? ServerConnected;
     public event EventHandler? ServerDisconnected;

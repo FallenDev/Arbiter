@@ -83,7 +83,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Item")
                 .Property(m => m.Slot)
                 .Property(m => m.Sprite, p => p.ShowHex())
-                .Property(m => m.DyeColor)
+                .Property(m => m.Color)
                 .Property(m => m.Name, p => p.ShowMultiline());
             b.Section("Quantity")
                 .Property(m => m.Quantity)
@@ -521,8 +521,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
     {
         registry.Register<ServerRequestUserPortraitMessage>(b =>
         {
-            b.Section("Request")
-                .Property(m => m.Unknown, p => p.ShowHex());
+            // Nothing to map    
         });
     }
 
@@ -592,7 +591,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Equipment")
                 .Property(m => m.Slot)
                 .Property(m => m.Sprite, p => p.ShowHex())
-                .Property(m => m.DyeColor)
+                .Property(m => m.Color)
                 .Property(m => m.Name, p => p.ShowMultiline());
             b.Section("Durability")
                 .Property(m => m.Durability)

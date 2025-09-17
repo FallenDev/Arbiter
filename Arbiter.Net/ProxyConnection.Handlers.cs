@@ -6,10 +6,30 @@ namespace Arbiter.Net;
 
 public partial class ProxyConnection
 {
+    private void HandleClientAuthRequest(NetworkPacket packet)
+    {
+        var reader = new NetworkPacketReader(packet);
+        var seed = reader.ReadByte();
+        var keyLength = reader.ReadByte();
+        var key = reader.ReadBytes(keyLength);
+        var name = reader.ReadString8();
+        var connectionId = reader.ReadUInt32();
+
+        // Update connection name based on client request
+        if (IsValidCharacterName(name))
+        {
+            Name = name;
+        }
+
+        SetEncryptionParameters(seed, key, name);
+        
+        ClientAuthenticated?.Invoke(this, EventArgs.Empty);
+    }
+    
     private void HandleServerSetEncryption(NetworkPacket packet)
     {
         var reader = new NetworkPacketReader(packet);
-        var zero = reader.ReadByte();
+        var _ = reader.ReadByte();
         var serverTableCrc = reader.ReadUInt32();
         var seed = reader.ReadByte();
         var keyLength = reader.ReadByte();
@@ -57,35 +77,29 @@ public partial class ProxyConnection
         ClientRedirected?.Invoke(this, new NetworkRedirectEventArgs(name, remoteEndpoint));
     }
 
-    private void HandleClientAuthRequest(NetworkPacket packet)
-    {
-        var reader = new NetworkPacketReader(packet);
-        var seed = reader.ReadByte();
-        var keyLength = reader.ReadByte();
-        var key = reader.ReadBytes(keyLength);
-        var name = reader.ReadString8();
-        var id = reader.ReadUInt32();
-
-        // Update connection name based on client request
-        if (IsValidCharacterName(name))
-        {
-            Name = name;
-        }
-
-        SetEncryptionParameters(seed, key, name);
-    }
-
     private void HandleServerSetUserId(NetworkPacket packet)
     {
         var reader = new NetworkPacketReader(packet);
         var userId = reader.ReadUInt32();
 
-        IsAuthenticated = true;
+        IsLoggedIn = true;
 
         // Update the user ID based on server response
         UserId = userId;
 
-        ClientAuthenticated?.Invoke(this, EventArgs.Empty);
+        ClientLoggedIn?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void HandleServerExitResponse(NetworkPacket packet)
+    {
+        var reader = new NetworkPacketReader(packet);
+        var result = reader.ReadByte();
+
+        IsLoggedIn = false;
+        HasAuthenticated = false;
+        UserId = null;
+
+        ClientLoggedOut?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetEncryptionParameters(int seed, ReadOnlySpan<byte> privateKey, string? name = null)

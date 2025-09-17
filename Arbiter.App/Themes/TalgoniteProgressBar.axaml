@@ -1,0 +1,66 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="ProgressBar">
+        <Setter Property="Background" Value="{StaticResource Talgonite.ProgressBar.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ProgressBar.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ProgressBar.BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="1">
+                        <Panel>
+                            <Border Name="PART_Indicator"
+                                    Background="{TemplateBinding Foreground}"
+                                    IsVisible="{Binding $parent[ProgressBar].IsIndeterminate, Converter={x:Static BoolConverters.Not}}"/>
+                            <Border Name="PART_IndeterminateIndicator"
+                                    Background="{TemplateBinding Foreground}"
+                                    IsVisible="{Binding $parent[ProgressBar].IsIndeterminate}"/>
+                        </Panel>
+                    </Border>
+                    <LayoutTransformControl Name="PART_LayoutTransformControl"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            IsVisible="{Binding $parent[ProgressBar].ShowProgressText}">
+                        <TextBlock Foreground="{StaticResource Talgonite.ProgressBar.TextForeground}">
+                            
+                        </TextBlock>
+                    </LayoutTransformControl>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^:horizontal /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+        </Style>
+        
+        <Style Selector="^:horizontal">
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="MinHeight" Value="8"/>
+        </Style>
+        
+        <Style Selector="^:vertical /template/ Border#PART_Indicator">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+        </Style>
+        
+        <Style Selector="^:vertical">
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="MinHeight" Value="100"/>
+        </Style>
+        
+        <Style Selector="^:vertical /template/ LayoutTransformControl#PART_LayoutTransformControl">
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="90"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Style>
+</Styles>

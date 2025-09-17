@@ -71,6 +71,10 @@ public partial class ProxyConnection
                         case ServerPacket { Command: ServerCommand.UserId }:
                             HandleServerSetUserId(decrypted);
                             break;
+                        // Handle server exit response, to clear state
+                        case ServerPacket { Command: ServerCommand.ExitResponse }:
+                            HandleServerExitResponse(decrypted);
+                            break;
                         // Handle client auth request, we need to update encryption parameters
                         case ClientPacket { Command: ClientCommand.Authenticate }:
                             HandleClientAuthRequest(decrypted);
