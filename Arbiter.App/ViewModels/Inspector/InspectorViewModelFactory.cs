@@ -47,11 +47,13 @@ public class InspectorViewModelFactory
             if (packet is ClientPacket clientPacket)
             {
                 message = ClientMessageFactory.Default.Create(clientPacket);
+                vm.Value = message;
             }
 
             if (packet is ServerPacket serverPacket)
             {
                 message = ServerMessageFactory.Default.Create(serverPacket);
+                vm.Value = message;
             }
 
             if (message is not null)

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Arbiter.Json.Converters;
 
-public class HexNumberJsonConverter<T> : JsonConverter<T> where T:struct
+public class HexNumberJsonConverter<T> : JsonConverter<T> where T : struct
 {
     public override T Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
     {
@@ -37,7 +37,7 @@ public class HexNumberJsonConverter<T> : JsonConverter<T> where T:struct
         {
             throw new JsonException("Unsupported token type");
         }
-        
+
         object numberOutput = type switch
         {
             _ when type == typeof(bool) => reader.GetByte() != 0,
