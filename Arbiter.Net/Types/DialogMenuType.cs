@@ -7,9 +7,9 @@ public enum DialogMenuType : byte
     TextInput = 2,
     TextInputWithArgs = 3,
     ItemChoices = 4,
-    PlayerInventory = 5,
+    UserInventory = 5,
     SpellChoices = 6,
     SkillChoices = 7,
-    PlayerSpells = 8,
-    PlayerSkills = 9
+    UserSpells = 8,
+    UserSkills = 9
 }

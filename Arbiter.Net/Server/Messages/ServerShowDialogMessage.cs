@@ -9,11 +9,11 @@ public class ServerShowDialogMessage : ServerMessage
 {
     public DialogType DialogType { get; set; }
     public EntityTypeFlags EntityType { get; set; }
-    public uint? SourceId { get; set; }
+    public uint? EntityId { get; set; }
     public ushort? Sprite { get; set; }
     public byte? Color { get; set; }
     public ushort? PursuitId { get; set; }
-    public ushort? DialogId { get; set; }
+    public ushort? StepId { get; set; }
     public bool HasPreviousButton { get; set; }
     public bool HasNextButton { get; set; }
     public bool ShowGraphic { get; set; }
@@ -37,7 +37,7 @@ public class ServerShowDialogMessage : ServerMessage
         }
 
         EntityType = (EntityTypeFlags)reader.ReadByte();
-        SourceId = reader.ReadUInt32();
+        EntityId = reader.ReadUInt32();
         Unknown1 = reader.ReadByte();
 
         Sprite = reader.ReadUInt16();
@@ -48,7 +48,7 @@ public class ServerShowDialogMessage : ServerMessage
         var colorSecondary = reader.ReadByte();
 
         PursuitId = reader.ReadUInt16();
-        DialogId = reader.ReadUInt16();
+        StepId = reader.ReadUInt16();
 
         HasPreviousButton = reader.ReadBoolean();
         HasNextButton = reader.ReadBoolean();

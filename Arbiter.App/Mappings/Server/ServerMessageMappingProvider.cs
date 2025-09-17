@@ -55,7 +55,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerShowEffectMapping(registry);
         RegisterServerShowMenuMapping(registry);
         RegisterServerShowNotepadMapping(registry);
-        RegisterServerShowPlayerMapping(registry);
+        RegisterServerShowUserMapping(registry);
         RegisterServerStatusEffectMapping(registry);
         RegisterServerSwitchPaneMapping(registry);
         RegisterServerSyncTicksMapping(registry);
@@ -82,17 +82,18 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerAddItemMessage>(b =>
         {
             b.Section("Item")
-                .Property(m => m.Slot)
-                .Property(m => m.Sprite, p => p.ShowHex())
-                .Property(m => m.Color)
-                .Property(m => m.Name, p => p.ShowMultiline());
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot containing the item."))
+                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the item."))
+                .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the item."));
             b.Section("Quantity")
-                .Property(m => m.Quantity)
-                .Property(m => m.IsStackable)
+                .Property(m => m.Quantity, p => p.ToolTip("Amount held of the item."))
+                .Property(m => m.IsStackable,
+                    p => p.ToolTip("Whether multiples of the item can be held in a single slot."))
                 .IsExpanded(m => m.Quantity > 1);
             b.Section("Durability")
-                .Property(m => m.Durability)
-                .Property(m => m.MaxDurability)
+                .Property(m => m.Durability, p => p.ToolTip("Current durability of the item."))
+                .Property(m => m.MaxDurability, p => p.ToolTip("Maximum durability of the item."))
                 .IsExpanded(m => m.MaxDurability > 0);
         });
     }
@@ -102,9 +103,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerAddSkillMessage>(b =>
         {
             b.Section("Skill")
-                .Property(m => m.Slot)
-                .Property(m => m.Icon)
-                .Property(m => m.Name, p => p.ShowMultiline());
+                .Property(m => m.Slot, p => p.ToolTip("Slot containing the skill."))
+                .Property(m => m.Icon, p => p.ToolTip("Icon used to display the skill."))
+                .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the skill."));
         });
     }
 
@@ -113,13 +114,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerAddSpellMessage>(b =>
         {
             b.Section("Spell")
-                .Property(m => m.Slot)
-                .Property(m => m.Icon)
-                .Property(m => m.Name, p => p.ShowMultiline())
-                .Property(m => m.CastLines);
+                .Property(m => m.Slot, p => p.ToolTip("Slot containing the spell."))
+                .Property(m => m.Icon, p => p.ToolTip("Icon used to display the spell."))
+                .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the spell."))
+                .Property(m => m.CastLines, p => p.ToolTip("Number of chant lines to cast the spell."));
             b.Section("Target")
-                .Property(m => m.TargetType)
-                .Property(m => m.Prompt, p => p.ShowMultiline());
+                .Property(m => m.TargetType, p => p.ToolTip("Type of target the spell can be cast on."))
+                .Property(m => m.Prompt,
+                    p => p.ShowMultiline()
+                        .ToolTip("Prompt displayed to the user when casting the spell, if applicable."));
         });
     }
 
@@ -128,12 +131,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerAnimateEntityMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Animation")
-                .Property(m => m.Animation)
-                .Property(m => m.Speed);
+                .Property(m => m.Animation, p => p.ToolTip("Animation to play."))
+                .Property(m => m.Speed, p => p.ToolTip("Speed of the animation (higher is faster)."));
             b.Section("Sound")
-                .Property(m => m.Sound)
+                .Property(m => m.Sound, p => p.ToolTip("Sound to play along with the animation."))
                 .IsExpanded(m => m.Sound != 0xFF);
         });
     }
@@ -143,15 +146,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerBoardResultMessage>(b =>
         {
             b.Section("Result")
-                .Property(m => m.ResultType)
-                .Property(m => m.ResultSuccess)
-                .Property(m => m.ResultMessage, p => p.ShowMultiline());
+                .Property(m => m.ResultType, p => p.ToolTip("Type of message board result."))
+                .Property(m => m.ResultSuccess, p => p.ToolTip("Whether the message board submission was successful."))
+                .Property(m => m.ResultMessage, p => p.ShowMultiline().ToolTip("Message to display to the user."));
             b.Section("Board List")
                 .Property(m => m.Boards)
                 .IsExpanded(m => m.Boards.Count > 0);
             b.Section("Board")
-                .Property(m => m.BoardId)
-                .Property(m => m.BoardName, p => p.ShowMultiline())
+                .Property(m => m.BoardId, p => p.ToolTip("ID of the message board."))
+                .Property(m => m.BoardName, p => p.ShowMultiline().ToolTip("Display name of the message board."))
                 .IsExpanded(m => m.ResultType is MessageBoardResult.Board or MessageBoardResult.Mailbox);
             b.Section("Post List")
                 .Property(m => m.Posts)
@@ -160,7 +163,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Post)
                 .IsExpanded(m => m.Post is not null);
             b.Section("Navigation")
-                .Property(m => m.CanNavigatePrev)
+                .Property(m => m.CanNavigatePrev, p => p.ToolTip("Whether the previous button should be enabled."))
                 .IsExpanded(m => m.ResultType is MessageBoardResult.Post or MessageBoardResult.MailLetter);
         });
     }
@@ -170,9 +173,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerCooldownMessage>(b =>
         {
             b.Section("Cooldown")
-                .Property(m => m.Type)
-                .Property(m => m.Slot)
-                .Property(m => m.Seconds);
+                .Property(m => m.AbilityType, p => p.ToolTip("Type of ability that is now on cooldown."))
+                .Property(m => m.Slot, p => p.ToolTip("Slot containing the ability that is now on cooldown."))
+                .Property(m => m.Seconds, p => p.ToolTip("Number of seconds until the ability is available again."));
         });
     }
 
@@ -181,9 +184,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerEntityTurnMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Movement")
-                .Property(m => m.Direction);
+                .Property(m => m.Direction, p => p.ToolTip("Direction the entity should face."));
         });
     }
 
@@ -192,12 +195,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerEntityWalkMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Position")
-                .Property(m => m.PreviousX)
-                .Property(m => m.PreviousY);
+                .Property(m => m.OriginX, p => p.ToolTip("Original X position of the entity."))
+                .Property(m => m.OriginY, p => p.ToolTip("Original Y position of the entity."));
             b.Section("Movement")
-                .Property(m => m.Direction);
+                .Property(m => m.Direction, p => p.ToolTip("Direction the entity should walk, from the origin."));
             b.Section("Unknown")
                 .Property(m => m.Unknown, p => p.ShowHex());
         });
@@ -208,24 +211,25 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerExchangeMessage>(b =>
         {
             b.Section("Event")
-                .Property(m => m.Event)
-                .Property(m => m.Party)
-                .Property(m => m.Message, p => p.ShowMultiline());
+                .Property(m => m.Event, p => p.ToolTip("Type of exchange event."))
+                .Property(m => m.Party, p => p.ToolTip("Party that is involved in the exchange."))
+                .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Message to display to the user."));
             b.Section("Target")
-                .Property(m => m.TargetId, p => p.ShowHex())
-                .Property(m => m.TargetName)
+                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target user to exchange."))
+                .Property(m => m.TargetName, p => p.ShowMultiline().ToolTip("Display name of the user to exchange."))
                 .IsExpanded(m => m.Event == ExchangeServerEventType.Started);
             b.Section("Inventory")
-                .Property(m => m.Slot)
+                .Property(m => m.Slot, p => p.ToolTip("Slot containing the item."))
                 .IsExpanded(m => m.Event == ExchangeServerEventType.QuantityPrompt);
             b.Section("Item")
-                .Property(m => m.ItemIndex)
-                .Property(m => m.ItemSprite, p => p.ShowHex())
-                .Property(m => m.ItemColor)
-                .Property(m => m.ItemName, p => p.ShowMultiline())
+                .Property(m => m.ItemIndex, p => p.ToolTip("Index of the item in the exchange window."))
+                .Property(m => m.ItemSprite, p => p.ShowHex().ToolTip("Sprite of the item in the exchange window."))
+                .Property(m => m.ItemColor, p => p.ShowHex().ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.ItemName,
+                    p => p.ShowMultiline().ToolTip("Display name of the item in the exchange window."))
                 .IsExpanded(m => m.Event == ExchangeServerEventType.ItemAdded);
             b.Section("Gold")
-                .Property(m => m.GoldAmount)
+                .Property(m => m.GoldAmount, p => p.ToolTip("Amount of gold displayed in the exchange window."))
                 .IsExpanded(m => m.Event == ExchangeServerEventType.GoldAdded);
         });
     }
@@ -235,7 +239,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerExitResponseMessage>(b =>
         {
             b.Section("Response")
-                .Property(m => m.Result)
+                .Property(m => m.Result, p => p.ToolTip("Response to the exit request."))
                 .Property(m => m.Unknown, p => p.ShowHex());
         });
     }
@@ -245,9 +249,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerForcePacketMessage>(b =>
         {
             b.Section("Command")
-                .Property(m => m.ClientCommand, p => p.ShowHex());
+                .Property(m => m.ClientCommand, p => p.ShowHex().ToolTip("Client command code for the raw packet."));
             b.Section("Data")
-                .Property(m => m.Data, p => p.ShowMultiline());
+                .Property(m => m.Data, p => p.ShowMultiline().ToolTip("Raw payload to be sent by the client."));
         });
     }
 
@@ -256,11 +260,11 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerGroupMessage>(b =>
         {
             b.Section("Action")
-                .Property(m => m.Action);
+                .Property(m => m.Action, p => p.ToolTip("Type of group action."));
             b.Section("User")
-                .Property(m => m.Name);
+                .Property(m => m.Name, p => p.ToolTip("Name of the user."));
             b.Section("Group Box")
-                .Property(m => m.GroupBox);
+                .Property(m => m.GroupBox, p => p.ShowMultiline().ToolTip("Display text for the floating group box."));
         });
     }
 
@@ -269,11 +273,11 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerHealthBarMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Health Bar")
-                .Property(m => m.Percent);
+                .Property(m => m.Percent, p => p.ToolTip("Percentage of health remaining."));
             b.Section("Sound")
-                .Property(m => m.Sound)
+                .Property(m => m.Sound, p => p.ToolTip("Sound to play while displaying the health bar."))
                 .IsExpanded(m => m.Sound != 0xFF);
             b.Section("Unknown")
                 .Property(m => m.Unknown, p => p.ShowHex());
@@ -285,7 +289,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerHeartbeatMessage>(b =>
         {
             b.Section("Heartbeat")
-                .Property(m => m.Request, p => p.ShowHex());
+                .Property(m => m.Request, p => p.ShowHex().ToolTip("Nonce of the heartbeat."));
         });
     }
 
@@ -294,7 +298,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerHelloMessage>(b =>
         {
             b.Section("Greeting")
-                .Property(m => m.Message, p => p.ShowMultiline());
+                .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Greeting message from the server."));
         });
     }
 
@@ -303,7 +307,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerLightLevelMessage>(b =>
         {
             b.Section("Light Level")
-                .Property(m => m.Brightness);
+                .Property(m => m.Brightness, p => p.ToolTip("Brightness of the current light level (time of day)."));
             b.Section("Unknown")
                 .Property(m => m.Unknown, p => p.ShowHex());
         });
@@ -314,8 +318,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerLoginNoticeMessage>(b =>
         {
             b.Section("Notice")
-                .Property(m => m.Checksum, p => p.ShowHex())
-                .Property(m => m.Content, p => p.ShowMultiline());
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-32 checksum of the notice message."))
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Content of the notice message."));
         });
     }
 
@@ -324,8 +328,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerLoginResultMessage>(b =>
         {
             b.Section("Login")
-                .Property(m => m.MessageType)
-                .Property(m => m.Message, p => p.ShowMultiline());
+                .Property(m => m.ResultType, p => p.ToolTip("Type of login result."))
+                .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Message to be displayed to the user."));
         });
     }
 
@@ -334,7 +338,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapChangedMessage>(b =>
         {
             b.Section("Map")
-                .Property(m => m.Result);
+                .Property(m => m.Result, p => p.ToolTip("Result of the map change."));
         });
     }
 
@@ -343,7 +347,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapChangingMessage>(b =>
         {
             b.Section("Map")
-                .Property(m => m.ChangeType);
+                .Property(m => m.ChangeType, p => p.ToolTip("Type of map change."));
             b.Section("Unknown")
                 .Property(m => m.Unknown, p => p.ShowHex());
         });
@@ -363,14 +367,14 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapInfoMessage>(b =>
         {
             b.Section("Map")
-                .Property(m => m.MapId)
-                .Property(m => m.Name)
-                .Property(m => m.Checksum, p => p.ShowHex());
+                .Property(m => m.MapId, p => p.ToolTip("ID of the map."))
+                .Property(m => m.Name, p => p.ToolTip("Display name of the map."))
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the map."));
             b.Section("Dimensions")
-                .Property(m => m.Width)
-                .Property(m => m.Height);
+                .Property(m => m.Width, p => p.ToolTip("Width of the map, in tiles."))
+                .Property(m => m.Height, p => p.ToolTip("Height of the map, in tiles."));
             b.Section("Weather")
-                .Property(m => m.Weather);
+                .Property(m => m.Weather, p => p.ToolTip("Current weather effect for the map."));
         });
     }
 
@@ -379,8 +383,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapLocationMessage>(b =>
         {
             b.Section("Position")
-                .Property(m => m.X)
-                .Property(m => m.Y);
+                .Property(m => m.X, p => p.ToolTip("Current X position of the user."))
+                .Property(m => m.Y, p => p.ToolTip("Current Y position of the user."));
             b.Section("Unknown")
                 .Property(m => m.UnknownX, p => p.ShowHex())
                 .Property(m => m.UnknownY, p => p.ShowHex());
@@ -392,7 +396,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapTransferCompleteMessage>(b =>
         {
             b.Section("Result")
-                .Property(m => m.Result);
+                .Property(m => m.Result, p => p.ToolTip("Result of the map transfer."));
         });
     }
 
@@ -401,9 +405,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapTransferMessage>(b =>
         {
             b.Section("Row Index")
-                .Property(m => m.RowY);
+                .Property(m => m.RowY, p => p.ToolTip("Y-index of the map tiles transfer."));
             b.Section("Data")
-                .Property(m => m.Data, p => p.ShowMultiline());
+                .Property(m => m.Data, p => p.ShowMultiline().ToolTip("Map tiles for the current row."));
         });
     }
 
@@ -412,11 +416,11 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMetadataMessage>(b =>
         {
             b.Section("Response")
-                .Property(m => m.ResponseType);
+                .Property(m => m.ResponseType, p => p.ToolTip("Type of metadata response."));
             b.Section("Metadata")
-                .Property(m => m.Name)
-                .Property(m => m.Checksum, p => p.ShowHex())
-                .Property(m => m.Data, p => p.ShowMultiline())
+                .Property(m => m.Name, p => p.ToolTip("Name of the metadata file."))
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-32 checksum of the metadata file."))
+                .Property(m => m.Data, p => p.ShowMultiline().ToolTip("Raw data of the metadata file."))
                 .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Metadata);
             b.Section("Listing")
                 .Property(m => m.MetadataFiles)
@@ -429,10 +433,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerPlaySoundMessage>(b =>
         {
             b.Section("Sound")
-                .Property(m => m.Sound)
+                .Property(m => m.Sound, p => p.ToolTip("Sound to play."))
                 .IsExpanded(m => m.Sound != 0xFF);
             b.Section("Music")
-                .Property(m => m.Track)
+                .Property(m => m.Track, p => p.ToolTip("Music track to play."))
                 .Property(m => m.Unknown, p => p.ShowHex())
                 .IsExpanded(m => m.Sound == 0xFF);
         });
@@ -443,9 +447,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerPublicMessageMessage>(b =>
         {
             b.Section("Message")
-                .Property(m => m.MessageType)
-                .Property(m => m.SenderId, p => p.ShowHex())
-                .Property(m => m.Message, p => p.ShowMultiline());
+                .Property(m => m.MessageType, p => p.ToolTip("Type of public message."))
+                .Property(m => m.SenderId, p => p.ShowHex().ToolTip("ID of the entity saying the message."))
+                .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Content of the public message."));
         });
     }
 
@@ -454,13 +458,13 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerRedirectMessage>(b =>
         {
             b.Section("Server")
-                .Property(m => m.Address)
-                .Property(m => m.Port);
+                .Property(m => m.Address, p => p.ToolTip("Address of the server to redirect to."))
+                .Property(m => m.Port, p => p.ToolTip("Port of the server to redirect to."));
             b.Section("Encryption")
-                .Property(m => m.Seed)
-                .Property(m => m.PrivateKey, p => p.ShowMultiline());
+                .Property(m => m.Seed, p => p.ToolTip("Seed table used for encryption."))
+                .Property(m => m.PrivateKey, p => p.ShowMultiline().ToolTip("Private key used for encryption."));
             b.Section("Connection")
-                .Property(m => m.ConnectionId, p => p.ShowHex())
+                .Property(m => m.ConnectionId, p => p.ShowHex().ToolTip("Connection ID of the client."))
                 .Property(m => m.Name);
         });
     }
@@ -478,7 +482,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerRemoveEntityMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
         });
     }
 
@@ -487,7 +491,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerRemoveEquipmentMessage>(b =>
         {
             b.Section("Equipment")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Equipment slot to be removed."));
         });
     }
 
@@ -496,7 +500,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerRemoveItemMessage>(b =>
         {
             b.Section("Item")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot to be removed."));
         });
     }
 
@@ -505,7 +509,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerRemoveSkillMessage>(b =>
         {
             b.Section("Skill")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Skill slot to be removed."));
         });
     }
 
@@ -514,7 +518,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerRemoveSpellMessage>(b =>
         {
             b.Section("Spell")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Spell slot to be removed."));
         });
     }
 
@@ -531,39 +535,39 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerSelfProfileMessage>(b =>
         {
             b.Section("Profile")
-                .Property(m => m.Class)
-                .Property(m => m.DisplayClass)
-                .Property(m => m.Guild)
-                .Property(m => m.GuildRank)
-                .Property(m => m.Title);
+                .Property(m => m.Class, p => p.ToolTip("Base class of the user."))
+                .Property(m => m.DisplayClass, p => p.ToolTip("Display class of the user."))
+                .Property(m => m.Guild, p => p.ToolTip("Guild the user is a member of."))
+                .Property(m => m.GuildRank, p => p.ToolTip("Guild rank of the user."))
+                .Property(m => m.Title, p => p.ToolTip("Title of the user."));
             b.Section("Citizenship")
-                .Property(m => m.Nation);
+                .Property(m => m.Nation, p => p.ToolTip("Nation flag displayed for the user."));
             b.Section("Group")
-                .Property(m => m.IsGroupOpen)
-                .Property(m => m.HasGroupInvite)
+                .Property(m => m.IsGroupOpen, p => p.ToolTip("Whether the user is accepting group invitations."))
+                .Property(m => m.IsRecruiting, p => p.ToolTip("Whether the user is recruiting for group members."))
                 .Property(m => m.GroupMembers, p => p.ShowMultiline());
             b.Section("Group Box")
-                .Property(m => m.GroupBox, p => p.ShowMultiline())
-                .IsExpanded(m => m.HasGroupInvite);
+                .Property(m => m.GroupBox, p => p.ShowMultiline().ToolTip("Display text for the floating group box."))
+                .IsExpanded(m => m.IsRecruiting);
             b.Section("Metadata")
-                .Property(m => m.ShowMasterMetadata)
-                .Property(m => m.ShowAbilityMetadata);
+                .Property(m => m.ShowMasterMetadata, p => p.ToolTip("Whether to show the Master metadata tab."))
+                .Property(m => m.ShowAbilityMetadata, p => p.ToolTip("Whether to show the Ability metadata tab."));
             b.Section("Legend")
                 .Property(m => m.LegendMarks)
                 .IsExpanded(_ => false);
             b.Section("Legend (Text)")
                 .Computed("Text", m => string.Join(System.Environment.NewLine, m.LegendMarks.Select(l => l.Text)),
-                    p => p.ShowMultiline());
+                    p => p.ShowMultiline().ToolTip("List of the user's legend marks."));
         });
     }
-    
+
     private static void RegisterServerServerInfoMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerServerInfoMessage>(b =>
         {
             b.Section("Information")
-                .Property(m => m.DataType)
-                .Property(m => m.Value, p => p.ShowMultiline());
+                .Property(m => m.DataType, p => p.ToolTip("Type of server information."))
+                .Property(m => m.Value, p => p.ShowMultiline().ToolTip("Information sent by the server."));
         });
     }
 
@@ -572,10 +576,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerServerListMessage>(b =>
         {
             b.Section("Server List")
-                .Property(m => m.Checksum, p => p.ShowHex());
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-32 checksum of the server table."));
             b.Section("Encryption")
-                .Property(m => m.Seed)
-                .Property(m => m.PrivateKey, p => p.ShowMultiline());
+                .Property(m => m.Seed, p => p.ToolTip("Seed table used for encryption."))
+                .Property(m => m.PrivateKey, p => p.ShowMultiline().ToolTip("Private key used for encryption."));
         });
     }
 
@@ -593,13 +597,13 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerSetEquipmentMessage>(b =>
         {
             b.Section("Equipment")
-                .Property(m => m.Slot)
-                .Property(m => m.Sprite, p => p.ShowHex())
-                .Property(m => m.Color)
-                .Property(m => m.Name, p => p.ShowMultiline());
+                .Property(m => m.Slot, p => p.ToolTip("Equipment slot to be set."))
+                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the equipment."))
+                .Property(m => m.Color, p => p.ShowHex().ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the equipment."));
             b.Section("Durability")
-                .Property(m => m.Durability)
-                .Property(m => m.MaxDurability)
+                .Property(m => m.Durability, p => p.ToolTip("Durability of the equipment."))
+                .Property(m => m.MaxDurability, p => p.ToolTip("Maximum durability of the equipment."))
                 .IsExpanded(m => m.MaxDurability > 0);
         });
     }
@@ -609,30 +613,30 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerShowDialogMessage>(b =>
         {
             b.Section("Dialog")
-                .Property(m => m.DialogType)
-                .Property(m => m.DialogId)
-                .Property(m => m.PursuitId);
+                .Property(m => m.DialogType, p => p.ToolTip("Type of dialog."))
+                .Property(m => m.StepId, p => p.ToolTip("ID of the current step."))
+                .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit."));
             b.Section("Source")
-                .Property(m => m.EntityType)
-                .Property(m => m.SourceId, p => p.ShowHex())
-                .Property(m => m.Name)
+                .Property(m => m.EntityType, p => p.ToolTip("Type of entity responsible for the dialog."))
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog."))
+                .Property(m => m.Name, p => p.ToolTip("Display name of the entity in the dialog."))
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Content")
-                .Property(m => m.Sprite, p => p.ShowHex())
-                .Property(m => m.Color)
-                .Property(m => m.Content, p => p.ShowMultiline())
-                .Property(m => m.ShowGraphic)
+                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite displayed in the dialog."))
+                .Property(m => m.Color, p => p.ShowHex().ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog."))
+                .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."))
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Menu Choices")
                 .Property(m => m.MenuChoices)
                 .IsExpanded(m => m.DialogType is DialogType.Menu or DialogType.CreatureMenu);
             b.Section("Text Input")
-                .Property(m => m.InputPrompt)
-                .Property(m => m.InputMaxLength)
+                .Property(m => m.InputPrompt, p => p.ShowMultiline().ToolTip("Prompt displayed in the text input."))
+                .Property(m => m.InputMaxLength, p => p.ToolTip("Maximum length of the text input."))
                 .IsExpanded(m => m.DialogType == DialogType.TextInput);
             b.Section("Navigation")
-                .Property(m => m.HasPreviousButton)
-                .Property(m => m.HasNextButton)
+                .Property(m => m.HasPreviousButton, p => p.ToolTip("Whether the dialog has a previous step."))
+                .Property(m => m.HasNextButton, p => p.ToolTip("Whether the dialog has a next step."))
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Unknown")
                 .Property(m => m.Unknown1, p => p.ShowHex())
@@ -646,19 +650,19 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerShowEffectMessage>(b =>
         {
             b.Section("Target Entity")
-                .Property(m => m.TargetId, p => p.ShowHex())
+                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target entity."))
                 .IsExpanded(m => m.TargetId != 0);
             b.Section("Target Location")
-                .Property(m => m.TargetX)
-                .Property(m => m.TargetY)
+                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target location."))
+                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target location."))
                 .IsExpanded(m => m.TargetId == 0);
             b.Section("Source Entity")
-                .Property(m => m.SourceId, p => p.ShowHex())
+                .Property(m => m.SourceId, p => p.ShowHex().ToolTip("ID of the source entity."))
                 .IsExpanded(m => m.TargetId != 0);
-            b.Section("Animation")
-                .Property(m => m.TargetAnimation)
-                .Property(m => m.SourceAnimation)
-                .Property(m => m.AnimationSpeed);
+            b.Section("Visual Effect")
+                .Property(m => m.TargetAnimation, p => p.ToolTip("Visual effect to be played on the target entity."))
+                .Property(m => m.SourceAnimation, p => p.ToolTip("Visual effect to be played on the source entity."))
+                .Property(m => m.AnimationSpeed, p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
         });
     }
 
@@ -667,19 +671,20 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerShowMenuMessage>(b =>
         {
             b.Section("Menu")
-                .Property(m => m.MenuType)
-                .Property(m => m.PursuitId);
+                .Property(m => m.MenuType, p => p.ToolTip("Type of dialog menu."))
+                .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit."));
             b.Section("Source")
-                .Property(m => m.EntityType)
-                .Property(m => m.SourceId, p => p.ShowHex())
-                .Property(m => m.Name);
+                .Property(m => m.EntityType, p => p.ToolTip("Type of entity responsible for the dialog menu."))
+                .Property(m => m.EntityId,
+                    p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog menu."))
+                .Property(m => m.Name, p => p.ToolTip("Display name of the entity in the dialog menu."));
             b.Section("Content")
-                .Property(m => m.Sprite, p => p.ShowHex())
-                .Property(m => m.Color)
-                .Property(m => m.Content, p => p.ShowMultiline())
-                .Property(m => m.ShowGraphic);
+                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite displayed in the dialog menu."))
+                .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog menu."))
+                .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."));
             b.Section("Arguments")
-                .Property(m => m.Args, p => p.ShowMultiline())
+                .Property(m => m.Prompt, p => p.ShowMultiline().ToolTip("Prompt displayed for input arguments."))
                 .IsExpanded(m => m.MenuType is DialogMenuType.MenuWithArgs or DialogMenuType.TextInputWithArgs);
             b.Section("Menu Choices")
                 .Property(m => m.MenuChoices)
@@ -693,9 +698,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Spell Choices")
                 .Property(m => m.SpellChoices)
                 .IsExpanded(m => m.MenuType == DialogMenuType.SpellChoices);
-            b.Section("Player Inventory")
-                .Property(m => m.InventorySlots)
-                .IsExpanded(m => m.MenuType == DialogMenuType.PlayerInventory);
+            b.Section("Inventory")
+                .Property(m => m.InventorySlots, p => p.ToolTip("Inventory slots to be displayed as choices."))
+                .IsExpanded(m => m.MenuType == DialogMenuType.UserInventory);
             b.Section("Unknown")
                 .Property(m => m.Unknown1, p => p.ShowHex())
                 .Property(m => m.Unknown2, p => p.ShowHex());
@@ -707,63 +712,71 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerShowNotepadMessage>(b =>
         {
             b.Section("Notepad")
-                .Property(m => m.Slot)
-                .Property(m => m.Style);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot containing the note item."))
+                .Property(m => m.Style, p => p.ToolTip("Display style of the notepad."));
             b.Section("Dimensions")
-                .Property(m => m.Width)
-                .Property(m => m.Height);
+                .Property(m => m.Width, p => p.ToolTip("Width of the notepad."))
+                .Property(m => m.Height, p => p.ToolTip("Height of the notepad."));
             b.Section("Content")
-                .Property(m => m.Content, p => p.ShowMultiline());
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Current content of the notepad."));
         });
     }
 
-    private static void RegisterServerShowPlayerMapping(InspectorMappingRegistry registry)
+    private static void RegisterServerShowUserMapping(InspectorMappingRegistry registry)
     {
-        registry.Register<ServerShowPlayerMessage>(b =>
+        registry.Register<ServerShowUserMessage>(b =>
         {
-            b.Section("Player")
-                .Property(m => m.EntityId, p => p.ShowHex())
-                .Property(m => m.NameStyle)
-                .Property(m => m.Name);
+            b.Section("User")
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the user."))
+                .Property(m => m.NameStyle, p => p.ToolTip("Display style of the user's name tag."))
+                .Property(m => m.Name, p => p.ToolTip("Display name of the user."));
             b.Section("Group Box")
-                .Property(m => m.GroupBox, p => p.ShowMultiline());
+                .Property(m => m.GroupBox, p => p.ShowMultiline().ToolTip("Display text for the floating group box."));
             b.Section("Position")
-                .Property(m => m.X)
-                .Property(m => m.Y)
-                .Property(m => m.Direction);
+                .Property(m => m.X, p => p.ToolTip("X-coordinate of the user."))
+                .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the user."))
+                .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."));
             b.Section("Body")
-                .Property(m => m.HeadSprite, p => p.ShowHex())
-                .Property(m => m.FaceShape)
-                .Property(m => m.HairColor)
-                .Property(m => m.BodySprite, p => p.ShowHex())
-                .Property(m => m.SkinColor);
+                .Property(m => m.HeadSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's head."))
+                .Property(m => m.FaceShape, p => p.ToolTip("Face shape of the user."))
+                .Property(m => m.HairColor, p => p.ToolTip("Hair color of the user."))
+                .Property(m => m.BodySprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's body."))
+                .Property(m => m.SkinColor, p => p.ToolTip("Skin color of the user."));
             b.Section("Visibility")
-                .Property(m => m.IsTransparent)
-                .Property(m => m.IsHidden)
-                .IsExpanded(m => m.IsTransparent || m.IsHidden);
+                .Property(m => m.IsTranslucent, p => p.ToolTip("Whether the user is translucent."))
+                .Property(m => m.IsHidden, p => p.ToolTip("Whether the user is hidden (invisible)."))
+                .IsExpanded(m => m.IsTranslucent || m.IsHidden);
             b.Section("Equipment")
-                .Property(m => m.Armor1Sprite, p => p.ShowHex())
-                .Property(m => m.Armor2Sprite, p => p.ShowHex())
-                .Property(m => m.PantsColor)
-                .Property(m => m.BootsSprite, p => p.ShowHex())
-                .Property(m => m.BootsColor)
-                .Property(m => m.WeaponSprite, p => p.ShowHex())
-                .Property(m => m.ShieldSprite, p => p.ShowHex())
-                .Property(m => m.Accessory1Sprite, p => p.ShowHex())
-                .Property(m => m.Accessory1Color)
-                .Property(m => m.Accessory2Sprite, p => p.ShowHex())
-                .Property(m => m.Accessory2Color)
-                .Property(m => m.Accessory3Sprite, p => p.ShowHex())
-                .Property(m => m.Accessory3Color)
-                .Property(m => m.OvercoatColor)
-                .Property(m => m.OvercoatSprite, p => p.ShowHex())
-                .Property(m => m.Lantern)
+                .Property(m => m.Armor1Sprite,
+                    p => p.ShowHex().ToolTip("Sprite displayed for the user's primary armor."))
+                .Property(m => m.Armor2Sprite,
+                    p => p.ShowHex().ToolTip("Sprite displayed for the user's secondary armor."))
+                .Property(m => m.PantsColor, p => p.ToolTip("Color applied to the user's pants."))
+                .Property(m => m.BootsSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's boots."))
+                .Property(m => m.BootsColor, p => p.ToolTip("Color applied to the user's boots."))
+                .Property(m => m.WeaponSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's weapon."))
+                .Property(m => m.ShieldSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's shield."))
+                .Property(m => m.Accessory1Sprite,
+                    p => p.ShowHex().ToolTip("Sprite displayed for the user's first accessory."))
+                .Property(m => m.Accessory1Color,
+                    p => p.ToolTip("Override (dye) color applied to the user's first accessory."))
+                .Property(m => m.Accessory2Sprite,
+                    p => p.ShowHex().ToolTip("Sprite displayed for the user's second accessory."))
+                .Property(m => m.Accessory2Color,
+                    p => p.ToolTip("Override (dye) color applied to the user's second accessory."))
+                .Property(m => m.Accessory3Sprite,
+                    p => p.ShowHex().ToolTip("Sprite displayed for the user's third accessory."))
+                .Property(m => m.Accessory3Color,
+                    p => p.ToolTip("Override (dye) color applied to the user's third accessory."))
+                .Property(m => m.OvercoatColor, p => p.ToolTip("Color applied to the user's overcoat."))
+                .Property(m => m.OvercoatSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's overcoat."))
+                .Property(m => m.Lantern, p => p.ToolTip("Type of lantern equipped by the user."))
                 .IsExpanded(m => m.HeadSprite != 0xFFFF);
             b.Section("Resting")
-                .Property(m => m.RestPosition)
+                .Property(m => m.RestPosition, p => p.ToolTip("Resting position to be shown for the user."))
                 .IsExpanded(m => m.RestPosition != RestPosition.None);
             b.Section("Monster Form")
-                .Property(m => m.MonsterSprite, p => p.ShowHex())
+                .Property(m => m.MonsterSprite, p => p.ShowHex().ToolTip("Sprite to display the user as a monster."))
                 .Property(m => m.MonsterUnknown)
                 .IsExpanded(m => m.HeadSprite == 0xFFFF);
         });
@@ -774,9 +787,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerStatusEffectMessage>(b =>
         {
             b.Section("Effect")
-                .Property(m => m.Icon)
-                .Property(m => m.Duration);
-        });    
+                .Property(m => m.Icon, p => p.ShowHex().ToolTip("Icon displayed for the status effect."))
+                .Property(m => m.Duration, p => p.ToolTip("Remaining duration of the status effect."));
+        });
     }
 
     private static void RegisterServerSwitchPaneMapping(InspectorMappingRegistry registry)
@@ -784,7 +797,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerSwitchPaneMessage>(b =>
         {
             b.Section("Interface")
-                .Property(m => m.Pane);
+                .Property(m => m.Pane, p => p.ToolTip("Interface pane to be switched to."));
         });
     }
 
@@ -793,65 +806,65 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerSyncTicksMessage>(b =>
         {
             b.Section("Ticks")
-                .Property(m => m.TickCount);
+                .Property(m => m.TickCount, p => p.ToolTip("Server-side tick count, used for synchronizing timing."));
         });
     }
-    
+
     private static void RegisterServerUpdateStatsMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerUpdateStatsMessage>(b =>
         {
             b.Section("Fields")
-                .Property(m => m.Fields);
+                .Property(m => m.Fields, p => p.ShowMultiline().ToolTip("Which fields are included within the update."));;
             b.Section("Flags")
-                .Property(m => m.IsAdmin)
-                .Property(m => m.IsSwimming);
+                .Property(m => m.IsAdmin, p => p.ToolTip("Whether the user is an administrator (GM)."))
+                .Property(m => m.IsSwimming, p => p.ToolTip("Whether the user is currently swimming."));
             b.Section("Level")
-                .Property(m => m.Level)
-                .Property(m => m.AbilityLevel)
+                .Property(m => m.Level, p => p.ToolTip("Level of the user's base class."))
+                .Property(m => m.AbilityLevel, p => p.ToolTip("Level of the user's ability class."))
                 .IsExpanded(m => m.Level.HasValue);
             b.Section("Vitals")
-                .Property(m => m.Health)
-                .Property(m => m.MaxHealth)
-                .Property(m => m.Mana)
-                .Property(m => m.MaxMana)
+                .Property(m => m.Health, p => p.ToolTip("Current health of the user."))
+                .Property(m => m.MaxHealth, p => p.ToolTip("Maximum health of the user."))
+                .Property(m => m.Mana, p => p.ToolTip("Current mana of the user."))
+                .Property(m => m.MaxMana, p => p.ToolTip("Maximum mana of the user."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Vitals));
             b.Section("Stats")
-                .Property(m => m.Strength)
-                .Property(m => m.Intelligence)
-                .Property(m => m.Wisdom)
-                .Property(m => m.Constitution)
-                .Property(m => m.Dexterity)
-                .Property(m => m.HasStatPoints)
-                .Property(m => m.StatPoints)
+                .Property(m => m.Strength, p => p.ToolTip("Current strength stat of the user."))
+                .Property(m => m.Intelligence, p => p.ToolTip("Current intelligence stat of the user."))
+                .Property(m => m.Wisdom, p => p.ToolTip("Current wisdom stat of the user."))
+                .Property(m => m.Constitution, p => p.ToolTip("Current constitution stat of the user."))
+                .Property(m => m.Dexterity, p => p.ToolTip("Current dexterity stat of the user."))
+                .Property(m => m.HasStatPoints, p => p.ToolTip("Whether the user has stat points to spent."))
+                .Property(m => m.StatPoints, p => p.ToolTip("Number of stat points the user has available to spend."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
             b.Section("Modifiers")
-                .Property(m => m.ArmorClass)
-                .Property(m => m.MagicResist)
-                .Property(m => m.DamageModifier)
-                .Property(m => m.HitModifier)
-                .Property(m => m.AttackElement)
-                .Property(m => m.DefenseElement)
-                .Property(m => m.IsBlinded)
-                .Property(m => m.CanMove)
+                .Property(m => m.ArmorClass, p => p.ToolTip("Current armor class of the user (lower is better)."))
+                .Property(m => m.MagicResist, p => p.ToolTip("Current magic resistance of the user (higher is better)."))
+                .Property(m => m.DamageModifier, p => p.ToolTip("Current damage modifier of the user (higher is better)."))
+                .Property(m => m.HitModifier, p => p.ToolTip("Current hit modifier of the user (higher is better)."))
+                .Property(m => m.AttackElement, p => p.ToolTip("Current attack element of the user."))
+                .Property(m => m.DefenseElement, p => p.ToolTip("Current defense element of the user."))
+                .Property(m => m.IsBlinded, p => p.ToolTip("Whether the user is currently blinded (black screen)."))
+                .Property(m => m.CanMove, p => p.ToolTip("Whether the user can move."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Modifiers));
             b.Section("Experience")
-                .Property(m => m.TotalExperience)
-                .Property(m => m.ToNextLevel)
-                .Property(m => m.TotalAbility)
-                .Property(m => m.ToNextAbility)
+                .Property(m => m.TotalExperience, p => p.ToolTip("Total experience points the user has accumulated."))
+                .Property(m => m.ToNextLevel, p => p.ToolTip("Experience points needed to reach the next level."))
+                .Property(m => m.TotalAbility, p => p.ToolTip("Total ability points the user has accumulated."))
+                .Property(m => m.ToNextAbility, p => p.ToolTip("Ability points needed to reach the next level."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.ExperienceGold));
             b.Section("Currency")
-                .Property(m => m.Gold)
-                .Property(m => m.GamePoints)
+                .Property(m => m.Gold, p => p.ToolTip("Current gold amount the user has."))
+                .Property(m => m.GamePoints, p => p.ToolTip("Current game points the user has."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.ExperienceGold));
             b.Section("Weight")
-                .Property(m => m.Weight)
-                .Property(m => m.MaxWeight)
+                .Property(m => m.Weight, p => p.ToolTip("Current carrying weight of the user."))
+                .Property(m => m.MaxWeight, p => p.ToolTip("Maximum carrying weight of the user."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
             b.Section("Mail")
-                .Property(m => m.HasUnreadMail)
-                .Property(m => m.HasUnreadParcels)
+                .Property(m => m.HasUnreadMail, p => p.ToolTip("Whether the user has unread mail."))
+                .Property(m => m.HasUnreadParcels, p => p.ToolTip("Whether the user has available parcels to pickup."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Modifiers));
         });
     }
@@ -861,12 +874,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerUserIdMessage>(b =>
         {
             b.Section("User")
-                .Property(m => m.UserId, p => p.ShowHex())
-                .Property(m => m.Class);
+                .Property(m => m.UserId, p => p.ShowHex().ToolTip("ID of the user."))
+                .Property(m => m.Class, p => p.ToolTip("Base class of the user."));
             b.Section("Movement")
-                .Property(m => m.Direction);
+                .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."));
             b.Section("Guild")
-                .Property(m => m.HasGuild);
+                .Property(m => m.HasGuild, p => p.ToolTip("Whether the user is a member of a guild."));
         });
     }
 
@@ -874,19 +887,20 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
     {
         registry.Register<ServerUserProfileMessage>(b =>
         {
-            b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+            b.Section("User")
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the user."));
             b.Section("Profile")
-                .Property(m => m.Name)
-                .Property(m => m.DisplayClass)
-                .Property(m => m.Guild)
-                .Property(m => m.GuildRank)
-                .Property(m => m.Title);
+                .Property(m => m.Name, p => p.ToolTip("Display name of the user."))
+                .Property(m => m.DisplayClass, p => p.ToolTip("Display class of the user."))
+                .Property(m => m.Guild, p => p.ToolTip("Guild the user is a member of."))
+                .Property(m => m.GuildRank, p => p.ToolTip("Guild rank of the user."))
+                .Property(m => m.Title, p => p.ToolTip("Title of the user."));
             b.Section("Citizenship")
-                .Property(m => m.Nation);
+                .Property(m => m.Nation, p => p.ToolTip("Nation flag displayed for the user."));
             b.Section("Status")
-                .Property(m => m.Status)
-                .Property(m => m.IsGroupOpen);
+                .Property(m => m.Status, p => p.ToolTip("Social status of the user."))
+                .Property(m => m.IsGroupOpen,
+                    p => p.ToolTip("Whether the user is currently accepting group invitations."));
             b.Section("Equipment")
                 .Property(m => m.Equipment)
                 .IsExpanded(_ => false);
@@ -895,12 +909,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(_ => false);
             b.Section("Legend (Text)")
                 .Computed("Text", m => string.Join(System.Environment.NewLine, m.LegendMarks.Select(l => l.Text)),
-                    p => p.ShowMultiline());
+                    p => p.ShowMultiline().ToolTip("List of the user's legend marks."));
             b.Section("Portrait")
-                .Property(m => m.Portrait, p => p.ShowMultiline())
+                .Property(m => m.Portrait, p => p.ShowMultiline().ToolTip("Raw portrait data for the user."))
                 .IsExpanded(m => m.Portrait is not null && m.Portrait.Count > 0);
             b.Section("Bio")
-                .Property(m => m.Bio, p => p.ShowMultiline())
+                .Property(m => m.Bio, p => p.ShowMultiline().ToolTip("Biography of the user."))
                 .IsExpanded(m => !string.IsNullOrEmpty(m.Bio));
         });
     }
@@ -910,10 +924,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerWalkResponseMessage>(b =>
         {
             b.Section("Movement")
-                .Property(m => m.Direction);
+                .Property(m => m.Direction, p => p.ToolTip("Direction the user has walked."));
             b.Section("Position")
-                .Property(m => m.PreviousX)
-                .Property(m => m.PreviousY);
+                .Property(m => m.PreviousX, p => p.ToolTip("Previous X-coordinate of the user."))
+                .Property(m => m.PreviousY, p => p.ToolTip("Previous Y-coordinate of the user."));
             b.Section("Unknown")
                 .Property(m => m.UnknownX, p => p.ShowHex())
                 .Property(m => m.UnknownY, p => p.ShowHex())
@@ -926,14 +940,14 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerWorldListMessage>(b =>
         {
             b.Section("Totals")
-                .Property(m => m.WorldCount)
-                .Property(m => m.CountryCount);
+                .Property(m => m.WorldCount, p => p.ToolTip("Total number of users across all world servers."))
+                .Property(m => m.CountryCount, p => p.ToolTip("Total number of users in the current world server."));
             b.Section("Users")
                 .Property(m => m.Users)
                 .IsExpanded(_ => false);
             b.Section("Users (Text)")
                 .Computed("Text", m => string.Join(System.Environment.NewLine, m.Users.Select(l => l.Name)),
-                    p => p.ShowMultiline());
+                    p => p.ShowMultiline().ToolTip("List of users in the current world server."));
         });
     }
 
@@ -942,8 +956,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerWorldMapMessage>(b =>
         {
             b.Section("Field")
-                .Property(m => m.FieldIndex)
-                .Property(m => m.FieldName);
+                .Property(m => m.FieldIndex, p => p.ToolTip("Index of the field to be displayed."))
+                .Property(m => m.FieldName, p => p.ToolTip("Name of the field to be displayed."));
             b.Section("Locations")
                 .Property(m => m.Locations);
         });
@@ -954,8 +968,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerWorldMessageMessage>(b =>
         {
             b.Section("Message")
-                .Property(m => m.MessageType)
-                .Property(m => m.Message, p => p.ShowMultiline());
+                .Property(m => m.MessageType, p => p.ToolTip("Type of the message to be displayed."))
+                .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Content of the message."));
         });
     }
 }

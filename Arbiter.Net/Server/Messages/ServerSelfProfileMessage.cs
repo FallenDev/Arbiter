@@ -12,7 +12,7 @@ public class ServerSelfProfileMessage : ServerMessage
     public string Title { get; set; } = string.Empty;
     public string GroupMembers { get; set; } = string.Empty;
     public bool IsGroupOpen { get; set; }
-    public bool HasGroupInvite { get; set; }
+    public bool IsRecruiting { get; set; }
     public ServerGroupBox? GroupBox { get; set; }
     public CharacterClass Class { get; set; }
     public bool ShowMasterMetadata { get; set; }
@@ -30,9 +30,9 @@ public class ServerSelfProfileMessage : ServerMessage
         Title = reader.ReadString8();
         GroupMembers = reader.ReadString8();
         IsGroupOpen = reader.ReadBoolean();
-        HasGroupInvite = reader.ReadBoolean();
+        IsRecruiting = reader.ReadBoolean();
 
-        if (HasGroupInvite)
+        if (IsRecruiting)
         {
             // Yes the ordering of this is different from the client group box
             GroupBox = new ServerGroupBox

@@ -7,7 +7,7 @@ namespace Arbiter.Net.Server.Messages;
 [NetworkCommand(ServerCommand.Cooldown)]
 public class ServerCooldownMessage : ServerMessage
 {
-    public AbilityType Type { get; set; }
+    public AbilityType AbilityType { get; set; }
     public byte Slot { get; set; }
     public uint Seconds { get; set; }
 
@@ -15,7 +15,7 @@ public class ServerCooldownMessage : ServerMessage
     {
         base.Deserialize(reader);
         
-        Type = (AbilityType)reader.ReadByte();
+        AbilityType = (AbilityType)reader.ReadByte();
         Slot = reader.ReadByte();
         Seconds = reader.ReadUInt32();
     }

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Text view of `ServerLegendMark` listing on `ServerUserProfileMessage` and `ServerSelfProfileMessage` inpsector views
 - Text view of `ServerWorldListUser` listing on `ServerWorldListMessage` inspector view
 - Copy to JSON representation from inspector
+- Tooltips for inspector fields
 
 ### Changed
 
@@ -23,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adjusted trace view toolbar layout for resizing
 - Hide filter bar by default on trace
 - Collapse `Users` on `ServerWorldListMessage` by default in inspector
+- Renamed `Type` to `AbilityType` in `ServerCooldownMessage` message
+- Renamed `PreviousX` and `PreviousY` to `OriginX` and `OriginY` on `ServerEntityWalkMessage` message
+- Renamed `ShowPlayer` to `ShowUser` for consistency across wording
+- Renamed `MessageType` to `ResultType` for `ServerLoginResultMessage` message
+- Renamed `HasGroupInvite` to `IsRecruiting` for `ServerSelfProfileMessage` message
+- Renamed `DialogId` to `StepId` and `SourceId` to `EntityId` for `ServerShowDialogMessage` message
+- Renamed `SourceId` to `EntityId` and `Args` to `Prompt` for `ServerShowMenuMessage` message
+- Renamed `IsTransparent` to `IsTranslucent` for `ServerShowUserMessage` message
 
 ## [0.9.1] - 2025-09-17
 

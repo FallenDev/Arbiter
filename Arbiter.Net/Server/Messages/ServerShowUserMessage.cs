@@ -4,8 +4,8 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
-[NetworkCommand(ServerCommand.ShowPlayer)]
-public class ServerShowPlayerMessage : ServerMessage
+[NetworkCommand(ServerCommand.ShowUser)]
+public class ServerShowUserMessage : ServerMessage
 {
     public ushort X { get; set; }
     public ushort Y { get; set; }
@@ -17,7 +17,7 @@ public class ServerShowPlayerMessage : ServerMessage
     public DyeColor? HairColor { get; set; }
     public BodySprite? BodySprite { get; set; }
     public SkinColor? SkinColor { get; set; }
-    public bool IsTransparent { get; set; }
+    public bool IsTranslucent { get; set; }
     public bool IsHidden { get; set; }
 
     public ushort? MonsterSprite { get; set; }
@@ -106,7 +106,7 @@ public class ServerShowPlayerMessage : ServerMessage
             OvercoatColor = (DyeColor)reader.ReadByte();
 
             SkinColor = (SkinColor)reader.ReadByte();
-            IsTransparent = reader.ReadBoolean();
+            IsTranslucent = reader.ReadBoolean();
 
             FaceShape = reader.ReadByte();
         }
@@ -115,10 +115,10 @@ public class ServerShowPlayerMessage : ServerMessage
         Name = reader.ReadString8();
         GroupBox = reader.ReadString8();
 
-        if (BodySprite == Types.BodySprite.None && IsTransparent)
+        if (BodySprite == Types.BodySprite.None && IsTranslucent)
         {
             IsHidden = true;
-            IsTransparent = false;
+            IsTranslucent = false;
         }
     }
 
