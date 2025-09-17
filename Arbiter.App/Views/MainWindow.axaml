@@ -61,7 +61,8 @@
                         </Button>
                     </WrapPanel>
                     <ListBox ItemsSource="{Binding ClientManager.Clients}"
-                             SelectedItem="{Binding SelectedClient}">
+                             SelectedItem="{Binding SelectedClient}"
+                             Classes="bubble">
                         <ListBox.DataTemplates>
                             <DataTemplate DataType="vmc:ClientViewModel">
                                 <v:ClientView/>

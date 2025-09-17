@@ -17,8 +17,7 @@
     </UserControl.Resources>
     
     <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Border Background="{StaticResource Talgonite.Control.Background}"
-                Padding="8,4"
+        <Border Padding="8,4"
                 Margin="0,0,0,4">
             <StackPanel Spacing="4">
                 <Grid ColumnDefinitions="*,Auto">
@@ -33,14 +32,14 @@
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
                         <TextBlock Text="{Binding DisplayLevel}"
                                    TextAlignment="Right"
-                                   FontSize="14"
+                                   FontSize="12"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Top"/>
                         <TextBlock Text="{Binding Class}"
                                    TextAlignment="Right"
-                                   FontSize="14"
+                                   FontSize="12"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
-                                   VerticalAlignment="Center"/>
+                                   VerticalAlignment="Top"/>
                     </StackPanel>
                 </Grid>
                 
@@ -110,9 +109,6 @@
                              Value="{Binding BoundedManaPercent}"
                              ShowProgressText="False"
                              Foreground="{StaticResource Talgonite.Client.ManaForeground}"/>
-                
-                <!-- Spacing -->
-                <Panel Margin="0,4"/>
             </StackPanel>
         </Border>
     </Panel>

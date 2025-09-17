@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Exception view for inspector view
+- Exception view for inspector view errors
 - Improved client view with map location and stats
 - `ClientLoggedIn` event for `ProxyServer`, invoked when server sends `0x05` packet
 - `ClientLoggedOut` event for `ProxyServer`, invoked when server sends `0x4C` packet
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ClientAuthenticated` event now invoked when client sends `0x10` packet
 - Clear login state when client explicitly exits
 - Remove `Unknown` from `ServerRequestPortraitMessage` packet/mapping
-- Fixed `Name` property for `ServerShowPlayerMessage` message when in monster form
+- Fixed `Name` and `GroupBox` properties for `ServerShowPlayerMessage` message when in monster form
 
 ## [0.9.0] - 2025-09-16
 
