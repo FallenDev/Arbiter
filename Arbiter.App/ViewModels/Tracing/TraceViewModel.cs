@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -43,12 +44,10 @@ public partial class TraceViewModel : ViewModelBase
 
     private bool _isEmpty = true;
 
-    private TracePacketViewModel? _selectedPacket;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
     private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty] private DateTime _startTime;
-    [ObservableProperty] private int? _selectedIndex;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private int? _scrollToIndexRequested;
     [ObservableProperty] private bool _isRunning;
@@ -69,17 +68,11 @@ public partial class TraceViewModel : ViewModelBase
 
     public event Action<TracePacketViewModel?>? SelectedPacketChanged;
 
-    public TracePacketViewModel? SelectedPacket
-    {
-        get => _selectedPacket;
-        set
-        {
-            if (SetProperty(ref _selectedPacket, value))
-            {
-                SelectedPacketChanged?.Invoke(value);
-            }
-        }
-    }
+    public int SelectedIndex => SelectedPackets.Count > 0 ? SelectedPackets.IndexOf(SelectedPackets[0]) : -1;
+    public int SelectionCount => SelectedPackets.Count;
+    
+    public TracePacketViewModel? SelectedPacket => SelectedPackets.Count > 0 ? SelectedPackets[0] : null;
+    public ObservableCollection<TracePacketViewModel> SelectedPackets { get; } = [];
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
@@ -123,10 +116,11 @@ public partial class TraceViewModel : ViewModelBase
         _dialogService = dialogService;
         _traceService = traceService;
         _proxyServer = proxyServer;
-
+        
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
 
         _allPackets.CollectionChanged += OnPacketCollectionChanged;
+        SelectedPackets.CollectionChanged += OnSelectedPacketsCollectionChanged;
 
         FilterParameters.PropertyChanged += OnFilterParametersChanged;
         SearchParameters.PropertyChanged += OnSearchParametersChanged;
@@ -139,6 +133,18 @@ public partial class TraceViewModel : ViewModelBase
         {
             Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(IsEmpty)), DispatcherPriority.Background);
         }
+    }
+
+    private void OnSelectedPacketsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        SelectedPacketChanged?.Invoke(SelectedPacket);
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            OnPropertyChanged(nameof(SelectedIndex));
+            OnPropertyChanged(nameof(SelectionCount));
+            OnPropertyChanged(nameof(SelectedPacket));
+        }, DispatcherPriority.Background);
     }
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
@@ -216,6 +222,13 @@ public partial class TraceViewModel : ViewModelBase
         SearchResultCount = _searchResultIndexes.Count;
     }
 
+    private void SelectItemByIndex(int index)
+    {
+        SelectedPackets.Clear();
+        SelectedPackets.Add(FilteredPackets[index]);
+        ScrollToIndexRequested = index;
+    }
+
     private bool MatchesFilter(TracePacketViewModel vm)
     {
         var direction = vm.Packet switch
@@ -276,7 +289,7 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
-        var currentIndex = SelectedIndex ?? -1;
+        var currentIndex = SelectedIndex;
         var pos = _searchResultIndexes.FindLastIndex(x => x < currentIndex);
         if (pos == -1)
         {
@@ -284,10 +297,8 @@ public partial class TraceViewModel : ViewModelBase
         }
         
         SelectedSearchIndex = pos + 1;
-        SelectedIndex = _searchResultIndexes[pos];
-        
-        // Ensure this is visible in the list
-        ScrollToIndexRequested = SelectedIndex;
+        var packetIndex = _searchResultIndexes[pos];
+        SelectItemByIndex(packetIndex);
     }
 
     [RelayCommand]
@@ -298,7 +309,7 @@ public partial class TraceViewModel : ViewModelBase
             return;
         }
 
-        var currentIndex = SelectedIndex ?? -1;
+        var currentIndex = SelectedIndex;
         var pos = _searchResultIndexes.FindIndex(x => x > currentIndex);
         if (pos == -1)
         {
@@ -306,10 +317,8 @@ public partial class TraceViewModel : ViewModelBase
         }
 
         SelectedSearchIndex = pos + 1;
-        SelectedIndex = _searchResultIndexes[pos];
-        
-        // Ensure this is visible in the list
-        ScrollToIndexRequested = SelectedIndex;
+        var packetIndex = _searchResultIndexes[pos];
+        SelectItemByIndex(packetIndex);
     }
 
     public async Task LoadFromFileAsync(string inputPath, bool append = false)
@@ -465,7 +474,7 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Clear();
         OnPropertyChanged(nameof(FilteredPackets));
 
-        SelectedPacket = null;
+        SelectedPackets.Clear();
 
         _logger.LogInformation("Trace cleared");
     }
