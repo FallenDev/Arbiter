@@ -86,7 +86,7 @@ public partial class TraceViewModel : ViewModelBase
 
     public string? FormattedSearchResultsText =>
         SearchParameters.Command is not null
-            ? SearchResultCount > 0 ? $"{SelectedSearchIndex} of {SearchResultCount}" : "no matches"
+            ? SearchResultCount > 0 ? $"{Math.Max(1, SelectedSearchIndex)} of {SearchResultCount}" : "no matches"
             : null;
 
     public bool HasSearchResults => SearchResultCount > 0;
@@ -186,8 +186,14 @@ public partial class TraceViewModel : ViewModelBase
 
         }
 
-        _searchResultIndexes.Clear();
+        RefreshSearchResults();
+    }
 
+    private void RefreshSearchResults()
+    {
+        _searchResultIndexes.Clear();
+        SearchResultCount = 0;
+        
         for (var i = 0; i < FilteredPackets.Count; i++)
         {
             var packet = FilteredPackets[i];
@@ -200,14 +206,23 @@ public partial class TraceViewModel : ViewModelBase
             packet.Opacity = isMatch ? 1 : 0.5;
         }
 
-        SelectedSearchIndex = 1;
-        Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(FormattedSearchResultsText)));
+        SelectedSearchIndex = 0;
     }
 
     private void AddSearchResultIndex(int index)
     {
         _searchResultIndexes.Add(index);
         SearchResultCount = _searchResultIndexes.Count;
+    }
+
+    private void EnsureSelected(int index)
+    {
+        if (SelectedIndex == index)
+        {
+            SelectedIndex = index - 1;
+        }
+
+        Dispatcher.UIThread.Invoke(() => SelectedIndex = index);
     }
 
     private bool MatchesFilter(TracePacketViewModel vm)
@@ -265,7 +280,7 @@ public partial class TraceViewModel : ViewModelBase
     [RelayCommand]
     private void GotoPreviousSearchResult()
     {
-        if (SearchResultCount == 0)
+        if (_searchResultIndexes.Count == 0)
         {
             return;
         }
@@ -276,15 +291,16 @@ public partial class TraceViewModel : ViewModelBase
         {
             pos = _searchResultIndexes.Count - 1;
         }
-        
-        SelectedIndex = _searchResultIndexes[pos];
         SelectedSearchIndex = pos + 1;
+        
+        // Ensures that the selected packet is visible
+        EnsureSelected(_searchResultIndexes[pos]);
     }
 
     [RelayCommand]
     private void GotoNextSearchResult()
     {
-        if (SearchResultCount == 0)
+        if (_searchResultIndexes.Count == 0)
         {
             return;
         }
@@ -295,9 +311,10 @@ public partial class TraceViewModel : ViewModelBase
         {
             pos = 0;
         }
-
-        SelectedIndex = _searchResultIndexes[pos];
         SelectedSearchIndex = pos + 1;
+        
+        // Ensures that the selected packet is visible
+        EnsureSelected(_searchResultIndexes[pos]);
     }
 
     public async Task LoadFromFileAsync(string inputPath, bool append = false)
@@ -317,6 +334,8 @@ public partial class TraceViewModel : ViewModelBase
             var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
             AddPacketToTrace(vm);
         }
+        
+        RefreshSearchResults();
     }
 
     public async Task SaveToFileAsync(string outputPath)
