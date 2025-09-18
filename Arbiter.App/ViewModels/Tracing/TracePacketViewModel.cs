@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Arbiter.App.Extensions;
 using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
-using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Tracing;
 
@@ -100,21 +96,5 @@ public partial class TracePacketViewModel(
             ServerPacket serverPacket => $"{serverPacket.Command}",
             _ => $"Unknown {packet.Command:X2}"
         };
-    }
-
-    [RelayCommand]
-    private async Task CopyToClipboard()
-    {
-        var clipboard = Application.Current?.TryGetClipboard();
-        if (clipboard is not null)
-        {
-            var textToCopy = DisplayMode switch
-            {
-                PacketDisplayMode.Decrypted => $"{Packet.Command:X2} {FormattedPayload}",
-                _ => FormattedRaw,
-            };
-
-            await clipboard.SetTextAsync(textToCopy);
-        }
     }
 }

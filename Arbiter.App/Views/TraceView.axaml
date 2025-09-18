@@ -121,7 +121,7 @@
                     </Button>
                     
                     <!-- Save Trace Button -->
-                    <Button Command="{Binding SaveTraceCommand}"
+                    <Button Command="{Binding SaveAllCommand}"
                             ToolTip.Tip="Saves this trace to a file."
                             HotKey="Ctrl+S"
                             Classes="toolbar"
@@ -321,11 +321,10 @@
         <ListBox Name="TraceListBox"
                  Grid.Row="3"
                  ItemsSource="{Binding FilteredPackets}"
-                 SelectedItem="{Binding SelectedPacket}"
-                 SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
+                 SelectedItems="{Binding SelectedPackets}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"
-                 SelectionMode="Single"
+                 SelectionMode="Multiple"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  behaviors:ScrollToIndexBehavior.ScrollToIndex="{Binding ScrollToIndexRequested}"
                  behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"
@@ -335,6 +334,23 @@
                     <v:TracePacketView />
                 </DataTemplate>
             </ListBox.DataTemplates>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Selected"
+                              Command="{Binding CopyToClipboardCommand}"/>
+                    <MenuItem Header="Save Selected"
+                              Command="{Binding SaveSelectedCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Delete Selected"
+                              Command="{Binding DeleteSelectedCommand}">
+                        <MenuItem.Icon>
+                            <PathIcon Width="16" Height="16"
+                                      Foreground="White"
+                                      Data="{StaticResource Talgonite.Icon.ArrowDown}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </Grid>
 </UserControl>

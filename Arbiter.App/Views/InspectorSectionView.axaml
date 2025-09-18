@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.InspectorSectionView"
              x:DataType="vm:InspectorSectionViewModel">
-    <Grid>
+    <Panel>
         <Expander Header="{Binding Header}"
                   IsExpanded="{Binding IsExpanded}"
                   Padding="4,8">
@@ -37,5 +37,5 @@
                 </ItemsControl.DataTemplates>
             </ItemsControl>
         </Expander>
-    </Grid>
+    </Panel>
 </UserControl>

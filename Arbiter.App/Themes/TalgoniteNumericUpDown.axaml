@@ -14,7 +14,7 @@
             <ControlTemplate>
                 <Border>
                     <DataValidationErrors>
-                        <Grid>
+                        <Panel>
                             <ButtonSpinner Name="PART_Spinner"
                                            Background="{TemplateBinding Background}"
                                            BorderBrush="{TemplateBinding BorderBrush}"
@@ -46,7 +46,7 @@
                                          InnerLeftContent="{Binding $parent[TextBox].InnerLeftContent}"
                                          InnerRightContent="{Binding $parent[TextBox].InnerRightContent}"/>
                             </ButtonSpinner>
-                        </Grid>
+                        </Panel>
                     </DataValidationErrors>
                 </Border>
             </ControlTemplate>

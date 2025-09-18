@@ -52,6 +52,23 @@ public class ProcessMemoryStream : Stream
         Dispose(false);
     }
 
+    public static ProcessMemoryStream Open(int processId, ProcessAccessFlags accessFlags)
+    {
+        var nativeFlags = Win32ProcessAccessFlags.QueryInformation | Win32ProcessAccessFlags.VmOperation;
+        if (accessFlags.HasFlag(ProcessAccessFlags.Read))
+        {
+            nativeFlags |= Win32ProcessAccessFlags.VmRead;
+        }
+
+        if (accessFlags.HasFlag(ProcessAccessFlags.Write))
+        {
+            nativeFlags |= Win32ProcessAccessFlags.VmWrite;
+        }
+
+        var handle = NativeMethods.OpenProcess(nativeFlags, false, processId);
+        return handle == IntPtr.Zero ? throw new Win32Exception() : new ProcessMemoryStream(handle, accessFlags);
+    }
+
     public override long Seek(long offset, SeekOrigin origin)
     {
         CheckIfDisposed();

@@ -113,9 +113,8 @@
             <SolidColorBrush x:Key="Talgonite.MenuItem.HoverBackground" Color="#22262d"/>
             <SolidColorBrush x:Key="Talgonite.MenuItem.SelectedBackground" Color="#2e3743"/>
             <SolidColorBrush x:Key="Talgonite.MenuItem.Foreground" Color="#cdcfd2"/>
-            <SolidColorBrush x:Key="Talgonite.MenuItem.HoverForeground" Color="#e0e0e0"/>
-            <SolidColorBrush x:Key="Talgonite.MenuItem.PressedForeground" Color="#82baf7"/>
-            <SolidColorBrush x:Key="Talgonite.MenuItem.DisabledForeground" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.HoverForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.MenuItem.DisabledForeground" Color="#6d6f73"/>
             <SolidColorBrush x:Key="Talgonite.MenuItem.GestureForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.MenuItem.BorderBrush" Color="#292d34"/>
             <SolidColorBrush x:Key="Talgonite.MenuItem.SelectedBorderBrush" Color="#373d49"/>

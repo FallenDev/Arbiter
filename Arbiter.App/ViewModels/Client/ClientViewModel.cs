@@ -8,6 +8,7 @@ using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Client;
 
@@ -63,6 +64,8 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
     private uint _maxMana;
+    
+    public event EventHandler? BringToFrontRequested;
 
     public bool IsLoggedIn => EntityId is not null;
     
@@ -207,5 +210,13 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
         {
             MaxMana = message.MaxMana.Value;
         }
+    }
+    
+    private static bool CanBringToFront() => OperatingSystem.IsWindows();
+
+    [RelayCommand(CanExecute = nameof(CanBringToFront))]
+    private void BringToFront()
+    {
+        BringToFrontRequested?.Invoke(this, EventArgs.Empty);
     }
 }

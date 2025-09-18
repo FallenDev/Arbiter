@@ -80,7 +80,7 @@
                                     BorderThickness="1,0,1,1"
                                     CornerRadius="0,0,2,2"
                                     Padding="2">
-                                <Grid>
+                                <Panel>
                                     <Border Classes="sunken-shadow"
                                             CornerRadius="{Binding $parent[Border].CornerRadius}"/>
                                     <Border Classes="sunken-highlight"
@@ -92,7 +92,7 @@
                                         <ItemsPresenter Name="PART_ItemsPresenter"
                                                         ItemsPanel="{TemplateBinding ItemsPanel}"/>
                                     </ScrollViewer>
-                                </Grid>
+                                </Panel>
                             </Border>
                         </Popup>
                     </Grid>

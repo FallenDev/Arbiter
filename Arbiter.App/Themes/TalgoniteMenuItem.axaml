@@ -5,7 +5,6 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.MenuItem.Foreground}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.MenuItem.BorderBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="8,0"/>
         <Setter Property="Template">
             <ControlTemplate>
@@ -98,10 +97,6 @@
         </Style>
         <Style Selector="^:pointerover /template/ Border#Root">
             <Setter Property="Background" Value="{StaticResource Talgonite.MenuItem.HoverBackground}"/>
-        </Style>
-        
-        <Style Selector="^:pressed">
-            <Setter Property="Background" Value="{StaticResource Talgonite.MenuItem.PressedForeground}"/>
         </Style>
         
         <Style Selector="^:selected /template/ Border#Root">
