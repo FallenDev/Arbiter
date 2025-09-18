@@ -234,7 +234,7 @@ public partial class RawHexViewModel : ViewModelBase
             ? $"{selectedSpan[3]}.{selectedSpan[2]}.{selectedSpan[1]}.{selectedSpan[0]}"
             : "--";
 
-        FormattedBitFlags = FormatBits(selectedSpan, 4, ' ', 1) ?? "--";
+        FormattedBitFlags = FormatBits(selectedSpan, 4, ' ') ?? "--";
     }
 
     private string GetAsciiText()

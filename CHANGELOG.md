@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `HasUnreadParcels` to `HasAvailableParcels` in `ServerUpdateStatsMessage` message
 - Display name overrides for nested types
 - Made most nested types collapsed by default in inspector
+- Allow bit flags to display on 16-bit and 32-bit values
 
 ## [0.9.1] - 2025-09-17
 

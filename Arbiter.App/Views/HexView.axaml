@@ -10,6 +10,7 @@
              x:DataType="vm:RawHexViewModel">
     <UserControl.Resources>
         <sys:Double x:Key="Talgonite.HexView.FontSize">16</sys:Double>
+        <sys:Double x:Key="Talgonite.HexView.SmallFontSize">14</sys:Double>
         <sys:Double x:Key="Talgonite.HexView.LabelFontSize">14</sys:Double>
         <sys:Double x:Key="Talgonite.HexView.TextBoxHeight">50</sys:Double>
         <SolidColorBrush x:Key="Talgonite.HexView.TextBoxBackground" Color="#1e2228"/>
@@ -399,7 +400,7 @@
             <!-- Bitflags -->
             <TextBox Text="{Binding FormattedBitFlags, FallbackValue=--}"
                      Classes="read-only"
-                     FontSize="{StaticResource Talgonite.HexView.FontSize}"
+                     FontSize="{StaticResource Talgonite.HexView.SmallFontSize}"
                      FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
