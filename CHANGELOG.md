@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
+- Allow multiple selection of trace packets (only first item is inspected)
 
 ## [0.9.2] - 2025-09-18
 

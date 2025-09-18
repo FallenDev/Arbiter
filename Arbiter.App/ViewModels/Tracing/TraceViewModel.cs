@@ -68,7 +68,7 @@ public partial class TraceViewModel : ViewModelBase
 
     public event Action<TracePacketViewModel?>? SelectedPacketChanged;
 
-    public int SelectedIndex => SelectedPackets.Count > 0 ? SelectedPackets.IndexOf(SelectedPackets[0]) : -1;
+    public int SelectedIndex => SelectedPackets.Count > 0 ? FilteredPackets.IndexOf(SelectedPackets[0]) : -1;
     public int SelectionCount => SelectedPackets.Count;
     
     public TracePacketViewModel? SelectedPacket => SelectedPackets.Count > 0 ? SelectedPackets[0] : null;
