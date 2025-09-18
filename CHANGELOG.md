@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `DialogId` to `StepId` and `SourceId` to `EntityId` for `ServerShowDialogMessage` message
 - Renamed `SourceId` to `EntityId` and `Args` to `Prompt` for `ServerShowMenuMessage` message
 - Renamed `IsTransparent` to `IsTranslucent` for `ServerShowUserMessage` message
+- Display name overrides for nested types
 
 ## [0.9.1] - 2025-09-17
 

@@ -197,8 +197,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Entity")
                 .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Position")
-                .Property(m => m.OriginX, p => p.ToolTip("Original X position of the entity."))
-                .Property(m => m.OriginY, p => p.ToolTip("Original Y position of the entity."));
+                .Property(m => m.OriginX, p => p.ToolTip("Original X-coordinate of the entity."))
+                .Property(m => m.OriginY, p => p.ToolTip("Original Y-coordinate of the entity."));
             b.Section("Movement")
                 .Property(m => m.Direction, p => p.ToolTip("Direction the entity should walk, from the origin."));
             b.Section("Unknown")
@@ -383,8 +383,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerMapLocationMessage>(b =>
         {
             b.Section("Position")
-                .Property(m => m.X, p => p.ToolTip("Current X position of the user."))
-                .Property(m => m.Y, p => p.ToolTip("Current Y position of the user."));
+                .Property(m => m.X, p => p.ToolTip("Current X-coordinate of the user."))
+                .Property(m => m.Y, p => p.ToolTip("Current Y-coordinate of the user."));
             b.Section("Unknown")
                 .Property(m => m.UnknownX, p => p.ShowHex())
                 .Property(m => m.UnknownY, p => p.ShowHex());
@@ -662,7 +662,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Visual Effect")
                 .Property(m => m.TargetAnimation, p => p.ToolTip("Visual effect to be played on the target entity."))
                 .Property(m => m.SourceAnimation, p => p.ToolTip("Visual effect to be played on the source entity."))
-                .Property(m => m.AnimationSpeed, p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
+                .Property(m => m.AnimationSpeed,
+                    p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
         });
     }
 
@@ -773,7 +774,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Lantern, p => p.ToolTip("Type of lantern equipped by the user."))
                 .IsExpanded(m => m.HeadSprite != 0xFFFF);
             b.Section("Resting")
-                .Property(m => m.RestPosition, p => p.ToolTip("Resting position to be shown for the user."))
+                .Property(m => m.RestPosition, p => p.ToolTip("Resting posture to be shown for the user."))
                 .IsExpanded(m => m.RestPosition != RestPosition.None);
             b.Section("Monster Form")
                 .Property(m => m.MonsterSprite, p => p.ShowHex().ToolTip("Sprite to display the user as a monster."))
@@ -815,7 +816,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerUpdateStatsMessage>(b =>
         {
             b.Section("Fields")
-                .Property(m => m.Fields, p => p.ShowMultiline().ToolTip("Which fields are included within the update."));;
+                .Property(m => m.Fields,
+                    p => p.ShowMultiline().ToolTip("Which fields are included within the update."));
+            ;
             b.Section("Flags")
                 .Property(m => m.IsAdmin, p => p.ToolTip("Whether the user is an administrator (GM)."))
                 .Property(m => m.IsSwimming, p => p.ToolTip("Whether the user is currently swimming."));
@@ -840,8 +843,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
             b.Section("Modifiers")
                 .Property(m => m.ArmorClass, p => p.ToolTip("Current armor class of the user (lower is better)."))
-                .Property(m => m.MagicResist, p => p.ToolTip("Current magic resistance of the user (higher is better)."))
-                .Property(m => m.DamageModifier, p => p.ToolTip("Current damage modifier of the user (higher is better)."))
+                .Property(m => m.MagicResist,
+                    p => p.ToolTip("Current magic resistance of the user (higher is better)."))
+                .Property(m => m.DamageModifier,
+                    p => p.ToolTip("Current damage modifier of the user (higher is better)."))
                 .Property(m => m.HitModifier, p => p.ToolTip("Current hit modifier of the user (higher is better)."))
                 .Property(m => m.AttackElement, p => p.ToolTip("Current attack element of the user."))
                 .Property(m => m.DefenseElement, p => p.ToolTip("Current defense element of the user."))
