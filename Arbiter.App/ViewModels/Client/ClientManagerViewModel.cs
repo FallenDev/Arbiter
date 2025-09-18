@@ -108,7 +108,7 @@ public class ClientManagerViewModel : ViewModelBase
 
     private void OnClientBringToFront(object? sender, EventArgs e)
     {
-        if (sender is not ClientViewModel clientVm)
+        if (sender is not ClientViewModel clientVm || !OperatingSystem.IsWindows())
         {
             return;
         }
@@ -119,6 +119,11 @@ public class ClientManagerViewModel : ViewModelBase
 
     private void SetClientWindowTitle(ClientViewModel vm, string windowTitle)
     {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+        
         var clientWindow = _gameClientService.GetGameClients().FirstOrDefault(gc => gc.CharacterName == vm.Name);
         clientWindow?.SetWindowTitle(windowTitle);
     }
