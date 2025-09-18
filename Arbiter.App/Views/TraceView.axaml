@@ -265,7 +265,7 @@
                            VerticalAlignment="Center" />
                     <TextBox Text="{Binding SearchParameters.CommandFilter}"
                              MaxLength="2"
-                             Width="140"
+                             Width="120"
                              Height="36">
                         <TextBox.InnerRightContent>
                             <Button Command="{Binding SearchParameters.ClearCommandFilterCommand}"
