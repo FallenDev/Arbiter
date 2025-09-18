@@ -87,7 +87,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the item."));
             b.Section("Quantity")
-                .Property(m => m.Quantity, p => p.ToolTip("Amount held of the item."))
+                .Property(m => m.Quantity, p => p.ToolTip("Quantity held of the item."))
                 .Property(m => m.IsStackable,
                     p => p.ToolTip("Whether multiples of the item can be held in a single slot."))
                 .IsExpanded(m => m.Quantity > 1);
@@ -653,8 +653,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target entity."))
                 .IsExpanded(m => m.TargetId != 0);
             b.Section("Target Location")
-                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target location."))
-                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target location."))
+                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target map location."))
+                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target map location."))
                 .IsExpanded(m => m.TargetId == 0);
             b.Section("Source Entity")
                 .Property(m => m.SourceId, p => p.ShowHex().ToolTip("ID of the source entity."))

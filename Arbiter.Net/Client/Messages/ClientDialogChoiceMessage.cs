@@ -10,7 +10,7 @@ public class ClientDialogChoiceMessage : ClientMessage
     public EntityTypeFlags EntityType { get; set; }
     public uint EntityId { get; set; }
     public ushort PursuitId { get; set; }
-    public ushort DialogId { get; set; }
+    public ushort StepId { get; set; }
     
     public DialogArgsType ArgsType { get; set; }
     public byte? MenuChoice { get; set; }
@@ -23,7 +23,7 @@ public class ClientDialogChoiceMessage : ClientMessage
         EntityType = (EntityTypeFlags)reader.ReadByte();
         EntityId = reader.ReadUInt32();
         PursuitId = reader.ReadUInt16();
-        DialogId = reader.ReadUInt16();
+        StepId = reader.ReadUInt16();
         
         if (reader.IsEndOfPacket())
         {
