@@ -17,6 +17,7 @@ public class GameClientService : IGameClientService
 {
     private const string DarkAgesWindowClassName = "Darkages";
     private const long CharacterNameAddress = 0x73d910; // 7.41
+    private const int CharacterNameLength = 12;
     
     private const IntPtr MultipleInstancePatchAddress = 0x57A7CE;
     private const IntPtr SkipIntroVideoPatchAddress = 0x42E61F;
@@ -48,18 +49,21 @@ public class GameClientService : IGameClientService
 
     public IEnumerable<GameClientWindow> GetGameClients()
     {
-        var nameBuffer = ArrayPool<byte>.Shared.Rent(13);
+        var nameBuffer = ArrayPool<byte>.Shared.Rent(CharacterNameLength + 1);
         try
         {
+            // Find all client windows by class name
             var windows = NativeWindowEnumerator.FindWindows(DarkAgesWindowClassName);
             foreach (var window in windows)
             {
+                // Read the character name from the process memory
                 using var stream = ProcessMemoryStream.Open(window.ProcessId, ProcessAccessFlags.Read);
                 stream.Position = CharacterNameAddress;
                 stream.ReadExactly(nameBuffer);
 
-                var characterName = Encoding.ASCII.GetString(nameBuffer);
-                var characterNameLength = characterName.IndexOf('\0');
+                // Extract the character name from the buffer, null-terminating it
+                var nameBufferText = Encoding.ASCII.GetString(nameBuffer);
+                var characterNameLength = nameBufferText.IndexOf('\0');
 
                 yield return new GameClientWindow
                 {
@@ -67,7 +71,7 @@ public class GameClientService : IGameClientService
                     WindowHandle = window.Handle,
                     WindowClassName = window.ClassName,
                     WindowTitle = window.Title,
-                    CharacterName = characterName[..characterNameLength],
+                    CharacterName = nameBufferText[..characterNameLength],
                 };
             }
         }

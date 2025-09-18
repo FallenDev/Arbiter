@@ -24,6 +24,14 @@ internal static class NativeMethods
     [DllImport("user32", EntryPoint = "GetWindowText", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern int GetWindowText(IntPtr windowHandle, StringBuilder windowText, int maxLength);
     
+    [DllImport("user32", EntryPoint = "SetWindowText", CharSet = CharSet.Auto, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetWindowText(IntPtr windowHandle, string windowText);
+    
+    [DllImport("user32", EntryPoint = "SetForegroundWindow", CharSet = CharSet.Auto, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetForegroundWindow(IntPtr windowHandle);
+    
     [DllImport("kernel32.dll", EntryPoint = "CreateProcess", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool CreateProcess(string applicationName,

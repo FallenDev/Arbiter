@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Save Selected` context menu for trace packets
 - `Delete Selected` context menu for trace packets
 - Double-click on client in list to bring game window to foreground (Windows only)
+- Set game client window title to include client name on login (cleared on logout)
 
 ## Changed
 
