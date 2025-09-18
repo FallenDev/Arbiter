@@ -342,7 +342,13 @@
                               Command="{Binding SaveSelectedCommand}"/>
                     <Separator/>
                     <MenuItem Header="Delete Selected"
-                              Command="{Binding DeleteSelectedCommand}"/>
+                              Command="{Binding DeleteSelectedCommand}">
+                        <MenuItem.Icon>
+                            <PathIcon Width="16" Height="16"
+                                      Foreground="White"
+                                      Data="{StaticResource Talgonite.Icon.ArrowDown}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

@@ -6,7 +6,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
-                    <Panel>
+                    <Panel Background="Transparent">
                         <Border Name="PART_TransparencyFallback">
                             <VisualLayerManager IsPopup="True">
                                 <ContentPresenter Name="PART_ContentPresenter"

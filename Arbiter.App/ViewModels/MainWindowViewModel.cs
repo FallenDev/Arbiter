@@ -66,6 +66,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (viewModel is null)
         {
             SelectedRawHex = null;
+            Inspector.SelectedPacket = null;
             return;
         }
 

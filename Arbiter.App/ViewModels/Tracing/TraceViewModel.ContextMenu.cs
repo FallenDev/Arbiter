@@ -47,7 +47,7 @@ public partial class TraceViewModel
             _allPackets.Remove(packet);
         }
 
-        RefreshSearchResults();
         SelectedPackets.Clear();
+        RefreshSearchResults();
     }
 }
