@@ -45,10 +45,12 @@ TBD
   - [x] Map Location
 - [x] Inspector Tooltips
 - [x] Find by Command (Next/Prev)
-- [ ] Delete Trace Packets
+- [x] Delete Trace Packets
+- [x] Save/Load Traces
 - [ ] Raw Packet Injection
   - [ ] To Client
   - [ ] To Server
+- [ ] Revamp Settings UI
 
 ### v1.1
 
