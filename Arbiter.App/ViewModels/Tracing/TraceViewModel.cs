@@ -42,50 +42,14 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
 
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
-    private readonly List<int> _searchResultIndexes = [];
-
+    
     private bool _isEmpty = true;
-
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
-    private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private int? _scrollToIndexRequested;
     [ObservableProperty] private bool _isRunning;
-
-    [ObservableProperty] private bool _showFilterBar;
-
-    [ObservableProperty] private bool _showSearchBar;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
-    [NotifyPropertyChangedFor(nameof(HasSearchResults))]
-    private int _selectedSearchIndex;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
-    [NotifyPropertyChangedFor(nameof(HasSearchResults))]
-    private int _searchResultCount;
-
-    public event Action<TracePacketViewModel?>? SelectedPacketChanged;
-
-    public int SelectedIndex => SelectedPackets.Count > 0 ? FilteredPackets.IndexOf(SelectedPackets[0]) : -1;
-    public int SelectionCount => SelectedPackets.Count;
-    
-    public TracePacketViewModel? SelectedPacket => SelectedPackets.Count > 0 ? SelectedPackets[0] : null;
-    public ObservableCollection<TracePacketViewModel> SelectedPackets { get; } = [];
-
-    public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
-    public TraceFilterViewModel FilterParameters { get; } = new();
-    public TraceSearchViewModel SearchParameters { get; } = new();
-
-    public string? FormattedSearchResultsText =>
-        SearchParameters.Command is not null
-            ? SearchResultCount > 0 ? $"{Math.Max(1, SelectedSearchIndex)} of {SearchResultCount}" : "no matches"
-            : null;
-
-    public bool HasSearchResults => SearchResultCount > 0;
 
     public bool IsEmpty => _isEmpty;
 
@@ -137,21 +101,6 @@ public partial class TraceViewModel : ViewModelBase
         }
     }
 
-    private void OnSelectedPacketsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        SelectedPacketChanged?.Invoke(SelectedPacket);
-
-        Dispatcher.UIThread.Post(() =>
-        {
-            OnPropertyChanged(nameof(SelectedIndex));
-            OnPropertyChanged(nameof(SelectionCount));
-            OnPropertyChanged(nameof(SelectedPacket));
-            
-            CopyToClipboardCommand.NotifyCanExecuteChanged();
-            DeleteSelectedCommand.NotifyCanExecuteChanged();
-        }, DispatcherPriority.Background);
-    }
-
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
         var packetViewModel = new TracePacketViewModel(e.Packet, e.RawData, e.Connection.Name)
@@ -171,159 +120,6 @@ public partial class TraceViewModel : ViewModelBase
         vm.Opacity = matchesSearch ? 1 : 0.5;
 
         _allPackets.Add(vm);
-    }
-
-    private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        // Do not filter on this, wait for pattern list to change
-        if (e.PropertyName == nameof(FilterParameters.NameFilter))
-        {
-            return;
-        }
-
-        // Do not filter on this, wait for command list to change
-        if (e.PropertyName == nameof(FilterParameters.CommandFilter))
-        {
-            return;
-        }
-
-        FilteredPackets.Refresh();
-    }
-
-    private void OnSearchParametersChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        // Do not filter on this, wait for actual command byte to change
-        if (e.PropertyName == nameof(SearchParameters.CommandFilter))
-        {
-
-        }
-
-        RefreshSearchResults();
-    }
-
-    private void RefreshSearchResults()
-    {
-        _searchResultIndexes.Clear();
-        SearchResultCount = 0;
-        
-        for (var i = 0; i < FilteredPackets.Count; i++)
-        {
-            var packet = FilteredPackets[i];
-            var isMatch = MatchesSearch(packet);
-            if (isMatch)
-            {
-                AddSearchResultIndex(i);
-            }
-
-            packet.Opacity = isMatch ? 1 : 0.5;
-        }
-
-        SelectedSearchIndex = 0;
-    }
-
-    private void AddSearchResultIndex(int index)
-    {
-        _searchResultIndexes.Add(index);
-        SearchResultCount = _searchResultIndexes.Count;
-    }
-
-    private void SelectItemByIndex(int index)
-    {
-        SelectedPackets.Clear();
-        SelectedPackets.Add(FilteredPackets[index]);
-        ScrollToIndexRequested = index;
-    }
-
-    private bool MatchesFilter(TracePacketViewModel vm)
-    {
-        var direction = vm.Packet switch
-        {
-            ClientPacket => PacketDirection.Client,
-            ServerPacket => PacketDirection.Server,
-            _ => PacketDirection.None
-        };
-
-        // Filter by packet direction
-        if (!FilterParameters.PacketDirection.HasFlag(direction))
-        {
-            return false;
-        }
-
-        // Filter by command
-        if (FilterParameters.CommandFilterRanges.Count > 0)
-        {
-            if (!FilterParameters.CommandFilterRanges.Any(range => range.Contains(vm.Packet.Command)))
-            {
-                return false;
-            }
-        }
-
-        // Filter by client name matches
-        if (FilterParameters.NameFilterPatterns.Count > 0)
-        {
-            var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
-            {
-                var regex = GetRegexForFilter(namePattern);
-                return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
-            });
-
-            if (!nameMatches)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private bool MatchesSearch(TracePacketViewModel vm)
-    {
-        if (SearchParameters.Command is null)
-        {
-            return true;
-        }
-
-        return vm.Packet.Command == SearchParameters.Command;
-    }
-
-    [RelayCommand]
-    private void GotoPreviousSearchResult()
-    {
-        if (_searchResultIndexes.Count == 0)
-        {
-            return;
-        }
-
-        var currentIndex = SelectedIndex;
-        var pos = _searchResultIndexes.FindLastIndex(x => x < currentIndex);
-        if (pos == -1)
-        {
-            pos = _searchResultIndexes.Count - 1;
-        }
-        
-        SelectedSearchIndex = pos + 1;
-        var packetIndex = _searchResultIndexes[pos];
-        SelectItemByIndex(packetIndex);
-    }
-
-    [RelayCommand]
-    private void GotoNextSearchResult()
-    {
-        if (_searchResultIndexes.Count == 0)
-        {
-            return;
-        }
-
-        var currentIndex = SelectedIndex;
-        var pos = _searchResultIndexes.FindIndex(x => x > currentIndex);
-        if (pos == -1)
-        {
-            pos = 0;
-        }
-
-        SelectedSearchIndex = pos + 1;
-        var packetIndex = _searchResultIndexes[pos];
-        SelectItemByIndex(packetIndex);
     }
 
     public async Task LoadFromFileAsync(string inputPath, bool append = false)
@@ -488,61 +284,5 @@ public partial class TraceViewModel : ViewModelBase
     private void ScrollToEnd()
     {
         ScrollToEndRequested = true;
-    }
-
-    private bool CanCopyToClipboard() => SelectedPackets.Count > 0;
-
-    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
-    private async Task CopyToClipboard()
-    {
-        var clipboard = Application.Current?.TryGetClipboard();
-        if (clipboard is null || SelectedPackets.Count == 0)
-        {
-            return;
-        }
-
-        var packetStrings = SelectedPackets.Select(vm => vm.DisplayMode switch
-        {
-            PacketDisplayMode.Decrypted => $"{vm.Packet.Command:X2} {vm.FormattedPayload}",
-            _ => vm.FormattedRaw,
-        });
-
-        var lines = string.Join(Environment.NewLine, packetStrings);
-        await clipboard.SetTextAsync(lines);
-    }
-    
-    private bool CanDeleteSelected() => SelectedPackets.Count > 0;
-
-    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
-    private void DeleteSelected()
-    {
-        if (SelectedPackets.Count == 0)
-        {
-            return;
-        }
-        
-        var selectedPackets = SelectedPackets.ToList();
-        foreach (var packet in selectedPackets)
-        {
-            _allPackets.Remove(packet);
-        }
-
-        RefreshSearchResults();
-        SelectedPackets.Clear();
-    }
-
-    private Regex GetRegexForFilter(string namePattern)
-    {
-        if (_nameFilterRegexes.TryGetValue(namePattern, out var regex))
-        {
-            return regex;
-        }
-
-        var escaped = Regex.Escape(namePattern);
-        var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        var newRegex = new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        _nameFilterRegexes.Add(namePattern, newRegex);
-        return newRegex;
     }
 }
