@@ -11,11 +11,11 @@ namespace Arbiter.App.Controls;
 [PseudoClasses(":dragging", ":resizing", ":maximized")]
 public class TalgoniteWindow : Window
 {
-    private Grid? _titleBar;
+    private Control? _titleBar;
     private Button? _minimizeButton;
     private Button? _maximizeButton;
     private Button? _closeButton;
-    private Grid? _resizeGrip;
+    private Control? _resizeGrip;
 
     private bool _isMouseDown;
     private Point _mouseDownPosition;
@@ -72,7 +72,7 @@ public class TalgoniteWindow : Window
     {
         base.OnApplyTemplate(e);
         
-        _titleBar = e.NameScope.Find<Grid>("PART_TitleBar")!;
+        _titleBar = e.NameScope.Find<Control>("PART_TitleBar")!;
         _titleBar.DoubleTapped += (_, _) => ToggleMaximizedState();
 
         // Avoid resizing if double-tapping custom content
@@ -91,7 +91,7 @@ public class TalgoniteWindow : Window
         _closeButton = e.NameScope.Find<Button>("PART_CloseButton")!;
         _closeButton.Click += (_, _) => Close();
 
-        _resizeGrip = e.NameScope.Find<Grid>("PART_ResizeGrip");
+        _resizeGrip = e.NameScope.Find<Control>("PART_ResizeGrip");
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)

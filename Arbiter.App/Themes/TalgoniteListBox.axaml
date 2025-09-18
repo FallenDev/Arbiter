@@ -18,7 +18,7 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Grid>
+                    <Panel>
                         <Border Classes="sunken-shadow"
                                 CornerRadius="{TemplateBinding CornerRadius}"/>
                         <Border Classes="sunken-highlight"
@@ -37,7 +37,7 @@
                                             ItemsPanel="{TemplateBinding ItemsPanel}"
                                             Margin="{TemplateBinding Padding}"/>
                         </ScrollViewer>
-                    </Grid>
+                    </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>

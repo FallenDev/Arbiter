@@ -22,7 +22,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Grid>
+                    <Panel>
                         <Border Classes="sunken-shadow"
                                 CornerRadius="{TemplateBinding CornerRadius}"/>
                         <Border Classes="sunken-highlight"
@@ -113,7 +113,7 @@
                                 </Grid>
                             </DataValidationErrors>
                         </DockPanel>
-                    </Grid>
+                    </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>

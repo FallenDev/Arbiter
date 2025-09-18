@@ -11,7 +11,7 @@
         <Setter Property="Padding" Value="16,8"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid>
+                <Panel>
                     <Border Name="SelectionBorder"
                             BorderBrush="Transparent"
                             BorderThickness="0,2,0,0">
@@ -28,7 +28,7 @@
                                           Padding="{TemplateBinding Padding}"
                                           RecognizesAccessKey="True"/>
                     </Border>
-                </Grid>
+                </Panel>
             </ControlTemplate>
         </Setter>
         

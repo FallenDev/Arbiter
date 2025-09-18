@@ -121,7 +121,7 @@
                     </Button>
                     
                     <!-- Save Trace Button -->
-                    <Button Command="{Binding SaveTraceCommand}"
+                    <Button Command="{Binding SaveAllCommand}"
                             ToolTip.Tip="Saves this trace to a file."
                             HotKey="Ctrl+S"
                             Classes="toolbar"
@@ -321,7 +321,6 @@
         <ListBox Name="TraceListBox"
                  Grid.Row="3"
                  ItemsSource="{Binding FilteredPackets}"
-                 Selection=""
                  SelectedItems="{Binding SelectedPackets}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"
@@ -339,6 +338,9 @@
                 <ContextMenu>
                     <MenuItem Header="Copy Selected"
                               Command="{Binding CopyToClipboardCommand}"/>
+                    <MenuItem Header="Save Selected"
+                              Command="{Binding SaveSelectedCommand}"/>
+                    <Separator/>
                     <MenuItem Header="Delete Selected"
                               Command="{Binding DeleteSelectedCommand}"/>
                 </ContextMenu>

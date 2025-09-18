@@ -9,9 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
+- `Copy Selected` context menu for trace packets
+- `Save Selected` context menu for trace packets
+- `Delete Selected` context menu for trace packets
+
 ## Changed
 
 - Allow multiple selection of trace packets (only first item is inspected)
+- Fixed `Shift` modifier getting stuck when loading traces in append mode
+- Trace packet list item hit test areas
+- Context menu visual design improvements
 
 ## [0.9.2] - 2025-09-18
 

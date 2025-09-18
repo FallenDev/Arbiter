@@ -31,8 +31,6 @@ public partial class TraceViewModel
         await clipboard.SetTextAsync(lines);
     }
     
-    private bool CanSaveSelected() => SelectedPackets.Count > 0;
-    
     private bool CanDeleteSelected() => SelectedPackets.Count > 0;
 
     [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
