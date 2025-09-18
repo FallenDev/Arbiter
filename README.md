@@ -43,8 +43,8 @@ TBD
   - [x] Level + Class
   - [x] HP / MP
   - [x] Map Location
-- [ ] Inspector Tooltips
-- [ ] Find by Command (Next/Prev)
+- [x] Inspector Tooltips
+- [x] Find by Command (Next/Prev)
 - [ ] Delete Trace Packets
 - [ ] Raw Packet Injection
   - [ ] To Client

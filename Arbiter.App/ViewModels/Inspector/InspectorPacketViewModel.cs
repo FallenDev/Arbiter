@@ -8,6 +8,7 @@ public class InspectorPacketViewModel : ViewModelBase
     public string DisplayName { get; set; } = string.Empty;
     public PacketDirection Direction { get; set; }
     public byte Command { get; set; }
+    public object? Value { get; set; }
 
     public ObservableCollection<InspectorSectionViewModel> Sections { get; } = [];
     

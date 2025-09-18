@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels.Client"
              mc:Ignorable="d" d:DesignWidth="280"
-             d:DataContext="{x:Static vm:ClientViewModel.DesignInstance}"
              x:Class="Arbiter.App.Views.ClientView"
              x:DataType="vm:ClientViewModel">
+    
+    <Design.DataContext>
+        <vm:DesignClientViewModel/>
+    </Design.DataContext>
+    
     <UserControl.Resources>
         <SolidColorBrush x:Key="Talgonite.Client.NameForeground" Color="#e0e0e0"/>
         <SolidColorBrush x:Key="Talgonite.Client.LevelForeground" Color="#7b7e85"/>

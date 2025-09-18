@@ -1,17 +1,34 @@
-﻿using Arbiter.Net;
+﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Arbiter.App.Extensions;
+using Arbiter.Json.Converters;
+using Arbiter.Net;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Inspector;
 
 public partial class InspectorViewModel : ViewModelBase
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        WriteIndented = true,
+        Converters = { new IPAddressJsonConverter() }
+    };
+    
     private readonly ILogger<InspectorViewModel> _logger;
     private readonly InspectorViewModelFactory _factory;
     private NetworkPacket? _selectedPacket;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
+    [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
     private InspectorPacketViewModel? _inspectedPacket;
 
     [ObservableProperty]
@@ -62,4 +79,27 @@ public partial class InspectorViewModel : ViewModelBase
             InspectorException = null;
         }
     }
+
+    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
+    private async Task CopyToClipboard()
+    {
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is null || InspectedPacket?.Value is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var value = InspectedPacket?.Value;
+            var jsonString = JsonSerializer.Serialize(value, JsonOptions);
+            await clipboard.SetTextAsync(jsonString);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to copy JSON to clipboard");
+        }
+    }
+
+    private bool CanCopyToClipboard() => !IsEmpty && InspectedPacket?.Value is not null;
 }

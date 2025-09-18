@@ -14,6 +14,7 @@ public class ArbiterSettings : ICloneable
     public int RemoteServerPort { get; set; } = 2610;
     
     public bool TraceOnStartup { get; set; }
+    public WindowRect? StartupLocation { get; set; } = new();
 
     public object Clone() => new ArbiterSettings
     {
@@ -21,7 +22,8 @@ public class ArbiterSettings : ICloneable
         LocalPort = LocalPort,
         RemoteServerAddress = RemoteServerAddress,
         RemoteServerPort = RemoteServerPort,
-        TraceOnStartup = TraceOnStartup
+        TraceOnStartup = TraceOnStartup,
+        StartupLocation = StartupLocation?.Clone() as WindowRect
     };
 
 }

@@ -4,18 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="using:Arbiter.App.Controls"
-        xmlns:vm="using:Arbiter.App.ViewModels"
+        xmlns:vm="using:Arbiter.App.ViewModels.MessageBox"
         xmlns:models="using:Arbiter.App.Models"
         mc:Ignorable="d"
         x:Class="Arbiter.App.Views.MessageBoxWindow"
         x:DataType="vm:MessageBoxViewModel"
-        d:DataContext="{x:Static vm:MessageBoxViewModel.DesignInstance}"
         Title="{Binding Title}"
         TitleAlignment="Center"
         Width="420" Height="280"
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
+    
+    <Design.DataContext>
+        <vm:DesignMessageBoxViewModel/>
+    </Design.DataContext>
+    
     <Grid RowDefinitions="*,Auto">
         <StackPanel Grid.Row="0"
                     Spacing="16"

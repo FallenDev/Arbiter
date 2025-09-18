@@ -35,6 +35,15 @@ public class InspectorSectionBuilder<T>
         return this;
     }
 
+    public InspectorSectionBuilder<T> Computed<TProp>(string name, Func<T, TProp> getter,
+        Action<InspectorPropertyBuilder<T, TProp>>? configure = null)
+    {
+        var builder = new InspectorPropertyBuilder<T, TProp>(name, getter);
+        configure?.Invoke(builder);
+        _properties.Add(builder.Untyped);
+        return this;
+    }
+
     public InspectorSectionMapping Build()
     {
         Func<object, bool>? isExpanded = null;

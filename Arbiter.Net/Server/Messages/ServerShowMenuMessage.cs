@@ -9,14 +9,14 @@ public class ServerShowMenuMessage : ServerMessage
 {
     public DialogMenuType MenuType { get; set; }
     public EntityTypeFlags EntityType { get; set; }
-    public uint? SourceId { get; set; }
+    public uint? EntityId { get; set; }
     public ushort? Sprite { get; set; }
     public byte? Color { get; set; }
     public ushort? PursuitId { get; set; }
     public bool ShowGraphic { get; set; }
     public string? Name { get; set; }
     public string? Content { get; set; }
-    public string? Args { get; set; }
+    public string? Prompt { get; set; }
     public List<ServerDialogMenuChoice> MenuChoices { get; set; } = [];
     public List<ServerItemMenuChoice> ItemChoices { get; set; } = [];
     public List<byte> InventorySlots { get; set; } = [];
@@ -32,7 +32,7 @@ public class ServerShowMenuMessage : ServerMessage
         MenuType = (DialogMenuType)reader.ReadByte();
         
         EntityType = (EntityTypeFlags)reader.ReadByte();
-        SourceId = reader.ReadUInt32();
+        EntityId = reader.ReadUInt32();
         Unknown1 = reader.ReadByte();
 
         Sprite = reader.ReadUInt16();
@@ -58,7 +58,7 @@ public class ServerShowMenuMessage : ServerMessage
 
         if (MenuType is DialogMenuType.Menu or DialogMenuType.MenuWithArgs)
         {
-            Args = MenuType == DialogMenuType.MenuWithArgs ? reader.ReadString8() : null;
+            Prompt = MenuType == DialogMenuType.MenuWithArgs ? reader.ReadString8() : null;
             
             var choiceCount = reader.ReadByte();
             for (var i = 0; i < choiceCount; i++)
@@ -72,7 +72,7 @@ public class ServerShowMenuMessage : ServerMessage
         }
         else if (MenuType is DialogMenuType.TextInput or DialogMenuType.TextInputWithArgs)
         {
-            Args = MenuType == DialogMenuType.TextInputWithArgs ? reader.ReadString8() : null;
+            Prompt = MenuType == DialogMenuType.TextInputWithArgs ? reader.ReadString8() : null;
             PursuitId = reader.ReadUInt16();
         }
         else if (MenuType is DialogMenuType.ItemChoices)
@@ -92,7 +92,7 @@ public class ServerShowMenuMessage : ServerMessage
                 });
             }
         }
-        else if (MenuType is DialogMenuType.PlayerInventory)
+        else if (MenuType is DialogMenuType.UserInventory)
         {
             PursuitId = reader.ReadUInt16();
             var slotCount = reader.ReadByte();
@@ -136,7 +136,7 @@ public class ServerShowMenuMessage : ServerMessage
                 });
             }
         }
-        else if (MenuType is DialogMenuType.PlayerSpells or DialogMenuType.PlayerSkills)
+        else if (MenuType is DialogMenuType.UserSkills or DialogMenuType.UserSpells)
         {
             PursuitId = reader.ReadUInt16();
         }

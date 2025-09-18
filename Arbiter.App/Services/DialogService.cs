@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.ViewModels;
+using Arbiter.App.ViewModels.MessageBox;
 using Arbiter.App.Views;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;

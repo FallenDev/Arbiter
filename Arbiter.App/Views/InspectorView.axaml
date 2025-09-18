@@ -5,14 +5,19 @@
              xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels.Inspector"
              xmlns:converters="using:Arbiter.App.Converters"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
              x:Class="Arbiter.App.Views.InspectorView"
              x:DataType="vm:InspectorViewModel">
-    <Grid RowDefinitions="Auto,*"
+    
+    <Design.DataContext>
+        <vm:DesignInspectorViewModel/>
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto,Auto,*"
           Background="{StaticResource Talgonite.Control.Background}">
         
-        <!-- Placeholder -->
-        <TextBlock Grid.Row="1"
+        <!-- No Selection Placeholder -->
+        <TextBlock Grid.Row="2"
                    Text="No packet selected"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -20,8 +25,8 @@
                    VerticalAlignment="Center"
                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}"/>
         
-        <!-- Placeholder -->
-        <TextBlock Grid.Row="1"
+        <!-- Empty Placeholder -->
+        <TextBlock Grid.Row="2"
                    Text="No properties to show"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -30,40 +35,58 @@
                    IsVisible="{Binding IsEmpty}"/>
         
         <!-- Header Section -->
-        <StackPanel Grid.Row="0"
-                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"
-                    Margin="0,4">
-            <TextBlock Text="{Binding InspectedPacket.DisplayName, FallbackValue=--}"
-                       TextAlignment="Left"
-                       FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                       FontSize="24"
-                       FontWeight="SemiBold"
-                       Foreground="#e0e0e0"
-                       Margin="8,4"
-                       VerticalAlignment="Center"/>
-            
-            <WrapPanel Orientation="Horizontal" Margin="8,4" ItemSpacing="8">
-                <TextBlock Name="DirectionText"
-                           Text="{Binding InspectedPacket.Direction, FallbackValue=Unknown, StringFormat={}{0} Packet}"
+        <Grid Row="0" ColumnDefinitions="*,Auto"
+              IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <StackPanel Grid.Column="0" Margin="0,4">
+                <TextBlock Text="{Binding InspectedPacket.DisplayName, FallbackValue=--}"
+                           TextAlignment="Left"
                            FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                           FontSize="16"
+                           FontSize="24"
                            FontWeight="SemiBold"
-                           Foreground="{Binding InspectedPacket.Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}, FallbackValue=White}"
+                           Foreground="#e0e0e0"
+                           Margin="8,4,8,0"
                            VerticalAlignment="Center"/>
+                
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="8,0" Spacing="8">
+                        <TextBlock Name="DirectionText"
+                                   Text="{Binding InspectedPacket.Direction, FallbackValue=Unknown, StringFormat={}{0} Packet}"
+                                   FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{Binding InspectedPacket.Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}, FallbackValue=White}"
+                                   VerticalAlignment="Center"/>
+                    
+                        <TextBlock Text="{Binding InspectedPacket.Command, FallbackValue=00, StringFormat={}0x{0:X2}}"
+                                   FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{Binding #DirectionText.Foreground}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
             
-                <TextBlock Text="{Binding InspectedPacket.Command, FallbackValue=00, StringFormat={}0x{0:X2}}"
-                           FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
-                           FontSize="16"
-                           FontWeight="SemiBold"
-                           Foreground="{Binding #DirectionText.Foreground}"
-                           VerticalAlignment="Center"/>
+            <!-- Toolbar Buttons -->
+            <WrapPanel Grid.Column="1" Orientation="Horizontal" ItemSpacing="8" Margin="8" VerticalAlignment="Center">
+                <Button Command="{Binding CopyToClipboardCommand}"
+                        ToolTip.Tip="Copy the JSON representation of this object."
+                        Classes="toolbar"
+                        FontSize="18"
+                        FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                        FontWeight="SemiBold"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    {}
+                </Button>
             </WrapPanel>
-            
-            <Border Classes="divider-h" Margin="0,4"/>
-        </StackPanel>
+        </Grid>
+        
+        <Border Grid.Row="1" Classes="divider-h" Margin="0,4"
+                IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"/>
         
         <!-- Sections -->
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer Grid.Row="2"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       IsVisible="{Binding !HasError}">
@@ -77,7 +100,7 @@
         </ScrollViewer>
         
         <!-- Exception -->
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer Grid.Row="2"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       IsVisible="{Binding HasError}">

@@ -64,18 +64,18 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             // No mappings
         });
     }
-    
+
     private static void RegisterClientAuthenticateMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientAuthenticateMessage>(b =>
         {
             b.Section("Connection")
-                .Property(m => m.ConnectionId, p => p.ShowHex())
-                .Property(m => m.Name);
+                .Property(m => m.ConnectionId, p => p.ShowHex().ToolTip("Connection ID of the client."))
+                .Property(m => m.Name, p => p.ToolTip("Name of the client."));
             b.Section("Encryption")
-                .Property(m => m.Seed)
-                .Property(m => m.PrivateKey, p => p.ShowMultiline());
-        });   
+                .Property(m => m.Seed, p => p.ToolTip("Seed table used for encryption."))
+                .Property(m => m.PrivateKey, p => p.ShowMultiline().ToolTip("Private key used for encryption."));
+        });
     }
 
     private static void RegisterClientBeginSpellCastMapping(InspectorMappingRegistry registry)
@@ -83,7 +83,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientBeginSpellCastMessage>(b =>
         {
             b.Section("Spell")
-                .Property(m => m.LineCount);
+                .Property(m => m.LineCount, p => p.ToolTip("Number of chant lines to cast the spell."));
         });
     }
 
@@ -92,25 +92,25 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientBoardActionMessage>(b =>
         {
             b.Section("Action")
-                .Property(m => m.Action);
+                .Property(m => m.Action, p => p.ToolTip("Message board action to perform."));
             b.Section("Board")
-                .Property(m => m.BoardId)
-                .Property(m => m.StartPostId)
+                .Property(m => m.BoardId, p => p.ToolTip("ID of the message board."))
+                .Property(m => m.StartPostId, p => p.ToolTip("ID of the first post to fetch."))
                 .IsExpanded(m => m.BoardId.HasValue && m.Action != MessageBoardAction.SendMail);
             b.Section("Post")
-                .Property(m => m.PostId)
+                .Property(m => m.PostId, p => p.ToolTip("ID of the post to fetch."))
                 .IsExpanded(m => m.PostId.HasValue);
             b.Section("Navigation")
-                .Property(m => m.Navigation)
+                .Property(m => m.Navigation, p => p.ToolTip("Navigation to perform on the board."))
                 .IsExpanded(m => m.Action == MessageBoardAction.ViewPost);
             b.Section("Create Post")
-                .Property(m => m.Subject, p => p.ShowMultiline())
-                .Property(m => m.Body, p => p.ShowMultiline())
+                .Property(m => m.Subject, p => p.ShowMultiline().ToolTip("Subject for the post."))
+                .Property(m => m.Body, p => p.ShowMultiline().ToolTip("Content of the post."))
                 .IsExpanded(m => m.Action == MessageBoardAction.CreatePost);
             b.Section("Send Mail")
-                .Property(m => m.Recipient)
-                .Property(m => m.MailSubject, p => p.ShowMultiline())
-                .Property(m => m.MailBody, p => p.ShowMultiline())
+                .Property(m => m.Recipient, p => p.ToolTip("Recipient of the mail message."))
+                .Property(m => m.MailSubject, p => p.ShowMultiline().ToolTip("Subject for the mail message."))
+                .Property(m => m.MailBody, p => p.ShowMultiline().ToolTip("Content of the mail message."))
                 .IsExpanded(m => m.Action == MessageBoardAction.SendMail);
             b.Section("Unknown")
                 .Property(m => m.Unknown, p => p.ShowHex())
@@ -123,26 +123,26 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientCastSpellMessage>(b =>
         {
             b.Section("Spell")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Slot of the spell to cast."));
             b.Section("Target")
-                .Property(m => m.TargetId, p => p.ShowHex())
-                .Property(m => m.TargetX)
-                .Property(m => m.TargetY)
+                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target of the spell."))
+                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target of the spell."))
+                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target of the spell."))
                 .IsExpanded(m => m.TargetId.HasValue);
             b.Section("Text Input")
-                .Property(m => m.TextInput, p => p.ShowMultiline())
+                .Property(m => m.TextInput, p => p.ShowMultiline().ToolTip("User input when casting the spell."))
                 .IsExpanded(m => !string.IsNullOrEmpty(m.TextInput));
         });
     }
-    
+
     private static void RegisterClientChangePasswordMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientChangePasswordMessage>(b =>
         {
             b.Section("Credentials")
-                .Property(m => m.Name)
-                .Property(m => m.CurrentPassword, p => p.Mask())
-                .Property(m => m.NewPassword, p => p.Mask());
+                .Property(m => m.Name, p => p.ToolTip("Name of the character."))
+                .Property(m => m.CurrentPassword, p => p.Mask().ToolTip("Current password of the character."))
+                .Property(m => m.NewPassword, p => p.Mask().ToolTip("New password for the character."));
         });
     }
 
@@ -151,9 +151,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientCreateCharacterAppearanceMessage>(b =>
         {
             b.Section("Appearance")
-                .Property(m => m.HairStyle)
-                .Property(m => m.Gender)
-                .Property(m => m.HairColor);
+                .Property(m => m.HairStyle, p => p.ToolTip("Hair style of the character."))
+                .Property(m => m.Gender, p => p.ToolTip("Gender of the character."))
+                .Property(m => m.HairColor, p => p.ToolTip("Hair color of the character."));
         });
     }
 
@@ -162,9 +162,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientCreateCharacterNameMessage>(b =>
         {
             b.Section("Credentials")
-                .Property(m => m.Name)
-                .Property(m => m.Password, p => p.Mask())
-                .Property(m => m.Email);
+                .Property(m => m.Name, p => p.ToolTip("Desired name for the character."))
+                .Property(m => m.Password, p => p.Mask().ToolTip("Password for the character."))
+                .Property(m => m.Email, p => p.ToolTip("Email address for the character."));
         });
     }
 
@@ -173,15 +173,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientDialogChoiceMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityType)
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityType, p => p.ToolTip("Type of entity responsible for the dialog."))
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog."));
             b.Section("Dialog")
-                .Property(m => m.DialogId)
-                .Property(m => m.PursuitId);
+                .Property(m => m.StepId, p => p.ToolTip("ID of the dialog step requested."))
+                .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit the dialog belongs to."));
             b.Section("Arguments")
-                .Property(m => m.ArgsType)
-                .Property(m => m.MenuChoice)
-                .Property(m => m.TextInputs, p => p.ShowMultiline())
+                .Property(m => m.ArgsType, p => p.ToolTip("Type of arguments passed to the dialog."))
+                .Property(m => m.MenuChoice, p => p.ToolTip("Menu choice selected by the user."))
+                .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
                 .IsExpanded(m => m.ArgsType != DialogArgsType.None);
         });
     }
@@ -191,23 +191,23 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientDropGoldMessage>(b =>
         {
             b.Section("Gold")
-                .Property(m => m.Amount);
+                .Property(m => m.Amount, p => p.ToolTip("Amount of gold to drop."));
             b.Section("Position")
-                .Property(m => m.X)
-                .Property(m => m.Y);
+                .Property(m => m.X, p => p.ToolTip("X-coordinate of the map position to drop the gold."))
+                .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the map position to drop the gold."));
         });
     }
-    
+
     private static void RegisterClientDropItemMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientDropItemMessage>(b =>
         {
             b.Section("Item")
-                .Property(m => m.Slot)
-                .Property(m => m.Quantity);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the item to drop."))
+                .Property(m => m.Quantity, p => p.ToolTip("Quantity of the item to drop."));
             b.Section("Position")
-                .Property(m => m.X)
-                .Property(m => m.Y);
+                .Property(m => m.X, p => p.ToolTip("X-coordinate of the map position to drop the item."))
+                .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the map position to drop the item."));
         });
     }
 
@@ -216,9 +216,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientEditNotepadMessage>(b =>
         {
             b.Section("Item")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the notepad to edit."));
             b.Section("Content")
-                .Property(m => m.Content, p => p.ShowMultiline());
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("New content of the notepad."));
         });
     }
 
@@ -227,7 +227,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientEmoteMessage>(b =>
         {
             b.Section("Emote")
-                .Property(m => m.Emote);
+                .Property(m => m.Emote, p => p.ToolTip("Emote to perform."));
         });
     }
 
@@ -236,7 +236,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientExceptionMessage>(b =>
         {
             b.Section("Exception")
-                .Property(m => m.Message, p => p.ShowMultiline());
+                .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Exception message and data."));
         });
     }
 
@@ -245,40 +245,40 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientExchangeActionMessage>(b =>
         {
             b.Section("Action")
-                .Property(m => m.Action);
+                .Property(m => m.Action, p => p.ToolTip("Exchange action to perform."));
             b.Section("Target")
-                .Property(m => m.TargetId, p => p.ShowHex());
+                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target of the exchange action."));
             b.Section("Item")
-                .Property(m => m.Slot)
-                .Property(m => m.Quantity)
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the item to exchange."))
+                .Property(m => m.Quantity, p => p.ToolTip("Quantity of the item to exchange."))
                 .IsExpanded(m =>
                     m.Action is ExchangeClientActionType.AddItem or ExchangeClientActionType.AddStackableItem);
             b.Section("Gold")
-                .Property(m => m.GoldAmount)
+                .Property(m => m.GoldAmount, p => p.ToolTip("Amount of gold to exchange."))
                 .IsExpanded(m => m.Action == ExchangeClientActionType.SetGold);
         });
     }
-    
+
     private static void RegisterClientGiveGoldMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientGiveGoldMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the entity to give gold to."));
             b.Section("Gold")
-                .Property(m => m.Amount);
+                .Property(m => m.Amount, p => p.ToolTip("Amount of gold to give."));
         });
     }
-    
+
     private static void RegisterClientGiveItemMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientGiveItemMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the entity to give the item to."));
             b.Section("Item")
-                .Property(m => m.Slot)
-                .Property(m => m.Quantity);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the item to give."))
+                .Property(m => m.Quantity, p => p.ToolTip("Quantity of the item to give."));
         });
     }
 
@@ -287,21 +287,22 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientGroupInviteMessage>(b =>
         {
             b.Section("Action")
-                .Property(m => m.Action);
+                .Property(m => m.Action, p => p.ToolTip("Group action to perform."));
+            ;
             b.Section("Target")
-                .Property(m => m.TargetName);
+                .Property(m => m.TargetName, p => p.ToolTip("Name of the target of the group action."));
             b.Section("Group Box")
-                .Property(m => m.GroupBox)
+                .Property(m => m.GroupBox, p => p.ToolTip("Display text of the floating group box."))
                 .IsExpanded(m => m.GroupBox is not null);
         });
     }
-    
+
     private static void RegisterClientHeartbeatMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientHeartbeatMessage>(b =>
         {
             b.Section("Heartbeat")
-                .Property(m => m.Reply, p => p.ShowHex());
+                .Property(m => m.Reply, p => p.ShowHex().ToolTip("Client reply to the heartbeat nonce."));
         });
     }
 
@@ -310,8 +311,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientIgnoreUserMessage>(b =>
         {
             b.Section("Ignore")
-                .Property(m => m.Action)
-                .Property(m => m.Name);
+                .Property(m => m.Action, p => p.ToolTip("Ignore action to perform."))
+                .Property(m => m.Name, p => p.ToolTip("Name of the user to ignore or unignore."));
         });
     }
 
@@ -320,27 +321,27 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientInteractMessage>(b =>
         {
             b.Section("Interaction")
-                .Property(m => m.InteractionType);
+                .Property(m => m.InteractionType, p => p.ToolTip("Type of world interaction to perform."));
             b.Section("Target Entity")
-                .Property(m => m.TargetId, p => p.ShowHex())
+                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target entity."))
                 .IsExpanded(m => m.InteractionType == InteractionType.Entity);
             b.Section("Target Tile")
-                .Property(m => m.TargetX)
-                .Property(m => m.TargetY)
+                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target tile."))
+                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target tile."))
                 .IsExpanded(m => m.InteractionType == InteractionType.Tile);
         });
     }
-    
+
     private static void RegisterClientLoginMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientLoginMessage>(b =>
         {
             b.Section("Credentials")
-                .Property(m => m.Name)
-                .Property(m => m.Password, p => p.Mask());
+                .Property(m => m.Name, p => p.ToolTip("Name of the character to login."))
+                .Property(m => m.Password, p => p.Mask().ToolTip("Password of the character to login."));
             b.Section("Client")
-                .Property(m => m.ClientId)
-                .Property(m => m.Checksum, p => p.ShowHex());
+                .Property(m => m.ClientId, p => p.ToolTip("ID of the local machine."))
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the login credentials."));
         });
     }
 
@@ -349,15 +350,16 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientMenuChoiceMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityType)
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityType, p => p.ToolTip("Type of entity responsible for the dialog menu."))
+                .Property(m => m.EntityId,
+                    p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog menu."));
             b.Section("Menu")
-                .Property(m => m.PursuitId);
+                .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit the menu belongs to."));
             b.Section("Menu Choice")
-                .Property(m => m.MenuChoice)
+                .Property(m => m.MenuChoice, p => p.ToolTip("Menu choice selected by the user."))
                 .IsExpanded(m => m.MenuChoice.HasValue);
             b.Section("Text Input")
-                .Property(m => m.TextInputs, p => p.ShowMultiline())
+                .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
                 .IsExpanded(m => m.TextInputs.Count > 0);
         });
     }
@@ -367,10 +369,10 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientPickupItemMessage>(b =>
         {
             b.Section("Item")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot to store the picked up item."));
             b.Section("Position")
-                .Property(m => m.X)
-                .Property(m => m.Y);
+                .Property(m => m.X, p => p.ToolTip("X-coordinate of the map position to pick up the item."))
+                .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the map position to pick up the item."));
         });
     }
 
@@ -379,7 +381,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientRaiseStatMessage>(b =>
         {
             b.Section("Stat")
-                .Property(m => m.Stat);
+                .Property(m => m.Stat, p => p.ToolTip("Stat to request to raise."));
         });
     }
 
@@ -388,7 +390,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientRequestEntityMessage>(b =>
         {
             b.Section("Entity")
-                .Property(m => m.EntityId, p => p.ShowHex());
+                .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the entity to request."));
         });
     }
 
@@ -397,16 +399,16 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientRequestExitMessage>(b =>
         {
             b.Section("Request")
-                .Property(m => m.Reason);
+                .Property(m => m.Reason, p => p.ToolTip("Reason for the exit request."));
         });
     }
-    
+
     private static void RegisterClientRequestHomepageMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientRequestHomepageMessage>(b =>
         {
             b.Section("Request")
-                .Property(m => m.NeedsHomepage);
+                .Property(m => m.NeedsHomepage, p => p.ToolTip("Whether the client needs the homepage URL."));
         });
     }
 
@@ -423,8 +425,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientRequestMetadataMessage>(b =>
         {
             b.Section("Request")
-                .Property(m => m.RequestType)
-                .Property(m => m.Name);
+                .Property(m => m.RequestType, p => p.ToolTip("Type of metadata to request."))
+                .Property(m => m.Name, p => p.ToolTip("Name of the metadata file to request."));
         });
     }
 
@@ -435,13 +437,13 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             // No mappings
         });
     }
-    
+
     private static void RegisterClientRequestSequenceMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientRequestSequenceMessage>(b =>
         {
             b.Section("Request")
-                .Property(m => m.Sequence, p => p.ShowHex())
+                .Property(m => m.Sequence, p => p.ShowHex().ToolTip("Sequence counter value to request."))
                 .Property(m => m.Unknown, p => p.ShowHex());
         });
     }
@@ -451,7 +453,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientRequestServerTableMessage>(b =>
         {
             b.Section("Request")
-                .Property(m => m.NeedsServerTable);
+                .Property(m => m.NeedsServerTable, p => p.ToolTip("Whether the client needs the server table."));
         });
     }
 
@@ -460,8 +462,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientSayMessage>(b =>
         {
             b.Section("Message")
-                .Property(m => m.MessageType)
-                .Property(m => m.Content, p => p.ShowMultiline());
+                .Property(m => m.MessageType, p => p.ToolTip("Type of message to send."))
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message content to send."));
         });
     }
 
@@ -470,7 +472,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientSetStatusMessage>(b =>
         {
             b.Section("Status")
-                .Property(m => m.Status);
+                .Property(m => m.Status, p => p.ToolTip("Social status to set."));
         });
     }
 
@@ -479,7 +481,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientSpellChantMessage>(b =>
         {
             b.Section("Message")
-                .Property(m => m.Content);
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Spell chant to send."));
         });
     }
 
@@ -488,10 +490,10 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientSwapSlotMessage>(b =>
         {
             b.Section("Interface")
-                .Property(m => m.Pane);
+                .Property(m => m.Pane, p => p.ToolTip("Interface pane to swap the slots in."));
             b.Section("Slot")
-                .Property(m => m.SourceSlot)
-                .Property(m => m.TargetSlot);
+                .Property(m => m.SourceSlot, p => p.ToolTip("Source slot to swap."))
+                .Property(m => m.TargetSlot, p => p.ToolTip("Target slot to swap."));
         });
     }
 
@@ -500,8 +502,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientSyncTicksMessage>(b =>
         {
             b.Section("Ticks")
-                .Property(m => m.ClientTickCount)
-                .Property(m => m.ServerTickCount);
+                .Property(m => m.ClientTickCount, p => p.ToolTip("Client tick count."))
+                .Property(m => m.ServerTickCount, p => p.ToolTip("Server tick count."));
+            ;
         });
     }
 
@@ -510,7 +513,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientToggleSettingMessage>(b =>
         {
             b.Section("Setting")
-                .Property(m => m.OptionIndex);
+                .Property(m => m.OptionIndex, p => p.ToolTip("Index of the setting to toggle."));
         });
     }
 
@@ -519,7 +522,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientTurnMessage>(b =>
         {
             b.Section("Movement")
-                .Property(m => m.Direction);
+                .Property(m => m.Direction, p => p.ToolTip("Direction to face."));
         });
     }
 
@@ -528,8 +531,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientUnequipItemMessage>(b =>
         {
             b.Section("Equipment")
-                .Property(m => m.Slot);
-        });   
+                .Property(m => m.Slot, p => p.ToolTip("Equipment slot to unequip."));
+        });
     }
 
     private static void RegisterClientUseItem(InspectorMappingRegistry registry)
@@ -537,7 +540,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientUseItemMessage>(b =>
         {
             b.Section("Item")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the item to use."));
         });
     }
 
@@ -546,10 +549,11 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientUserPortraitMessage>(b =>
         {
             b.Section("Portrait")
-                .Property(m => m.Portrait, p => p.ShowMultiline())
+                .Property(m => m.Portrait,
+                    p => p.ShowMultiline().ToolTip("Raw portrait data to display to other users."))
                 .IsExpanded(m => m.Portrait.Count > 0);
             b.Section("Bio")
-                .Property(m => m.Bio, p => p.ShowMultiline())
+                .Property(m => m.Bio, p => p.ShowMultiline().ToolTip("Biography to display to other users."))
                 .IsExpanded(m => !string.IsNullOrEmpty(m.Bio));
         });
     }
@@ -559,17 +563,18 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientUseSkillMessage>(b =>
         {
             b.Section("Skill")
-                .Property(m => m.Slot);
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the skill to use."));
+            ;
         });
     }
-    
+
     private static void RegisterClientVersionMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientVersionMessage>(b =>
         {
             b.Section("Client Version")
-                .Property(m => m.Version)
-                .Property(m => m.Checksum, p => p.ShowHex());
+                .Property(m => m.Version, p => p.ToolTip("Client version."))
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the client version."));
         });
     }
 
@@ -578,31 +583,31 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ClientWalkMessage>(b =>
         {
             b.Section("Movement")
-                .Property(m => m.Direction)
-                .Property(m => m.StepCount);
+                .Property(m => m.Direction, p => p.ToolTip("Direction to walk."))
+                .Property(m => m.StepCount, p => p.ToolTip("Incremental step counter value."));
         });
     }
-    
+
     private static void RegisterClientWhisperMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientWhisperMessage>(b =>
         {
             b.Section("Whisper")
-                .Property(m => m.Target)
-                .Property(m => m.Content, p => p.ShowMultiline());
+                .Property(m => m.Target, p => p.ToolTip("Name of the recipient or channel of the whisper."))
+                .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Content of the whisper message."));
         });
     }
-    
+
     private static void RegisterClientWorldMapClickMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientWorldMapClickMessage>(b =>
         {
             b.Section("Location")
-                .Property(m => m.MapId)
-                .Property(m => m.X)
-                .Property(m => m.Y);
+                .Property(m => m.MapId, p => p.ToolTip("ID of the destination map the user clicked on."))
+                .Property(m => m.X, p => p.ToolTip("X-coordinate of the destination map the user clicked on."))
+                .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the destination map the user clicked on."));
             b.Section("Checksum")
-                .Property(m => m.Checksum, p => p.ShowHex());
+                .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the selected destination."));
         });
     }
 }

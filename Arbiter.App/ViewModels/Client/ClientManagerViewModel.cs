@@ -50,7 +50,7 @@ public class ClientManagerViewModel : ViewModelBase
         }
 
         // We are fully logged in and can display this client in the list
-        Dispatcher.UIThread.Invoke(() => Clients.Add(client));
+        Dispatcher.UIThread.Post(() => Clients.Add(client));
     }
 
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
@@ -64,7 +64,7 @@ public class ClientManagerViewModel : ViewModelBase
         }
 
         // We are fully logged out and can remove the client
-        Dispatcher.UIThread.Invoke(() => Clients.Remove(client));
+        Dispatcher.UIThread.Post(() => Clients.Remove(client));
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
@@ -83,7 +83,7 @@ public class ClientManagerViewModel : ViewModelBase
         }
         
         // Try removing the client from the list
-        Dispatcher.UIThread.Invoke(() => Clients.Remove(client));
+        Dispatcher.UIThread.Post(() => Clients.Remove(client));
         
         using var _ = _clientLock.EnterScope();
         _clientMap.Remove(client.Id);
