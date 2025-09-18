@@ -869,7 +869,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
             b.Section("Mail")
                 .Property(m => m.HasUnreadMail, p => p.ToolTip("Whether the user has unread mail."))
-                .Property(m => m.HasUnreadParcels, p => p.ToolTip("Whether the user has available parcels to pickup."))
+                .Property(m => m.HasParcelsAvailable, p => p.ToolTip("Whether the user has available parcels to pickup."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Modifiers));
         });
     }

@@ -50,7 +50,7 @@ public class ServerUpdateStatsMessage : ServerMessage
     public bool? CanMove { get; set; }
 
     public bool? HasUnreadMail { get; set; }
-    public bool? HasUnreadParcels { get; set; }
+    public bool? HasParcelsAvailable { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
@@ -107,7 +107,7 @@ public class ServerUpdateStatsMessage : ServerMessage
 
             var mailFlags = (MailFlags)reader.ReadByte();
             HasUnreadMail = mailFlags.HasFlag(MailFlags.Mail);
-            HasUnreadParcels = mailFlags.HasFlag(MailFlags.Parcel);
+            HasParcelsAvailable = mailFlags.HasFlag(MailFlags.Parcel);
 
             AttackElement = (ElementModifier)reader.ReadByte();
             DefenseElement = (ElementModifier)reader.ReadByte();

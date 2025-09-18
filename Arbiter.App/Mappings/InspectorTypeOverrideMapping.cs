@@ -8,12 +8,17 @@ public class InspectorTypeOverrideMapping
     public Type TargetType { get; }
     public IReadOnlyDictionary<string, InspectorPropertyOverrides> Properties { get; }
     public Func<object, string>? DisplayNameSelector { get; }
+    public Func<object, bool>? IsExpandedSelector { get; }
 
-    public InspectorTypeOverrideMapping(Type targetType, IDictionary<string, InspectorPropertyOverrides> properties, Func<object, string>? displayNameSelector = null)
+    public InspectorTypeOverrideMapping(Type targetType,
+        IDictionary<string, InspectorPropertyOverrides> properties,
+        Func<object, string>? displayNameSelector = null,
+        Func<object, bool>? isExpandedSelector = null)
     {
         TargetType = targetType;
         Properties = new Dictionary<string, InspectorPropertyOverrides>(properties, StringComparer.Ordinal);
         DisplayNameSelector = displayNameSelector;
+        IsExpandedSelector = isExpandedSelector;
     }
 
     public bool TryGetProperty(string propertyName, out InspectorPropertyOverrides? overrides)

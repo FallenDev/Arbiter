@@ -36,7 +36,7 @@ public class InspectorTypeOverrideBuilder<T>
 
     internal InspectorTypeOverrideMapping Build()
     {
-        return new InspectorTypeOverrideMapping(typeof(T), _properties, _displayNameSelector);
+        return new InspectorTypeOverrideMapping(typeof(T), _properties, _displayNameSelector, _isExpandedPredicate);
     }
 
     private static MemberInfo GetMemberFromExpression<TProp>(Expression<Func<T, TProp>> expression)

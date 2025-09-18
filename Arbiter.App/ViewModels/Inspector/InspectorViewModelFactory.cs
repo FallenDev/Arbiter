@@ -179,11 +179,12 @@ public class InspectorViewModelFactory
     private InspectorListViewModel CreateListViewModel(IEnumerable list, InspectorPropertyMapping propMapping,
         Type? listType = null, Type? containingType = null)
     {
-        var isExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
+        // Use the containingType to evaluate property-level overrides for the list property itself
+        var listPropertyExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
         
         var vm = new InspectorListViewModel
         {
-            Name = MergeDisplayName(containingType, propMapping),
+            Name = MergeDisplayName(containingType, propMapping)
         };
 
         var index = 0;
@@ -192,6 +193,24 @@ public class InspectorViewModelFactory
             var itemType = item?.GetType();
             var child = CreateItemViewModel(item, propMapping, itemType, containingType);
 
+            if (child is InspectorDictionaryViewModel dictVm)
+            {
+                var childExpanded = listPropertyExpanded;
+                if (itemType is not null && _registry.TryGetOverrides(itemType, out var itemTypeOverrides) && itemTypeOverrides.IsExpandedSelector is not null)
+                {
+                    try
+                    {
+                        childExpanded = itemTypeOverrides.IsExpandedSelector(item!);
+                    }
+                    catch
+                    {
+                        // ignore selector failures and fallback to property-level value
+                        childExpanded = listPropertyExpanded;
+                    }
+                }
+                dictVm.IsExpanded = childExpanded;
+            }
+            
             string? nameOverride = null;
             if (itemType is not null && _registry.TryGetOverrides(itemType, out var typeOverrides))
             {
@@ -223,6 +242,19 @@ public class InspectorViewModelFactory
     {
         var isExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
         
+        // If the dictionary's own type has an IsExpanded selector, let it take precedence
+        if (dictType is not null && _registry.TryGetOverrides(dictType, out var dictOverrides) && dictOverrides.IsExpandedSelector is not null)
+        {
+            try
+            {
+                isExpanded = dictOverrides.IsExpandedSelector(dict);
+            }
+            catch
+            {
+                // ignore failures and keep property-level value
+            }
+        }
+        
         var vm = new InspectorDictionaryViewModel
         {
             Name = MergeDisplayName(dictType, propMapping),
@@ -249,6 +281,19 @@ public class InspectorViewModelFactory
         Type classType, Type? containingType = null)
     {
         var isExpanded = MergeBool(containingType, propMapping, static (o, p) => o?.IsExpanded ?? true);
+        
+        // Apply type-level IsExpanded override for the class type, if present
+        if (_registry.TryGetOverrides(classType, out var classOverrides) && classOverrides.IsExpandedSelector is not null)
+        {
+            try
+            {
+                isExpanded = classOverrides.IsExpandedSelector(value);
+            }
+            catch
+            {
+                // ignore failures and keep property-level value
+            }
+        }
         
         var vm = new InspectorDictionaryViewModel
         {

@@ -12,7 +12,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         {
             b.Property(m => m.Id, p => p.ToolTip("ID of the message board."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the message board."))
-                .DisplayName(m => m.Name);
+                .DisplayName(m => m.Name)
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerMessageBoardPostListing>(b =>
@@ -23,7 +24,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.Month, p => p.ToolTip("Month the post was created."))
                 .Property(m => m.Day, p => p.ToolTip("Day the post was created."))
                 .Property(m => m.IsHighlighted, p => p.ToolTip("Whether the post is highlighted."))
-                .DisplayName(m => $"Post {m.Id}");
+                .DisplayName(m => $"Post {m.Id}")
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerMessageBoardPost>(b =>
@@ -35,7 +37,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.Month, p => p.ToolTip("Month the post was created."))
                 .Property(m => m.Day, p => p.ToolTip("Day the post was created."))
                 .Property(m => m.IsHighlighted, p => p.ToolTip("Whether the post is highlighted."))
-                .DisplayName(m => $"Post {m.Id}");
+                .DisplayName(m => $"Post {m.Id}")
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerCreatureEntity>(b =>
@@ -48,14 +51,16 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the creature."))
                 .Property(m => m.Direction, p => p.ToolTip("Direction the creature is facing."))
                 .Property(m => m.Unknown, p => p.ShowHex())
-                .DisplayName(m => $"Creature {m.Id:X}");
+                .DisplayName(m => $"Entity {m.Id:X}")
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerDialogMenuChoice>(b =>
         {
             b.Property(m => m.Text, p => p.ShowMultiline().ToolTip("Display text of the menu choice."))
                 .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit the menu choice will begin."))
-                .DisplayName(m => $"{m.Text} (Pursuit {m.PursuitId})");
+                .DisplayName(m => m.Text)
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerEquipmentInfo>(b =>
@@ -63,7 +68,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
             b.Property(m => m.Slot, p => p.ToolTip("Equipment slot the item belongs to."))
                 .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the equipment item."))
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
-                .DisplayName(m => m.Slot.ToString().ToNaturalWording());
+                .DisplayName(m => m.Slot.ToString().ToNaturalWording())
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerGroupBox>(b =>
@@ -93,7 +99,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.X, p => p.ToolTip("X-coordinate of the ground item."))
                 .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the ground item."))
                 .Property(m => m.Unknown, p => p.ShowHex())
-                .DisplayName(m => $"Item {m.Id:X}");
+                .DisplayName(m => $"Item {m.Id:X}")
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerItemMenuChoice>(b =>
@@ -102,7 +109,9 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.Price, p => p.ToolTip("Price of the item."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the item."))
-                .Property(m => m.Description, p => p.ShowMultiline().ToolTip("Description of the item."));
+                .Property(m => m.Description, p => p.ShowMultiline().ToolTip("Description of the item."))
+                .DisplayName(m => m.Name)
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerLegendMark>(b =>
@@ -118,7 +127,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         {
             b.Property(m => m.Name, p => p.ToolTip("Name of the metadata file."))
                 .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-32 checksum of the metadata file."))
-                .DisplayName(m => !string.IsNullOrWhiteSpace(m.Name) ? m.Name : "Metadata");
+                .DisplayName(m => !string.IsNullOrWhiteSpace(m.Name) ? m.Name : "Metadata")
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerSpellMenuChoice>(b =>
@@ -126,7 +136,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
             b.Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the spell icon."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the spell."))
-                .DisplayName(m => m.Name);
+                .DisplayName(m => m.Name)
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerSkillMenuChoice>(b =>
@@ -134,7 +145,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
             b.Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the skill icon."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the skill."))
-                .DisplayName(m => m.Name);
+                .DisplayName(m => m.Name)
+                .IsExpanded(_ => false);
         });
 
         registry.RegisterOverrides<ServerWorldListUser>(b =>
@@ -159,7 +171,8 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.MapX, p => p.ToolTip("X-coordinate of the destination on the map."))
                 .Property(m => m.MapY, p => p.ToolTip("Y-coordinate of the destination on the map."))
                 .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the world map node."))
-                .DisplayName(m => m.Name);
+                .DisplayName(m => m.Name)
+                .IsExpanded(_ => false);
         });
     }
 }
