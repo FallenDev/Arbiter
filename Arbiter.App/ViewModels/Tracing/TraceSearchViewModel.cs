@@ -19,7 +19,7 @@ public partial class TraceSearchViewModel : ViewModelBase
             if (string.IsNullOrWhiteSpace(value))
             {
                 SetProperty(ref _commandFilter, string.Empty);
-                _command = null;
+                SetProperty(ref _command, null);
                 return;
             }
 

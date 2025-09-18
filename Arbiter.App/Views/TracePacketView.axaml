@@ -18,8 +18,14 @@
         <Geometry x:Key="Talgonite.TracePacket.RightArrow">M1,4 H8 M8,1 L11,4 L8,7</Geometry>
     </UserControl.Resources>
     
-    <Border Background="Transparent"
-                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+    <Panel Background="Transparent" HorizontalAlignment="Stretch" Opacity="{Binding Opacity}">
+        <Panel.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+            </Transitions>
+        </Panel.Transitions>
+        
+        <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="4,2"
                 Cursor="Hand">
@@ -75,4 +81,5 @@
                 </ContextMenu>
             </Border.ContextMenu>
         </Border>
+    </Panel>
 </UserControl>

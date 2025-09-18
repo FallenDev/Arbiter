@@ -37,17 +37,34 @@ public partial class TraceViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly ITraceService _traceService;
     private readonly ProxyServer _proxyServer;
+
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
+    private readonly List<int> _searchResultIndexes = [];
+
+    private bool _isEmpty = true;
 
     private TracePacketViewModel? _selectedPacket;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
     private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty] private DateTime _startTime;
+    [ObservableProperty] private int? _selectedIndex;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
+
     [ObservableProperty] private bool _showFilterBar;
+
     [ObservableProperty] private bool _showSearchBar;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
+    [NotifyPropertyChangedFor(nameof(HasSearchResults))]
+    private int _selectedSearchIndex;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
+    [NotifyPropertyChangedFor(nameof(HasSearchResults))]
+    private int _searchResultCount;
 
     public event Action<TracePacketViewModel?>? SelectedPacketChanged;
 
@@ -67,7 +84,14 @@ public partial class TraceViewModel : ViewModelBase
     public TraceFilterViewModel FilterParameters { get; } = new();
     public TraceSearchViewModel SearchParameters { get; } = new();
 
-    public bool IsEmpty => _allPackets.Count == 0;
+    public string? FormattedSearchResultsText =>
+        SearchParameters.Command is not null
+            ? SearchResultCount > 0 ? $"{SelectedSearchIndex} of {SearchResultCount}" : "no matches"
+            : null;
+
+    public bool HasSearchResults => SearchResultCount > 0;
+
+    public bool IsEmpty => _isEmpty;
 
     public bool ShowRawPackets
     {
@@ -102,12 +126,39 @@ public partial class TraceViewModel : ViewModelBase
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
 
         _allPackets.CollectionChanged += OnPacketCollectionChanged;
+
         FilterParameters.PropertyChanged += OnFilterParametersChanged;
+        SearchParameters.PropertyChanged += OnSearchParametersChanged;
     }
 
     private void OnPacketCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        Dispatcher.UIThread.Post(() => { OnPropertyChanged(nameof(IsEmpty)); });
+        var collection = (ConcurrentObservableCollection<TracePacketViewModel>)sender!;
+        if (SetProperty(ref _isEmpty, collection.Count == 0))
+        {
+            Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(IsEmpty)));
+        }
+    }
+
+    private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
+    {
+        var packetViewModel = new TracePacketViewModel(e.Packet, e.RawData, e.Connection.Name)
+            { DisplayMode = _packetDisplayMode };
+
+        AddPacketToTrace(packetViewModel);
+    }
+
+    private void AddPacketToTrace(TracePacketViewModel vm)
+    {
+        var matchesSearch = MatchesSearch(vm);
+        if (matchesSearch)
+        {
+            AddSearchResultIndex(_allPackets.Count);
+        }
+
+        vm.Opacity = matchesSearch ? 1 : 0.5;
+
+        _allPackets.Add(vm);
     }
 
     private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
@@ -127,6 +178,38 @@ public partial class TraceViewModel : ViewModelBase
         FilteredPackets.Refresh();
     }
 
+    private void OnSearchParametersChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // Do not filter on this, wait for actual command byte to change
+        if (e.PropertyName == nameof(SearchParameters.CommandFilter))
+        {
+
+        }
+
+        _searchResultIndexes.Clear();
+
+        for (var i = 0; i < FilteredPackets.Count; i++)
+        {
+            var packet = FilteredPackets[i];
+            var isMatch = MatchesSearch(packet);
+            if (isMatch)
+            {
+                AddSearchResultIndex(i);
+            }
+
+            packet.Opacity = isMatch ? 1 : 0.5;
+        }
+
+        SelectedSearchIndex = 1;
+        Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(FormattedSearchResultsText)));
+    }
+
+    private void AddSearchResultIndex(int index)
+    {
+        _searchResultIndexes.Add(index);
+        SearchResultCount = _searchResultIndexes.Count;
+    }
+
     private bool MatchesFilter(TracePacketViewModel vm)
     {
         var direction = vm.Packet switch
@@ -135,7 +218,7 @@ public partial class TraceViewModel : ViewModelBase
             ServerPacket => PacketDirection.Server,
             _ => PacketDirection.None
         };
-        
+
         // Filter by packet direction
         if (!FilterParameters.PacketDirection.HasFlag(direction))
         {
@@ -169,14 +252,55 @@ public partial class TraceViewModel : ViewModelBase
         return true;
     }
 
-    private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
+    private bool MatchesSearch(TracePacketViewModel vm)
     {
-        var packetViewModel = new TracePacketViewModel(e.Packet, e.RawData, e.Connection.Name)
-            { DisplayMode = _packetDisplayMode };
-        _allPackets.Add(packetViewModel);
+        if (SearchParameters.Command is null)
+        {
+            return true;
+        }
+
+        return vm.Packet.Command == SearchParameters.Command;
     }
 
-    public async Task LoadFromFileAsync(string inputPath, bool append= false)
+    [RelayCommand]
+    private void GotoPreviousSearchResult()
+    {
+        if (SearchResultCount == 0)
+        {
+            return;
+        }
+
+        var currentIndex = SelectedIndex ?? -1;
+        var pos = _searchResultIndexes.FindLastIndex(x => x < currentIndex);
+        if (pos == -1)
+        {
+            pos = _searchResultIndexes.Count - 1;
+        }
+        
+        SelectedIndex = _searchResultIndexes[pos];
+        SelectedSearchIndex = pos + 1;
+    }
+
+    [RelayCommand]
+    private void GotoNextSearchResult()
+    {
+        if (SearchResultCount == 0)
+        {
+            return;
+        }
+
+        var currentIndex = SelectedIndex ?? -1;
+        var pos = _searchResultIndexes.FindIndex(x => x > currentIndex);
+        if (pos == -1)
+        {
+            pos = 0;
+        }
+
+        SelectedIndex = _searchResultIndexes[pos];
+        SelectedSearchIndex = pos + 1;
+    }
+
+    public async Task LoadFromFileAsync(string inputPath, bool append = false)
     {
         var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
         var packets = traceFile.Packets;
@@ -191,7 +315,7 @@ public partial class TraceViewModel : ViewModelBase
         foreach (var packet in packets)
         {
             var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
-            _allPackets.Add(vm);
+            AddPacketToTrace(vm);
         }
     }
 
@@ -238,7 +362,7 @@ public partial class TraceViewModel : ViewModelBase
     private async Task LoadTrace()
     {
         var append = _keyboardService.IsModifierPressed(KeyModifiers.Shift);
-        
+
         var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
         var result = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -328,7 +452,7 @@ public partial class TraceViewModel : ViewModelBase
         OnPropertyChanged(nameof(FilteredPackets));
 
         SelectedPacket = null;
-        
+
         _logger.LogInformation("Trace cleared");
     }
 

@@ -51,7 +51,12 @@ public class HotKeyConverter : IValueConverter
         }
 
         var keyGesture = HotKeyManager.GetHotKey(obj);
-        return keyGesture?.ToString().Replace(" ", string.Empty, StringComparison.Ordinal);
+        var gestureText = keyGesture?.ToString().Replace(" ", string.Empty, StringComparison.Ordinal);
+        
+        gestureText = gestureText?.Replace("Oem4", "[");
+        gestureText = gestureText?.Replace("OemCloseBrackets", "]");
+        
+        return gestureText;
     }
 
     private static bool ConvertHasHotKey(object? value)

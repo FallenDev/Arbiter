@@ -163,7 +163,7 @@
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="0,8">
-            <WrapPanel>
+            <WrapPanel ItemSpacing="4">
                 <!-- Bar Icon -->
                 <Border Padding="12,4"
                         BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
@@ -227,7 +227,7 @@
                            ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."
                            VerticalAlignment="Center" />
                     <TextBox Text="{Binding FilterParameters.CommandFilter}"
-                             Width="120"
+                             Width="100"
                              Height="36">
                         <TextBox.InnerRightContent>
                             <Button Command="{Binding FilterParameters.ClearCommandFilterCommand}"
@@ -248,36 +248,72 @@
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="0,8">
-            <WrapPanel>
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <!-- Bar Icon -->
-                    <Border Padding="12,4"
-                            BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
-                            BorderThickness="0,0,1,0">
-                        <Path Width="16" Height="16"
-                              Stroke="{StaticResource Talgonite.TextBlock.DimForeground}"
-                              Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
-                    </Border>
+            <WrapPanel ItemSpacing="4">
+                <!-- Bar Icon -->
+                <Border Padding="12,4"
+                        BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                        BorderThickness="0,0,1,0">
+                    <Path Width="16" Height="16"
+                          Stroke="{StaticResource Talgonite.TextBlock.DimForeground}"
+                          Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
+                </Border>
+                
+                <!-- Command Search -->
+                <Label Content="Command"
+                       ToolTip.Tip="Searches for packets matching the command hex code."
+                       VerticalAlignment="Center" />
+                <TextBox Text="{Binding SearchParameters.CommandFilter}"
+                         MaxLength="2"
+                         Width="120"
+                         Height="36">
+                    <TextBox.InnerRightContent>
+                        <Button Command="{Binding SearchParameters.ClearCommandFilterCommand}"
+                                IsVisible="{Binding SearchParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                Classes="clear destructive">
+                            <Path Width="12" Height="12"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="M1,1 L11,11 M11,1 L1,11" />
+                        </Button>
+                    </TextBox.InnerRightContent>
+                </TextBox>
+                
+                <StackPanel Orientation="Horizontal" Spacing="4"
+                            IsVisible="{Binding FormattedSearchResultsText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                    <!-- Result count -->
+                    <TextBlock Text="{Binding FormattedSearchResultsText, FallbackValue=no matches}"
+                               TextAlignment="Center"
+                               Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
+                               FontSize="14"
+                               VerticalAlignment="Center"
+                               MinWidth="40"
+                               Margin="8,4"/>
                     
-                    <!-- Command Search -->
-                    <Label Content="Command"
-                           ToolTip.Tip="Searches for packets matching the command hex code."
-                           VerticalAlignment="Center" />
-                    <TextBox Text="{Binding SearchParameters.CommandFilter}"
-                             MaxLength="2"
-                             Width="120"
-                             Height="36">
-                        <TextBox.InnerRightContent>
-                            <Button Command="{Binding SearchParameters.ClearCommandFilterCommand}"
-                                    IsVisible="{Binding SearchParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                    Classes="clear destructive">
-                                <Path Width="12" Height="12"
-                                      Stroke="{Binding $parent[Button].Foreground}"
-                                      Data="M1,1 L11,11 M11,1 L1,11" />
-                            </Button>
-                        </TextBox.InnerRightContent>
-                    </TextBox>
+                    <!-- Navigation Buttons -->
+                    <StackPanel Orientation="Horizontal"
+                                IsVisible="{Binding HasSearchResults}">
+                        <Button Command="{Binding GotoPreviousSearchResultCommand}"
+                                HotKey="Ctrl+OemOpenBrackets"
+                                Classes="toolbar"
+                                ToolTip.Tip="Navigates to the previous matching packet.">
+                            <Path Width="16" Height="16"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.ArrowUp}"/>
+                        </Button>
+                        
+                        <Button Command="{Binding GotoNextSearchResultCommand}"
+                                HotKey="Ctrl+OemCloseBrackets"
+                                Classes="toolbar"
+                                ToolTip.Tip="Navigates to the next matching packet.">
+                            <Path Width="16" Height="16"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.ArrowDown}"/>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
+  
+                
+                
+                
             </WrapPanel>
         </Border>
 
@@ -285,6 +321,7 @@
         <ListBox Grid.Row="3"
                  ItemsSource="{Binding FilteredPackets}"
                  SelectedItem="{Binding SelectedPacket}"
+                 SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"
                  SelectionMode="Single"

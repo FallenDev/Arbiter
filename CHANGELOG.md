@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Text view of `ServerWorldListUser` listing on `ServerWorldListMessage` inspector view
 - Copy to JSON representation from inspector
 - Tooltips for inspector fields
+- Find packet by command with next/prev navigation (`Ctrl+[` and `Ctrl+]` hotkeys)
 
 ### Changed
 
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made most nested types collapsed by default in inspector
 - Allow bit flags to display on 16-bit and 32-bit values
 - Change filter hotkey to `Ctrl+G` (in preparation for `Ctrl+F` for find)
+- Adjust hotkey gesture text rendering
 
 ## [0.9.1] - 2025-09-17
 
