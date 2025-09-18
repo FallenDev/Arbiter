@@ -1,10 +1,30 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Arbiter.Interop.Win32;
 
+[return: MarshalAs(UnmanagedType.Bool)]
+internal delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
 internal static class NativeMethods
 {
-    [DllImport("kernel32.dll", EntryPoint = "CreateProcess", SetLastError = true, CharSet = CharSet.Unicode)]
+    [DllImport("user32.dll", EntryPoint = "EnumWindows", CharSet = CharSet.Auto, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool EnumWindows(EnumWindowsProc enumWindowProc, IntPtr lParam);
+    
+    [DllImport("user32", EntryPoint = "GetWindowThreadProcessId", CharSet = CharSet.Auto, SetLastError = true)]
+    internal static extern int GetWindowThreadProcessId(IntPtr windowHandle, out int processId);
+    
+    [DllImport("user32", EntryPoint = "GetClassName", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern int GetClassName(IntPtr windowHandle, StringBuilder className, int maxLength);
+    
+    [DllImport("user32", EntryPoint = "GetWindowTextLength", CharSet = CharSet.Auto, SetLastError = true)]
+    internal static extern int GetWindowTextLength(IntPtr windowHandle);
+
+    [DllImport("user32", EntryPoint = "GetWindowText", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern int GetWindowText(IntPtr windowHandle, StringBuilder windowText, int maxLength);
+    
+    [DllImport("kernel32.dll", EntryPoint = "CreateProcess", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool CreateProcess(string applicationName,
         string? commandLine,
@@ -17,6 +37,9 @@ internal static class NativeMethods
         ref Win32StartupInfo startupInfo,
         out Win32ProcessInformation processInformation);
 
+    [DllImport("kernel32", EntryPoint = "OpenProcess", CharSet = CharSet.Auto, SetLastError = true)]
+    internal static extern IntPtr OpenProcess(Win32ProcessAccessFlags desiredAccess, bool inheritHandle, int processId);
+    
     [DllImport("kernel32.dll", EntryPoint = "ResumeThread", SetLastError = true)]
     internal static extern uint ResumeThread(IntPtr hThread);
 

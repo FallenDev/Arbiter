@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Copy Selected` context menu for trace packets
 - `Save Selected` context menu for trace packets
 - `Delete Selected` context menu for trace packets
+- Double-click on client in list to bring game window to foreground (Windows only)
 
 ## Changed
 
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `Shift` modifier getting stuck when loading traces in append mode
 - Trace packet list item hit test areas
 - Context menu visual design improvements
+- Disable `Launch Client` button for non-Windows operating systems
 
 ## [0.9.2] - 2025-09-18
 

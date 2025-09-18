@@ -1,16 +1,23 @@
 ﻿using System;
+using System.Buffers;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
+using Arbiter.App.Models;
 using Arbiter.Interop.Process;
+using Arbiter.Interop.Window;
 
 namespace Arbiter.App.Services;
 
 public class GameClientService : IGameClientService
 {
+    private const string DarkAgesWindowClassName = "Darkages";
+    private const long CharacterNameAddress = 0x73d910; // 7.41
+    
     private const IntPtr MultipleInstancePatchAddress = 0x57A7CE;
     private const IntPtr SkipIntroVideoPatchAddress = 0x42E61F;
     private static readonly IntPtr[] ServerHostnamePatchAddresses = [0x433392, 0x565628];
@@ -37,6 +44,37 @@ public class GameClientService : IGameClientService
         ApplyServerEndpointPatch(writer, hostnamePointer, port);
 
         return process.ProcessId;
+    }
+
+    public IEnumerable<GameClientWindow> GetGameClients()
+    {
+        var nameBuffer = ArrayPool<byte>.Shared.Rent(13);
+        try
+        {
+            var windows = NativeWindowEnumerator.FindWindows(DarkAgesWindowClassName);
+            foreach (var window in windows)
+            {
+                using var stream = ProcessMemoryStream.Open(window.ProcessId, ProcessAccessFlags.Read);
+                stream.Position = CharacterNameAddress;
+                stream.ReadExactly(nameBuffer);
+
+                var characterName = Encoding.ASCII.GetString(nameBuffer);
+                var characterNameLength = characterName.IndexOf('\0');
+
+                yield return new GameClientWindow
+                {
+                    ProcessId = window.ProcessId,
+                    WindowHandle = window.Handle,
+                    WindowClassName = window.ClassName,
+                    WindowTitle = window.Title,
+                    CharacterName = characterName[..characterNameLength],
+                };
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(nameBuffer);
+        }
     }
 
     private static void ApplyMultipleInstancePatch(BinaryWriter writer)
