@@ -42,7 +42,7 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
 
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
-    
+
     private bool _isEmpty = true;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
 
@@ -82,7 +82,7 @@ public partial class TraceViewModel : ViewModelBase
         _dialogService = dialogService;
         _traceService = traceService;
         _proxyServer = proxyServer;
-        
+
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
 
         _allPackets.CollectionChanged += OnPacketCollectionChanged;
@@ -122,36 +122,6 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Add(vm);
     }
 
-    public async Task LoadFromFileAsync(string inputPath, bool append = false)
-    {
-        var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
-        var packets = traceFile.Packets;
-
-        StopTracing();
-
-        if (!append)
-        {
-            _allPackets.Clear();
-        }
-
-        foreach (var packet in packets)
-        {
-            var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
-            AddPacketToTrace(vm);
-        }
-        
-        RefreshSearchResults();
-    }
-
-    public async Task SaveToFileAsync(string outputPath)
-    {
-        var snapshot = _allPackets.ToList();
-        var packets = snapshot.Select(vm => vm.ToTracePacket());
-
-        var traceFile = new TraceFile { Packets = packets.ToList() };
-        await _traceService.SaveTraceFileAsync(traceFile, outputPath);
-    }
-
     [RelayCommand]
     public void StartTracing()
     {
@@ -180,80 +150,6 @@ public partial class TraceViewModel : ViewModelBase
         IsRunning = false;
 
         _logger.LogInformation("Trace stopped");
-    }
-
-    [RelayCommand]
-    private async Task LoadTrace()
-    {
-        var append = _keyboardService.IsModifierPressed(KeyModifiers.Shift);
-
-        var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
-        var result = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Select Trace File",
-            FileTypeFilter = [JsonFileType],
-            SuggestedFileName = "trace.json",
-            SuggestedStartLocation = tracesDirectory,
-            AllowMultiple = false
-        });
-
-        if (result.Count == 0)
-        {
-            return;
-        }
-
-        if (IsRunning && !IsEmpty)
-        {
-            var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
-            {
-                Title = "Confirm Load Trace",
-                Message = "You have an active trace running.\nAre you sure you want to load?",
-                Description = append
-                    ? "This will stop your current trace."
-                    : "This will stop and replace your current trace.",
-                Style = MessageBoxStyle.YesNo
-            });
-
-            if (confirm is not true)
-            {
-                return;
-            }
-        }
-
-        var inputPath = result[0].Path.AbsolutePath;
-        var filename = Path.GetFileName(inputPath);
-
-        await LoadFromFileAsync(inputPath, append);
-        _logger.LogInformation("Trace loaded from {Filename}", filename);
-    }
-
-    [RelayCommand]
-    private async Task SaveTrace()
-    {
-        if (!Directory.Exists(TracesDirectory))
-        {
-            Directory.CreateDirectory(TracesDirectory);
-        }
-
-        var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
-        var result = await _storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-        {
-            Title = "Save Trace File",
-            FileTypeChoices = [JsonFileType],
-            SuggestedFileName = $"{StartTime:yyyy-MM-dd_HH-mm-ss}-trace.json",
-            SuggestedStartLocation = tracesDirectory
-        });
-
-        if (result is null)
-        {
-            return;
-        }
-
-        var outputPath = result.Path.AbsolutePath;
-        var filename = Path.GetFileName(outputPath);
-
-        await SaveToFileAsync(outputPath);
-        _logger.LogInformation("Trace saved to {Filename}", filename);
     }
 
     [RelayCommand]
