@@ -318,7 +318,8 @@
         </Border>
 
         <!-- Trace List -->
-        <ListBox Grid.Row="3"
+        <ListBox Name="TraceListBox"
+                 Grid.Row="3"
                  ItemsSource="{Binding FilteredPackets}"
                  SelectedItem="{Binding SelectedPacket}"
                  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
@@ -326,8 +327,9 @@
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"
                  SelectionMode="Single"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 behaviors:ScrollToEndBehavior.AutoScrollToEnd="True"
-                 behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}">
+                 behaviors:ScrollToIndexBehavior.ScrollToIndex="{Binding ScrollToIndexRequested}"
+                 behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"
+                 behaviors:ScrollToEndBehavior.AutoScrollToEnd="True">
             <ListBox.DataTemplates>
                 <DataTemplate DataType="vm:TracePacketViewModel">
                     <v:TracePacketView />

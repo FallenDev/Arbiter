@@ -84,7 +84,7 @@ public class ScrollToEndBehavior : AvaloniaObject
     {
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => TryScrollToEnd(element, force));
+            Dispatcher.UIThread.Post(() => TryScrollToEnd(element, force), DispatcherPriority.Background);
             return;
         }
         
@@ -99,7 +99,7 @@ public class ScrollToEndBehavior : AvaloniaObject
 
         if (force || currentY >= maxY - 1)
         {
-            Dispatcher.UIThread.Post(() => scrollViewer.ScrollToEnd());
+            Dispatcher.UIThread.Post(() => scrollViewer.ScrollToEnd(), DispatcherPriority.Background);
         }
     }
 }

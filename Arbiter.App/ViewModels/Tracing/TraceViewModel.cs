@@ -50,6 +50,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private int? _selectedIndex;
     [ObservableProperty] private bool _scrollToEndRequested;
+    [ObservableProperty] private int? _scrollToIndexRequested;
     [ObservableProperty] private bool _isRunning;
 
     [ObservableProperty] private bool _showFilterBar;
@@ -136,7 +137,7 @@ public partial class TraceViewModel : ViewModelBase
         var collection = (ConcurrentObservableCollection<TracePacketViewModel>)sender!;
         if (SetProperty(ref _isEmpty, collection.Count == 0))
         {
-            Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(IsEmpty)));
+            Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(IsEmpty)), DispatcherPriority.Background);
         }
     }
 
@@ -215,16 +216,6 @@ public partial class TraceViewModel : ViewModelBase
         SearchResultCount = _searchResultIndexes.Count;
     }
 
-    private void EnsureSelected(int index)
-    {
-        if (SelectedIndex == index)
-        {
-            SelectedIndex = index - 1;
-        }
-
-        Dispatcher.UIThread.Invoke(() => SelectedIndex = index);
-    }
-
     private bool MatchesFilter(TracePacketViewModel vm)
     {
         var direction = vm.Packet switch
@@ -291,10 +282,12 @@ public partial class TraceViewModel : ViewModelBase
         {
             pos = _searchResultIndexes.Count - 1;
         }
-        SelectedSearchIndex = pos + 1;
         
-        // Ensures that the selected packet is visible
-        EnsureSelected(_searchResultIndexes[pos]);
+        SelectedSearchIndex = pos + 1;
+        SelectedIndex = _searchResultIndexes[pos];
+        
+        // Ensure this is visible in the list
+        ScrollToIndexRequested = SelectedIndex;
     }
 
     [RelayCommand]
@@ -311,10 +304,12 @@ public partial class TraceViewModel : ViewModelBase
         {
             pos = 0;
         }
+
         SelectedSearchIndex = pos + 1;
+        SelectedIndex = _searchResultIndexes[pos];
         
-        // Ensures that the selected packet is visible
-        EnsureSelected(_searchResultIndexes[pos]);
+        // Ensure this is visible in the list
+        ScrollToIndexRequested = SelectedIndex;
     }
 
     public async Task LoadFromFileAsync(string inputPath, bool append = false)

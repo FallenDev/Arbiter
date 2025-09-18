@@ -99,7 +99,7 @@ public partial class ConsoleViewModel : ViewModelBase
             OnPropertyChanged(nameof(InfoCount));
             OnPropertyChanged(nameof(WarningCount));
             OnPropertyChanged(nameof(ErrorCount));
-        });
+        }, DispatcherPriority.Background);
     }
     
     private bool MatchesFilter(LogEntryViewModel logEntry)
