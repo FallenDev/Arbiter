@@ -89,9 +89,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
         Settings = newSettings;
         await _settingsService.SaveToFileAsync(Settings);
+        LaunchClientCommand.NotifyCanExecuteChanged();
     }
 
-    [RelayCommand]
+    private bool CanLaunchClient() =>
+        !string.IsNullOrWhiteSpace(Settings.ClientExecutablePath) && OperatingSystem.IsWindows();
+
+    [RelayCommand(CanExecute = nameof(CanLaunchClient))]
     private async Task LaunchClient()
     {
         try
@@ -139,6 +143,7 @@ public partial class MainWindowViewModel : ViewModelBase
     internal async Task OnOpened()
     {
         Settings = await _settingsService.LoadFromFileAsync();
+        LaunchClientCommand.NotifyCanExecuteChanged();
 
         if (Settings.StartupLocation is not null)
         {
