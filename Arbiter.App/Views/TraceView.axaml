@@ -335,6 +335,14 @@
                     <v:TracePacketView />
                 </DataTemplate>
             </ListBox.DataTemplates>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Selected"
+                              Command="{Binding CopyToClipboardCommand}"/>
+                    <MenuItem Header="Delete Selected"
+                              Command="{Binding DeleteSelectedCommand}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
     </Grid>
 </UserControl>

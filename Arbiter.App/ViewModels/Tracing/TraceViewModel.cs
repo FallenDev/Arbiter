@@ -8,11 +8,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
+using Arbiter.App.Extensions;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
+using Avalonia;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
@@ -144,6 +146,9 @@ public partial class TraceViewModel : ViewModelBase
             OnPropertyChanged(nameof(SelectedIndex));
             OnPropertyChanged(nameof(SelectionCount));
             OnPropertyChanged(nameof(SelectedPacket));
+            
+            CopyToClipboardCommand.NotifyCanExecuteChanged();
+            DeleteSelectedCommand.NotifyCanExecuteChanged();
         }, DispatcherPriority.Background);
     }
 
@@ -483,6 +488,47 @@ public partial class TraceViewModel : ViewModelBase
     private void ScrollToEnd()
     {
         ScrollToEndRequested = true;
+    }
+
+    private bool CanCopyToClipboard() => SelectedPackets.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
+    private async Task CopyToClipboard()
+    {
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is null || SelectedPackets.Count == 0)
+        {
+            return;
+        }
+
+        var packetStrings = SelectedPackets.Select(vm => vm.DisplayMode switch
+        {
+            PacketDisplayMode.Decrypted => $"{vm.Packet.Command:X2} {vm.FormattedPayload}",
+            _ => vm.FormattedRaw,
+        });
+
+        var lines = string.Join(Environment.NewLine, packetStrings);
+        await clipboard.SetTextAsync(lines);
+    }
+    
+    private bool CanDeleteSelected() => SelectedPackets.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
+    private void DeleteSelected()
+    {
+        if (SelectedPackets.Count == 0)
+        {
+            return;
+        }
+        
+        var selectedPackets = SelectedPackets.ToList();
+        foreach (var packet in selectedPackets)
+        {
+            _allPackets.Remove(packet);
+        }
+
+        RefreshSearchResults();
+        SelectedPackets.Clear();
     }
 
     private Regex GetRegexForFilter(string namePattern)

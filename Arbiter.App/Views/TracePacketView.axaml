@@ -74,12 +74,6 @@
                                TextWrapping="Wrap"/>
                 </StackPanel>
             </Grid>
-            
-            <Border.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Copy" Command="{Binding CopyToClipboardCommand}"/>
-                </ContextMenu>
-            </Border.ContextMenu>
         </Border>
     </Panel>
 </UserControl>
