@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using Arbiter.App.Services;
 using Arbiter.Net;
 using Avalonia.Threading;
 
@@ -10,15 +12,17 @@ namespace Arbiter.App.ViewModels.Client;
 public class ClientManagerViewModel : ViewModelBase
 {
     private readonly ProxyServer _proxyServer;
-
+    private readonly IGameClientService _gameClientService;
+    
     private readonly Lock _clientLock = new();
     private readonly Dictionary<int, ClientViewModel> _clientMap = [];
-    
+
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
 
-    public ClientManagerViewModel(ProxyServer proxyServer)
+    public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService)
     {
         _proxyServer = proxyServer;
+        _gameClientService = gameClientService;
 
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
@@ -31,7 +35,7 @@ public class ClientManagerViewModel : ViewModelBase
     {
         var connection = e.Connection;
         var client = new ClientViewModel(connection) { Id = connection.Id, Name = connection.Name ?? string.Empty };
-
+        
         // Start listening for packets and updating state
         client.Subscribe();
 
@@ -49,6 +53,13 @@ public class ClientManagerViewModel : ViewModelBase
             return;
         }
 
+        var windowTitle = !string.IsNullOrWhiteSpace(e.Connection.Name)
+            ? $"Darkages - {e.Connection.Name}"
+            : "Darkages";
+        
+        SetClientWindowTitle(client, windowTitle);
+        client.BringToFrontRequested += OnClientBringToFront;
+
         // We are fully logged in and can display this client in the list
         Dispatcher.UIThread.Post(() => Clients.Add(client));
     }
@@ -62,7 +73,10 @@ public class ClientManagerViewModel : ViewModelBase
         {
             return;
         }
-
+        
+        SetClientWindowTitle(client, "Darkages");
+        client.BringToFrontRequested -= OnClientBringToFront;
+        
         // We are fully logged out and can remove the client
         Dispatcher.UIThread.Post(() => Clients.Remove(client));
     }
@@ -82,10 +96,35 @@ public class ClientManagerViewModel : ViewModelBase
             return;
         }
         
+        SetClientWindowTitle(client, "Darkages");
+        client.BringToFrontRequested -= OnClientBringToFront;
+
         // Try removing the client from the list
         Dispatcher.UIThread.Post(() => Clients.Remove(client));
-        
+
         using var _ = _clientLock.EnterScope();
         _clientMap.Remove(client.Id);
+    }
+
+    private void OnClientBringToFront(object? sender, EventArgs e)
+    {
+        if (sender is not ClientViewModel clientVm || !OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        var clientWindow = _gameClientService.GetGameClients().FirstOrDefault(gc => gc.CharacterName == clientVm.Name);
+        clientWindow?.BringToFront();
+    }
+
+    private void SetClientWindowTitle(ClientViewModel vm, string windowTitle)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+        
+        var clientWindow = _gameClientService.GetGameClients().FirstOrDefault(gc => gc.CharacterName == vm.Name);
+        clientWindow?.SetWindowTitle(windowTitle);
     }
 }

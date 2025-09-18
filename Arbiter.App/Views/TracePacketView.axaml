@@ -18,17 +18,20 @@
         <Geometry x:Key="Talgonite.TracePacket.RightArrow">M1,4 H8 M8,1 L11,4 L8,7</Geometry>
     </UserControl.Resources>
     
-    <Panel Background="Transparent" HorizontalAlignment="Stretch" Opacity="{Binding Opacity}">
+    <Panel Background="Transparent"
+           Opacity="{Binding Opacity}"
+           HorizontalAlignment="Stretch"
+           Cursor="Hand">
         <Panel.Transitions>
             <Transitions>
                 <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
             </Transitions>
         </Panel.Transitions>
         
-        <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+        <Border Background="Transparent"
+                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
-                Padding="4,2"
-                Cursor="Hand">
+                Padding="4,2">
             <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="4">
                 <!-- Timestamp and Client Name -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
@@ -74,12 +77,6 @@
                                TextWrapping="Wrap"/>
                 </StackPanel>
             </Grid>
-            
-            <Border.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Copy" Command="{Binding CopyToClipboardCommand}"/>
-                </ContextMenu>
-            </Border.ContextMenu>
         </Border>
     </Panel>
 </UserControl>

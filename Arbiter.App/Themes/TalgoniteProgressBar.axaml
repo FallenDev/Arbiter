@@ -8,7 +8,7 @@
         <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid>
+                <Panel>
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
@@ -31,7 +31,7 @@
                             
                         </TextBlock>
                     </LayoutTransformControl>
-                </Grid>
+                </Panel>
             </ControlTemplate>
         </Setter>
         

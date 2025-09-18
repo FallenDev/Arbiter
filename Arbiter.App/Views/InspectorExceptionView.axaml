@@ -19,7 +19,7 @@
                 CornerRadius="8"
                 Padding="8,16">
             <StackPanel Spacing="8">
-                <Grid Width="64" Height="64">
+                <Panel Width="64" Height="64">
                     <!-- Circle outline (thin) -->
                     <Path
                         Width="64" Height="64" Stretch="None"
@@ -33,7 +33,7 @@
                         Data="M32,16 L32,38 M32,48 L32,50"
                         Stroke="{StaticResource Talgonite.Inspector.ErrorBrush}" StrokeThickness="6"
                         Fill="Transparent" />
-                </Grid>
+                </Panel>
                 
                 <!-- Exception Name -->
                 <TextBlock Text="{Binding ExceptionName}"

@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.3] - 2025-09-18
+
+## Added
+
+- `Copy Selected` context menu for trace packets
+- `Save Selected` context menu for trace packets
+- `Delete Selected` context menu for trace packets
+- Double-click on client in list to bring game window to foreground (Windows only)
+- Set game client window title to include client name on login (cleared on logout)
+
+## Changed
+
+- Allow multiple selection of trace packets (only first item is inspected)
+- Fixed `Shift` modifier getting stuck when loading traces in append mode
+- Trace packet list item hit test areas
+- Context menu visual design improvements
+- Disable `Launch Client` button for non-Windows operating systems
+
 ## [0.9.2] - 2025-09-18
 
 ### Added

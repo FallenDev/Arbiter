@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -7,11 +8,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
+using Arbiter.App.Extensions;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
+using Avalonia;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
@@ -39,58 +42,14 @@ public partial class TraceViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
 
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
-    private readonly List<int> _searchResultIndexes = [];
 
     private bool _isEmpty = true;
-
-    private TracePacketViewModel? _selectedPacket;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
-    private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty] private DateTime _startTime;
-    [ObservableProperty] private int? _selectedIndex;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private int? _scrollToIndexRequested;
     [ObservableProperty] private bool _isRunning;
-
-    [ObservableProperty] private bool _showFilterBar;
-
-    [ObservableProperty] private bool _showSearchBar;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
-    [NotifyPropertyChangedFor(nameof(HasSearchResults))]
-    private int _selectedSearchIndex;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
-    [NotifyPropertyChangedFor(nameof(HasSearchResults))]
-    private int _searchResultCount;
-
-    public event Action<TracePacketViewModel?>? SelectedPacketChanged;
-
-    public TracePacketViewModel? SelectedPacket
-    {
-        get => _selectedPacket;
-        set
-        {
-            if (SetProperty(ref _selectedPacket, value))
-            {
-                SelectedPacketChanged?.Invoke(value);
-            }
-        }
-    }
-
-    public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
-    public TraceFilterViewModel FilterParameters { get; } = new();
-    public TraceSearchViewModel SearchParameters { get; } = new();
-
-    public string? FormattedSearchResultsText =>
-        SearchParameters.Command is not null
-            ? SearchResultCount > 0 ? $"{Math.Max(1, SelectedSearchIndex)} of {SearchResultCount}" : "no matches"
-            : null;
-
-    public bool HasSearchResults => SearchResultCount > 0;
 
     public bool IsEmpty => _isEmpty;
 
@@ -127,6 +86,7 @@ public partial class TraceViewModel : ViewModelBase
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
 
         _allPackets.CollectionChanged += OnPacketCollectionChanged;
+        SelectedPackets.CollectionChanged += OnSelectedPacketsCollectionChanged;
 
         FilterParameters.PropertyChanged += OnFilterParametersChanged;
         SearchParameters.PropertyChanged += OnSearchParametersChanged;
@@ -162,186 +122,6 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Add(vm);
     }
 
-    private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        // Do not filter on this, wait for pattern list to change
-        if (e.PropertyName == nameof(FilterParameters.NameFilter))
-        {
-            return;
-        }
-
-        // Do not filter on this, wait for command list to change
-        if (e.PropertyName == nameof(FilterParameters.CommandFilter))
-        {
-            return;
-        }
-
-        FilteredPackets.Refresh();
-    }
-
-    private void OnSearchParametersChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        // Do not filter on this, wait for actual command byte to change
-        if (e.PropertyName == nameof(SearchParameters.CommandFilter))
-        {
-
-        }
-
-        RefreshSearchResults();
-    }
-
-    private void RefreshSearchResults()
-    {
-        _searchResultIndexes.Clear();
-        SearchResultCount = 0;
-        
-        for (var i = 0; i < FilteredPackets.Count; i++)
-        {
-            var packet = FilteredPackets[i];
-            var isMatch = MatchesSearch(packet);
-            if (isMatch)
-            {
-                AddSearchResultIndex(i);
-            }
-
-            packet.Opacity = isMatch ? 1 : 0.5;
-        }
-
-        SelectedSearchIndex = 0;
-    }
-
-    private void AddSearchResultIndex(int index)
-    {
-        _searchResultIndexes.Add(index);
-        SearchResultCount = _searchResultIndexes.Count;
-    }
-
-    private bool MatchesFilter(TracePacketViewModel vm)
-    {
-        var direction = vm.Packet switch
-        {
-            ClientPacket => PacketDirection.Client,
-            ServerPacket => PacketDirection.Server,
-            _ => PacketDirection.None
-        };
-
-        // Filter by packet direction
-        if (!FilterParameters.PacketDirection.HasFlag(direction))
-        {
-            return false;
-        }
-
-        // Filter by command
-        if (FilterParameters.CommandFilterRanges.Count > 0)
-        {
-            if (!FilterParameters.CommandFilterRanges.Any(range => range.Contains(vm.Packet.Command)))
-            {
-                return false;
-            }
-        }
-
-        // Filter by client name matches
-        if (FilterParameters.NameFilterPatterns.Count > 0)
-        {
-            var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
-            {
-                var regex = GetRegexForFilter(namePattern);
-                return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
-            });
-
-            if (!nameMatches)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private bool MatchesSearch(TracePacketViewModel vm)
-    {
-        if (SearchParameters.Command is null)
-        {
-            return true;
-        }
-
-        return vm.Packet.Command == SearchParameters.Command;
-    }
-
-    [RelayCommand]
-    private void GotoPreviousSearchResult()
-    {
-        if (_searchResultIndexes.Count == 0)
-        {
-            return;
-        }
-
-        var currentIndex = SelectedIndex ?? -1;
-        var pos = _searchResultIndexes.FindLastIndex(x => x < currentIndex);
-        if (pos == -1)
-        {
-            pos = _searchResultIndexes.Count - 1;
-        }
-        
-        SelectedSearchIndex = pos + 1;
-        SelectedIndex = _searchResultIndexes[pos];
-        
-        // Ensure this is visible in the list
-        ScrollToIndexRequested = SelectedIndex;
-    }
-
-    [RelayCommand]
-    private void GotoNextSearchResult()
-    {
-        if (_searchResultIndexes.Count == 0)
-        {
-            return;
-        }
-
-        var currentIndex = SelectedIndex ?? -1;
-        var pos = _searchResultIndexes.FindIndex(x => x > currentIndex);
-        if (pos == -1)
-        {
-            pos = 0;
-        }
-
-        SelectedSearchIndex = pos + 1;
-        SelectedIndex = _searchResultIndexes[pos];
-        
-        // Ensure this is visible in the list
-        ScrollToIndexRequested = SelectedIndex;
-    }
-
-    public async Task LoadFromFileAsync(string inputPath, bool append = false)
-    {
-        var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
-        var packets = traceFile.Packets;
-
-        StopTracing();
-
-        if (!append)
-        {
-            _allPackets.Clear();
-        }
-
-        foreach (var packet in packets)
-        {
-            var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
-            AddPacketToTrace(vm);
-        }
-        
-        RefreshSearchResults();
-    }
-
-    public async Task SaveToFileAsync(string outputPath)
-    {
-        var snapshot = _allPackets.ToList();
-        var packets = snapshot.Select(vm => vm.ToTracePacket());
-
-        var traceFile = new TraceFile { Packets = packets.ToList() };
-        await _traceService.SaveTraceFileAsync(traceFile, outputPath);
-    }
-
     [RelayCommand]
     public void StartTracing()
     {
@@ -373,80 +153,6 @@ public partial class TraceViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task LoadTrace()
-    {
-        var append = _keyboardService.IsModifierPressed(KeyModifiers.Shift);
-
-        var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
-        var result = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Select Trace File",
-            FileTypeFilter = [JsonFileType],
-            SuggestedFileName = "trace.json",
-            SuggestedStartLocation = tracesDirectory,
-            AllowMultiple = false
-        });
-
-        if (result.Count == 0)
-        {
-            return;
-        }
-
-        if (IsRunning && !IsEmpty)
-        {
-            var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
-            {
-                Title = "Confirm Load Trace",
-                Message = "You have an active trace running.\nAre you sure you want to load?",
-                Description = append
-                    ? "This will stop your current trace."
-                    : "This will stop and replace your current trace.",
-                Style = MessageBoxStyle.YesNo
-            });
-
-            if (confirm is not true)
-            {
-                return;
-            }
-        }
-
-        var inputPath = result[0].Path.AbsolutePath;
-        var filename = Path.GetFileName(inputPath);
-
-        await LoadFromFileAsync(inputPath, append);
-        _logger.LogInformation("Trace loaded from {Filename}", filename);
-    }
-
-    [RelayCommand]
-    private async Task SaveTrace()
-    {
-        if (!Directory.Exists(TracesDirectory))
-        {
-            Directory.CreateDirectory(TracesDirectory);
-        }
-
-        var tracesDirectory = await _storageProvider.TryGetFolderFromPathAsync(TracesDirectory);
-        var result = await _storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-        {
-            Title = "Save Trace File",
-            FileTypeChoices = [JsonFileType],
-            SuggestedFileName = $"{StartTime:yyyy-MM-dd_HH-mm-ss}-trace.json",
-            SuggestedStartLocation = tracesDirectory
-        });
-
-        if (result is null)
-        {
-            return;
-        }
-
-        var outputPath = result.Path.AbsolutePath;
-        var filename = Path.GetFileName(outputPath);
-
-        await SaveToFileAsync(outputPath);
-        _logger.LogInformation("Trace saved to {Filename}", filename);
-    }
-
-    [RelayCommand]
     private async Task ClearTrace()
     {
         var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
@@ -465,7 +171,7 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Clear();
         OnPropertyChanged(nameof(FilteredPackets));
 
-        SelectedPacket = null;
+        SelectedPackets.Clear();
 
         _logger.LogInformation("Trace cleared");
     }
@@ -474,20 +180,5 @@ public partial class TraceViewModel : ViewModelBase
     private void ScrollToEnd()
     {
         ScrollToEndRequested = true;
-    }
-
-    private Regex GetRegexForFilter(string namePattern)
-    {
-        if (_nameFilterRegexes.TryGetValue(namePattern, out var regex))
-        {
-            return regex;
-        }
-
-        var escaped = Regex.Escape(namePattern);
-        var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        var newRegex = new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        _nameFilterRegexes.Add(namePattern, newRegex);
-        return newRegex;
     }
 }
