@@ -5,7 +5,7 @@
              xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels.Tracing"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
-             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="660" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.TraceView"
              x:DataType="vm:TraceViewModel">
 
@@ -164,6 +164,15 @@
                 BorderThickness="0,1,0,0"
                 Padding="0,8">
             <WrapPanel>
+                <!-- Bar Icon -->
+                <Border Padding="12,4"
+                        BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                        BorderThickness="0,0,1,0">
+                    <Path Width="16" Height="16"
+                          Stroke="{StaticResource Talgonite.TextBlock.DimForeground}"
+                          Data="{StaticResource Talgonite.Icon.FilterFunnel}"/>
+                </Border>
+                
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <!-- Direction Filter -->
                     <Label Content="Direction"
@@ -241,16 +250,13 @@
                 Padding="0,8">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <!-- Bar Label -->
-                    <Border Padding="8,4"
+                    <!-- Bar Icon -->
+                    <Border Padding="12,4"
                             BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
                             BorderThickness="0,0,1,0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Find"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <Path Width="16" Height="16"
+                              Stroke="{StaticResource Talgonite.TextBlock.DimForeground}"
+                              Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
                     </Border>
                     
                     <!-- Command Search -->
