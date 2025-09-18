@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display name overrides for nested types
 - Made most nested types collapsed by default in inspector
 - Allow bit flags to display on 16-bit and 32-bit values
+- Change filter hotkey to `Ctrl+G` (in preparation for `Ctrl+F` for find)
 
 ## [0.9.1] - 2025-09-17
 

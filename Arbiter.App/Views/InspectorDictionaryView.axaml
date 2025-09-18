@@ -17,16 +17,16 @@
                     <TextBlock Grid.Column="0"
                                Text="{Binding $parent[Expander].Header}"
                                TextAlignment="Left"
-                               VerticalAlignment="Center"
                                FontWeight="SemiBold"
+                               VerticalAlignment="Center"
                                Margin="8,4"/>
                     
                     <TextBlock Grid.Column="1"
                                Text="{Binding $parent[UserControl].((vm:InspectorDictionaryViewModel)DataContext).TypeName, FallbackValue={}}"
                                TextAlignment="Right"
+                               FontSize="14"
                                Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                                VerticalAlignment="Center"
-                               FontWeight="SemiBold"
                                Margin="8,4"/>
                 </Grid>
             </DataTemplate>

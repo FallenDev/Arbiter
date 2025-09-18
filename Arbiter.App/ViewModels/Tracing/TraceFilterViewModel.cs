@@ -77,13 +77,13 @@ public partial class TraceFilterViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public void ClearNameFilter()
+    private void ClearNameFilter()
     {
         NameFilter = string.Empty;
     }
 
     [RelayCommand]
-    public void ClearCommandFilter()
+    private void ClearCommandFilter()
     {
         CommandFilter = string.Empty;
     }

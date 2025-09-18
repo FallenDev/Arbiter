@@ -47,6 +47,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private bool _isRunning;
     [ObservableProperty] private bool _showFilterBar;
+    [ObservableProperty] private bool _showSearchBar;
 
     public event Action<TracePacketViewModel?>? SelectedPacketChanged;
 
@@ -64,6 +65,7 @@ public partial class TraceViewModel : ViewModelBase
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
+    public TraceSearchViewModel SearchParameters { get; } = new();
 
     public bool IsEmpty => _allPackets.Count == 0;
 

@@ -8,14 +8,14 @@
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.TraceView"
              x:DataType="vm:TraceViewModel">
-    
+
     <UserControl.Resources>
-        <SolidColorBrush x:Key="Talgonite.Trace.Background" Color="#373d49"/>
+        <SolidColorBrush x:Key="Talgonite.Trace.Background" Color="#373d49" />
     </UserControl.Resources>
-    
-    <Grid RowDefinitions="Auto,Auto,*" Background="{StaticResource Talgonite.Trace.Background}">
-       <!-- Toolbar Area -->
-       <Border Grid.Row="0" Padding="4">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Background="{StaticResource Talgonite.Trace.Background}">
+        <!-- Toolbar Area -->
+        <Border Grid.Row="0" Padding="4">
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <!-- Left Side Buttons -->
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4">
@@ -28,7 +28,7 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.StartPlay}"/>
+                                  Data="{StaticResource Talgonite.Icon.StartPlay}" />
                         </StackPanel>
                     </Button>
                     <!-- Stop Trace Button -->
@@ -40,11 +40,11 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.StopPlay}"/>
+                                  Data="{StaticResource Talgonite.Icon.StopPlay}" />
                         </StackPanel>
                     </Button>
                 </WrapPanel>
-                
+
                 <!-- Center Buttons -->
                 <WrapPanel Grid.Column="1" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="Center">
                     <!-- Display Mode -->
@@ -58,9 +58,9 @@
                                 <Canvas Width="16" Height="16" ClipToBounds="True">
                                     <Path Width="16" Height="16"
                                           Stroke="{Binding $parent[RadioButton].Foreground}"
-                                          Data="{StaticResource Talgonite.Icon.RevealEye}"/>
+                                          Data="{StaticResource Talgonite.Icon.RevealEye}" />
                                 </Canvas>
-                                <TextBlock Text="Decrypted"/>
+                                <TextBlock Text="Decrypted" />
                             </StackPanel>
                         </RadioButton>
                         <!-- Encrypted (Raw) Display -->
@@ -71,26 +71,35 @@
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <Path Width="16" Height="16"
                                       Stroke="{Binding $parent[RadioButton].Foreground}"
-                                      Data="{StaticResource Talgonite.Icon.SecureLock}"/>
-                                <TextBlock Text="Encrypted"/>
+                                      Data="{StaticResource Talgonite.Icon.SecureLock}" />
+                                <TextBlock Text="Encrypted" />
                             </StackPanel>
                         </RadioButton>
                     </StackPanel>
                 </WrapPanel>
-                
+
                 <!-- Right Side Buttons -->
                 <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="End">
+                    <!-- Toggle Find Button -->
+                    <ToggleButton IsChecked="{Binding ShowSearchBar}"
+                                  HotKey="Ctrl+F"
+                                  ToolTip.Tip="Shows or hides the search bar."
+                                  Classes="outline">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.SearchMagnify}" />
+                    </ToggleButton>
+
                     <!-- Toggle Filter Button -->
                     <ToggleButton IsChecked="{Binding ShowFilterBar}"
-                                  HotKey="Ctrl+F"
+                                  HotKey="Ctrl+G"
                                   ToolTip.Tip="Shows or hides the trace filters."
                                   Classes="outline">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Path Width="16" Height="16"
-                                  Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.FilterFunnel}"/>
-                        </StackPanel>
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.FilterFunnel}" />
                     </ToggleButton>
+                    
                     <!-- Load Trace Button -->
                     <Button Command="{Binding LoadTraceCommand}"
                             HotKey="Ctrl+O"
@@ -98,7 +107,7 @@
                         <ToolTip.Tip>
                             <TextBlock>
                                 <Run>Loads a trace from a file.</Run>
-                                <LineBreak/>
+                                <LineBreak />
                                 <Run>Hold</Run>
                                 <Run Classes="hotkey"> [Shift] </Run>
                                 <Run>to append to the current trace.</Run>
@@ -107,9 +116,10 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.LoadFolder}"/>
+                                  Data="{StaticResource Talgonite.Icon.LoadFolder}" />
                         </StackPanel>
                     </Button>
+                    
                     <!-- Save Trace Button -->
                     <Button Command="{Binding SaveTraceCommand}"
                             ToolTip.Tip="Saves this trace to a file."
@@ -119,9 +129,10 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.SaveDisk}"/>
+                                  Data="{StaticResource Talgonite.Icon.SaveDisk}" />
                         </StackPanel>
                     </Button>
+                    
                     <!-- Clear Trace Button -->
                     <Button Command="{Binding ClearTraceCommand}"
                             ToolTip.Tip="Clears all packets from the trace."
@@ -130,9 +141,10 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.ClearText}"/>
+                                  Data="{StaticResource Talgonite.Icon.ClearText}" />
                         </StackPanel>
                     </Button>
+                    
                     <!-- Scroll to End Button -->
                     <Button Command="{Binding ScrollToEndCommand}"
                             ToolTip.Tip="Scrolls to the end of the trace."
@@ -140,12 +152,12 @@
                         <Path Width="16"
                               Height="16"
                               Stroke="{Binding $parent[Button].Foreground}"
-                              Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
+                              Data="{StaticResource Talgonite.Icon.ArrowDownEnd}" />
                     </Button>
                 </WrapPanel>
             </Grid>
         </Border>
-       
+
         <!-- Filter Bar -->
         <Border Grid.Row="1" IsVisible="{Binding ShowFilterBar}"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
@@ -156,15 +168,15 @@
                     <!-- Direction Filter -->
                     <Label Content="Direction"
                            ToolTip.Tip="Allows filtering by packet direction."
-                           VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}" 
+                           VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}"
                               SelectedValue="{Binding FilterParameters.PacketDirection}"
                               PlaceholderText="No Selection"
                               Width="130">
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding .}"
-                                           Padding="8,4"/>
+                                           Padding="8,4" />
                             </DataTemplate>
                         </ComboBox.SelectionBoxItemTemplate>
                         <ComboBox.ItemTemplate>
@@ -173,18 +185,18 @@
                                         BorderThickness="0,0,0,1"
                                         Padding="4">
                                     <TextBlock Text="{Binding .}"
-                                               Padding="8,2"/>
+                                               Padding="8,2" />
                                 </Border>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
-                
+
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <!-- Character Filter -->
                     <Label Content="Clients"
                            ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center" />
                     <TextBox Text="{Binding FilterParameters.NameFilter}"
                              Width="140"
                              Height="36">
@@ -194,17 +206,17 @@
                                     Classes="clear destructive">
                                 <Path Width="12" Height="12"
                                       Stroke="{Binding $parent[Button].Foreground}"
-                                      Data="M1,1 L11,11 M11,1 L1,11"/>
+                                      Data="M1,1 L11,11 M11,1 L1,11" />
                             </Button>
                         </TextBox.InnerRightContent>
                     </TextBox>
                 </StackPanel>
-                
+
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <!-- Command Filter -->
                     <Label Content="Commands"
                            ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center" />
                     <TextBox Text="{Binding FilterParameters.CommandFilter}"
                              Width="120"
                              Height="36">
@@ -214,15 +226,57 @@
                                     Classes="clear destructive">
                                 <Path Width="12" Height="12"
                                       Stroke="{Binding $parent[Button].Foreground}"
-                                      Data="M1,1 L11,11 M11,1 L1,11"/>
+                                      Data="M1,1 L11,11 M11,1 L1,11" />
                             </Button>
                         </TextBox.InnerRightContent>
                     </TextBox>
                 </StackPanel>
             </WrapPanel>
         </Border>
+        
+         <!-- Search Bar -->
+        <Border Grid.Row="2" IsVisible="{Binding ShowSearchBar}"
+                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="0,8">
+            <WrapPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <!-- Bar Label -->
+                    <Border Padding="8,4"
+                            BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                            BorderThickness="0,0,1,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Find"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Command Search -->
+                    <Label Content="Command"
+                           ToolTip.Tip="Searches for packets matching the command hex code."
+                           VerticalAlignment="Center" />
+                    <TextBox Text="{Binding SearchParameters.CommandFilter}"
+                             MaxLength="2"
+                             Width="140"
+                             Height="36">
+                        <TextBox.InnerRightContent>
+                            <Button Command="{Binding SearchParameters.ClearCommandFilterCommand}"
+                                    IsVisible="{Binding SearchParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                    Classes="clear destructive">
+                                <Path Width="12" Height="12"
+                                      Stroke="{Binding $parent[Button].Foreground}"
+                                      Data="M1,1 L11,11 M11,1 L1,11" />
+                            </Button>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </StackPanel>
+            </WrapPanel>
+        </Border>
+
         <!-- Trace List -->
-        <ListBox Grid.Row="2"
+        <ListBox Grid.Row="3"
                  ItemsSource="{Binding FilteredPackets}"
                  SelectedItem="{Binding SelectedPacket}"
                  FontFamily="{StaticResource Talgonite.Font.TraceFont}"
@@ -233,9 +287,9 @@
                  behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}">
             <ListBox.DataTemplates>
                 <DataTemplate DataType="vm:TracePacketViewModel">
-                    <v:TracePacketView/>
+                    <v:TracePacketView />
                 </DataTemplate>
             </ListBox.DataTemplates>
         </ListBox>
-   </Grid>
+    </Grid>
 </UserControl>

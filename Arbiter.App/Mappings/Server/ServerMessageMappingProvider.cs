@@ -224,7 +224,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Item")
                 .Property(m => m.ItemIndex, p => p.ToolTip("Index of the item in the exchange window."))
                 .Property(m => m.ItemSprite, p => p.ShowHex().ToolTip("Sprite of the item in the exchange window."))
-                .Property(m => m.ItemColor, p => p.ShowHex().ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.ItemColor, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.ItemName,
                     p => p.ShowMultiline().ToolTip("Display name of the item in the exchange window."))
                 .IsExpanded(m => m.Event == ExchangeServerEventType.ItemAdded);
@@ -599,7 +599,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Equipment")
                 .Property(m => m.Slot, p => p.ToolTip("Equipment slot to be set."))
                 .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the equipment."))
-                .Property(m => m.Color, p => p.ShowHex().ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the equipment."));
             b.Section("Durability")
                 .Property(m => m.Durability, p => p.ToolTip("Durability of the equipment."))
@@ -623,7 +623,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Content")
                 .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite displayed in the dialog."))
-                .Property(m => m.Color, p => p.ShowHex().ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog."))
                 .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."))
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
@@ -681,7 +681,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Name, p => p.ToolTip("Display name of the entity in the dialog menu."));
             b.Section("Content")
                 .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite displayed in the dialog menu."))
-                .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
+                .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog menu."))
                 .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."));
             b.Section("Arguments")
