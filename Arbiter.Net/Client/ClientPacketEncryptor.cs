@@ -200,11 +200,16 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
                 buffer[6 + i] ^= (byte)((z + i) & 0xFF);
             }
         }
+        else
+        {
+            // Copy the payload after the command and sequence bytes
+            packet.Data.CopyTo(buffer[payloadOffset..]);
+        }
 
         // If the packet uses the hash key, it will have the command byte duplicated after the payload
         if (useHashKey)
         {
-            buffer[payloadOffset + payloadLength] = packet.Command;
+            buffer[^8] = packet.Command;
         }
 
         // Perform the standard encryption on the current payload
@@ -215,7 +220,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
             if (i / keyLength % saltTable.Length != sequence)
             {
-                buffer[8 + i] ^= saltTable[sequence];
+                buffer[payloadOffset + i] ^= saltTable[sequence];
             }
         }
 
