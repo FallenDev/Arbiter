@@ -18,7 +18,7 @@ public partial class ProxyConnection
         {
             while (!token.IsCancellationRequested)
             {
-                // Attempt to ready from the stream for any available bytes
+                // Attempt to read from the stream for any available bytes
                 int recvCount;
                 try
                 {

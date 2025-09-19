@@ -16,6 +16,13 @@ public partial class ProxyConnection
             // Keep polling for any available outgoing packets
             await foreach (var decryptedPacket in _sendQueue.Reader.ReadAllAsync(token))
             {
+                // Do not send the 0x42 Client Exception packet to the server to avoid suspicion
+                if (decryptedPacket is ClientPacket { Command: ClientCommand.Exception })
+                {
+                    PacketException?.Invoke(this, new NetworkPacketEventArgs(decryptedPacket));
+                    continue;
+                }
+                
                 // Determine which stream we need to send to
                 var destinationStream = decryptedPacket switch
                 {
@@ -52,13 +59,6 @@ public partial class ProxyConnection
                 {
                     // No encryption is required, just return the packet as-is
                     encryptedPacket = decryptedPacket;
-                }
-
-                // Do not send the 0x42 Client Exception packet to the server to avoid suspicion
-                if (encryptedPacket is ClientPacket { Command: ClientCommand.Exception })
-                {
-                    PacketException?.Invoke(this, new NetworkPacketEventArgs(decryptedPacket));
-                    continue;
                 }
 
                 // Write the encrypted packet to the network stream
