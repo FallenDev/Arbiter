@@ -167,6 +167,47 @@ public class ClientPacketEncryptorTests
     }
 
     [Test]
+    public void Should_Decrypt_Dialog_Key_Randoms()
+    {
+        List<(byte[], ushort)> testCases =
+        [
+            (DialogMenuChoicePacketBytes, 0xC391),
+            (DialogChoicePacketBytes, 0x43B2),
+        ];
+
+        foreach (var (packet, expectedDialogRandom) in testCases)
+        {
+            var command = packet[3];
+            var payload = packet[4..];
+
+            var dialogRandom = _encryptor.DecryptDialogKey(command, payload.AsSpan());
+            Assert.That(dialogRandom, Is.EqualTo(expectedDialogRandom));
+        }
+    }
+
+    [Test]
+    public void Should_Read_Hash_Key_Salt()
+    {
+        List<(byte[], ushort, byte)> testCases =
+        [
+            (InteractPacketBytes, 0x618D, 0xB4),
+            (PortraitPacketBytes, 0xFBA9, 0xCE),
+            (DialogMenuChoicePacketBytes, 0x2A6E, 0xEB),
+            (DialogChoicePacketBytes, 0x2147, 0x70)
+        ];
+
+        foreach (var (packet, bRandExpected, sRandExpected) in testCases)
+        {
+            var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(packet);
+            Assert.Multiple(() =>
+            {
+                Assert.That(bRand, Is.EqualTo(bRandExpected));
+                Assert.That(sRand, Is.EqualTo(sRandExpected));
+            });
+        }
+    }
+
+    [Test]
     public void Should_Not_Encrypt_When_Not_Encrypted()
     {
         var command = AuthenticatePacketBytes[3];
@@ -241,5 +282,64 @@ public class ClientPacketEncryptorTests
         var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand, dialogRandom);
 
         Assert.That(encrypted.Data, Is.EqualTo(DialogChoicePacketBytes[4..]));
+    }
+    
+    [Test]
+    public void Should_Write_Hash_Key_Salt()
+    {
+        List<(byte[], ushort, byte)> testCases =
+        [
+            (InteractPacketBytes, 0x618D, 0xB4),
+            (PortraitPacketBytes, 0xFBA9, 0xCE),
+            (DialogMenuChoicePacketBytes, 0x2A6E, 0xEB),
+            (DialogChoicePacketBytes, 0x2147, 0x70)
+        ];
+
+        var buffer = new byte[3];
+        foreach (var (packet, bRandExpected, sRandExpected) in testCases)
+        {
+            var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(packet);
+            ClientPacketEncryptor.WriteHashKeySalt(buffer, bRand, sRand);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(bRand, Is.EqualTo(bRandExpected));
+                Assert.That(sRand, Is.EqualTo(sRandExpected));
+                
+                Assert.That(buffer[^1], Is.EqualTo(packet[^1]));
+                Assert.That(buffer[^2], Is.EqualTo(packet[^2]));
+                Assert.That(buffer[^3], Is.EqualTo(packet[^3]));
+            });
+        }
+    }
+    
+    [Test]
+    public void Should_Encrypt_And_Decrypt_Symmetrically()
+    {
+        List<(byte[], byte[])> testCases =
+        [
+            (InteractPacketPayload, InteractPacketBytes),
+            (PortraitPacketPayload, PortraitPacketBytes),
+            (DialogMenuChoicePayload, DialogMenuChoicePacketBytes),
+            (DialogChoicePayload, DialogChoicePacketBytes)
+        ];
+        
+        foreach(var (payload, expectedPacket) in testCases)
+        {
+            var command = expectedPacket[3];
+            var sequence = expectedPacket[4];
+            
+            var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(expectedPacket);
+            var dialogRandom = _encryptor.DecryptDialogKey(command, expectedPacket.AsSpan(4));
+            
+            var encrypted = _encryptor.Encrypt(new ClientPacket(command, payload.AsSpan()), sequence, bRand, sRand, dialogRandom);
+            var decrypted = _encryptor.Decrypt(encrypted);
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(encrypted.Data, Is.EqualTo(expectedPacket[4..]));
+                Assert.That(decrypted.Data, Is.EqualTo(payload));
+            });
+        }
     }
 }
