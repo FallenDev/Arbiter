@@ -115,6 +115,11 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         {
             return EncryptWithStaticKey(packet, sequence, sRand, bRand);
         }
+
+        if (!IsDialog(packet.Command))
+        {
+            return EncryptWithHashKey(packet, sequence, sRand, bRand);
+        }
         
         var parameters = Parameters;
         var saltTable = parameters.SaltTable.Span;
@@ -240,6 +245,51 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         }
 
         // Determine the MD5 checksum of the [Command] [Sequence] [Payload]
+        Span<byte> checksum = stackalloc byte[16];
+        MD5.HashData(buffer[..^7], checksum);
+
+        buffer[^7] = checksum[13];
+        buffer[^6] = checksum[3];
+        buffer[^5] = checksum[11];
+        buffer[^4] = checksum[7];
+
+        WriteRandoms(buffer, sRand, bRand);
+        return new ClientPacket(buffer[0], buffer[1..]);
+    }
+    
+    private ClientPacket EncryptWithHashKey(NetworkPacket packet, byte sequence, byte sRand, ushort bRand)
+    {
+        var parameters = Parameters;
+        var saltTable = parameters.SaltTable.Span;
+
+        var keyLength = parameters.PrivateKey.Length;
+        Span<byte> privateKey = stackalloc byte[keyLength];
+        parameters.GenerateKey(bRand, sRand, privateKey);
+
+        // [u8 Sequence] [u8... Payload] [u8 Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
+        var totalLength = packet.Data.Length + 10;
+        var buffer = totalLength <= MaxStackAllocLimit ? stackalloc byte[totalLength] : new byte[totalLength];
+
+        // Copy the command and sequence first, this is needed to generate the checksum
+        buffer[0] = packet.Command;
+        buffer[1] = sequence;
+
+        packet.Data.CopyTo(buffer[2..]);
+        buffer[packet.Data.Length + 2] = packet.Command; 
+
+        // Encrypt the payload
+        for (var i = 0; i < packet.Data.Length + 1; i++)
+        {
+            buffer[2 + i] ^= privateKey[i % keyLength];
+            buffer[2 + i] ^= saltTable[i / keyLength % saltTable.Length];
+
+            if (i / keyLength % saltTable.Length != sequence)
+            {
+                buffer[2 + i] ^= saltTable[sequence];
+            }
+        }
+
+        // Determine the MD5 checksum of the [Command] [Sequence] [Payload] [Command]
         Span<byte> checksum = stackalloc byte[16];
         MD5.HashData(buffer[..^7], checksum);
 
