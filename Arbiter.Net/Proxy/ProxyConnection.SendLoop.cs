@@ -50,6 +50,14 @@ public partial class ProxyConnection
                     ? encryptor.Encrypt(packet, nextSequence)
                     : packet;
                 
+                // Do not send the 0x42 Client Exception packet to the server to avoid suspicion
+                if (encrypted is ClientPacket { Command: ClientCommand.Exception })
+                {
+                    PacketException?.Invoke(this,
+                        new NetworkPacketEventArgs(NetworkAction.None, packet, encrypted.ToList()));
+                    continue;
+                }
+
                 await encrypted.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 

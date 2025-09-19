@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CRC16 and CRC32 checksum algorithms
 - Encrypt algorithm for server packets
-- Encrypt algorithm for client packets
-- Unit tests for network layer
+- Encrypt algorithm for client packets (auto-insert `0x00` byte)
+- Dialog encryption algorithm for client packets
+- Unit tests for network and encryption algorithms
 
 ### Changed
 
@@ -22,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `ClientMenuChoiceMessage` to `ClientDialogMenuChoiceMessage` for consistency
 - Renamed `ShowMenu` to `ShowDialogMenu` for consistency
 - Renamed `ServerShowMenuMessage` to `ServerShowDialogMenuMessage` for consistency
+- Decrypting client packets will now remove the trailing `0x00` byte
+- `NetworkEncryptionParameters` are now read-only for thread safety
 
 ## [0.9.3] - 2025-09-18
 
