@@ -219,7 +219,7 @@ public class ClientPacketEncryptorTests
         var payload = DialogMenuChoicePayload;
 
         var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(DialogMenuChoicePacketBytes);
-        var dialogRandom = (ushort)(DialogMenuChoicePacketBytes[5] << 8 | DialogMenuChoicePacketBytes[6]);
+        var dialogRandom = _encryptor.DecryptDialogKey(command, DialogMenuChoicePacketBytes.AsSpan(4));
 
         var packet = new ClientPacket(command, payload.AsSpan());
         var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand, dialogRandom);
@@ -235,7 +235,7 @@ public class ClientPacketEncryptorTests
         var payload = DialogChoicePayload;
 
         var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(DialogChoicePacketBytes);
-        var dialogRandom = (ushort)(DialogChoicePacketBytes[5] << 8 | DialogChoicePacketBytes[6]);
+        var dialogRandom = _encryptor.DecryptDialogKey(command, DialogChoicePacketBytes.AsSpan(4));
 
         var packet = new ClientPacket(command, payload.AsSpan());
         var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand, dialogRandom);

@@ -36,12 +36,12 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         var saltTable = Parameters.SaltTable.Span;
         var keyLength = Parameters.PrivateKey.Length;
-        Span<byte> privateKey = stackalloc byte[Parameters.PrivateKey.Length];
+        Span<byte> privateKey = stackalloc byte[keyLength];
 
-        var useHashKey = !UseStaticKey(packet.Command);
+        var useHashKey = UseHashKey(packet.Command);
 
         // Determine if we need to generate a hash key or just use the static key
-        if (UseHashKey(packet.Command))
+        if (useHashKey)
         {
             // Read the trailing 3 bytes to get the bRand and sRand values from their encoded form
             var (bRand, sRand) = ReadHashKeySalt(packet.Data);
@@ -129,7 +129,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         }
 
         var isDialog = IsDialog(packet.Command);
-        var useHashKey = !UseStaticKey(packet.Command);
+        var useHashKey = UseHashKey(packet.Command);
 
         var saltTable = Parameters.SaltTable.Span;
         var keyLength = Parameters.PrivateKey.Length;
@@ -162,7 +162,6 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         buffer[0] = packet.Command;
         buffer[1] = sequence;
 
-        var payloadOffset = 2;
         var payloadLength = totalLength - 9;
 
         if (isDialog)
@@ -183,8 +182,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             buffer[7] = (byte)(dialogChecksum & 0xFF);
 
             // Copy the payload after the dialog header
-            payloadOffset += 6;
-            packet.Data.CopyTo(buffer[payloadOffset..]);
+            packet.Data.CopyTo(buffer[8..]);
             
             // Obfuscate the dialog header size and generate key values
             var xPrime = (byte)(buffer[2] - 0x2D);
@@ -203,7 +201,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         else
         {
             // Copy the payload after the command and sequence bytes
-            packet.Data.CopyTo(buffer[payloadOffset..]);
+            packet.Data.CopyTo(buffer[2..]);
         }
 
         // If the packet uses the hash key, it will have the command byte duplicated after the payload
@@ -212,15 +210,15 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             buffer[^8] = packet.Command;
         }
 
-        // Perform the standard encryption on the current payload
+        // Perform the standard encryption on the entire payload
         for (var i = 0; i < payloadLength; i++)
         {
-            buffer[payloadOffset + i] ^= privateKey[i % keyLength];
-            buffer[payloadOffset + i] ^= saltTable[i / keyLength % saltTable.Length];
+            buffer[2 + i] ^= privateKey[i % keyLength];
+            buffer[2 + i] ^= saltTable[i / keyLength % saltTable.Length];
 
             if (i / keyLength % saltTable.Length != sequence)
             {
-                buffer[payloadOffset + i] ^= saltTable[sequence];
+                buffer[2 + i] ^= saltTable[sequence];
             }
         }
 
@@ -236,6 +234,54 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         // Write the trailing bRand and sRand values in their encoded form
         WriteHashKeySalt(buffer, bRand, sRand);
         return new ClientPacket(packet.Command, buffer[1..]);
+    }
+
+    public ushort DecryptDialogKey(byte command, ReadOnlySpan<byte> data)
+    {
+        if (!IsDialog(command))
+        {
+            return 0;
+        }
+        
+        var saltTable = Parameters.SaltTable.Span;
+        var keyLength = Parameters.PrivateKey.Length;
+        Span<byte> privateKey = stackalloc byte[keyLength];
+
+        var useHashKey = UseHashKey(command);
+
+        // Determine if we need to generate a hash key or just use the static key
+        if (useHashKey)
+        {
+            // Read the trailing 3 bytes to get the bRand and sRand values from their encoded form
+            var (bRand, sRand) = ReadHashKeySalt(data);
+            Parameters.GenerateHashKey(bRand, sRand, privateKey);
+        }
+        else
+        {
+            // Default to the static 9-byte key
+            Parameters.PrivateKey.Span.CopyTo(privateKey);
+        }
+        
+        // Get the sequence number which is used for decrypting
+        var sequence = data[0];
+
+        var payload = data[1..7];
+        Span<byte> dialogHeader = stackalloc byte[6];
+        payload.CopyTo(dialogHeader);
+
+        // Decrypt the dialog header using the standard encryption algorithm
+        for (var i = 0; i < dialogHeader.Length; i++)
+        {
+            dialogHeader[i] ^= privateKey[i % keyLength];
+            dialogHeader[i] ^= saltTable[i / keyLength % saltTable.Length];
+
+            if (i / keyLength % saltTable.Length != sequence)
+            {
+                dialogHeader[i] ^= saltTable[sequence];
+            }
+        }
+        
+        return (ushort)((dialogHeader[0] << 8) | dialogHeader[1]);
     }
 
     public static (ushort bRand, byte sRand) ReadHashKeySalt(ReadOnlySpan<byte> buffer)
