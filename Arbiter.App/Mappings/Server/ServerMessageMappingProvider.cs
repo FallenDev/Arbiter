@@ -52,8 +52,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerServerTableMapping(registry);
         RegisterServerSetEquipmentMapping(registry);
         RegisterServerShowDialogMapping(registry);
+        RegisterServerShowDialogMenuMapping(registry);
         RegisterServerShowEffectMapping(registry);
-        RegisterServerShowMenuMapping(registry);
         RegisterServerShowNotepadMapping(registry);
         RegisterServerShowUserMapping(registry);
         RegisterServerStatusEffectMapping(registry);
@@ -328,7 +328,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerLoginResultMessage>(b =>
         {
             b.Section("Login")
-                .Property(m => m.ResultType, p => p.ToolTip("Type of login result."))
+                .Property(m => m.Result, p => p.ToolTip("Type of login result."))
                 .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Message to be displayed to the user."));
         });
     }
@@ -421,10 +421,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Name, p => p.ToolTip("Name of the metadata file."))
                 .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-32 checksum of the metadata file."))
                 .Property(m => m.Data, p => p.ShowMultiline().ToolTip("Raw data of the metadata file."))
-                .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Metadata);
+                .IsExpanded(m => m.ResponseType == MetadataResponseType.Metadata);
             b.Section("Listing")
                 .Property(m => m.MetadataFiles)
-                .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Listing);
+                .IsExpanded(m => m.ResponseType == MetadataResponseType.Listing);
         });
     }
 
@@ -644,32 +644,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
         });
     }
-
-    private static void RegisterServerShowEffectMapping(InspectorMappingRegistry registry)
+    
+    private static void RegisterServerShowDialogMenuMapping(InspectorMappingRegistry registry)
     {
-        registry.Register<ServerShowEffectMessage>(b =>
-        {
-            b.Section("Target Entity")
-                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target entity."))
-                .IsExpanded(m => m.TargetId != 0);
-            b.Section("Target Location")
-                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target map location."))
-                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target map location."))
-                .IsExpanded(m => m.TargetId == 0);
-            b.Section("Source Entity")
-                .Property(m => m.SourceId, p => p.ShowHex().ToolTip("ID of the source entity."))
-                .IsExpanded(m => m.TargetId != 0);
-            b.Section("Visual Effect")
-                .Property(m => m.TargetAnimation, p => p.ToolTip("Visual effect to be played on the target entity."))
-                .Property(m => m.SourceAnimation, p => p.ToolTip("Visual effect to be played on the source entity."))
-                .Property(m => m.AnimationSpeed,
-                    p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
-        });
-    }
-
-    private static void RegisterServerShowMenuMapping(InspectorMappingRegistry registry)
-    {
-        registry.Register<ServerShowMenuMessage>(b =>
+        registry.Register<ServerShowDialogMenuMessage>(b =>
         {
             b.Section("Menu")
                 .Property(m => m.MenuType, p => p.ToolTip("Type of dialog menu."))
@@ -705,6 +683,28 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Unknown")
                 .Property(m => m.Unknown1, p => p.ShowHex())
                 .Property(m => m.Unknown2, p => p.ShowHex());
+        });
+    }
+
+    private static void RegisterServerShowEffectMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowEffectMessage>(b =>
+        {
+            b.Section("Target Entity")
+                .Property(m => m.TargetId, p => p.ShowHex().ToolTip("ID of the target entity."))
+                .IsExpanded(m => m.TargetId != 0);
+            b.Section("Target Location")
+                .Property(m => m.TargetX, p => p.ToolTip("X-coordinate of the target map location."))
+                .Property(m => m.TargetY, p => p.ToolTip("Y-coordinate of the target map location."))
+                .IsExpanded(m => m.TargetId == 0);
+            b.Section("Source Entity")
+                .Property(m => m.SourceId, p => p.ShowHex().ToolTip("ID of the source entity."))
+                .IsExpanded(m => m.TargetId != 0);
+            b.Section("Visual Effect")
+                .Property(m => m.TargetAnimation, p => p.ToolTip("Visual effect to be played on the target entity."))
+                .Property(m => m.SourceAnimation, p => p.ToolTip("Visual effect to be played on the source entity."))
+                .Property(m => m.AnimationSpeed,
+                    p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
         });
     }
 

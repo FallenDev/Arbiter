@@ -5,9 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- CRC16 and CRC32 checksum algorithms
+- Encrypt algorithm for server packets
+- Encrypt algorithm for client packets (auto-insert `0x00` byte)
+- Dialog encryption algorithm for client packets
+- Unit tests for network and encryption algorithms
+- `PacketException` event invoked when the client tries to send `0x42` exception packet
+
+### Changed
+
+- Client name filter now matches exactly (unless `*` or `?` are used)
+- Renamed a few enum types
+- Renamed `MenuChoice` to `DialogMenuChoice` for clarity
+- Renamed `ClientMenuChoiceMessage` to `ClientDialogMenuChoiceMessage` for consistency
+- Renamed `ShowMenu` to `ShowDialogMenu` for consistency
+- Renamed `ServerShowMenuMessage` to `ServerShowDialogMenuMessage` for consistency
+- Renamed `MenuChoice` to `Slot` for `ClientDialogMenuChoiceMessage` message
+- Decrypting client packets will now remove the trailing padding `0x00` byte
+- `NetworkEncryptionParameters` are now read-only for thread safety
+- Blocking of outgoing `0x42` client exception packets to the server (still logged/traced locally)
+- Refactored a lot of internal systems for clarity and performance
+
 ## [0.9.3] - 2025-09-18
 
-## Added
+### Added
 
 - `Copy Selected` context menu for trace packets
 - `Save Selected` context menu for trace packets
@@ -15,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Double-click on client in list to bring game window to foreground (Windows only)
 - Set game client window title to include client name on login (cleared on logout)
 
-## Changed
+### Changed
 
 - Allow multiple selection of trace packets (only first item is inspected)
 - Fixed `Shift` modifier getting stuck when loading traces in append mode

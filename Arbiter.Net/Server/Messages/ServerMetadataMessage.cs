@@ -1,12 +1,14 @@
 ﻿using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
+using Arbiter.Net.Server.Types;
+using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
 [NetworkCommand(ServerCommand.Metadata)]
 public class ServerMetadataMessage : ServerMessage
 {
-    public ServerMetadataResponseType ResponseType { get; set; }
+    public MetadataResponseType ResponseType { get; set; }
     public string? Name { get; set; }
     public uint? Checksum { get; set; }
     public IReadOnlyList<byte>? Data { get; set; }
@@ -16,9 +18,9 @@ public class ServerMetadataMessage : ServerMessage
     {
         base.Deserialize(reader);
         
-        ResponseType = (ServerMetadataResponseType)reader.ReadByte();
+        ResponseType = (MetadataResponseType)reader.ReadByte();
 
-        if (ResponseType == ServerMetadataResponseType.Metadata)
+        if (ResponseType == MetadataResponseType.Metadata)
         {
             Name = reader.ReadString8();
             Checksum = reader.ReadUInt32();
@@ -26,7 +28,7 @@ public class ServerMetadataMessage : ServerMessage
             var contentSize = reader.ReadUInt16();
             Data = reader.ReadBytes(contentSize);
         }
-        else if (ResponseType == ServerMetadataResponseType.Listing)
+        else if (ResponseType == MetadataResponseType.Listing)
         {
             MetadataFiles = [];
 

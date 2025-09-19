@@ -39,15 +39,8 @@ public partial class TraceViewModel
 
     private bool MatchesFilter(TracePacketViewModel vm)
     {
-        var direction = vm.Packet switch
-        {
-            ClientPacket => PacketDirection.Client,
-            ServerPacket => PacketDirection.Server,
-            _ => PacketDirection.None
-        };
-
         // Filter by packet direction
-        if (!FilterParameters.PacketDirection.HasFlag(direction))
+        if (!FilterParameters.PacketDirection.HasFlag(vm.Direction))
         {
             return false;
         }
@@ -55,7 +48,7 @@ public partial class TraceViewModel
         // Filter by command
         if (FilterParameters.CommandFilterRanges.Count > 0)
         {
-            if (!FilterParameters.CommandFilterRanges.Any(range => range.Contains(vm.Packet.Command)))
+            if (!FilterParameters.CommandFilterRanges.Any(range => range.Contains(vm.Command)))
             {
                 return false;
             }
@@ -88,7 +81,7 @@ public partial class TraceViewModel
 
         var escaped = Regex.Escape(namePattern);
         var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        var newRegex = new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        var newRegex = new Regex($"^{regexPattern}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         _nameFilterRegexes.Add(namePattern, newRegex);
         return newRegex;

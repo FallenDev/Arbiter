@@ -32,7 +32,7 @@ public enum ServerCommand : byte
     AddSkill = 0x2C,
     RemoveSkill = 0x2D,
     WorldMap = 0x2E,
-    ShowMenu = 0x2F,
+    ShowDialogMenu = 0x2F,
     ShowDialog = 0x30,
     BoardResult = 0x31,
     MapDoor = 0x32,

@@ -14,6 +14,17 @@ public class NetworkPacketBuffer
         _packetFactory = packetFactory;
     }
 
+    public void Append(byte value)
+    {
+        EnsureCapacity(1);
+        _queueBuffer[_bufferIndex++] = value;
+    }
+
+    public void Append(byte[] buffer)
+    {
+        Append(buffer, 0, buffer.Length);
+    }
+    
     public void Append(byte[] buffer, int offset, int count)
     {
         EnsureCapacity(count);

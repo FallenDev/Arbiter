@@ -16,6 +16,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientCreateCharacterAppearance(registry);
         RegisterClientCreateCharacterNameMapping(registry);
         RegisterClientDialogChoiceMapping(registry);
+        RegisterClientDialogMenuChoiceMapping(registry);
         RegisterClientDropGoldMapping(registry);
         RegisterClientDropItemMapping(registry);
         RegisterClientEditNotepadMapping(registry);
@@ -29,7 +30,6 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientIgnoreUserMapping(registry);
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
-        RegisterClientMenuChoiceMapping(registry);
         RegisterClientPickupItemMapping(registry);
         RegisterClientRaiseStatMapping(registry);
         RegisterClientRequestEntityMapping(registry);
@@ -183,6 +183,25 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.MenuChoice, p => p.ToolTip("Menu choice selected by the user."))
                 .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
                 .IsExpanded(m => m.ArgsType != DialogArgsType.None);
+        });
+    }
+    
+    private static void RegisterClientDialogMenuChoiceMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientDialogMenuChoiceMessage>(b =>
+        {
+            b.Section("Entity")
+                .Property(m => m.EntityType, p => p.ToolTip("Type of entity responsible for the dialog menu."))
+                .Property(m => m.EntityId,
+                    p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog menu."));
+            b.Section("Menu")
+                .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit the menu belongs to."));
+            b.Section("Slot")
+                .Property(m => m.Slot, p => p.ToolTip("Slot selected by the user."))
+                .IsExpanded(m => m.Slot.HasValue);
+            b.Section("Text Input")
+                .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
+                .IsExpanded(m => m.TextInputs.Count > 0);
         });
     }
 
@@ -342,25 +361,6 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Client")
                 .Property(m => m.ClientId, p => p.ToolTip("ID of the local machine."))
                 .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the login credentials."));
-        });
-    }
-
-    private static void RegisterClientMenuChoiceMapping(InspectorMappingRegistry registry)
-    {
-        registry.Register<ClientMenuChoiceMessage>(b =>
-        {
-            b.Section("Entity")
-                .Property(m => m.EntityType, p => p.ToolTip("Type of entity responsible for the dialog menu."))
-                .Property(m => m.EntityId,
-                    p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog menu."));
-            b.Section("Menu")
-                .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit the menu belongs to."));
-            b.Section("Menu Choice")
-                .Property(m => m.MenuChoice, p => p.ToolTip("Menu choice selected by the user."))
-                .IsExpanded(m => m.MenuChoice.HasValue);
-            b.Section("Text Input")
-                .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
-                .IsExpanded(m => m.TextInputs.Count > 0);
         });
     }
 

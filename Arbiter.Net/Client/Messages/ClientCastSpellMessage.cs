@@ -18,9 +18,14 @@ public class ClientCastSpellMessage : ClientMessage
         
         Slot = reader.ReadByte();
 
-        var maybeLength = reader.ReadByte();
+        if (reader.IsEndOfPacket())
+        {
+            return;
+        }
 
-        if (maybeLength == 0x00 && reader.CanRead(8))
+        var argsLength = reader.ReadByte();
+        
+        if (argsLength == 0x00 && reader.CanRead(7))
         {
             reader.Position -= 1;
             
@@ -29,9 +34,9 @@ public class ClientCastSpellMessage : ClientMessage
             TargetY = reader.ReadByte();
         }
 
-        if (maybeLength != 0x00 && reader.CanRead(maybeLength))
+        if (argsLength != 0x00 && reader.CanRead(argsLength))
         {
-            TextInput = reader.ReadFixedString(maybeLength);
+            TextInput = reader.ReadFixedString(argsLength);
         }
     }
     

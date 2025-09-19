@@ -1,5 +1,6 @@
 ﻿using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
+using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
@@ -11,8 +12,11 @@ public class ClientRequestExitMessage : ClientMessage
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
-        Reason = (ClientExitReason)reader.ReadByte();
+
+        if (reader.CanRead(1))
+        {
+            Reason = (ClientExitReason)reader.ReadByte();
+        }
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

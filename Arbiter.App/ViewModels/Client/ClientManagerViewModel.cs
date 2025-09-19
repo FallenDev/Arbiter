@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Arbiter.App.Services;
-using Arbiter.Net;
+using Arbiter.Net.Proxy;
 using Avalonia.Threading;
 
 namespace Arbiter.App.ViewModels.Client;

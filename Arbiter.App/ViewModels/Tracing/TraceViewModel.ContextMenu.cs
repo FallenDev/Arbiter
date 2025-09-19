@@ -23,8 +23,8 @@ public partial class TraceViewModel
 
         var packetStrings = SelectedPackets.Select(vm => vm.DisplayMode switch
         {
-            PacketDisplayMode.Decrypted => $"{vm.Packet.Command:X2} {vm.FormattedPayload}",
-            _ => vm.FormattedRaw,
+            PacketDisplayMode.Decrypted => $"{vm.Command:X2} {vm.FormattedDecrypted}",
+            _ => vm.FormattedEncrypted,
         });
 
         var lines = string.Join(Environment.NewLine, packetStrings);

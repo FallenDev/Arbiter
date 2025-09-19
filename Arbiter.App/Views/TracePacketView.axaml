@@ -62,14 +62,14 @@
                     <TextBlock Name="CommandNameText"
                                Text="{Binding CommandName}"
                                TextAlignment="Left"
-                               Foreground="{Binding Packet, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
+                               Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                FontWeight="SemiBold"/>
                 </StackPanel>
                 
                 <!-- Payload Display -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
                     <TextBlock Name="CommandText"
-                               Text="{Binding Packet.Command, StringFormat={}{0:X2}}"
+                               Text="{Binding Command, StringFormat={}{0:X2}}"
                                Foreground="{Binding #CommandNameText.Foreground}"/>
                     
                     <TextBlock Name="PayloadText"

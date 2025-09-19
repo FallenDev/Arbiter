@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using Arbiter.Net;
+using Arbiter.Net.Proxy;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
@@ -33,6 +35,7 @@ public class ProxyViewModel : ViewModelBase
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
         _proxyServer.ClientLoggedOut += OnClientLoggedOut;
         _proxyServer.ClientRedirected += OnClientRedirected;
+        _proxyServer.PacketException += OnClientException;
 
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
         OnPropertyChanged(nameof(IsRunning));
@@ -85,4 +88,13 @@ public class ProxyViewModel : ViewModelBase
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client redirected to {Endpoint}", name, e.RemoteEndpoint);
     }
+
+    private void OnClientException(object? sender, ProxyConnectionExceptionEventArgs e)
+    {
+        var name = e.Connection.Name ?? e.Connection.Id.ToString();
+
+        var packetString = string.Join(' ', e.Packet.Data.Select(b => b.ToString("X2")));
+        _logger.LogWarning("[{Name}] Bad packet: {Packet}", name, packetString);
+    }
+
 }

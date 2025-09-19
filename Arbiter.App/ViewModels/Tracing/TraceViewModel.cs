@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
-using Arbiter.App.Extensions;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
-using Arbiter.Net;
-using Arbiter.Net.Client;
-using Arbiter.Net.Server;
-using Avalonia;
-using Avalonia.Input;
+using Arbiter.Net.Proxy;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -103,7 +93,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        var packetViewModel = new TracePacketViewModel(e.Packet, e.RawData, e.Connection.Name)
+        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.Connection.Name)
             { DisplayMode = _packetDisplayMode };
 
         AddPacketToTrace(packetViewModel);

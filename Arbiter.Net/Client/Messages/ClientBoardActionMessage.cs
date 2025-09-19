@@ -10,7 +10,7 @@ public class ClientBoardActionMessage : ClientMessage
     public MessageBoardAction Action { get; set; }
     public ushort? BoardId { get; set; }
     public short? StartPostId { get; set; }
-    public ushort? Unknown { get; set; }
+    public byte? Unknown { get; set; }
     public short? PostId { get; set; }
     public MessageBoardNavigation? Navigation { get; set; }
     public string? Subject { get; set; }
@@ -29,7 +29,7 @@ public class ClientBoardActionMessage : ClientMessage
         {
             BoardId = reader.ReadUInt16();
             StartPostId = reader.ReadInt16();
-            Unknown = reader.ReadUInt16();
+            Unknown = reader.ReadByte();
         }
         else if (Action == MessageBoardAction.ViewPost)
         {

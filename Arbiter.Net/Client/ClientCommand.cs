@@ -33,7 +33,7 @@ public enum ClientCommand : byte
     ToggleGroup = 0x2F,
     SwapSlot = 0x30,
     Refresh = 0x38,
-    MenuChoice = 0x39,
+    DialogMenuChoice = 0x39,
     DialogChoice = 0x3A,
     BoardAction = 0x3B,
     UseSkill = 0x3E,

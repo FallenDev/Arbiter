@@ -75,7 +75,7 @@ public partial class TraceViewModel
             return true;
         }
 
-        return vm.Packet.Command == SearchParameters.Command;
+        return vm.Command == SearchParameters.Command;
     }
 
     [RelayCommand]

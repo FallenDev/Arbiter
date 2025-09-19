@@ -12,23 +12,23 @@ namespace Arbiter.App.ViewModels.Logging;
 public partial class ConsoleViewModel : ViewModelBase
 {
     private readonly ConcurrentObservableCollection<LogEntryViewModel> _allLogEntries = [];
-    
+
     public FilteredObservableCollection<LogEntryViewModel> FilteredLogEntries { get; }
 
     [ObservableProperty] private bool _scrollToEndRequested;
-    
+
     private bool _showDebugMessages = true;
     private bool _showInfoMessages = true;
     private bool _showWarningMessages = true;
     private bool _showErrorMessages = true;
 
-    public int DebugCount => _allLogEntries.Count(log => log.Level is LogLevel.Debug or LogLevel.Trace);
-    public int InfoCount => _allLogEntries.Count(log => log.Level == LogLevel.Information);
-    public int WarningCount => _allLogEntries.Count(log => log.Level == LogLevel.Warning);
-    public int ErrorCount => _allLogEntries.Count(log => log.Level is LogLevel.Error or LogLevel.Critical);
-    
+    public int DebugCount => _allLogEntries.SafeCountBy(log => log.Level is LogLevel.Debug or LogLevel.Trace);
+    public int InfoCount => _allLogEntries.SafeCountBy(log => log.Level == LogLevel.Information);
+    public int WarningCount => _allLogEntries.SafeCountBy(log => log.Level == LogLevel.Warning);
+    public int ErrorCount => _allLogEntries.SafeCountBy(log => log.Level is LogLevel.Error or LogLevel.Critical);
+
     public bool IsEmpty => _allLogEntries.Count == 0;
-    
+
     public bool ShowDebugMessages
     {
         get => _showDebugMessages;
@@ -41,7 +41,7 @@ public partial class ConsoleViewModel : ViewModelBase
             }
         }
     }
-    
+
     public bool ShowInfoMessages
     {
         get => _showInfoMessages;
@@ -54,7 +54,7 @@ public partial class ConsoleViewModel : ViewModelBase
             }
         }
     }
-    
+
     public bool ShowWarningMessages
     {
         get => _showWarningMessages;
@@ -67,7 +67,7 @@ public partial class ConsoleViewModel : ViewModelBase
             }
         }
     }
-    
+
     public bool ShowErrorMessages
     {
         get => _showErrorMessages;
@@ -86,7 +86,7 @@ public partial class ConsoleViewModel : ViewModelBase
         FilteredLogEntries = new FilteredObservableCollection<LogEntryViewModel>(_allLogEntries, MatchesFilter);
 
         _allLogEntries.CollectionChanged += OnLogCollectionChanged;
-        
+
         provider.LogEntryCreated += logEntry => { _allLogEntries.Add(new LogEntryViewModel(logEntry)); };
     }
 
@@ -101,7 +101,7 @@ public partial class ConsoleViewModel : ViewModelBase
             OnPropertyChanged(nameof(ErrorCount));
         }, DispatcherPriority.Background);
     }
-    
+
     private bool MatchesFilter(LogEntryViewModel logEntry)
     {
         return logEntry.Level switch

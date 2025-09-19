@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using Avalonia.Threading;
 
@@ -18,16 +19,10 @@ public class ConcurrentObservableCollection<T> : ObservableCollection<T>
         Dispatcher = dispatcher ?? dispatcher ?? Dispatcher.UIThread;
     }
 
-    public ConcurrentObservableCollection(IEnumerable<T> collection, Dispatcher? dispatcher = null)
-        : base(collection)
+    public int SafeCountBy(Func<T, bool> predicate)
     {
-        Dispatcher = dispatcher ?? dispatcher ?? Dispatcher.UIThread;
-    }
-
-    public ConcurrentObservableCollection(IList<T> list, Dispatcher? dispatcher = null)
-        : base(list)
-    {
-        Dispatcher = dispatcher ?? dispatcher ?? Dispatcher.UIThread;
+        using var _ = _lock.EnterScope();
+        return this.Count(predicate);
     }
 
     protected override void InsertItem(int index, T item)

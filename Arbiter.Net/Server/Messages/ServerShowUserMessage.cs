@@ -115,7 +115,7 @@ public class ServerShowUserMessage : ServerMessage
         Name = reader.ReadString8();
         GroupBox = reader.ReadString8();
 
-        if (BodySprite == Types.BodySprite.None && IsTranslucent)
+        if (BodySprite == Arbiter.Net.Types.BodySprite.None && IsTranslucent)
         {
             IsHidden = true;
             IsTranslucent = false;

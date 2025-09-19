@@ -1,19 +1,20 @@
 ﻿using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
+using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Server.Messages;
 
 [NetworkCommand(ServerCommand.LoginResult)]
 public class ServerLoginResultMessage : ServerMessage
 {
-    public ServerLoginMessageType ResultType { get; set; }
+    public LoginResult Result { get; set; }
     public string? Message { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
-        ResultType = (ServerLoginMessageType)reader.ReadByte();
+        Result = (LoginResult)reader.ReadByte();
         Message = reader.ReadString8();
     }
 
