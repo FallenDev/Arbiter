@@ -10,12 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - CRC16 and CRC32 checksum algorithms
-
+- Unit tests for network layer
 
 ### Changed
 
 - Client name filter now matches exactly (unless `*` or `?` are used)
 - Renamed a few enum types
+- Renamed `MenuChoice` to `DialogMenuChoice` for clarity
+- Renamed `ClientMenuChoiceMessage` to `ClientDialogMenuChoiceMessage` for consistency
 
 ## [0.9.3] - 2025-09-18
 

@@ -50,15 +50,11 @@ public class Crc32ProviderTests
     {
         _provider = new Crc32Provider();    
     }
-    
+
     [Test]
     public void Should_Generate_Default_Table()
     {
-        for (var i = 0; i < ExpectedDefaultTable.Length; i++)
-        {
-            var actual = _provider.Table[i];
-            Assert.That(actual, Is.EqualTo(ExpectedDefaultTable[i]));
-        }
+        Assert.That(_provider.Table, Is.EqualTo(ExpectedDefaultTable));
     }
 
     [TestCase(new byte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf },

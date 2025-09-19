@@ -4,8 +4,8 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.Net.Client.Messages;
 
-[NetworkCommand(ClientCommand.MenuChoice)]
-public class ClientMenuChoiceMessage : ClientMessage
+[NetworkCommand(ClientCommand.DialogMenuChoice)]
+public class ClientDialogMenuChoiceMessage : ClientMessage
 {
     public EntityTypeFlags EntityType { get; set; }
     public uint EntityId { get; set; }

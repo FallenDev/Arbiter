@@ -12,16 +12,14 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         or 0x42 or 0x43 or 0x4B or 0x57 or 0x62 or 0x68 or 0x71 or 0x73 or 0x7B;
 
     private static bool IsDialog(byte command) => command is 0x39 or 0x3A;
-
-    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
-    {
-        var parameters = Parameters;
-
-        return packet;
-    }
-
+    
     public NetworkPacket Decrypt(NetworkPacket packet)
     {
+        if (!IsEncrypted(packet.Command))
+        {
+            return packet;
+        }
+        
         var parameters = Parameters;
         var saltTable = parameters.SaltTable.Span;
         var keyLength = parameters.PrivateKey.Length;
@@ -90,5 +88,17 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         decrypted = decrypted[6..];
 
         return new ClientPacket(packet.Command, decrypted, checksum) { Sequence = sequence };
+    }
+    
+    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
+    {
+        if (!IsEncrypted(packet.Command))
+        {
+            return packet;
+        }
+        
+        var parameters = Parameters;
+
+        return packet;
     }
 }

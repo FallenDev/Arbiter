@@ -10,14 +10,14 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
     
     private static bool UseStaticKey(byte command) =>
         command is 0x01 or 0x02 or 0x0A or 0x56 or 0x60 or 0x62 or 0x66 or 0x6F;
-    
-    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
-    {
-        return packet;
-    }
 
     public NetworkPacket Decrypt(NetworkPacket packet)
     {
+        if (!IsEncrypted(packet.Command))
+        {
+            return packet;
+        }
+        
         var parameters = Parameters;
         var saltTable = parameters.SaltTable.Span;
         var keyLength = parameters.PrivateKey.Length;
@@ -59,5 +59,16 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
         }
 
         return new ServerPacket(packet.Command, decrypted) { Sequence = sequence };
+    }
+    
+    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
+    {
+        if (!IsEncrypted(packet.Command))
+        {
+            return packet;
+        }
+        
+        var parameters = Parameters;
+        return packet;
     }
 }
