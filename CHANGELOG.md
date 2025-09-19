@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Encrypt algorithm for client packets (auto-insert `0x00` byte)
 - Dialog encryption algorithm for client packets
 - Unit tests for network and encryption algorithms
+- `PacketException` event invoked when the client tries to send `0x42` exception packet
 
 ### Changed
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `ServerShowMenuMessage` to `ServerShowDialogMenuMessage` for consistency
 - Decrypting client packets will now remove the trailing `0x00` byte
 - `NetworkEncryptionParameters` are now read-only for thread safety
+- Blocking of outgoing `0x42` client exception packets to the server (still logged/traced locally)
 
 ## [0.9.3] - 2025-09-18
 
