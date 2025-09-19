@@ -50,13 +50,13 @@ public partial class ProxyConnection
                 packetBuffer.Append(recvBuffer, 0, recvCount);
 
                 // Attempt to dequeue all available packets
-                while (packetBuffer.TryTakePacket(out var packet))
+                while (packetBuffer.TryTakePacket(out var encryptedPacket))
                 {
                     // Decrypt the packet if necessary
-                    var decrypted = encryptor?.IsEncrypted(packet.Command) ?? false
-                        ? encryptor.Decrypt(packet)
-                        : packet;
-                    
+                    var decrypted = encryptor?.IsEncrypted(encryptedPacket.Command) ?? false
+                        ? encryptor.Decrypt(encryptedPacket)
+                        : encryptedPacket;
+
                     switch (decrypted)
                     {
                         // Handle server encryption, we need to update encryption parameters
@@ -81,10 +81,12 @@ public partial class ProxyConnection
                             break;
                     }
 
-                    // Raise the event with the decrypted packet
-                    var rawPacket = packet.ToList();
-                    PacketReceived?.Invoke(this, new NetworkPacketEventArgs(NetworkAction.Receive, decrypted, rawPacket));
-                    await _sendQueue.Writer.WriteAsync(packet, token).ConfigureAwait(false);
+                    // Notify that we have received a packet
+                    PacketReceived?.Invoke(this,
+                        new NetworkTransferEventArgs(NetworkDirection.Receive, encryptedPacket, decrypted));
+                    
+                    // Send the decrypted packet to the other end of the connection (it will be re-encrypted)
+                    await _sendQueue.Writer.WriteAsync(decrypted, token).ConfigureAwait(false);
                 }
             }
         }

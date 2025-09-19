@@ -46,8 +46,8 @@ public partial class ProxyConnection : IDisposable
     public event EventHandler? ServerDisconnected;
 
     public event EventHandler<NetworkRedirectEventArgs>? ClientRedirected;
-    public event EventHandler<NetworkPacketEventArgs>? PacketReceived;
-    public event EventHandler<NetworkPacketEventArgs>? PacketSent;
+    public event EventHandler<NetworkTransferEventArgs>? PacketReceived;
+    public event EventHandler<NetworkTransferEventArgs>? PacketSent;
     public event EventHandler<NetworkPacketEventArgs>? PacketException;
 
     public ProxyConnection(int id, TcpClient client)

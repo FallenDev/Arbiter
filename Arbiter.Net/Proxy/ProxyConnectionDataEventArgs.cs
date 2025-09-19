@@ -2,12 +2,12 @@
 
 public class ProxyConnectionDataEventArgs(
     ProxyConnection connection,
-    NetworkAction action,
-    NetworkPacket packet,
-    IReadOnlyList<byte> rawData)
+    NetworkDirection direction,
+    NetworkPacket encrypted,
+    NetworkPacket decrypted)
     : ProxyConnectionEventArgs(connection)
 {
-    public NetworkAction Action { get; } = action;
-    public NetworkPacket Packet { get; } = packet;
-    public IReadOnlyList<byte> RawData { get; } = rawData;
+    public NetworkDirection Direction { get; } = direction;
+    public NetworkPacket Encrypted { get; } = encrypted;
+    public NetworkPacket Decrypted { get; } = decrypted;
 }

@@ -70,10 +70,10 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        SelectedRawHex = new RawHexViewModel(viewModel.Packet);
+        SelectedRawHex = new RawHexViewModel(viewModel.DecryptedPacket);
         SelectedRawHex.ClearSelection();
 
-        Inspector.SelectedPacket = viewModel.Packet;
+        Inspector.SelectedPacket = viewModel.DecryptedPacket;
     }
 
     [RelayCommand]

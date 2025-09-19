@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -92,7 +93,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
     {
-        var packetViewModel = new TracePacketViewModel(e.Packet, e.RawData, e.Connection.Name)
+        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.Connection.Name)
             { DisplayMode = _packetDisplayMode };
 
         AddPacketToTrace(packetViewModel);

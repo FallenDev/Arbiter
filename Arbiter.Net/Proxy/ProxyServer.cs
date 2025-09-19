@@ -31,6 +31,7 @@ public class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionRedirectEventArgs>? ClientRedirected;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketReceived;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketSent;
+    public event EventHandler<ProxyConnectionExceptionEventArgs>? PacketException;
 
     public void Start(int listenPort, IPAddress remoteAddress, int remotePort) =>
         Start(listenPort, new IPEndPoint(remoteAddress, remotePort));
@@ -109,6 +110,8 @@ public class ProxyServer : IDisposable
         connection.ClientRedirected += OnClientRedirected;
         connection.PacketReceived += OnRecv;
         connection.PacketSent += OnSend;
+        connection.PacketException += OnExceptionPacket;
+
 
         // Check for any pending redirects, use that first
         var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : RemoteEndpoint!;
@@ -129,6 +132,7 @@ public class ProxyServer : IDisposable
             connection.ClientRedirected -= OnClientRedirected;
             connection.PacketReceived -= OnRecv;
             connection.PacketSent -= OnSend;
+            connection.PacketException -= OnExceptionPacket;
 
             using var _ = _connectionsLock.EnterScope();
             _connections.Remove(connection);
@@ -141,7 +145,7 @@ public class ProxyServer : IDisposable
 
     private void OnClientLoggedIn(object? sender, EventArgs e) =>
         ClientLoggedIn?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
-    
+
     private void OnClientLoggedOut(object? sender, EventArgs e) =>
         ClientLoggedOut?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
@@ -154,13 +158,17 @@ public class ProxyServer : IDisposable
     private void OnServerDisconnected(object? sender, EventArgs e) =>
         ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
-    private void OnRecv(object? sender, NetworkPacketEventArgs e) =>
+    private void OnRecv(object? sender, NetworkTransferEventArgs e) =>
         PacketReceived?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Action, e.Packet, e.RawData));
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Encrypted, e.Decrypted));
 
-    private void OnSend(object? sender, NetworkPacketEventArgs e) =>
+    private void OnSend(object? sender, NetworkTransferEventArgs e) =>
         PacketSent?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Action, e.Packet, e.RawData));
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Decrypted, e.Decrypted));
+
+    private void OnExceptionPacket(object? sender, NetworkPacketEventArgs e) =>
+        PacketException?.Invoke(this,
+            new ProxyConnectionExceptionEventArgs((sender as ProxyConnection)!, e.Packet));
 
     private void OnClientRedirected(object? sender, NetworkRedirectEventArgs e)
     {

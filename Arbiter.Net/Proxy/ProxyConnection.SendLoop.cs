@@ -14,10 +14,10 @@ public partial class ProxyConnection
         try
         {
             // Keep polling for any available outgoing packets
-            await foreach (var packet in _sendQueue.Reader.ReadAllAsync(token))
+            await foreach (var decryptedPacket in _sendQueue.Reader.ReadAllAsync(token))
             {
                 // Determine which stream we need to send to
-                var destinationStream = packet switch
+                var destinationStream = decryptedPacket switch
                 {
                     ClientPacket => _serverStream!,
                     ServerPacket => _clientStream!,
@@ -30,7 +30,7 @@ public partial class ProxyConnection
                 }
 
                 // Determine which encryption to use based on the outgoing packet type
-                INetworkPacketEncryptor? encryptor = packet switch
+                INetworkPacketEncryptor? encryptor = decryptedPacket switch
                 {
                     ClientPacket => _clientEncryptor,
                     ServerPacket => _serverEncryptor,
@@ -38,7 +38,7 @@ public partial class ProxyConnection
                 };
 
                 // Determine the next sequence number
-                var nextSequence = packet switch
+                var nextSequence = decryptedPacket switch
                 {
                     ClientPacket => _clientSequence++,
                     ServerPacket => _serverSequence++,
@@ -46,25 +46,23 @@ public partial class ProxyConnection
                 };
 
                 // Encrypt the packet if necessary
-                var encrypted = encryptor?.IsEncrypted(packet.Command) ?? false
-                    ? encryptor.Encrypt(packet, nextSequence)
-                    : packet;
-                
+                var encryptedPacket = encryptor?.IsEncrypted(decryptedPacket.Command) ?? false
+                    ? encryptor.Encrypt(decryptedPacket, nextSequence)
+                    : decryptedPacket;
+
                 // Do not send the 0x42 Client Exception packet to the server to avoid suspicion
-                if (encrypted is ClientPacket { Command: ClientCommand.Exception })
+                if (encryptedPacket is ClientPacket { Command: ClientCommand.Exception })
                 {
-                    PacketException?.Invoke(this,
-                        new NetworkPacketEventArgs(NetworkAction.None, packet, encrypted.ToList()));
+                    PacketException?.Invoke(this, new NetworkPacketEventArgs(decryptedPacket));
                     continue;
                 }
 
-                await encrypted.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
+                // Write the encrypted packet to the network stream
+                await encryptedPacket.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
                     .ConfigureAwait(false);
 
-                // Raise the event with the decrypted (plaintext) packet
-                var rawPacket = encrypted.ToList();
-                PacketSent?.Invoke(this,
-                    new NetworkPacketEventArgs(NetworkAction.Send, packet, rawPacket));
+                // Notify that we have sent a packet
+                PacketSent?.Invoke(this, new NetworkTransferEventArgs(NetworkDirection.Send, encryptedPacket, decryptedPacket));
             }
         }
         catch when (token.IsCancellationRequested)

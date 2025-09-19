@@ -1,6 +1,6 @@
 ﻿namespace Arbiter.Net;
 
-public enum NetworkAction
+public enum NetworkDirection
 {
     None = 0,
     Receive = 1,

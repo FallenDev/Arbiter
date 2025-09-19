@@ -108,9 +108,9 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
         connection.PacketReceived -= OnPacketReceived;
     }
 
-    private void OnPacketReceived(object? sender, NetworkPacketEventArgs e)
+    private void OnPacketReceived(object? sender, NetworkTransferEventArgs e)
     {
-        if (e.Packet is ClientPacket clientPacket)
+        if (e.Decrypted is ClientPacket clientPacket)
         {
             if (ClientMessageFactory.Default.TryCreate(clientPacket, out var message))
             {
@@ -118,7 +118,7 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
             }
         }
 
-        if (e.Packet is ServerPacket serverPacket)
+        if (e.Decrypted is ServerPacket serverPacket)
         {
             if (ServerMessageFactory.Default.TryCreate(serverPacket, out var message))
             {
