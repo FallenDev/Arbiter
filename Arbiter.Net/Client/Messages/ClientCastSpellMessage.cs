@@ -25,7 +25,7 @@ public class ClientCastSpellMessage : ClientMessage
 
         var argsLength = reader.ReadByte();
         
-        if (argsLength == 0x00 && reader.CanRead(8))
+        if (argsLength == 0x00 && reader.CanRead(7))
         {
             reader.Position -= 1;
             
