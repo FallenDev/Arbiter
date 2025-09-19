@@ -1,4 +1,4 @@
-﻿using Arbiter.Net.Client;
+﻿using Arbiter.Net.Client.Types;
 
 namespace Arbiter.App.Mappings.Client;
 

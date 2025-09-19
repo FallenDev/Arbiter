@@ -1,6 +1,7 @@
 ﻿using Arbiter.Net.Annotations;
 using Arbiter.Net.Compression;
 using Arbiter.Net.Serialization;
+using Arbiter.Net.Server.Types;
 
 namespace Arbiter.Net.Server.Messages;
 

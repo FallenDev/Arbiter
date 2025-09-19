@@ -1,4 +1,5 @@
 ﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Client.Types;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Types;
 

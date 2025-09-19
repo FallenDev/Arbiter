@@ -1,6 +1,6 @@
 ﻿using Arbiter.App.Extensions;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
+using Arbiter.Net.Server.Types;
 
 namespace Arbiter.App.Mappings.Server;
 

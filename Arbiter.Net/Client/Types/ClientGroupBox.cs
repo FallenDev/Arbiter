@@ -1,4 +1,4 @@
-﻿namespace Arbiter.Net.Client;
+﻿namespace Arbiter.Net.Client.Types;
 
 public class ClientGroupBox
 {

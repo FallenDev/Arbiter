@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Arbiter.Net.Server;
+namespace Arbiter.Net.Server.Types;
 
 public class ServerTableEntry
 {

@@ -1,6 +1,6 @@
 ﻿using Arbiter.Net.Types;
 
-namespace Arbiter.Net.Server;
+namespace Arbiter.Net.Server.Types;
 
 public class ServerSkillMenuChoice
 {

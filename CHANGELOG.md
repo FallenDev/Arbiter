@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Client name filter now matches exactly (unless `*` or `?` are used)
+- Renamed a few enum types
 
 ## [0.9.3] - 2025-09-18
 
