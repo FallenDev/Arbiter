@@ -40,10 +40,13 @@ public partial class TracePacketViewModel(
     
     [ObservableProperty] private uint? _checksum = encrypted is ClientPacket clientPacket ? clientPacket.Checksum : null;
     
+    [ObservableProperty] private string _formattedEncrypted = string.Join(' ', encrypted.Select(x => x.ToString("X2")));
+    
+    [ObservableProperty] private string _formattedDecrypted = string.Join(' ', decrypted.Data.Select(x => x.ToString("X2")));
+    
     public DateTime Timestamp { get; private init; } = DateTime.Now;
     public NetworkPacket EncryptedPacket { get; } = encrypted;
     public NetworkPacket DecryptedPacket { get; } = decrypted;
-    public IReadOnlyList<byte> Payload { get; } = decrypted.ToList();
     
     public string DisplayValue => DisplayMode switch
     {
@@ -54,11 +57,8 @@ public partial class TracePacketViewModel(
     public bool IsClient => DecryptedPacket is ClientPacket;
     public bool IsServer => DecryptedPacket is ServerPacket;
 
-    public string FormattedEncrypted => string.Join(' ', EncryptedPacket.Select(x => x.ToString("X2")));
-    public string FormattedDecrypted => string.Join(' ', DecryptedPacket.Select(x => x.ToString("X2")));
-
     public TracePacket ToTracePacket()
-    {
+    {   
         var tracePacket = new TracePacket
         {
             Timestamp = Timestamp,
@@ -67,7 +67,7 @@ public partial class TracePacketViewModel(
             Command = Command,
             Sequence = Sequence,
             RawData = EncryptedPacket.ToList(),
-            Payload = Payload,
+            Payload = DecryptedPacket.Data,
             Checksum = Checksum
         };
         return tracePacket;
@@ -75,29 +75,33 @@ public partial class TracePacketViewModel(
 
     public static TracePacketViewModel FromTracePacket(TracePacket tracePacket, PacketDisplayMode displayMode)
     {
+        var command = tracePacket.Command;
+        var encryptedPayload = tracePacket.RawData.Skip(4);
+        var decryptedPayload = tracePacket.Payload;
+
         NetworkPacket decryptedPacket = tracePacket.Direction switch
         {
-            PacketDirection.Client => new ClientPacket(tracePacket.Command, tracePacket.Payload, tracePacket.Checksum)
+            PacketDirection.Client => new ClientPacket(command, decryptedPayload, tracePacket.Checksum)
                 { Sequence = tracePacket.Sequence },
-            PacketDirection.Server => new ServerPacket(tracePacket.Command, tracePacket.Payload)
+            PacketDirection.Server => new ServerPacket(command, decryptedPayload)
                 { Sequence = tracePacket.Sequence },
             _ => throw new InvalidOperationException("Invalid packet direction")
         };
 
         NetworkPacket encryptedPacket = tracePacket.Direction switch
         {
-            PacketDirection.Client => new ClientPacket(tracePacket.Command, tracePacket.RawData, tracePacket.Checksum)
+            PacketDirection.Client => new ClientPacket(command, encryptedPayload, tracePacket.Checksum)
             {
                 Sequence = tracePacket.Sequence
             },
-            PacketDirection.Server => new ServerPacket(tracePacket.Command, tracePacket.RawData)
+            PacketDirection.Server => new ServerPacket(command, encryptedPayload)
             {
                 Sequence = tracePacket.Sequence
             },
             _ => throw new InvalidOperationException("Invalid packet direction")
         };
 
-        return new TracePacketViewModel(decryptedPacket, encryptedPacket, tracePacket.ClientName)
+        return new TracePacketViewModel(encryptedPacket, decryptedPacket, tracePacket.ClientName)
         {
             Timestamp = tracePacket.Timestamp,
             DisplayMode = displayMode,
