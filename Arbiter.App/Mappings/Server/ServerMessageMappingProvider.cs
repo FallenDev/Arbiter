@@ -328,7 +328,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerLoginResultMessage>(b =>
         {
             b.Section("Login")
-                .Property(m => m.ResultType, p => p.ToolTip("Type of login result."))
+                .Property(m => m.Result, p => p.ToolTip("Type of login result."))
                 .Property(m => m.Message, p => p.ShowMultiline().ToolTip("Message to be displayed to the user."));
         });
     }
@@ -421,10 +421,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Name, p => p.ToolTip("Name of the metadata file."))
                 .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-32 checksum of the metadata file."))
                 .Property(m => m.Data, p => p.ShowMultiline().ToolTip("Raw data of the metadata file."))
-                .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Metadata);
+                .IsExpanded(m => m.ResponseType == MetadataResponseType.Metadata);
             b.Section("Listing")
                 .Property(m => m.MetadataFiles)
-                .IsExpanded(m => m.ResponseType == ServerMetadataResponseType.Listing);
+                .IsExpanded(m => m.ResponseType == MetadataResponseType.Listing);
         });
     }
 

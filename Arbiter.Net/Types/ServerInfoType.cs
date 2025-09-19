@@ -1,4 +1,4 @@
-﻿namespace Arbiter.Net.Server;
+﻿namespace Arbiter.Net.Types;
 
 public enum ServerInfoType : byte
 {

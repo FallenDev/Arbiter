@@ -88,7 +88,7 @@ public partial class TraceViewModel
 
         var escaped = Regex.Escape(namePattern);
         var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        var newRegex = new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        var newRegex = new Regex($"^{regexPattern}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         _nameFilterRegexes.Add(namePattern, newRegex);
         return newRegex;

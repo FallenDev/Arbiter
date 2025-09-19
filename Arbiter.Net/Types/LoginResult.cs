@@ -1,6 +1,6 @@
-﻿namespace Arbiter.Net.Server;
+﻿namespace Arbiter.Net.Types;
 
-public enum ServerLoginMessageType : byte
+public enum LoginResult : byte
 {
     Success = 0,
     InvalidName = 3,
