@@ -216,14 +216,13 @@ public class ServerPacketEncryptorTests
         var sequence = WorldMessagePacketBytes[4];
         var payload = WorldMessagePayload;
 
-        var packet = new ServerPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence);
-
-        // Static key does not use sRand or bRand so we can just ignore them
-        var expectedEncrypted = WorldMessagePacketBytes[4..^3];
-        var actualEncrypted = encrypted.Data[..^3];
+        var (sRand, bRand) = ServerPacketEncryptor.ReadRandoms(WorldMessagePacketBytes);
         
-        Assert.That(actualEncrypted, Is.EqualTo(expectedEncrypted));
+        var packet = new ServerPacket(command, payload.AsSpan());
+        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+
+        var expectedEncrypted = WorldMessagePacketBytes[4..];
+        Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
     }
     
     [Test]

@@ -185,12 +185,13 @@ public class ClientPacketEncryptorTests
         var sequence = InteractPacketBytes[4];
         var payload = InteractPacketPayload;
 
+        var (sRand, bRand) = ClientPacketEncryptor.ReadRandoms(InteractPacketBytes);
+        
         var packet = new ClientPacket(command, payload.AsSpan());
-        _encryptor.Encrypt(packet, sequence);
+        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
 
-        // Static key does not use sRand or bRand so we can just ignore them
-        var expectedEncrypted = InteractPacketBytes[4..^3];
-        var actualEncrypted = packet.Data[..^3];
+        var expectedEncrypted = InteractPacketBytes[4..];
+        var actualEncrypted = encrypted.Data;
 
         Assert.That(actualEncrypted, Is.EqualTo(expectedEncrypted));
     }
