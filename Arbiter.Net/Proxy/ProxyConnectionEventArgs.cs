@@ -1,4 +1,4 @@
-﻿namespace Arbiter.Net;
+﻿namespace Arbiter.Net.Proxy;
 
 public class ProxyConnectionEventArgs(ProxyConnection connection) : EventArgs
 {

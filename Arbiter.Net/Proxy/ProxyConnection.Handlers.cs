@@ -2,7 +2,7 @@
 using Arbiter.Net.Security;
 using Arbiter.Net.Serialization;
 
-namespace Arbiter.Net;
+namespace Arbiter.Net.Proxy;
 
 public partial class ProxyConnection
 {

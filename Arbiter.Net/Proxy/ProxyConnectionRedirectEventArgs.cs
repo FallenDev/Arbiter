@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Arbiter.Net;
+namespace Arbiter.Net.Proxy;
 
 public class ProxyConnectionRedirectEventArgs(ProxyConnection connection, string name, IPEndPoint remoteEndpoint)
     : ProxyConnectionEventArgs(connection)

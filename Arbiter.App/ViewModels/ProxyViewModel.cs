@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using Arbiter.Net;
+using Arbiter.Net.Proxy;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;

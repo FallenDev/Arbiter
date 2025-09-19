@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Arbiter.Net;
+namespace Arbiter.Net.Proxy;
 
 public class ProxyServer : IDisposable
 {

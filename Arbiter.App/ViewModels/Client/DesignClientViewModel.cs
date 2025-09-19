@@ -1,5 +1,5 @@
 ﻿using System.Net.Sockets;
-using Arbiter.Net;
+using Arbiter.Net.Proxy;
 
 namespace Arbiter.App.ViewModels.Client;
 
