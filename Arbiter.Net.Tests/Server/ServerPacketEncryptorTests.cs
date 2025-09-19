@@ -238,10 +238,8 @@ public class ServerPacketEncryptorTests
         var packet = new ServerPacket(command, payload.AsSpan());
         var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
 
-        var expectedEncrypted = ShowUserPacketBytes[4..^3];
-        var actualEncrypted = encrypted.Data[..^3];
-        
-        Assert.That(actualEncrypted, Is.EqualTo(expectedEncrypted));
+        var expectedEncrypted = ShowUserPacketBytes[4..];
+        Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
     }
 
     [Test]
@@ -256,10 +254,8 @@ public class ServerPacketEncryptorTests
         var packet = new ServerPacket(command, payload.AsSpan());
         var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
 
-        var expectedEncrypted = DialogMenuPacketBytes[4..^3];
-        var actualEncrypted = encrypted.Data[..^3];
-
-        Assert.That(actualEncrypted, Is.EqualTo(expectedEncrypted));
+        var expectedEncrypted = DialogMenuPacketBytes[4..];
+        Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
     }
     
     [Test]
@@ -274,9 +270,7 @@ public class ServerPacketEncryptorTests
         var packet = new ServerPacket(command, payload.AsSpan());
         var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
 
-        var expectedEncrypted = DialogPacketBytes[4..^3];
-        var actualEncrypted = encrypted.Data[..^3];
-
-        Assert.That(actualEncrypted, Is.EqualTo(expectedEncrypted));
+        var expectedEncrypted = DialogPacketBytes[4..];
+        Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
     }
 }
