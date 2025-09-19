@@ -8,14 +8,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
     private const int MaxStackAllocLimit = 1024;
     private readonly Crc16Provider _crc16Provider = new();
 
-    public NetworkEncryptionParameters Parameters { get; }
-
-    public bool IsEncrypted(byte command) => command is not 0x00 and not 0x10 and not 0x48;
-
-    private static bool UseStaticKey(byte command) => command is 0x02 or 0x03 or 0x04 or 0x0B or 0x26 or 0x2D or 0x3A
-        or 0x42 or 0x43 or 0x4B or 0x57 or 0x62 or 0x68 or 0x71 or 0x73 or 0x7B;
-    private static bool UseHashKey(byte command) => !UseStaticKey(command);
-    private static bool IsDialog(byte command) => command is 0x39 or 0x3A;
+    public NetworkEncryptionParameters Parameters { get; set; }
 
     public ClientPacketEncryptor() :
         this(NetworkEncryptionParameters.Default)
@@ -27,6 +20,16 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         Parameters = parameters;
     }
 
+    public static bool IsEncrypted(byte command) => command is not 0x00 and not 0x10 and not 0x48;
+
+    private static bool UseStaticKey(byte command) => command is 0x02 or 0x03 or 0x04 or 0x0B or 0x26 or 0x2D or 0x3A
+        or 0x42 or 0x43 or 0x4B or 0x57 or 0x62 or 0x68 or 0x71 or 0x73 or 0x7B;
+
+    private static bool UseHashKey(byte command) => !UseStaticKey(command);
+    private static bool IsDialog(byte command) => command is 0x39 or 0x3A;
+
+    public bool ShouldEncrypt(byte command) => IsEncrypted(command);
+    
     public NetworkPacket Decrypt(NetworkPacket packet)
     {
         if (!IsEncrypted(packet.Command))
@@ -134,7 +137,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var saltTable = Parameters.SaltTable.Span;
         var keyLength = Parameters.PrivateKey.Length;
         Span<byte> privateKey = stackalloc byte[keyLength];
-        
+
         // Determine if we need to generate a hash key or just use the static key
         if (UseHashKey(packet.Command))
         {
@@ -146,7 +149,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             // Default to the static 9-byte key
             Parameters.PrivateKey.Span.CopyTo(privateKey);
         }
-        
+
         // [u8 Command] [u8 Sequence] [u8... Dialog] [u8... Payload] [00] [u8? Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         // We need to include the command byte in the checksum calculation, even if we discard it later
         // If the packet is a dialog packet, it will have a 6-byte header before the payload
@@ -168,12 +171,12 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         {
             // Generate random values for dialog key if not provided (avoid generating zero or 0xFFFF)
             dialogRand ??= (ushort)((Random.Shared.Next(0xFFFE) & 0xFFFF) + 1);
-            
+
             // Generate the dialog header and write before the payload
             // This length should not include the trailing command byte
             var dataLengthPlusTwo = packet.Data.Length + 2;
             var dialogChecksum = _crc16Provider.Compute(packet.Data);
-            
+
             buffer[2] = (byte)(dialogRand! >> 8);
             buffer[3] = (byte)(dialogRand! & 0xFF);
             buffer[4] = (byte)(dataLengthPlusTwo >> 8);
@@ -183,7 +186,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
             // Copy the payload after the dialog header
             packet.Data.CopyTo(buffer[8..]);
-            
+
             // Obfuscate the dialog header size and generate key values
             var xPrime = (byte)(buffer[2] - 0x2D);
             var x = (byte)(buffer[3] ^ xPrime);
@@ -191,7 +194,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             var z = (byte)(x + 0x28);
             buffer[4] ^= y;
             buffer[5] ^= (byte)((y + 1) & 0xFF);
-            
+
             // Perform the dialog encryption on the checksum and payload bytes
             for (var i = 0; i < dataLengthPlusTwo; i++)
             {
@@ -242,7 +245,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         {
             return 0;
         }
-        
+
         var saltTable = Parameters.SaltTable.Span;
         var keyLength = Parameters.PrivateKey.Length;
         Span<byte> privateKey = stackalloc byte[keyLength];
@@ -261,7 +264,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             // Default to the static 9-byte key
             Parameters.PrivateKey.Span.CopyTo(privateKey);
         }
-        
+
         // Get the sequence number which is used for decrypting
         var sequence = data[0];
 
@@ -280,7 +283,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
                 dialogHeader[i] ^= saltTable[sequence];
             }
         }
-        
+
         return (ushort)((dialogHeader[0] << 8) | dialogHeader[1]);
     }
 

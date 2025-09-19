@@ -14,16 +14,20 @@ public partial class ProxyConnection : IDisposable
     private readonly TcpClient _client;
 
     private NetworkStream? _clientStream;
-    private readonly NetworkPacketBuffer _clientPacketBuffer = new((command, data) => new ClientPacket(command, data));
-    private ClientPacketEncryptor _clientEncryptor = new();
+
+    private readonly NetworkPacketBuffer _clientPacketBuffer = new((command, data) => new ClientPacket(command, data)
+    {
+        Sequence = ClientPacketEncryptor.IsEncrypted(command) ? data[0] : null
+    });
+    private readonly ClientPacketEncryptor _clientEncryptor = new();
 
     private TcpClient? _server;
     private NetworkStream? _serverStream;
     private readonly NetworkPacketBuffer _serverPacketBuffer = new((command, data) => new ServerPacket(command, data));
-    private ServerPacketEncryptor _serverEncryptor = new();
+    private readonly ServerPacketEncryptor _serverEncryptor = new();
 
-    private byte _clientSequence;
-    private byte _serverSequence;
+    private int _clientSequence;
+    private int _serverSequence;
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
     
     public int Id { get; }

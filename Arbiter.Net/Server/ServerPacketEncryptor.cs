@@ -6,13 +6,7 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
 {
     private const int MaxStackAllocLimit = 1024;
 
-    public NetworkEncryptionParameters Parameters { get; }
-
-    public bool IsEncrypted(byte command) => command is not 0x00 and not 0x03 and not 0x40 and not 0x7E;
-
-    private static bool UseStaticKey(byte command) =>
-        command is 0x01 or 0x02 or 0x0A or 0x56 or 0x60 or 0x62 or 0x66 or 0x6F;
-    private static bool UseHashKey(byte command) => !UseStaticKey(command);
+    public NetworkEncryptionParameters Parameters { get; set; }
 
     public ServerPacketEncryptor()
         : this(NetworkEncryptionParameters.Default)
@@ -23,6 +17,15 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
     {
         Parameters = parameters;
     }
+
+    public static bool IsEncrypted(byte command) => command is not 0x00 and not 0x03 and not 0x40 and not 0x7E;
+
+    private static bool UseStaticKey(byte command) =>
+        command is 0x01 or 0x02 or 0x0A or 0x56 or 0x60 or 0x62 or 0x66 or 0x6F;
+
+    private static bool UseHashKey(byte command) => !UseStaticKey(command);
+
+    public bool ShouldEncrypt(byte command) => IsEncrypted(command);
     
     public NetworkPacket Decrypt(NetworkPacket packet)
     {
@@ -34,7 +37,7 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
         var saltTable = Parameters.SaltTable.Span;
         var keyLength = Parameters.PrivateKey.Length;
         Span<byte> privateKey = stackalloc byte[Parameters.PrivateKey.Length];
-        
+
         // Determine if we need to generate a hash key or just use the static key
         if (UseHashKey(packet.Command))
         {
@@ -92,7 +95,7 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
         var saltTable = Parameters.SaltTable.Span;
         var keyLength = Parameters.PrivateKey.Length;
         Span<byte> privateKey = stackalloc byte[keyLength];
-        
+
         // Determine if we need to generate a hash key or just use the static key
         if (UseHashKey(packet.Command))
         {
@@ -104,10 +107,10 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
             // Default to the static 9-byte key
             Parameters.PrivateKey.Span.CopyTo(privateKey);
         }
-        
+
         // [u8 Sequence] [u8... Payload] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         var totalLength = packet.Data.Length + 4;
-        
+
         // Attempt to use a stackalloc buffer first, but fall back to a heap allocation if the stackalloc is too large
         // This is to avoid double allocation, as the ServerPacket constructor will copy the data into a new buffer
         var encrypted = totalLength <= MaxStackAllocLimit ? stackalloc byte[totalLength] : new byte[totalLength];

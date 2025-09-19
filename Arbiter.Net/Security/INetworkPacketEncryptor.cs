@@ -2,9 +2,10 @@
 
 public interface INetworkPacketEncryptor
 {
-    NetworkEncryptionParameters Parameters { get; }
+    NetworkEncryptionParameters Parameters { get; set; }
+
+    bool ShouldEncrypt(byte command);
     
-    bool IsEncrypted(byte command);
     NetworkPacket Encrypt(NetworkPacket packet, byte sequence);
     NetworkPacket Decrypt(NetworkPacket packet);
 }

@@ -53,9 +53,7 @@ public partial class ProxyConnection
                 while (packetBuffer.TryTakePacket(out var encryptedPacket))
                 {
                     // Decrypt the packet if necessary
-                    var decrypted = encryptor?.IsEncrypted(encryptedPacket.Command) ?? false
-                        ? encryptor.Decrypt(encryptedPacket)
-                        : encryptedPacket;
+                    var decrypted = encryptor.Decrypt(encryptedPacket);
 
                     switch (decrypted)
                     {
