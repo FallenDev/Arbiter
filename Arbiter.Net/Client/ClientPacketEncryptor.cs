@@ -26,8 +26,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
 
         // Extract the relevant encryption values
         var sequence = packet.Data[0];
-        var sRand = (byte)(packet.Data[^2] ^ 0x23);
-        var bRand = (ushort)((packet.Data[^1] << 8 | packet.Data[^3]) ^ 0x7470);
+
 
         // Extract the packet checksum
         var checksum = ((uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 |
@@ -45,6 +44,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         }
         else
         {
+            var (sRand, bRand) = ReadRandoms(packet.Data);
             parameters.GenerateKey(bRand, sRand, privateKey);
             payloadLength -= 1; // Ignore the duplicated command byte
         }
@@ -109,5 +109,19 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var parameters = Parameters;
 
         return packet;
+    }
+    
+    public static (byte sRand, ushort bRand) ReadRandoms(ReadOnlySpan<byte> buffer)
+    {
+        var sRand = (byte)(buffer[^2] ^ 0x23);
+        var bRand = (ushort)((buffer[^1] << 8 | buffer[^3]) ^ 0x7470);
+        return (sRand, bRand);
+    }
+
+    public static void WriteRandoms(Span<byte> buffer, byte sRand, ushort bRand)
+    {
+        buffer[^3] = (byte)((bRand & 0xFF) ^ 0x74);
+        buffer[^2] = (byte)(sRand ^ 0x23);
+        buffer[^1] = (byte)(((bRand >> 8) & 0xFF) ^ 0x70);
     }
 }
