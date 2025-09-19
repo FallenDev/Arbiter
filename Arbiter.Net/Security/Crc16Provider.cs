@@ -10,12 +10,12 @@ public class Crc16Provider
         GenerateTable(polynomial, Table);
     }
 
-    public ushort Compute(ReadOnlySpan<byte> data, ushort initial = 0xFFFF)
+    public ushort Compute(ReadOnlySpan<byte> data, ushort initial = 0x0000)
     {
         var crc = initial;
         foreach (var value in data)
         {
-            crc = (ushort)((crc << 8) ^ Table[((crc >> 8) ^ value) & 0xFF]);
+            crc = (ushort)(value ^ (crc << 8) ^ Table[crc >> 8]);
         }
 
         return crc;

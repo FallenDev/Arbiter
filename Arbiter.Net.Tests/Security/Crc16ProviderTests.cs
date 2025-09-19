@@ -5,6 +5,7 @@ namespace Arbiter.Net.Tests.Security;
 public class Crc16ProviderTests
 {
     #region Default Table
+
     private static readonly ushort[] ExpectedDefaultTable =
     [
         0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
@@ -40,14 +41,15 @@ public class Crc16ProviderTests
         0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
         0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
     ];
+
     #endregion
-    
+
     private Crc16Provider _provider;
-    
+
     [SetUp]
     public void Setup()
     {
-        _provider = new Crc16Provider();    
+        _provider = new Crc16Provider();
     }
 
     [Test]
@@ -57,9 +59,10 @@ public class Crc16ProviderTests
     }
 
     [TestCase(new byte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf },
-        ExpectedResult = (ushort)0x1FFE)]
+        ExpectedResult = (ushort)0xDFAE)]
     [TestCase(new byte[] { 0xf, 0xe, 0xd, 0xc, 0xb, 0xa, 0x9, 0x8, 0x7, 0x6, 0x5, 0x4, 0x3, 0x2, 0x1 },
-        ExpectedResult = (ushort)0x6C56)]
+        ExpectedResult = (ushort)0xFB68)]
+    [TestCase(new byte[] { 0x1, 0x0, 0x0, 0x1b, 0x66, 0x4, 0xb9 }, ExpectedResult = (ushort)0x7D01)]
     public ushort Should_Calculate_Crc16_Correctly(byte[] data)
     {
         return _provider.Compute(data);

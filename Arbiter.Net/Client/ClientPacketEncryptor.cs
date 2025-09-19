@@ -60,10 +60,10 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         var checksum = (uint)packet.Data[^7] << 24 | (uint)packet.Data[^6] << 16 | (uint)packet.Data[^5] << 8 |
                        packet.Data[^4];
 
-        // [u8 Sequence] [u8... Dialog] [u8... Payload] [u8? Command] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
+        // [u8 Sequence] [u8... Dialog] [u8... Payload] [0x00] [u8? Command] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         // If the packet is a dialog packet, it will have a 6-byte header before the payload
-        // If the packet uses the hash key, it will have the command byte duplicated after the payload
-        var payloadLength = packet.Data.Length - (useHashKey ? 9 : 8);
+        // If the packet uses the hash key, it will have the command byte duplicated after the payload and zero byte
+        var payloadLength = packet.Data.Length - (useHashKey ? 10 : 9);
 
         var payload = new Span<byte>(packet.Data, 1, payloadLength);
         var decrypted = new byte[payloadLength].AsSpan();
@@ -147,11 +147,11 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
             Parameters.PrivateKey.Span.CopyTo(privateKey);
         }
         
-        // [u8 Command] [u8 Sequence] [u8... Dialog] [u8... Payload] [u8? Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
+        // [u8 Command] [u8 Sequence] [u8... Dialog] [u8... Payload] [00] [u8? Command] [u32 Checksum] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         // We need to include the command byte in the checksum calculation, even if we discard it later
         // If the packet is a dialog packet, it will have a 6-byte header before the payload
-        // If the packet uses the hash key, it will have the command byte duplicated after the payload
-        var totalLength = packet.Data.Length + 9 + (isDialog ? 6 : 0) + (useHashKey ? 1 : 0);
+        // If the packet uses the hash key, it will have the command byte duplicated after the payload and zero byte
+        var totalLength = packet.Data.Length + 10 + (isDialog ? 6 : 0) + (useHashKey ? 1 : 0);
 
         // Allocate a buffer for the entire encrypted payload, including headers, checksum and trailing random values
         // Attempt to use a stackalloc buffer first, but fall back to a heap allocation if the stackalloc is too large
