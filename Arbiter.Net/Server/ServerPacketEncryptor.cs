@@ -79,8 +79,8 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
     public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
     {
         // Generate the random values within their expected ranges
-        var bRand = (ushort)(Random.Shared.Next(65277) + 256);
-        var sRand = (byte)(Random.Shared.Next(155) + 100);
+        var bRand = (ushort)Random.Shared.Next(256, ushort.MaxValue);
+        var sRand = (byte)Random.Shared.Next(100, byte.MaxValue);
 
         return Encrypt(packet, sequence, bRand, sRand);
     }

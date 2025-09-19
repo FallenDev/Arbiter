@@ -117,8 +117,8 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
     public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
     {
         // Generate the random values within their expected ranges
-        var bRand = (ushort)(Random.Shared.Next(65277) + 256);
-        var sRand = (byte)(Random.Shared.Next(155) + 100);
+        var bRand = (ushort)Random.Shared.Next(256, ushort.MaxValue);
+        var sRand = (byte)Random.Shared.Next(100, byte.MaxValue);
 
         return Encrypt(packet, sequence, bRand, sRand);
     }
@@ -170,7 +170,7 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
         if (isDialog)
         {
             // Generate random values for dialog key if not provided (avoid generating zero or 0xFFFF)
-            dialogRand ??= (ushort)((Random.Shared.Next(0xFFFE) & 0xFFFF) + 1);
+            dialogRand ??= (ushort)Random.Shared.Next(1, ushort.MaxValue);
 
             // Generate the dialog header and write before the payload
             // This length should not include the trailing command byte
