@@ -15,7 +15,11 @@ public class ClientRequestMetadataMessage : ClientMessage
         base.Deserialize(reader);
         
         RequestType = (MetadataRequestType)reader.ReadByte();
-        Name = reader.ReadString8();
+
+        if (RequestType == MetadataRequestType.GetMetadata)
+        {
+            Name = reader.ReadString8();
+        }
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

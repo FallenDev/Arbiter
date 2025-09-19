@@ -9,6 +9,7 @@ public interface INetworkPacketReader
     
     int Position { get; set; }
     int Length { get; }
+    int Remaining { get; }
 
     bool ReadBoolean();
     sbyte ReadSByte();

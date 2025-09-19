@@ -36,6 +36,8 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     
     public int Length => _buffer.Length;
 
+    public int Remaining => Math.Max(0, Length - _position);
+
     public bool ReadBoolean() => ReadByte() != 0;
 
     public sbyte ReadSByte() => (sbyte)ReadByte();

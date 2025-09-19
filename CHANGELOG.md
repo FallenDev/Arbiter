@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `ClientMenuChoiceMessage` to `ClientDialogMenuChoiceMessage` for consistency
 - Renamed `ShowMenu` to `ShowDialogMenu` for consistency
 - Renamed `ServerShowMenuMessage` to `ServerShowDialogMenuMessage` for consistency
+- Renamed `MenuChoice` to `Slot` for `ClientDialogMenuChoiceMessage` message
 - Decrypting client packets will now remove the trailing padding `0x00` byte
 - `NetworkEncryptionParameters` are now read-only for thread safety
 - Blocking of outgoing `0x42` client exception packets to the server (still logged/traced locally)

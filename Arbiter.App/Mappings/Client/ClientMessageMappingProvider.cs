@@ -196,9 +196,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                     p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog menu."));
             b.Section("Menu")
                 .Property(m => m.PursuitId, p => p.ToolTip("ID of the pursuit the menu belongs to."));
-            b.Section("Menu Choice")
-                .Property(m => m.MenuChoice, p => p.ToolTip("Menu choice selected by the user."))
-                .IsExpanded(m => m.MenuChoice.HasValue);
+            b.Section("Slot")
+                .Property(m => m.Slot, p => p.ToolTip("Slot selected by the user."))
+                .IsExpanded(m => m.Slot.HasValue);
             b.Section("Text Input")
                 .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
                 .IsExpanded(m => m.TextInputs.Count > 0);

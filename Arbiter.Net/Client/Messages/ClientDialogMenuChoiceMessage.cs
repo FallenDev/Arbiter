@@ -10,7 +10,7 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
     public EntityTypeFlags EntityType { get; set; }
     public uint EntityId { get; set; }
     public ushort PursuitId { get; set; }
-    public byte? MenuChoice { get; set; }
+    public byte? Slot { get; set; }
     public List<string> TextInputs { get; set; } = [];
 
     public override void Deserialize(INetworkPacketReader reader)
@@ -21,14 +21,12 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
         EntityId = reader.ReadUInt32();
         PursuitId = reader.ReadUInt16();
 
-        var menuChoiceOrLength = reader.ReadByte();
-        if (reader.IsEndOfPacket())
+        if (reader.Remaining == 1)
         {
-            MenuChoice = menuChoiceOrLength;
+            Slot = reader.ReadByte();
         }
         else
         {
-            reader.Position -= 1;
             TextInputs = reader.ReadStringArgs8().ToList();
         }
     }
