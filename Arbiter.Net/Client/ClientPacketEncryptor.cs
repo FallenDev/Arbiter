@@ -92,6 +92,15 @@ public class ClientPacketEncryptor : INetworkPacketEncryptor
     
     public NetworkPacket Encrypt(NetworkPacket packet, byte sequence)
     {
+        // Generate the random values within their expected ranges
+        var bRand = (ushort)(Random.Shared.Next(65277) + 256);
+        var sRand = (byte)(Random.Shared.Next(155) + 100);
+
+        return Encrypt(packet, sequence, sRand, bRand);
+    }
+    
+    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence, byte sRand, ushort bRand)
+    {
         if (!IsEncrypted(packet.Command))
         {
             return packet;
