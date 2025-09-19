@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed a few enum types
 - Renamed `MenuChoice` to `DialogMenuChoice` for clarity
 - Renamed `ClientMenuChoiceMessage` to `ClientDialogMenuChoiceMessage` for consistency
+- Renamed `ShowMenu` to `ShowDialogMenu` for consistency
+- Renamed `ServerShowMenuMessage` to `ServerShowDialogMenuMessage` for consistency
 
 ## [0.9.3] - 2025-09-18
 
