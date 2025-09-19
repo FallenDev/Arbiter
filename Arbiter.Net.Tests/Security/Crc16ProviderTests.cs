@@ -4,6 +4,7 @@ namespace Arbiter.Net.Tests.Security;
 
 public class Crc16ProviderTests
 {
+    #region Default Table
     private static readonly ushort[] ExpectedDefaultTable =
     [
         0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
@@ -39,6 +40,7 @@ public class Crc16ProviderTests
         0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
         0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
     ];
+    #endregion
     
     private Crc16Provider _provider;
     

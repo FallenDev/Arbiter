@@ -13,9 +13,9 @@ public class Crc16Provider
     public ushort Compute(ReadOnlySpan<byte> data, ushort initial = 0xFFFF)
     {
         var crc = initial;
-        foreach (var b in data)
+        foreach (var value in data)
         {
-            crc = (ushort)((crc << 8) ^ Table[((crc >> 8) ^ b) & 0xFF]);
+            crc = (ushort)((crc << 8) ^ Table[((crc >> 8) ^ value) & 0xFF]);
         }
 
         return crc;
@@ -25,20 +25,20 @@ public class Crc16Provider
     {
         for (var i = 0; i < 256; i++)
         {
-            var v = (ushort)(i << 8);
-            for (var b = 0; b < 8; b++)
+            var crc = (ushort)(i << 8);
+            for (var bit = 0; bit < 8; bit++)
             {
-                if ((v & 0x8000) != 0)
+                if ((crc & 0x8000) != 0)
                 {
-                    v = (ushort)((v << 1) ^ polynomial);
+                    crc = (ushort)((crc << 1) ^ polynomial);
                 }
                 else
                 {
-                    v <<= 1;
+                    crc <<= 1;
                 }
             }
 
-            table[i] = v;
+            table[i] = crc;
         }
     }
 }
