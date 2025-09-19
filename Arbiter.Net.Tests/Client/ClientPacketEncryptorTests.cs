@@ -74,7 +74,7 @@ public class ClientPacketEncryptorTests
     {
         var parameters = new NetworkEncryptionParameters(0x07,
             new byte[] { 0x63, 0x3E, 0x5F, 0x41, 0x46, 0x78, 0x21, 0x68, 0x2C }, "Monitor");
-        _encryptor = new ClientPacketEncryptor { Parameters = parameters };
+        _encryptor = new ClientPacketEncryptor(parameters);
     }
 
     [Test]
@@ -185,10 +185,10 @@ public class ClientPacketEncryptorTests
         var sequence = InteractPacketBytes[4];
         var payload = InteractPacketPayload;
 
-        var (sRand, bRand) = ClientPacketEncryptor.ReadRandoms(InteractPacketBytes);
-        
+        var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(InteractPacketBytes);
+
         var packet = new ClientPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand);
 
         var expectedEncrypted = InteractPacketBytes[4..];
         var actualEncrypted = encrypted.Data;
@@ -203,10 +203,10 @@ public class ClientPacketEncryptorTests
         var sequence = PortraitPacketBytes[4];
         var payload = PortraitPacketPayload;
 
-        var (sRand, bRand) = ClientPacketEncryptor.ReadRandoms(PortraitPacketBytes);
+        var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(PortraitPacketBytes);
 
         var packet = new ClientPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand);
 
         Assert.That(encrypted.Data, Is.EqualTo(PortraitPacketBytes[4..]));
     }
@@ -218,10 +218,11 @@ public class ClientPacketEncryptorTests
         var sequence = DialogMenuChoicePacketBytes[4];
         var payload = DialogMenuChoicePayload;
 
-        var (sRand, bRand) = ClientPacketEncryptor.ReadRandoms(DialogMenuChoicePacketBytes);
+        var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(DialogMenuChoicePacketBytes);
+        var dialogRandom = (ushort)(DialogMenuChoicePacketBytes[5] << 8 | DialogMenuChoicePacketBytes[6]);
 
         var packet = new ClientPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand, dialogRandom);
 
         Assert.That(encrypted.Data, Is.EqualTo(DialogMenuChoicePacketBytes[4..]));
     }
@@ -233,10 +234,11 @@ public class ClientPacketEncryptorTests
         var sequence = DialogChoicePacketBytes[4];
         var payload = DialogChoicePayload;
 
-        var (sRand, bRand) = ClientPacketEncryptor.ReadRandoms(DialogChoicePacketBytes);
+        var (bRand, sRand) = ClientPacketEncryptor.ReadHashKeySalt(DialogChoicePacketBytes);
+        var dialogRandom = (ushort)(DialogChoicePacketBytes[5] << 8 | DialogChoicePacketBytes[6]);
 
         var packet = new ClientPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand, dialogRandom);
 
         Assert.That(encrypted.Data, Is.EqualTo(DialogChoicePacketBytes[4..]));
     }

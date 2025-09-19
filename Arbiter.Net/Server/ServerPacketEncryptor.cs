@@ -6,13 +6,24 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
 {
     private const int MaxStackAllocLimit = 1024;
 
-    public NetworkEncryptionParameters Parameters { get; set; } = NetworkEncryptionParameters.Default;
+    public NetworkEncryptionParameters Parameters { get; }
 
     public bool IsEncrypted(byte command) => command is not 0x00 and not 0x03 and not 0x40 and not 0x7E;
 
     private static bool UseStaticKey(byte command) =>
         command is 0x01 or 0x02 or 0x0A or 0x56 or 0x60 or 0x62 or 0x66 or 0x6F;
+    private static bool UseHashKey(byte command) => !UseStaticKey(command);
 
+    public ServerPacketEncryptor()
+        : this(NetworkEncryptionParameters.Default)
+    {
+    }
+
+    public ServerPacketEncryptor(NetworkEncryptionParameters parameters)
+    {
+        Parameters = parameters;
+    }
+    
     public NetworkPacket Decrypt(NetworkPacket packet)
     {
         if (!IsEncrypted(packet.Command))
@@ -20,29 +31,29 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
             return packet;
         }
 
-        var parameters = Parameters;
-        var saltTable = parameters.SaltTable.Span;
-        var keyLength = parameters.PrivateKey.Length;
+        var saltTable = Parameters.SaltTable.Span;
+        var keyLength = Parameters.PrivateKey.Length;
+        Span<byte> privateKey = stackalloc byte[Parameters.PrivateKey.Length];
+        
+        // Determine if we need to generate a hash key or just use the static key
+        if (UseHashKey(packet.Command))
+        {
+            // Read the trailing 3 bytes to get the bRand and sRand values from their encoded form
+            var (bRand, sRand) = ReadHashKeySalt(packet.Data);
+            Parameters.GenerateHashKey(bRand, sRand, privateKey);
+        }
+        else
+        {
+            // Default to the static 9-byte key
+            Parameters.PrivateKey.Span.CopyTo(privateKey);
+        }
 
         // [u8 Sequence] [u8... Payload] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         var payloadLength = packet.Data.Length - 4;
         var payload = new Span<byte>(packet.Data, 1, payloadLength);
 
+        // Get the sequence number which is used for decrypting
         var sequence = packet.Data[0];
-
-        // Some packets use the static fixed key
-        // Others use the newer MD5 key table slice
-        Span<byte> privateKey = stackalloc byte[keyLength];
-        if (UseStaticKey(packet.Command))
-        {
-            parameters.PrivateKey.Span.CopyTo(privateKey);
-        }
-        else
-        {
-            // Extract the trailing random values
-            var (sRand, bRand) = ReadRandoms(packet.Data);
-            parameters.GenerateKey(bRand, sRand, privateKey);
-        }
 
         var decrypted = new byte[payloadLength].AsSpan();
         payload.CopyTo(decrypted);
@@ -68,40 +79,44 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
         var bRand = (ushort)(Random.Shared.Next(65277) + 256);
         var sRand = (byte)(Random.Shared.Next(155) + 100);
 
-        return Encrypt(packet, sequence, sRand, bRand);
+        return Encrypt(packet, sequence, bRand, sRand);
     }
 
-    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence, byte sRand, ushort bRand)
+    public NetworkPacket Encrypt(NetworkPacket packet, byte sequence, ushort bRand, byte sRand)
     {
         if (!IsEncrypted(packet.Command))
         {
             return packet;
         }
 
-        var parameters = Parameters;
-        var saltTable = parameters.SaltTable.Span;
-        var keyLength = parameters.PrivateKey.Length;
-
-        // Some packets use the static fixed key
-        // Others use the newer MD5 key table slice
+        var saltTable = Parameters.SaltTable.Span;
+        var keyLength = Parameters.PrivateKey.Length;
         Span<byte> privateKey = stackalloc byte[keyLength];
-        if (UseStaticKey(packet.Command))
+        
+        // Determine if we need to generate a hash key or just use the static key
+        if (UseHashKey(packet.Command))
         {
-            parameters.PrivateKey.Span.CopyTo(privateKey);
+            // Use the provided bRand and sRand values
+            Parameters.GenerateHashKey(bRand, sRand, privateKey);
         }
         else
         {
-            parameters.GenerateKey(bRand, sRand, privateKey);
+            // Default to the static 9-byte key
+            Parameters.PrivateKey.Span.CopyTo(privateKey);
         }
-
+        
         // [u8 Sequence] [u8... Payload] [u8 bRand Lo] [u8 sRand] [u8 bRand Hi]
         var totalLength = packet.Data.Length + 4;
+        
+        // Attempt to use a stackalloc buffer first, but fall back to a heap allocation if the stackalloc is too large
+        // This is to avoid double allocation, as the ServerPacket constructor will copy the data into a new buffer
         var encrypted = totalLength <= MaxStackAllocLimit ? stackalloc byte[totalLength] : new byte[totalLength];
 
         // Copy the sequence and unencrypted payload
         encrypted[0] = sequence;
         packet.Data.CopyTo(encrypted[1..]);
 
+        // Perform the standard encryption on the current payload
         for (var i = 0; i < packet.Data.Length; i++)
         {
             encrypted[i + 1] ^= privateKey[i % keyLength];
@@ -113,19 +128,19 @@ public class ServerPacketEncryptor : INetworkPacketEncryptor
             }
         }
 
-        // Finally include the obfuscated sRand and bRand values
-        WriteRandoms(encrypted, sRand, bRand);
+        // Write the trailing bRand and sRand values in their encoded form
+        WriteHashKeySalt(encrypted, bRand, sRand);
         return new ServerPacket(packet.Command, encrypted);
     }
 
-    public static (byte sRand, ushort bRand) ReadRandoms(ReadOnlySpan<byte> buffer)
+    public static (ushort bRand, byte sRand) ReadHashKeySalt(ReadOnlySpan<byte> buffer)
     {
         var sRand = (byte)(buffer[^2] ^ 0x24);
         var bRand = (ushort)((buffer[^1] << 8 | buffer[^3]) ^ 0x6474);
-        return (sRand, bRand);
+        return (bRand, sRand);
     }
 
-    public static void WriteRandoms(Span<byte> buffer, byte sRand, ushort bRand)
+    public static void WriteHashKeySalt(Span<byte> buffer, ushort bRand, byte sRand)
     {
         buffer[^3] = (byte)((bRand & 0xFF) ^ 0x74);
         buffer[^2] = (byte)(sRand ^ 0x24);

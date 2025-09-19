@@ -120,7 +120,7 @@ public class ServerPacketEncryptorTests
     {
         var parameters = new NetworkEncryptionParameters(0x07,
             new byte[] { 0x63, 0x3E, 0x5F, 0x41, 0x46, 0x78, 0x21, 0x68, 0x2C }, "Monitor");
-        _encryptor = new ServerPacketEncryptor { Parameters = parameters };
+        _encryptor = new ServerPacketEncryptor(parameters);
     }
 
     [Test]
@@ -216,10 +216,10 @@ public class ServerPacketEncryptorTests
         var sequence = WorldMessagePacketBytes[4];
         var payload = WorldMessagePayload;
 
-        var (sRand, bRand) = ServerPacketEncryptor.ReadRandoms(WorldMessagePacketBytes);
+        var (bRand, sRand) = ServerPacketEncryptor.ReadHashKeySalt(WorldMessagePacketBytes);
         
         var packet = new ServerPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand);
 
         var expectedEncrypted = WorldMessagePacketBytes[4..];
         Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
@@ -232,10 +232,10 @@ public class ServerPacketEncryptorTests
         var sequence = ShowUserPacketBytes[4];
         var payload = ShowUserPayload;
 
-        var (sRand, bRand) = ServerPacketEncryptor.ReadRandoms(ShowUserPacketBytes);
+        var (bRand, sRand) = ServerPacketEncryptor.ReadHashKeySalt(ShowUserPacketBytes);
         
         var packet = new ServerPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand);
 
         var expectedEncrypted = ShowUserPacketBytes[4..];
         Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
@@ -248,15 +248,15 @@ public class ServerPacketEncryptorTests
         var sequence = DialogMenuPacketBytes[4];
         var payload = DialogMenuPayload;
 
-        var (sRand, bRand) = ServerPacketEncryptor.ReadRandoms(DialogMenuPacketBytes);
+        var (bRand, sRand) = ServerPacketEncryptor.ReadHashKeySalt(DialogMenuPacketBytes);
 
         var packet = new ServerPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand);
 
         var expectedEncrypted = DialogMenuPacketBytes[4..];
         Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));
     }
-    
+
     [Test]
     public void Should_Encrypt_Dialog()
     {
@@ -264,10 +264,10 @@ public class ServerPacketEncryptorTests
         var sequence = DialogPacketBytes[4];
         var payload = DialogPacketPayload;
 
-        var (sRand, bRand) = ServerPacketEncryptor.ReadRandoms(DialogPacketBytes);
+        var (bRand, sRand) = ServerPacketEncryptor.ReadHashKeySalt(DialogPacketBytes);
 
         var packet = new ServerPacket(command, payload.AsSpan());
-        var encrypted = _encryptor.Encrypt(packet, sequence, sRand, bRand);
+        var encrypted = _encryptor.Encrypt(packet, sequence, bRand, sRand);
 
         var expectedEncrypted = DialogPacketBytes[4..];
         Assert.That(encrypted.Data, Is.EqualTo(expectedEncrypted));

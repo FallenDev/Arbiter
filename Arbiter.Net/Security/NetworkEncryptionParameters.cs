@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Arbiter.Net.Security;
+﻿namespace Arbiter.Net.Security;
 
 public class NetworkEncryptionParameters
 {
@@ -34,7 +32,7 @@ public class NetworkEncryptionParameters
         }
     }
 
-    public void GenerateKey(ushort bRand, ushort sRand, Span<byte> outputBuffer)
+    public void GenerateHashKey(ushort bRand, byte sRand, Span<byte> outputBuffer)
     {
         for (var i = 0; i < KeyLength; i++)
         {

@@ -15,12 +15,12 @@ public partial class ProxyConnection : IDisposable
 
     private NetworkStream? _clientStream;
     private readonly NetworkPacketBuffer _clientPacketBuffer = new((command, data) => new ClientPacket(command, data));
-    private readonly ClientPacketEncryptor _clientEncryptor = new();
+    private ClientPacketEncryptor _clientEncryptor = new();
 
     private TcpClient? _server;
     private NetworkStream? _serverStream;
     private readonly NetworkPacketBuffer _serverPacketBuffer = new((command, data) => new ServerPacket(command, data));
-    private readonly ServerPacketEncryptor _serverEncryptor = new();
+    private ServerPacketEncryptor _serverEncryptor = new();
 
     private byte _clientSequence;
     private byte _serverSequence;

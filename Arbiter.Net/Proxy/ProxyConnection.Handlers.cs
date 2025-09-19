@@ -1,6 +1,8 @@
 ﻿using System.Net;
+using Arbiter.Net.Client;
 using Arbiter.Net.Security;
 using Arbiter.Net.Serialization;
+using Arbiter.Net.Server;
 
 namespace Arbiter.Net.Proxy;
 
@@ -106,9 +108,10 @@ public partial class ProxyConnection
     {
         var encryptionParameters = new NetworkEncryptionParameters(seed, privateKey, name);
 
-        // Update the client/server encryption parameters together
-        _clientEncryptor.Parameters = encryptionParameters;
-        _serverEncryptor.Parameters = encryptionParameters;
+        // Create new encryptors based on the new encryption parameters
+        // This is required because the encryption parameters are immutable for thread safety
+        _clientEncryptor = new ClientPacketEncryptor(encryptionParameters);
+        _serverEncryptor = new ServerPacketEncryptor(encryptionParameters);
     }
 
     private static bool IsValidCharacterName(string name) =>
