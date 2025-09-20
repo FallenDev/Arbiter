@@ -42,7 +42,9 @@ It will automatically be redirected to Arbiter running locally on your machine.
 Click on the ▶️ button within the `Trace` tab to begin capturing packets.
 All packets from all clients will be captured and displayed in the `Trace` tab.
 
-You can filter the packets by clicking on the `Filter` button in
+You can filter the packets by clicking on the `Filter` button in the trace window.
+
+You can search (highlight/navigate) for a specific packet by typing its command in the search box.
 
 ### Saving / Loading Traces
 
