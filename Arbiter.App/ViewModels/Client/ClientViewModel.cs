@@ -107,6 +107,8 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
     {
         connection.PacketReceived -= OnPacketReceived;
     }
+    
+    public bool EnqueuePacket(NetworkPacket packet) => connection.EnqueuePacket(packet);
 
     private void OnPacketReceived(object? sender, NetworkTransferEventArgs e)
     {

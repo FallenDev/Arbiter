@@ -53,7 +53,7 @@
                                    Grid.Column="3"
                                    Text="{TemplateBinding InputGesture, Converter={StaticResource KeyGestureConverter}}"
                                    Foreground="{StaticResource Talgonite.MenuItem.GestureForeground}"
-                                   FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                    Margin="4,0,0,0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"/>

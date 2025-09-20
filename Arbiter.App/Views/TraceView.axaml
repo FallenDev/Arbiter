@@ -181,6 +181,7 @@
                     <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}"
                               SelectedValue="{Binding FilterParameters.PacketDirection}"
                               PlaceholderText="No Selection"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
                               Width="130">
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate>
@@ -207,6 +208,7 @@
                            ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."
                            VerticalAlignment="Center" />
                     <TextBox Text="{Binding FilterParameters.NameFilter}"
+                             FontFamily="{StaticResource Talgonite.Font.Monospace}"
                              Width="140"
                              Height="36">
                         <TextBox.InnerRightContent>
@@ -227,6 +229,7 @@
                            ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."
                            VerticalAlignment="Center" />
                     <TextBox Text="{Binding FilterParameters.CommandFilter}"
+                             FontFamily="{StaticResource Talgonite.Font.Monospace}"
                              Width="100"
                              Height="36">
                         <TextBox.InnerRightContent>
@@ -263,6 +266,7 @@
                        ToolTip.Tip="Searches for packets matching the command hex code."
                        VerticalAlignment="Center" />
                 <TextBox Text="{Binding SearchParameters.CommandFilter}"
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
                          MaxLength="2"
                          Width="120"
                          Height="36">

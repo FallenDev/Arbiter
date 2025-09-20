@@ -128,10 +128,34 @@
         
         <Style Selector="^:focus /template/ Border#Border">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.FocusBorderBrush}"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:not(:focus) /template/ Border#Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
         </Style>
         
         <Style Selector="^:error /template/ Border#Border">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TextBox.ErrorBorderBrush}"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:not(:error) /template/ Border#Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
         </Style>
         
         <Style Selector="^:disabled /template/ Border#Border">
@@ -140,29 +164,38 @@
         
     </Style>
     
+    <!-- Text Editor Style -->
+    <Style Selector="TextBox.editor">
+        <Setter Property="Background" Value="{StaticResource Talgonite.Editor.Background}"/>
+        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.Monospace}"/>
+        <Setter Property="FontSize" Value="{StaticResource Talgonite.Editor.FontSize}"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="AcceptsTab" Value="True"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Top"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.AllowAutoHide" Value="False"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
+    <Style Selector="TextBox.editor:not(.read-only)">
+        <Setter Property="Focusable" Value="True"/>
+    </Style>
+    
     <!-- Read-only Style -->
     <Style Selector="TextBox.read-only">
         <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="Focusable" Value="False"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="CaretBrush" Value="Transparent"/>
     </Style>
-    
-    <!-- Text Editor Style -->
-    <Style Selector="TextBox.editor">
-        <Setter Property="Background" Value="{StaticResource Talgonite.Editor.Background}"/>
-        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Editor.FontFamily}"/>
-        <Setter Property="FontSize" Value="{StaticResource Talgonite.Editor.FontSize}"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="VerticalContentAlignment" Value="Top"/>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="Padding" Value="8"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="Focusable" Value="False"/>
-    </Style>
-    
-    <Style Selector="TextBox.editor /template/ TextPresenter#PART_TextPresenter">
-        <Setter Property="MinWidth" Value="{Binding $parent[ScrollViewer].Bounds.Width}"/>
+
+    <!-- Prevent focus visual/adorner for read-only -->
+    <Style Selector="TextBox.read-only:focus /template/ Border#Border">
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     
     <!-- Clear Button Style -->

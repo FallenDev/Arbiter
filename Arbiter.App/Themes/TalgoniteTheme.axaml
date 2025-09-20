@@ -14,8 +14,12 @@
             <sys:Double x:Key="Talgonite.FontSize.Console">14</sys:Double>
             <sys:Double x:Key="Talgonite.FontSize.Trace">14</sys:Double>
             
+            <!-- Global Transition Durations -->
+            <x:TimeSpan x:Key="Talgonite.Transition.Duration">0:0:0.250</x:TimeSpan>
+            
+            
             <!-- Editor Resources -->
-            <FontFamily x:Key="Talgonite.Editor.FontFamily">Consolas</FontFamily>
+            <FontFamily x:Key="Talgonite.Font.Monospace">Consolas</FontFamily>
             <sys:Double x:Key="Talgonite.Editor.FontSize">14</sys:Double>
             <SolidColorBrush x:Key="Talgonite.Editor.Background" Color="#1e2228"/>
             
@@ -50,6 +54,7 @@
             <SolidColorBrush x:Key="Talgonite.ComboBox.PlaceholderForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.DisabledForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.CaretForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ComboBox.CaretDisabledForeground" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.SelectionBackground" Color="#4a6380"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.SelectionForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.ComboBox.HoverBorderBrush" Color="#4d535d"/>

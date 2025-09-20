@@ -105,6 +105,7 @@ public class App : Application
         services.AddSingleton<ClientManagerViewModel>();
         services.AddSingleton<InspectorViewModel>();
         services.AddSingleton<ProxyViewModel>();
+        services.AddSingleton<SendPacketViewModel>();
         
         // Transients
         services.AddTransient<MessageBoxViewModel>();
