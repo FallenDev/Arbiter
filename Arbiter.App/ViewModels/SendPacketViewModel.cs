@@ -27,7 +27,7 @@ public partial class SendPacketViewModel : ViewModelBase
     private static readonly char[] NewLineCharacters = ['\r', '\n'];
 
     private static readonly Regex PacketLineRegex =
-        new(@"^(<|>)?([0-9a-f]{1,2})(?:\s+([0-9a-f]{1,2}))*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        new(@"^(<|>)?\s*([0-9a-f]{1,2})(?:\s+([0-9a-f]{1,2}))*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly ILogger<SendPacketViewModel> _logger;
     private readonly ClientManagerViewModel _clientManager;
@@ -46,6 +46,7 @@ public partial class SendPacketViewModel : ViewModelBase
             {
                 return;
             }
+            OnPropertyChanged(nameof(IsEmpty));
             
             var lines = value.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
             ValidationError = !TryParsePackets(lines, out var validationError) ? validationError : null;
@@ -60,6 +61,8 @@ public partial class SendPacketViewModel : ViewModelBase
             }
         }
     }
+    
+    public bool IsEmpty => string.IsNullOrWhiteSpace(InputText);
     
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private bool _hasClients;
