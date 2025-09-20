@@ -80,7 +80,6 @@
                                             </TextBlock>
                                             
                                             <TextPresenter Name="PART_TextPresenter"
-                                                           Background="Red"
                                                            Text="{TemplateBinding Text, Mode=TwoWay}"
                                                            TextAlignment="{TemplateBinding TextAlignment}"
                                                            TextWrapping="{TemplateBinding TextWrapping}"
@@ -141,13 +140,6 @@
         
     </Style>
     
-    <!-- Read-only Style -->
-    <Style Selector="TextBox.read-only">
-        <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="Focusable" Value="False"/>
-    </Style>
-    
     <!-- Text Editor Style -->
     <Style Selector="TextBox.editor">
         <Setter Property="Background" Value="{StaticResource Talgonite.Editor.Background}"/>
@@ -157,9 +149,19 @@
         <Setter Property="AcceptsTab" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Top"/>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="Padding" Value="8"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
+    <Style Selector="TextBox.editor:not(.read-only)">
+        <Setter Property="Focusable" Value="True"/>
+    </Style>
+    
+    <!-- Read-only Style -->
+    <Style Selector="TextBox.read-only">
+        <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
         <Setter Property="Focusable" Value="False"/>
     </Style>

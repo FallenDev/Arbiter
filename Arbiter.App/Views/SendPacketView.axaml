@@ -18,6 +18,7 @@
             <!-- Input Area -->
             <TextBox Grid.Row="1"
                      Text="{Binding InputText}"
+                     FontSize="16"
                      Classes="editor"
                      AcceptsTab="False"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
