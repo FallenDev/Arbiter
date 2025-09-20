@@ -22,6 +22,11 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         CornerRadius="{TemplateBinding CornerRadius}">
+                    <Border.Transitions>
+                        <Transitions>
+                            <BrushTransition Property="BorderBrush" Duration="0:0:0.200" Easing="CubicEaseInOut"/>
+                        </Transitions>
+                    </Border.Transitions>
                     <Panel>
                         <Border Classes="sunken-shadow"
                                 CornerRadius="{TemplateBinding CornerRadius}"/>

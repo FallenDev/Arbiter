@@ -11,9 +11,15 @@
         <!-- Left Area -->
         <Grid Grid.Column="0" RowDefinitions="Auto,*">
             <!-- Top Toolbar -->
-            <Grid Grid.Row="0" Height="40">
-                
-            </Grid>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="4" Margin="4">
+                <Label Content="Client"
+                       ToolTip.Tip="The active client connection to send to or from."/>
+                <ComboBox ItemsSource="{Binding Clients}"
+                          SelectedValue="{Binding SelectedClient}"
+                          MinWidth="200">
+                    
+                </ComboBox>
+            </StackPanel>
             
             <!-- Input Area -->
             <TextBox Grid.Row="1"

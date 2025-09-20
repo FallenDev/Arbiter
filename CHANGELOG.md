@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests for network and encryption algorithms
 - `PacketException` event invoked when the client tries to send `0x42` exception packet
 - Sending of raw packets to client/server
+- Transition animations to various UI components
 
 ### Changed
 
