@@ -54,6 +54,10 @@ You can also right-click on selected packets to save them individually.
 Click on the `Load` button to load a trace from a file.
 You can also hold down `Shift` while clicking `Load` to append the trace to the current one.
 
+> [!CAUTION]
+> Be careful when sharing traces with others!  
+> They may contain sensitive information such as your character name or even password if you began a trace while logging in.
+
 ### Sending Raw Packets
 
 You can send both client and server packets by using the `Send` window.
