@@ -48,8 +48,8 @@ TBD
 - [x] Delete Trace Packets
 - [x] Save/Load Traces
 - [ ] Raw Packet Injection
-  - [ ] To Client
-  - [ ] To Server
+  - [x] To Client
+  - [x] To Server
 - [ ] Revamp Settings UI
 
 ### v1.1
