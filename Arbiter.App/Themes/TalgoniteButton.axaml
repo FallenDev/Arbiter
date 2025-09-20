@@ -20,12 +20,6 @@
                         Margin="{TemplateBinding Margin}"
                         HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                         VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                    <Border.Transitions>
-                        <Transitions>
-                            <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                            <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                        </Transitions>
-                    </Border.Transitions>
                     <ContentPresenter Name="PART_ContentPresenter"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -42,6 +36,22 @@
         <Style Selector="^:pointerover">
             <Setter Property="Background" Value="{StaticResource Talgonite.Button.HoverBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.HoverForeground}"/>
+        </Style>
+        <Style Selector="^:pointerover /template/ Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:not(:pointerover) /template/ Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
         </Style>
         
         <!-- Pressed Style -->
@@ -60,6 +70,22 @@
         <!-- Focus Style -->
         <Style Selector="^:focus">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Button.FocusBorderBrush}"/>
+        </Style>
+        <Style Selector="^:focus /template/ Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:not(:focus) /template/ Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                </Transitions>
+            </Setter>
         </Style>
         
         <Style Selector="^:focus:pressed">

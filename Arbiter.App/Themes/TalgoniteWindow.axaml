@@ -102,9 +102,11 @@
                            
                             <!-- Resize Grip -->
                             <Panel Name="PART_ResizeGrip"
-                                  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                  Grid.Row="1" 
+                                  Background="Transparent"
                                   Classes="resize-grip-container"
                                   IsVisible="{Binding $parent[Window].CanResize}"
+                                  HorizontalAlignment="Right" VerticalAlignment="Bottom"
                                   Cursor="BottomRightCorner">
                                 <Path Width="16" Height="16"
                                       Classes="resize-grip"

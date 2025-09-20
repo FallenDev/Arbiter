@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve performance of console log and counting of log entries
 - Rename `Console Log` to just `Console` in the tab view
 - Fix decimal mode not being set by default in the Hex view when empty
+- Fix resize grip hit test area
 
 ## [0.9.3] - 2025-09-18
 
