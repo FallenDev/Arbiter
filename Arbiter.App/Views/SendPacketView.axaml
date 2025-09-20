@@ -57,13 +57,13 @@
                               IsEnabled="{Binding !IsSending}">
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
                                            Padding="8,4" />
                             </DataTemplate>
                         </ComboBox.SelectionBoxItemTemplate>
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            TextAlignment="Left"
                                            VerticalAlignment="Center"
@@ -83,13 +83,13 @@
                               IsEnabled="{Binding !IsSending}">
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
                                            Padding="8,4" />
                             </DataTemplate>
                         </ComboBox.SelectionBoxItemTemplate>
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            TextAlignment="Left"
                                            VerticalAlignment="Center"
@@ -100,10 +100,12 @@
                     
                     <!-- Send Button -->
                     <Button Command="{Binding StartSendCommand}"
+                            ToolTip.Tip="Starts sending the packets provided in the text box."
                             IsVisible="{Binding !IsSending}"
                             Classes="toolbar"
                             MinWidth="120" Height="40"
-                            Padding="16,4">
+                            Padding="16,4"
+                            Margin="2,0">
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
@@ -116,10 +118,12 @@
                     
                     <!-- Cancel Button -->
                     <Button Command="{Binding CancelSendCommand}"
-                            IsVisible="{Binding IsSending}"
+                            ToolTip.Tip="Stops sending any pending packets from the text box."
                             Classes="toolbar destructive"
+                            IsVisible="{Binding IsSending}"
                             MinWidth="120" Height="40"
-                            Padding="16,4">
+                            Padding="16,4"
+                            Margin="2,0">
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <Path Width="16" Height="16"
                                   Stroke="{Binding $parent[Button].Foreground}"
@@ -134,7 +138,7 @@
             
             <!-- Input Area -->
             <TextBox Grid.Row="1"
-                     Text="{Binding InputText}"
+                     Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="16"
                      Classes="editor"
                      AcceptsTab="False"
