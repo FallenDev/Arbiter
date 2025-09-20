@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename `Aisling` to `Reactor` for dialog entity type
 - Rename `TextInput` to `Arguments` for `ClientDialogMenuChoiceMessage` message
 - Increase command filter box width slightly
+- `Pane` enum values
 
 ## [0.9.4b] - 2025-09-20
 
