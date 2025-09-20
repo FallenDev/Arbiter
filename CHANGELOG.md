@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored a lot of internal systems for clarity and performance
 - Improve performance of console log and counting of log entries
 - Rename `Console Log` to just `Console` in the tab view
+- Fix decimal mode not being set by default in the Hex view when empty
 
 ## [0.9.3] - 2025-09-18
 

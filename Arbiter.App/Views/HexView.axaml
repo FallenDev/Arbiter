@@ -129,13 +129,13 @@
                    Margin="2,4"/>
             <!-- Base 10/16 Display -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <RadioButton IsChecked="{Binding ShowValuesAsHex, Converter={x:Static BoolConverters.Not}}"
+                <RadioButton IsChecked="{Binding !ShowValuesAsHex, FallbackValue={x:True}}"
                              Classes="segment segment-left"
                              Height="32" Padding="12,4"
                              GroupName="Base">
                     <TextBlock FontFamily="{StaticResource Talgonite.Font.ConsoleFont}" FontSize="14" FontWeight="SemiBold" Text="Dec"/>
                 </RadioButton>
-                <RadioButton IsChecked="{Binding ShowValuesAsHex}"
+                <RadioButton IsChecked="{Binding ShowValuesAsHex, FallbackValue={x:False}}"
                              Classes="segment segment-right"
                              Height="32" Padding="12,4"
                              GroupName="Base">
