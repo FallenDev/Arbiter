@@ -16,10 +16,18 @@ public partial class SendPacketViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
     private readonly ClientManagerViewModel _clientManager;
 
-    [ObservableProperty] private string _inputText = string.Empty;
-    [ObservableProperty] private bool _hasClients;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
+    private string _inputText = string.Empty;
+    
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
+    private bool _hasClients;
 
-    [ObservableProperty] private ClientViewModel? _selectedClient;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
+    private ClientViewModel? _selectedClient;
+    
     [ObservableProperty] private TimeSpan _selectedDelay = TimeSpan.Zero;
     [ObservableProperty] private TimeSpan _selectedRate = TimeSpan.FromMilliseconds(100);
 
@@ -78,18 +86,17 @@ public partial class SendPacketViewModel : ViewModelBase
         }
     }
 
-    private bool CanSend() => !IsSending;
+    private bool CanSend() => !IsSending && SelectedClient is not null;
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     public void StartSend()
     {
-        if (IsSending)
+        if (IsSending || SelectedClient is null)
         {
             return;
         }
 
         IsSending = true;
-        CancelSendCommand.NotifyCanExecuteChanged();
     }
 
     private bool CanCancelSend() => IsSending;
@@ -98,7 +105,6 @@ public partial class SendPacketViewModel : ViewModelBase
     public void CancelSend()
     {
         IsSending = false;
-        CancelSendCommand.NotifyCanExecuteChanged();
     }
 
 }
