@@ -7,8 +7,13 @@
              x:Class="Arbiter.App.Views.SendPacketView"
              x:DataType="vm:SendPacketViewModel">
     
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.Send.ValidationErrorBackground" Color="#80260e0b"/>
+        <SolidColorBrush x:Key="Talgonite.Send.ValidationErrorForeground" Color="#ed6a5e"/>
+    </UserControl.Resources>
+    
     <Panel Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid RowDefinitions="Auto,*">
+        <Grid RowDefinitions="Auto,*,Auto">
             <!-- Top Toolbar -->
             <Grid Row="0" ColumnDefinitions="Auto,*,Auto">
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4" Margin="8,4">
@@ -139,11 +144,47 @@
             <!-- Input Area -->
             <TextBox Grid.Row="1"
                      Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                     SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
                      FontSize="16"
                      Classes="editor"
                      AcceptsTab="False"
                      IsEnabled="{Binding !IsSending}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy Selection" Command="{Binding CopyToClipboardCommand}" CommandParameter="selection"/>
+                        <MenuItem Header="Copy All" Command="{Binding CopyToClipboardCommand}" CommandParameter="all"/>
+                        <Separator/>
+                        <MenuItem Header="Paste" Command="{Binding PasteFromClipboardCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="Clear All" Command="{Binding ClearAllCommand}"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
+            
+            <!-- Error Info -->
+            <Border Grid.Row="1"
+                        IsVisible="{Binding ValidationError, ConverterParameter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                        Background="{StaticResource Talgonite.Send.ValidationErrorBackground}"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="{StaticResource Talgonite.Send.ValidationErrorForeground}"
+                        Opacity="{Binding ValidationErrorOpacity, FallbackValue=0}"
+                        Margin="4"
+                        Padding="8,4">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="QuadraticEaseInOut"/>
+                    </Transitions>
+                </Border.Transitions>
+                <TextBlock Text="{Binding ValidationError}"
+                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                           FontSize="14"
+                           Foreground="{StaticResource Talgonite.Send.ValidationErrorForeground}"
+                           TextAlignment="Left"
+                           VerticalAlignment="Center"/>
+            </Border>
         </Grid>
     </Panel>
     

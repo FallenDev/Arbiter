@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Arbiter.App.Extensions;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
+using Avalonia;
 using Avalonia.Data;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,26 +27,50 @@ public partial class SendPacketViewModel : ViewModelBase
     private static readonly char[] NewLineCharacters = ['\r', '\n'];
 
     private static readonly Regex PacketLineRegex =
-        new(@"^(<|>)?([0-9a-f]{2})(?:\s+([0-9a-f]{2}))*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        new(@"^(<|>)?([0-9a-f]{1,2})(?:\s+([0-9a-f]{1,2}))*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly ILogger<SendPacketViewModel> _logger;
     private readonly ClientManagerViewModel _clientManager;
 
     private readonly List<NetworkPacket> _parsedPackets = [];
     private CancellationTokenSource? _cancellationTokenSource;
-
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
+    
     private string _inputText = string.Empty;
 
+    public string InputText
+    {
+        get => _inputText;
+        set
+        {
+            if (!SetProperty(ref _inputText, value))
+            {
+                return;
+            }
+            
+            var lines = value.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
+            ValidationError = !TryParsePackets(lines, out var validationError) ? validationError : null;
+            ValidationErrorOpacity = !string.IsNullOrWhiteSpace(ValidationError) ? 1 : 0;
+            
+            StartSendCommand.NotifyCanExecuteChanged();
+            ClearAllCommand.NotifyCanExecuteChanged();
+
+            if (validationError is not null)
+            {
+                throw new DataValidationException(validationError);
+            }
+        }
+    }
+    
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private bool _hasClients;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private bool _hasPackets;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
-    private bool _hasError;
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
+    private string? _validationError;
+
+    [ObservableProperty] private double? _validationErrorOpacity;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private ClientViewModel? _selectedClient;
@@ -55,6 +82,12 @@ public partial class SendPacketViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     [NotifyCanExecuteChangedFor(nameof(CancelSendCommand))]
     private bool _isSending;
+
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
+    private int _selectionStart;
+
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
+    private int _selectionEnd;
 
     public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
 
@@ -115,7 +148,7 @@ public partial class SendPacketViewModel : ViewModelBase
         }
 
         IsSending = true;
-        
+
         // Create a fresh CTS for each run
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = new CancellationTokenSource();
@@ -148,7 +181,7 @@ public partial class SendPacketViewModel : ViewModelBase
     private async Task RunSendLoopAsync(CancellationToken token)
     {
         var packetsToSend = _parsedPackets.ToList();
-        
+
         try
         {
             var client = SelectedClient;
@@ -191,23 +224,21 @@ public partial class SendPacketViewModel : ViewModelBase
         }
         finally
         {
-            IsSending = false;
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
+
+            // Notify the UI that we are done sending
+            Dispatcher.UIThread.Post(() => { IsSending = false; }, DispatcherPriority.Background);
         }
     }
 
-    partial void OnInputTextChanged(string value)
+    private bool TryParsePackets(IReadOnlyList<string> lines, out string? validationError)
     {
-        var lines = value.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
-        ParsePackets(lines);
-    }
+        validationError = null;
 
-    private void ParsePackets(IReadOnlyList<string> lines)
-    {
         _parsedPackets.Clear();
         HasPackets = false;
-        
+
         for (var i = 0; i < lines.Count; i++)
         {
             var line = lines[i];
@@ -219,8 +250,8 @@ public partial class SendPacketViewModel : ViewModelBase
             var match = PacketLineRegex.Match(line.Trim());
             if (!match.Success)
             {
-                HasError = true;
-                throw new DataValidationException($"Invalid packet on line {i + 1}");
+                validationError = $"Invalid packet format on line {i + 1}";
+                return false;
             }
 
             try
@@ -241,11 +272,65 @@ public partial class SendPacketViewModel : ViewModelBase
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error parsing packet on line {Line}", i + 1);
-                HasError = true;
+                validationError = $"Invalid packet on line {i + 1}";
+                return false;
             }
         }
 
-        HasError = false;
         HasPackets = _parsedPackets.Count > 0;
+        return true;
+    }
+
+    private bool CanCopyToClipboard(string fieldName) => fieldName switch
+    {
+        "selection" => Math.Abs(SelectionEnd - SelectionStart) > 0,
+        _ => true
+    };
+
+    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
+    private async Task CopyToClipboard(string fieldName)
+    {
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is null)
+        {
+            return;
+        }
+
+        // Ensure that the selection is not reversed
+        var selectionStart = Math.Min(SelectionStart, SelectionEnd);
+        var selectionEnd = Math.Max(SelectionStart, SelectionEnd);
+
+        var textToCopy = fieldName switch
+        {
+            "selection" => InputText.Substring(selectionStart, selectionEnd - selectionStart),
+            _ => InputText
+        };
+
+        if (!string.IsNullOrEmpty(textToCopy))
+        {
+            await clipboard.SetTextAsync(textToCopy);
+        }
+    }
+
+    [RelayCommand]
+    private async Task PasteFromClipboard()
+    {
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is null)
+        {
+            return;
+        }
+
+        var newText = await clipboard.GetTextAsync();
+        if (!string.IsNullOrWhiteSpace(newText))
+        {
+            InputText = newText;
+        }
+    }
+
+    [RelayCommand]
+    private void ClearAll()
+    {
+        InputText = string.Empty;
     }
 }
