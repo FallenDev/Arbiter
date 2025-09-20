@@ -1,0 +1,32 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arbiter.App.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Arbiter.App.Views.SendPacketView"
+             x:DataType="vm:SendPacketViewModel">
+    
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+        <!-- Left Area -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*">
+            <!-- Top Toolbar -->
+            <Grid Grid.Row="0" Height="40">
+                
+            </Grid>
+            
+            <!-- Input Area -->
+            <TextBox Grid.Row="1"
+                     Text="{Binding InputText}"
+                     Classes="editor"
+                     AcceptsTab="False"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+        </Grid>
+        
+        <!-- Right Panel -->
+        <Grid Grid.Column="1" Width="30">
+            
+        </Grid>
+    </Grid>
+    
+</UserControl>

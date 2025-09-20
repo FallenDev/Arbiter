@@ -32,6 +32,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private RawHexViewModel? _selectedRawHex;
     
     public ClientManagerViewModel ClientManager { get; }
+    public SendPacketViewModel SendPacket { get; }
     public ConsoleViewModel Console { get; }
     public InspectorViewModel Inspector { get; }
     public ProxyViewModel Proxy { get; }
@@ -53,6 +54,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _mainWindow = mainWindow;
 
         ClientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
+        SendPacket = serviceProvider.GetRequiredService<SendPacketViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
         Inspector = serviceProvider.GetRequiredService<InspectorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();

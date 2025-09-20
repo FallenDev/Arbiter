@@ -28,7 +28,7 @@
                      Watermark="&lt;empty&gt;"
                      Classes="read-only"
                      Background="{StaticResource Talgonite.InspectorList.Background}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      Margin="0,0,4,0"
                      Height="40" MinWidth="50" MaxWidth="100"
                      HorizontalAlignment="Right">

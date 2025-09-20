@@ -116,8 +116,11 @@
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
             
             <TabControl Grid.Row="2">
-                <!-- Console Tab -->
-                <TabItem Header="Console Log">
+                <!-- Bottom Area -->
+                <TabItem Header="Send">
+                    <v:SendPacketView DataContext="{Binding SendPacket}"/>
+                </TabItem>
+                <TabItem Header="Console">
                     <v:ConsoleLogView DataContext="{Binding Console}"/>
                 </TabItem>
             </TabControl>

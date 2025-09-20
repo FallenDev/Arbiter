@@ -40,7 +40,7 @@
             <StackPanel Grid.Column="0" Margin="0,4">
                 <TextBlock Text="{Binding InspectedPacket.DisplayName, FallbackValue=--}"
                            TextAlignment="Left"
-                           FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
                            FontSize="24"
                            FontWeight="SemiBold"
                            Foreground="#e0e0e0"
@@ -51,14 +51,14 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="8,0" Spacing="8">
                         <TextBlock Name="DirectionText"
                                    Text="{Binding InspectedPacket.Direction, FallbackValue=Unknown, StringFormat={}{0} Packet}"
-                                   FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="{Binding InspectedPacket.Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}, FallbackValue=White}"
                                    VerticalAlignment="Center"/>
                     
                         <TextBlock Text="{Binding InspectedPacket.Command, FallbackValue=00, StringFormat={}0x{0:X2}}"
-                                   FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="{Binding #DirectionText.Foreground}"
@@ -73,7 +73,7 @@
                         ToolTip.Tip="Copy the JSON representation of this object."
                         Classes="toolbar"
                         FontSize="18"
-                        FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                         FontWeight="SemiBold"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center">

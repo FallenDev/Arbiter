@@ -15,7 +15,7 @@
             <sys:Double x:Key="Talgonite.FontSize.Trace">14</sys:Double>
             
             <!-- Editor Resources -->
-            <FontFamily x:Key="Talgonite.Editor.FontFamily">Consolas</FontFamily>
+            <FontFamily x:Key="Talgonite.Font.Monospace">Consolas</FontFamily>
             <sys:Double x:Key="Talgonite.Editor.FontSize">14</sys:Double>
             <SolidColorBrush x:Key="Talgonite.Editor.Background" Color="#1e2228"/>
             

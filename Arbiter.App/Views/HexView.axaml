@@ -33,7 +33,7 @@
                          Watermark="--"
                          Classes="read-only"
                          Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
-                         FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
                          MinWidth="60"
                          Focusable="False">
                     <TextBox.ContextMenu>
@@ -53,7 +53,7 @@
                          Watermark="--"
                          Classes="read-only"
                          Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
-                         FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
                          MinWidth="60"
                          Focusable="False">
                     <TextBox.ContextMenu>
@@ -149,7 +149,7 @@
             <TextBox Text="{Binding FormattedSignedByte, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -177,7 +177,7 @@
             <TextBox Text="{Binding FormattedUnsignedByte, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -205,7 +205,7 @@
             <TextBox Text="{Binding FormattedSignedShort, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -233,7 +233,7 @@
             <TextBox Text="{Binding FormattedUnsignedShort, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -261,7 +261,7 @@
             <TextBox Text="{Binding FormattedSignedInt, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -289,7 +289,7 @@
             <TextBox Text="{Binding FormattedUnsignedInt, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -317,7 +317,7 @@
             <TextBox Text="{Binding FormattedSignedLong, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -345,7 +345,7 @@
             <TextBox Text="{Binding FormattedUnsignedLong, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -373,7 +373,7 @@
             <TextBox Text="{Binding FormattedIpAddress, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.FontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">
@@ -401,7 +401,7 @@
             <TextBox Text="{Binding FormattedBitFlags, FallbackValue=--}"
                      Classes="read-only"
                      FontSize="{StaticResource Talgonite.HexView.SmallFontSize}"
-                     FontFamily="{StaticResource Talgonite.Editor.FontFamily}"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
                      TextAlignment="Right"
                      Background="{StaticResource Talgonite.HexView.TextBoxBackground}"
                      Height="{StaticResource Talgonite.HexView.TextBoxHeight}">

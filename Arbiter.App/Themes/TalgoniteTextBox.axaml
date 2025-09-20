@@ -80,6 +80,7 @@
                                             </TextBlock>
                                             
                                             <TextPresenter Name="PART_TextPresenter"
+                                                           Background="Red"
                                                            Text="{TemplateBinding Text, Mode=TwoWay}"
                                                            TextAlignment="{TemplateBinding TextAlignment}"
                                                            TextWrapping="{TemplateBinding TextWrapping}"
@@ -150,8 +151,10 @@
     <!-- Text Editor Style -->
     <Style Selector="TextBox.editor">
         <Setter Property="Background" Value="{StaticResource Talgonite.Editor.Background}"/>
-        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Editor.FontFamily}"/>
+        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.Monospace}"/>
         <Setter Property="FontSize" Value="{StaticResource Talgonite.Editor.FontSize}"/>
+        <Setter Property="AcceptsReturn" Value="True"/>
+        <Setter Property="AcceptsTab" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Top"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
