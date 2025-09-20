@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Additional sub-second rates for sending packets
 - `Shift+Enter` hotkey for sending packets in the send window
+- `InputDescription` for `ServerShowDialogMessage` packet
 
 ### Changed
 
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename `TextInput` to `Arguments` for `ClientDialogMenuChoiceMessage` message
 - Increase command filter box width slightly
 - Fixed `InterfacePane` enum values
+- Display `Name` for entities in Inspector
 
 ## [0.9.4b] - 2025-09-20
 

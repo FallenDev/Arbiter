@@ -22,6 +22,7 @@ public class ServerShowDialogMessage : ServerMessage
     public List<string> MenuChoices { get; set; } = [];
     public string? InputPrompt { get; set; }
     public byte? InputMaxLength { get; set; }
+    public string? InputDescription { get; set; }
     public byte? Unknown1 { get; set; }
     public byte? Unknown2 { get; set; }
 
@@ -79,6 +80,7 @@ public class ServerShowDialogMessage : ServerMessage
         {
             InputPrompt = reader.ReadString8();
             InputMaxLength = reader.ReadByte();
+            InputDescription = reader.ReadString8();
         }
     }
 
