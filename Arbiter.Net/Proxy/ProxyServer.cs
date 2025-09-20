@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using Arbiter.Net.Client;
 
 namespace Arbiter.Net.Proxy;
 
@@ -31,6 +32,7 @@ public class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionRedirectEventArgs>? ClientRedirected;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketReceived;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketSent;
+    public event EventHandler<ProxyConnectionDataEventArgs>? PacketQueued;
     public event EventHandler<ProxyConnectionExceptionEventArgs>? PacketException;
 
     public void Start(int listenPort, IPAddress remoteAddress, int remotePort) =>
@@ -110,8 +112,8 @@ public class ProxyServer : IDisposable
         connection.ClientRedirected += OnClientRedirected;
         connection.PacketReceived += OnRecv;
         connection.PacketSent += OnSend;
+        connection.PacketQueued += OnQueued;
         connection.PacketException += OnExceptionPacket;
-
 
         // Check for any pending redirects, use that first
         var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : RemoteEndpoint!;
@@ -132,6 +134,7 @@ public class ProxyServer : IDisposable
             connection.ClientRedirected -= OnClientRedirected;
             connection.PacketReceived -= OnRecv;
             connection.PacketSent -= OnSend;
+            connection.PacketQueued -= OnQueued;
             connection.PacketException -= OnExceptionPacket;
 
             using var _ = _connectionsLock.EnterScope();
@@ -165,6 +168,11 @@ public class ProxyServer : IDisposable
     private void OnSend(object? sender, NetworkTransferEventArgs e) =>
         PacketSent?.Invoke(this,
             new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Decrypted, e.Decrypted));
+
+    private void OnQueued(object? sender, NetworkPacketEventArgs e) =>
+        PacketQueued?.Invoke(this, new ProxyConnectionDataEventArgs((sender as ProxyConnection)!,
+            e.Packet is ClientPacket ? NetworkDirection.Send : NetworkDirection.Receive,
+            e.Packet, e.Packet));
 
     private void OnExceptionPacket(object? sender, NetworkPacketEventArgs e) =>
         PacketException?.Invoke(this,

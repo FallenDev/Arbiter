@@ -53,6 +53,7 @@ public partial class ProxyConnection : IDisposable
     public event EventHandler<NetworkTransferEventArgs>? PacketReceived;
     public event EventHandler<NetworkTransferEventArgs>? PacketSent;
     public event EventHandler<NetworkPacketEventArgs>? PacketException;
+    public event EventHandler<NetworkPacketEventArgs>? PacketQueued;
 
     public ProxyConnection(int id, TcpClient client)
     {
@@ -61,12 +62,17 @@ public partial class ProxyConnection : IDisposable
         _client = client;
         _client.NoDelay = true;
     }
-    
-    public bool EnqueueToClient(ServerPacket packet) =>
-        _sendQueue.Writer.TryWrite(packet);
-    
-    public bool EnqueueToServer(ClientPacket packet) =>
-        _sendQueue.Writer.TryWrite(packet);
+
+    public bool EnqueuePacket(NetworkPacket packet)
+    {
+        if (!_sendQueue.Writer.TryWrite(packet))
+        {
+            return false;
+        }
+        
+        PacketQueued?.Invoke(this, new NetworkPacketEventArgs(packet));
+        return true;
+    }
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)
     {

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PacketException` event invoked when the client tries to send `0x42` exception packet
 - Sending of raw packets to client/server
 - Transition animations to various UI components
+- `PacketQueued` event to `ProxyConnection` and `ProxyServer` classes
 
 ### Changed
 

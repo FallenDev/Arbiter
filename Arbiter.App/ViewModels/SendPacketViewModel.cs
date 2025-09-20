@@ -9,7 +9,6 @@ using System.Threading;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net;
 using Arbiter.Net.Client;
-using Arbiter.Net.Proxy;
 using Arbiter.Net.Server;
 using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -27,7 +26,6 @@ public partial class SendPacketViewModel : ViewModelBase
         new(@"^(<|>)?([0-9a-f]{2})(?:\s+([0-9a-f]{2}))*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly ILogger<SendPacketViewModel> _logger;
-    private readonly ProxyServer _proxyServer;
     private readonly ClientManagerViewModel _clientManager;
 
     private readonly List<NetworkPacket> _parsedPackets = [];
@@ -75,11 +73,9 @@ public partial class SendPacketViewModel : ViewModelBase
         TimeSpan.FromSeconds(5)
     ];
 
-    public SendPacketViewModel(ILogger<SendPacketViewModel> logger,
-        IServiceProvider serviceProvider, ProxyServer proxyServer)
+    public SendPacketViewModel(ILogger<SendPacketViewModel> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _proxyServer = proxyServer;
         _clientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
 
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
