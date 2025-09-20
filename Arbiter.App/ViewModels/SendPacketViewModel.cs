@@ -105,8 +105,9 @@ public partial class SendPacketViewModel : ViewModelBase
     [
         TimeSpan.Zero,
         TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(300),
-        TimeSpan.FromMilliseconds(400), TimeSpan.FromMilliseconds(500), TimeSpan.FromSeconds(1),
-        TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(4),
+        TimeSpan.FromMilliseconds(400), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(600),
+        TimeSpan.FromMilliseconds(700), TimeSpan.FromMilliseconds(800), TimeSpan.FromMilliseconds(900),
+        TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(4),
         TimeSpan.FromSeconds(5)
     ];
 

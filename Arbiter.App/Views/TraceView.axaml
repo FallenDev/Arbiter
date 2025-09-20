@@ -230,7 +230,7 @@
                            VerticalAlignment="Center" />
                     <TextBox Text="{Binding FilterParameters.CommandFilter}"
                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                             Width="100"
+                             Width="120"
                              Height="36">
                         <TextBox.InnerRightContent>
                             <Button Command="{Binding FilterParameters.ClearCommandFilterCommand}"
