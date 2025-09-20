@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
 using Arbiter.App.Models;
+using Arbiter.Net.Client;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 
@@ -23,7 +24,8 @@ public partial class TraceViewModel
 
         var packetStrings = SelectedPackets.Select(vm => vm.DisplayMode switch
         {
-            PacketDisplayMode.Decrypted => $"{vm.Command:X2} {vm.FormattedDecrypted}",
+            PacketDisplayMode.Decrypted =>
+                $"{(vm.DecryptedPacket is ClientPacket ? ">" : "<")} {vm.Command:X2} {vm.FormattedDecrypted}",
             _ => vm.FormattedEncrypted,
         });
 
