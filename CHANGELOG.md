@@ -10,13 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Additional sub-second rates for sending packets
+- `Shift+Enter` hotkey for sending packets in the send window
 
 ### Changed
 
 - Rename `Aisling` to `Reactor` for dialog entity type
 - Rename `TextInput` to `Arguments` for `ClientDialogMenuChoiceMessage` message
 - Increase command filter box width slightly
-- `Pane` enum values
+- Fixed `InterfacePane` enum values
 
 ## [0.9.4b] - 2025-09-20
 

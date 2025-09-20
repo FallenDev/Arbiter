@@ -107,6 +107,7 @@
                     <Button Command="{Binding StartSendCommand}"
                             ToolTip.Tip="Starts sending the packets provided in the text box."
                             IsVisible="{Binding !IsSending}"
+                            HotKey="Shift+Enter"
                             Classes="toolbar"
                             MinWidth="120" Height="40"
                             Padding="16,4"
