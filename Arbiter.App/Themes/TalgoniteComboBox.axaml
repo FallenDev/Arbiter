@@ -56,6 +56,7 @@
                         <!-- Dropdown Toggle -->
                         <ToggleButton Name="Toggle"
                                       Grid.Column="1"
+                                      Width="32"
                                       IsChecked="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                       Background="Transparent"
                                       Foreground="{StaticResource Talgonite.ComboBox.CaretForeground}"

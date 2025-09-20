@@ -20,6 +20,7 @@
             <converters:NumericComparerConverter x:Key="NumericComparerConverter"/>
             <converters:PacketDirectionColorConverter x:Key="PacketDirectionColorConverter"/>
             <converters:PacketDirectionNameConverter x:Key="PacketDirectionNameConverter"/>
+            <converters:TimeSpanConverter x:Key="TimeSpanConverter"/>
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Themes/TalgoniteIcons.axaml"/>

@@ -3,23 +3,134 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
              x:Class="Arbiter.App.Views.SendPacketView"
              x:DataType="vm:SendPacketViewModel">
     
-    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
-        <!-- Left Area -->
-        <Grid Grid.Column="0" RowDefinitions="Auto,*">
+    <Panel Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid RowDefinitions="Auto,*">
             <!-- Top Toolbar -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="4" Margin="4">
-                <Label Content="Client"
-                       ToolTip.Tip="The active client connection to send to or from."/>
-                <ComboBox ItemsSource="{Binding Clients}"
-                          SelectedValue="{Binding SelectedClient}"
-                          MinWidth="200">
+            <Grid Row="0" ColumnDefinitions="Auto,*,Auto">
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4" Margin="8,4">
+                    <!-- Client Dropdown -->
+                    <Label Content="Client"
+                           ToolTip.Tip="The client connection to send packets to or from."/>
+                    <ComboBox ItemsSource="{Binding Clients}"
+                              SelectedValue="{Binding SelectedClient}"
+                              PlaceholderText="&lt;none&gt;"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              Width="180" Height="40">
+                        <ComboBox.IsEnabled>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="!IsSending"/>
+                                <Binding Path="HasClients"/>
+                            </MultiBinding>
+                        </ComboBox.IsEnabled>
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                           Padding="8,4" />
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           FontSize="16"
+                                           TextAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Padding="8,4"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </WrapPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                    <!-- Delay Dropdown -->
+                    <Label Content="Delay"
+                           ToolTip.Tip="The initial delay before sending starts."/>
+                    <ComboBox ItemsSource="{Binding AvailableDelays}"
+                              SelectedValue="{Binding SelectedDelay}"
+                              PlaceholderText="&lt;none&gt;"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              Width="150" Height="40"
+                              IsEnabled="{Binding !IsSending}">
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                           Padding="8,4" />
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           TextAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Padding="8,4"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                     
-                </ComboBox>
-            </StackPanel>
+                    <!-- Rate Dropdown -->
+                    <Label Content="Rate"
+                           ToolTip.Tip="The delay between each packet being sent."/>
+                    <ComboBox ItemsSource="{Binding AvailableRates}"
+                              SelectedValue="{Binding SelectedRate}"
+                              PlaceholderText="&lt;none&gt;"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              Width="160" Height="40"
+                              IsEnabled="{Binding !IsSending}">
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                           Padding="8,4" />
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           TextAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Padding="8,4"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <!-- Send Button -->
+                    <Button Command="{Binding StartSendCommand}"
+                            IsVisible="{Binding !IsSending}"
+                            Classes="toolbar"
+                            MinWidth="120" Height="40"
+                            Padding="16,4">
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <Path Width="16" Height="16"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
+                            <TextBlock Text="Send"
+                                       Foreground="{Binding $parent[Button].Foreground}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Cancel Button -->
+                    <Button Command="{Binding CancelSendCommand}"
+                            IsVisible="{Binding IsSending}"
+                            Classes="toolbar destructive"
+                            MinWidth="120" Height="40"
+                            Padding="16,4">
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <Path Width="16" Height="16"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                            <TextBlock Text="Cancel"
+                                       Foreground="{Binding $parent[Button].Foreground}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
             
             <!-- Input Area -->
             <TextBox Grid.Row="1"
@@ -27,13 +138,9 @@
                      FontSize="16"
                      Classes="editor"
                      AcceptsTab="False"
+                     IsEnabled="{Binding !IsSending}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
         </Grid>
-        
-        <!-- Right Panel -->
-        <Grid Grid.Column="1" Width="30">
-            
-        </Grid>
-    </Grid>
+    </Panel>
     
 </UserControl>
