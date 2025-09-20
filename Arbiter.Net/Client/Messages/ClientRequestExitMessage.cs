@@ -7,7 +7,7 @@ namespace Arbiter.Net.Client.Messages;
 [NetworkCommand(ClientCommand.RequestExit)]
 public class ClientRequestExitMessage : ClientMessage
 {
-    public ClientExitReason Reason { get; set; }
+    public ClientExitReason? Reason { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
