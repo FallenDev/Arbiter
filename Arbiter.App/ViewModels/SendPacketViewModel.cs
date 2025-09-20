@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net;
 using Arbiter.Net.Client;
@@ -29,7 +30,7 @@ public partial class SendPacketViewModel : ViewModelBase
     private readonly ClientManagerViewModel _clientManager;
 
     private readonly List<NetworkPacket> _parsedPackets = [];
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private string _inputText = string.Empty;
@@ -114,6 +115,12 @@ public partial class SendPacketViewModel : ViewModelBase
         }
 
         IsSending = true;
+        
+        // Create a fresh CTS for each run
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        _ = RunSendLoopAsync(_cancellationTokenSource.Token);
     }
 
     private bool CanCancelSend() => IsSending;
@@ -126,8 +133,68 @@ public partial class SendPacketViewModel : ViewModelBase
             return;
         }
 
-        _cancellationTokenSource.Cancel();
-        IsSending = false;
+        try
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+        finally
+        {
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+            IsSending = false;
+        }
+    }
+
+    private async Task RunSendLoopAsync(CancellationToken token)
+    {
+        var packetsToSend = _parsedPackets.ToList();
+        
+        try
+        {
+            var client = SelectedClient;
+            if (client is null || packetsToSend.Count == 0)
+            {
+                return;
+            }
+
+            if (SelectedDelay > TimeSpan.Zero)
+            {
+                await Task.Delay(SelectedDelay, token).ConfigureAwait(false);
+            }
+
+            for (var i = 0; i < packetsToSend.Count; i++)
+            {
+                token.ThrowIfCancellationRequested();
+
+                var packet = packetsToSend[i];
+                var queued = client.EnqueuePacket(packet);
+                if (!queued)
+                {
+                    _logger.LogWarning("[{ClientName}] Failed to enqueue packet {Index}",
+                        client.Name ?? client.Id.ToString(), i + 1);
+                }
+
+                var hasMore = i < packetsToSend.Count - 1;
+                if (hasMore && SelectedRate > TimeSpan.Zero)
+                {
+                    await Task.Delay(SelectedRate, token).ConfigureAwait(false);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Do nothing
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while sending packets");
+        }
+        finally
+        {
+            IsSending = false;
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
     }
 
     partial void OnInputTextChanged(string value)
