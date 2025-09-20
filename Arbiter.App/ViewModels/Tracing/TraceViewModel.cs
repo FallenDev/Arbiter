@@ -98,6 +98,14 @@ public partial class TraceViewModel : ViewModelBase
 
         AddPacketToTrace(packetViewModel);
     }
+    
+    private void OnPacketQueued(object? sender, ProxyConnectionDataEventArgs e)
+    {
+        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.Connection.Name)
+            { DisplayMode = _packetDisplayMode };
+
+        AddPacketToTrace(packetViewModel);
+    }
 
     private void AddPacketToTrace(TracePacketViewModel vm)
     {
@@ -121,6 +129,7 @@ public partial class TraceViewModel : ViewModelBase
         }
 
         _proxyServer.PacketReceived += OnPacketReceived;
+        _proxyServer.PacketQueued += OnPacketQueued;
 
         StartTime = DateTime.Now;
         IsRunning = true;
@@ -137,6 +146,8 @@ public partial class TraceViewModel : ViewModelBase
         }
 
         _proxyServer.PacketReceived -= OnPacketReceived;
+        _proxyServer.PacketQueued -= OnPacketQueued;
+        
         IsRunning = false;
 
         _logger.LogInformation("Trace stopped");
