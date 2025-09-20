@@ -25,7 +25,7 @@ public partial class TracePacketViewModel(
     [ObservableProperty] private string? _clientName = clientName;
 
     [ObservableProperty]
-    private PacketDirection _direction = encrypted is ClientPacket ? PacketDirection.Client : PacketDirection.Server;
+    private PacketDirection _direction = decrypted is ClientPacket ? PacketDirection.Client : PacketDirection.Server;
     
     [ObservableProperty] private byte _command = encrypted.Command;
     

@@ -202,8 +202,8 @@
     <Style Selector="TextBox Button.clear">
         <Setter Property="Width" Value="24"/>
         <Setter Property="Height" Value="24"/>
-        <Setter Property="Padding" Value="4"/>
-        <Setter Property="Margin" Value="0,0,8,0"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="Margin" Value="0,0,2,0"/>
     </Style>
     
     <!-- Reveal Style -->
