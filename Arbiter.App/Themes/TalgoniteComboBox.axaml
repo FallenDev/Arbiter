@@ -25,7 +25,7 @@
                         MinHeight="{TemplateBinding MinHeight}">
                     <Border.Transitions>
                         <Transitions>
-                            <BrushTransition Property="BorderBrush" Duration="0:0:0.200" Easing="CubicEaseInOut"/>
+                            <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
                         </Transitions>
                     </Border.Transitions>
                     <Grid ColumnDefinitions="*,Auto" MaxWidth="{Binding $parent.Bounds.Width}">

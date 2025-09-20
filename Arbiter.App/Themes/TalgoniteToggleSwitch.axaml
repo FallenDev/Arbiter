@@ -7,7 +7,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="KnobTransitions">
             <Transitions>
-                <DoubleTransition Property="Canvas.Left" Easing="CubicEaseOut" Duration="0:0:0.2"/>
+                <DoubleTransition Property="Canvas.Left" Easing="CubicEaseOut" Duration="{StaticResource Talgonite.Transition.Duration}"/>
             </Transitions>
         </Setter>
         <Setter Property="Template">

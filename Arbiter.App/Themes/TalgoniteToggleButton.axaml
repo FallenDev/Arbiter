@@ -25,8 +25,8 @@
                         VerticalAlignment="{TemplateBinding VerticalAlignment}">
                     <Border.Transitions>
                         <Transitions>
-                            <BrushTransition Property="Background" Duration="0:0:0.200" Easing="CubicEaseInOut"/>
-                            <BrushTransition Property="BorderBrush" Duration="0:0:0.200" Easing="CubicEaseInOut"/>
+                            <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
+                            <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
                         </Transitions>
                     </Border.Transitions>
                     <ContentPresenter Name="PART_ContentPresenter"
