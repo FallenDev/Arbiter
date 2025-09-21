@@ -126,7 +126,8 @@
             
             <!-- ProgressBar Resources -->
             <SolidColorBrush x:Key="Talgonite.ProgressBar.Background" Color="#262b33"/>
-            <SolidColorBrush x:Key="Talgonite.ProgressBar.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.Foreground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.DisabledForeground" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.ProgressBar.TextForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ProgressBar.BorderBrush" Color="#373d49"/>
             

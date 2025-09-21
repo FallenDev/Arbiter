@@ -1,5 +1,18 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- RadioButton Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <RadioButton GroupName="Group">Normal Option</RadioButton>
+                <RadioButton GroupName="Group" IsEnabled="False">Disabled Option</RadioButton>
+                <RadioButton GroupName="Group" IsChecked="True" IsEnabled="False">Disabled Selected Option</RadioButton>
+                <RadioButton GroupName="Group" IsChecked="{x:Null}">Indeterminate Option</RadioButton>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="RadioButton">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.Foreground}"/>
@@ -10,34 +23,44 @@
             <ControlTemplate>
                 <Grid ColumnDefinitions="Auto,*"
                       Background="{TemplateBinding Background}"
-                      ColumnSpacing="4">
-                    <Ellipse Name="Border"
-                             Grid.Column="0"
-                             Width="{StaticResource Talgonite.RadioButton.Width}"
-                             Height="{StaticResource Talgonite.RadioButton.Height}"
-                             Stroke="{TemplateBinding BorderBrush}"
-                             Fill="{StaticResource Talgonite.RadioButton.Background}"
-                             StrokeThickness="2"
-                             VerticalAlignment="Center"/>
+                      ColumnSpacing="6">
+                    <!-- Indicator Box -->
+                    <Border Name="Box"
+                            Grid.Column="0"
+                            Width="{StaticResource Talgonite.RadioButton.Width}"
+                            Height="{StaticResource Talgonite.RadioButton.Height}"
+                            Background="{StaticResource Talgonite.RadioButton.Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="2"
+                            CornerRadius="2"
+                            VerticalAlignment="Center">
+                        <Panel>
+                            <Border Classes="sunken-shadow" CornerRadius="2"/>
+                            <Border Classes="sunken-highlight" CornerRadius="2"/>
+                            
+                            <!-- Checked square mark -->
+                            <Border Name="CheckMark"
+                                    Width="{StaticResource Talgonite.RadioButton.CheckMarkWidth}"
+                                    Height="{StaticResource Talgonite.RadioButton.CheckMarkHeight}"
+                                    Background="{StaticResource Talgonite.RadioButton.PressedForeground}"
+                                    CornerRadius="2"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsVisible="False"/>
+                            
+                            <!-- Indeterminate dash mark -->
+                            <Border Name="IndeterminateMark"
+                                    Width="{StaticResource Talgonite.RadioButton.CheckMarkWidth}"
+                                    Height="2"
+                                    Background="{StaticResource Talgonite.RadioButton.PressedForeground}"
+                                    CornerRadius="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsVisible="False"/>
+                        </Panel>
+                    </Border>
                     
-                    <Ellipse Name="CheckMark"
-                             Grid.Column="0"
-                             Width="{StaticResource Talgonite.RadioButton.CheckMarkWidth}"
-                             Height="{StaticResource Talgonite.RadioButton.CheckMarkHeight}"
-                             Stretch="None"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             UseLayoutRounding="False"/>
-                    
-                    <Ellipse Name="IndeterminateMark"
-                             Grid.Column="0"
-                             Width="{StaticResource Talgonite.RadioButton.CheckMarkWidth}"
-                             Height="{StaticResource Talgonite.RadioButton.CheckMarkHeight}"
-                             Stretch="None"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             UseLayoutRounding="False"/>
-                    
+                    <!-- Content -->
                     <ContentPresenter Name="PART_ContentPresenter"
                                       Grid.Column="1"
                                       Content="{TemplateBinding Content}"
@@ -48,42 +71,37 @@
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^ /template/ Ellipse#CheckMark">
-            <Setter Property="Fill" Value="{StaticResource Talgonite.RadioButton.PressedForeground}"/>
-            <Setter Property="IsVisible" Value="False"/>
+        <!-- Hover/Focus border on the box -->
+        <Style Selector="^:pointerover /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.HoverBorderBrush}"/>
+        </Style>
+        <Style Selector="^:focus /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.FocusBorderBrush}"/>
         </Style>
         
-        <Style Selector="^ /template/ Ellipse#IndeterminateMark">
-            <Setter Property="IsVisible" Value="False"/>
-        </Style>
-        
-        <Style Selector="^:pointerover /template/ Ellipse#Border">
-            <Setter Property="Stroke" Value="{StaticResource Talgonite.RadioButton.HoverBorderBrush}"/>
-        </Style>
-        
-        <Style Selector="^:indeterminate /template/ Ellipse#IndeterminateMark">
-            <Setter Property="IsVisible" Value="False"/>
-        </Style>
-        
-        <Style Selector="^:focus /template/ Ellipse#Border">
-            <Setter Property="Stroke" Value="{StaticResource Talgonite.RadioButton.FocusBorderBrush}"/>
-        </Style>
-        
-        <Style Selector="^:checked">
-            <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.PressedForeground}"/>
-        </Style>
-        
-        <Style Selector="^:checked /template/ Ellipse#CheckMark">
+        <!-- Checked state -->
+        <Style Selector="^:checked /template/ Border#CheckMark">
             <Setter Property="IsVisible" Value="True"/>
         </Style>
         
-        <Style Selector="^:disabled /template/ Ellipse#CheckMark">
-            <Setter Property="Fill" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+        <!-- Indeterminate state shows dash -->
+        <Style Selector="^:indeterminate /template/ Border#IndeterminateMark">
+            <Setter Property="IsVisible" Value="True"/>
         </Style>
         
-        <Style Selector="^:disabled /template/ Ellipse#Border">
-            <Setter Property="Stroke" Value="{StaticResource Talgonite.RadioButton.DisabledBorderBrush}"/>
-            <Setter Property="Fill" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+        <!-- Disabled style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.DisabledBorderBrush}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#CheckMark">
+            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#IndeterminateMark">
+            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
         </Style>
     </Style>
     

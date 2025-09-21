@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Selected tab background color
 - Fix spacing in search and filter bars
 - Fix disable style for `ComboBox` dropdown button
+- Reduce corner radius on input controls
 
 ## [0.9.4b] - 2025-09-20
 

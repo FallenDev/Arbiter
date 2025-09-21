@@ -1,5 +1,17 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Separator Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel MinWidth="200">
+                <MenuItem Header="Before Separator"/>
+                <Separator/>
+                <MenuItem Header="After Separator"/>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="Separator.menu">
         <Setter Property="Background" Value="{StaticResource Talgonite.Border.DividerBrush}"/>
         <Setter Property="Height" Value="1"/>
