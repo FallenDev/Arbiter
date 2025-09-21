@@ -1,5 +1,37 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- TabItem Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}"
+                Padding="20">
+            <StackPanel MinWidth="400" Spacing="20">
+                <TabControl Height="150" HorizontalAlignment="Stretch">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+                
+                <TabControl Height="150" HorizontalAlignment="Stretch" TabStripPlacement="Bottom">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+                
+                <TabControl Height="150" HorizontalAlignment="Stretch" TabStripPlacement="Left">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+                
+                <TabControl Height="150" HorizontalAlignment="Stretch" TabStripPlacement="Right">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="TabItem">
         <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.Foreground}"/>
@@ -56,17 +88,28 @@
         
         <!-- Left Tab Placement-->
         <Style Selector="^[TabStripPlacement=Left] /template/ Border#SelectionBorder">
-            <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            <Setter Property="BorderThickness" Value="2,0,0,0"/>
         </Style>
         
         <!-- Right Tab Placement -->
         <Style Selector="^[TabStripPlacement=Right]">
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
         </Style>
         
-        <!-- Left Tab Placement-->
+        <!-- Right Tab Placement-->
         <Style Selector="^[TabStripPlacement=Right] /template/ Border#SelectionBorder">
             <Setter Property="BorderThickness" Value="0,0,2,0"/>
+        </Style>
+        
+        <!-- Bottom Tab Placement -->
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        </Style>
+        
+        <!-- Bottom Tab Placement-->
+        <Style Selector="^[TabStripPlacement=Bottom] /template/ Border#SelectionBorder">
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
         </Style>
     </Style>
 </Styles>

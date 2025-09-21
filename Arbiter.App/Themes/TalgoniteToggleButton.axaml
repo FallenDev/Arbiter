@@ -1,5 +1,25 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ToggleButton Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}" Padding="20">
+            <StackPanel Spacing="16">
+                <ToggleButton>Normal Toggle</ToggleButton>
+                <ToggleButton IsChecked="True">Checked Toggle</ToggleButton>
+                <ToggleButton IsEnabled="False">Disabled Toggle</ToggleButton>
+                
+                <ToggleButton Classes="outline">Outline Toggle</ToggleButton>
+                <ToggleButton Classes="outline" IsChecked="True">Checked Outline Toggle</ToggleButton>
+                <ToggleButton Classes="outline" IsEnabled="False">Disabled Outline Toggle</ToggleButton>
+                
+                <ToggleButton Classes="glow">Glow Toggle</ToggleButton>
+                <ToggleButton Classes="glow" IsChecked="True">Checked Glow Toggle</ToggleButton>
+                <ToggleButton Classes="glow" IsEnabled="False">Disabled Glow Toggle</ToggleButton>
+                <ToggleButton Classes="glow" IsEnabled="False" IsChecked="True">Disabled Checked Glow Toggle</ToggleButton>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="ToggleButton:not(.reveal, .expander)">
         <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.Foreground}"/>
@@ -61,9 +81,15 @@
         </Style>
         
         <!-- Disabled Style -->
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
+        </Style>
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
             <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
         </Style>
         
         <!-- Outline Button Style -->
@@ -93,6 +119,11 @@
         <Style Selector="^.glow:checked /template/ Border#SelectionBorder">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>
+        </Style>
+        
+        <Style Selector="^.glow:disabled /template/ Border#SelectionBorder">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
         </Style>
         
         <!-- Outline Button Focus Style -->

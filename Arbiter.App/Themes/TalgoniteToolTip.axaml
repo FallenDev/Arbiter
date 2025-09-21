@@ -1,6 +1,17 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="using:Arbiter.App.Converters">
+    <!-- ToolTip Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}" Padding="20">
+            <StackPanel Spacing="16">
+                <ToolTip>
+                    <TextBlock>The quick brown fox jumps over the lazy dog.</TextBlock>
+                </ToolTip>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="ToolTip">
         <Setter Property="Background" Value="{StaticResource Talgonite.ToolTip.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.ToolTip.Foreground}"/>

@@ -26,6 +26,7 @@
     <StyleInclude Source="./TalgonitePopupRoot.axaml"/>
     <StyleInclude Source="./TalgoniteRadioButton.axaml"/>
     <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
+    <StyleInclude Source="./TalgoniteRun.axaml"/>
     <StyleInclude Source="./TalgoniteSelectableTextBlock.axaml"/>
     <StyleInclude Source="./TalgoniteSeparator.axaml"/>
     <StyleInclude Source="./TalgoniteScrollBar.axaml"/>
@@ -34,7 +35,6 @@
     <StyleInclude Source="./TalgoniteTabItem.axaml"/>
     <StyleInclude Source="./TalgoniteTabStrip.axaml"/>
     <StyleInclude Source="./TalgoniteTabStripItem.axaml"/>
-    <StyleInclude Source="./TalgoniteText.axaml"/>
     <StyleInclude Source="./TalgoniteTextBox.axaml"/>
     <StyleInclude Source="./TalgoniteToggleButton.axaml"/>
     <StyleInclude Source="./TalgoniteToggleSwitch.axaml"/>

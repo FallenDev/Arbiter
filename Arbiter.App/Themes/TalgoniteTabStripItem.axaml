@@ -1,7 +1,21 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- TabStripItem Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}" Padding="20">
+            <StackPanel MinWidth="400" Spacing="16">
+                <TabStrip Height="150" HorizontalAlignment="Stretch">
+                    <TabStripItem>Normal</TabStripItem>
+                    <TabStripItem IsSelected="True">Selected</TabStripItem>
+                    <TabStripItem IsEnabled="False">Disabled</TabStripItem>
+                </TabStrip>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="TabStripItem">
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.TabStripItem.Foreground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0,2,0,0"/>
         <Setter Property="Padding" Value="16"/>

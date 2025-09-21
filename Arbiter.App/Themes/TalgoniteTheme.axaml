@@ -182,6 +182,9 @@
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
             
+            <!-- TabStrip Item Resources -->
+            <SolidColorBrush x:Key="Talgonite.TabStripItem.Foreground" Color="#717479"/>
+            
             <!-- TextBlock Resources -->
             <SolidColorBrush x:Key="Talgonite.TextBlock.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TextBlock.DimForeground" Color="#717479"/>

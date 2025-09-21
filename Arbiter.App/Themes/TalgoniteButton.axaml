@@ -6,7 +6,7 @@
                 Padding="20">
             <StackPanel Spacing="16">
                 <Button>
-                    Default Button
+                    Normal Button
                 </Button>
                 
                 <Button IsEnabled="False">
@@ -31,8 +31,8 @@
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="MinWidth" Value="32"/>
-        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="MinWidth" Value="16"/>
+        <Setter Property="MinHeight" Value="16"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="8"/>

@@ -1,5 +1,35 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- TextBox Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}" Padding="20">
+            <StackPanel Spacing="16">
+                <TextBox Width="300" Watermark="Enter text..."/>
+                <TextBox Width="300" Text="The quick brown fox jumps over the lazy dog."/>
+                <TextBox Width="300" Text="The quick brown fox jumps over the lazy dog." IsEnabled="False"/>
+                <TextBox Width="300" Text="The quick brown fox jumps over the lazy dog.">
+                    <TextBox.InnerLeftContent>
+                        <Button Height="32" Width="32" Margin="2">
+                            <Path Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
+                        </Button>
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+                <TextBox Width="300" Text="The quick brown fox jumps over the lazy dog.">
+                    <TextBox.InnerRightContent>
+                        <Button Height="32" Width="32" Margin="2" Classes="destructive">
+                            <Path Stroke="{Binding $parent[Button].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                        </Button>
+                    </TextBox.InnerRightContent>
+                </TextBox>
+                <TextBox Width="300" Height="80" Text="The quick brown fox jumps over the lazy dog.&#x0a;"
+                         HorizontalContentAlignment="Left"
+                         VerticalContentAlignment="Top"/>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="TextBox">
         <Setter Property="Background" Value="{StaticResource Talgonite.TextBox.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.TextBox.Foreground}"/>
@@ -9,8 +39,8 @@
         <Setter Property="SelectionForegroundBrush" Value="{StaticResource Talgonite.TextBox.SelectionForeground}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="CornerRadius" Value="4"/>
-        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Padding" Value="0,4"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
@@ -28,16 +58,30 @@
                         <Border Classes="sunken-highlight"
                                 CornerRadius="{TemplateBinding CornerRadius}"/>
                         
-                        <DockPanel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,8,*,8,Auto"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            
+                            <!-- Left content -->
+                            <ContentPresenter Grid.Row="1" Grid.Column="0"
+                                              Content="{TemplateBinding InnerLeftContent}"
+                                              VerticalAlignment="Stretch"
+                                              VerticalContentAlignment="Center"/>
+                            
+                            <!-- Left spacer (only when no left content) -->
+                            <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="8">
+                                <Border.IsVisible>
+                                    <Binding Path="$parent[TextBox].InnerLeftContent" Converter="{x:Static ObjectConverters.IsNull}"/>
+                                </Border.IsVisible>
+                            </Border>
                             
                             <!-- Floating Watermark -->
                             <TextBlock Name="FloatingWatermark"
-                                       DockPanel.Dock="Top"
+                                       Grid.Row="0" Grid.Column="2"
                                        Text="{TemplateBinding Watermark}"
                                        Foreground="{StaticResource Talgonite.TextBox.WatermarkForeground}"
                                        FontSize="14"
-                                       Margin="{TemplateBinding Padding}">
+                                       Margin="0,4">
                                 <TextBlock.IsVisible>
                                     <MultiBinding Converter="{x:Static BoolConverters.And}">
                                         <Binding Path="$parent[TextBox].UseFloatingWatermark"/>
@@ -46,73 +90,71 @@
                                 </TextBlock.IsVisible>
                             </TextBlock>
                             
-                            <DataValidationErrors>
-                                <Grid ColumnDefinitions="Auto,*,Auto">
-                                    <!-- Inner Left Content -->
-                                    <ContentPresenter Grid.Column="0"
-                                                      Content="{TemplateBinding InnerLeftContent}"
-                                                      VerticalAlignment="Stretch"
-                                                      VerticalContentAlignment="Center"/>
-                                    
-                                    <!-- Scrollable Text -->
-                                    <ScrollViewer Name="PART_ScrollViewer"
-                                                  Grid.Column="1"
-                                                  AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
-                                                  BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                                                  IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
-                                                  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                        <Panel>
-                                            <TextBlock Name="Watermark"
-                                                       Text="{TemplateBinding Watermark}"
+                            <DataValidationErrors Grid.Row="1" Grid.Column="2">
+                                <!-- Scrollable Text -->
+                                <ScrollViewer Name="PART_ScrollViewer"
+                                              AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                                              BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
+                                              IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}"
+                                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                    <Panel>
+                                        <TextBlock Name="Watermark"
+                                                   Text="{TemplateBinding Watermark}"
+                                                   TextAlignment="{TemplateBinding TextAlignment}"
+                                                   TextWrapping="{TemplateBinding TextWrapping}"
+                                                   Foreground="{StaticResource Talgonite.TextBox.WatermarkForeground}"
+                                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                   Margin="0,4">
+                                            <TextBlock.IsVisible>
+                                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                    <Binding Path="#PART_TextPresenter.PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+                                                    <Binding Path="$parent[TextBox].Text" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+                                                </MultiBinding>
+                                            </TextBlock.IsVisible>
+                                        </TextBlock>
+                                        
+                                        <TextPresenter Name="PART_TextPresenter"
+                                                       Text="{TemplateBinding Text, Mode=TwoWay}"
                                                        TextAlignment="{TemplateBinding TextAlignment}"
                                                        TextWrapping="{TemplateBinding TextWrapping}"
-                                                       Foreground="{StaticResource Talgonite.TextBox.WatermarkForeground}"
+                                                       LineHeight="{TemplateBinding LineHeight}"
+                                                       CaretBrush="{TemplateBinding CaretBrush}"
+                                                       CaretIndex="{TemplateBinding CaretIndex}"
+                                                       CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                                       SelectionBrush="{TemplateBinding SelectionBrush}"
+                                                       SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                                       SelectionStart="{TemplateBinding SelectionStart}"
+                                                       SelectionEnd="{TemplateBinding SelectionEnd}"
+                                                       RevealPassword="{TemplateBinding RevealPassword}"
+                                                       PasswordChar="{TemplateBinding PasswordChar}"
+                                                       Margin="0,4"
                                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                       Margin="{TemplateBinding Padding}">
-                                                <TextBlock.IsVisible>
-                                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                                        <Binding Path="#PART_TextPresenter.PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
-                                                        <Binding Path="$parent[TextBox].Text" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
-                                                    </MultiBinding>
-                                                </TextBlock.IsVisible>
-                                            </TextBlock>
-                                            
-                                            <TextPresenter Name="PART_TextPresenter"
-                                                           Text="{TemplateBinding Text, Mode=TwoWay}"
-                                                           TextAlignment="{TemplateBinding TextAlignment}"
-                                                           TextWrapping="{TemplateBinding TextWrapping}"
-                                                           LineHeight="{TemplateBinding LineHeight}"
-                                                           CaretBrush="{TemplateBinding CaretBrush}"
-                                                           CaretIndex="{TemplateBinding CaretIndex}"
-                                                           CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
-                                                           SelectionBrush="{TemplateBinding SelectionBrush}"
-                                                           SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                                           SelectionStart="{TemplateBinding SelectionStart}"
-                                                           SelectionEnd="{TemplateBinding SelectionEnd}"
-                                                           RevealPassword="{TemplateBinding RevealPassword}"
-                                                           PasswordChar="{TemplateBinding PasswordChar}"
-                                                           Margin="{TemplateBinding Padding}"
-                                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                        </Panel>
-                                        
-                                        <ScrollViewer.Styles>
-                                            <Style Selector="ScrollContentPresenter#PART_ContentPresenter">
-                                                <Setter Property="Cursor" Value="IBeam"/>
-                                            </Style>
-                                        </ScrollViewer.Styles>
-                                    </ScrollViewer>
+                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    </Panel>
                                     
-                                    <!-- Inner Right Content -->
-                                    <ContentPresenter Grid.Column="2"
-                                                      Content="{TemplateBinding InnerRightContent}"
-                                                      VerticalAlignment="Stretch"
-                                                      VerticalContentAlignment="Center"/>
-                                </Grid>
+                                    <ScrollViewer.Styles>
+                                        <Style Selector="ScrollContentPresenter#PART_ContentPresenter">
+                                            <Setter Property="Cursor" Value="IBeam"/>
+                                        </Style>
+                                    </ScrollViewer.Styles>
+                                </ScrollViewer>
                             </DataValidationErrors>
-                        </DockPanel>
+                            
+                            <!-- Right spacer (only when no right content) -->
+                            <Border Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Width="8">
+                                <Border.IsVisible>
+                                    <Binding Path="$parent[TextBox].InnerRightContent" Converter="{x:Static ObjectConverters.IsNull}"/>
+                                </Border.IsVisible>
+                            </Border>
+                            
+                            <!-- Right content -->
+                            <ContentPresenter Grid.Row="1" Grid.Column="4"
+                                              Content="{TemplateBinding InnerRightContent}"
+                                              VerticalAlignment="Stretch"
+                                              VerticalContentAlignment="Center"/>
+                        </Grid>
                     </Panel>
                 </Border>
             </ControlTemplate>
@@ -136,6 +178,11 @@
         
         <Style Selector="^:disabled /template/ Border#Border">
             <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
+        <!-- Disabled Foreground -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.TextBox.DisabledForeground}"/>
         </Style>
         
     </Style>

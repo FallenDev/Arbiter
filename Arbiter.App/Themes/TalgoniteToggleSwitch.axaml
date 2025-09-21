@@ -1,9 +1,15 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ToggleSwitch Previews -->
     <Design.PreviewWith>
         <Border Background="{StaticResource Talgonite.Control.Background}"
                 Padding="20">
-            <ToggleSwitch IsChecked="True"></ToggleSwitch>
+            <StackPanel Spacing="8">
+                <ToggleSwitch/>
+                <ToggleSwitch IsChecked="True"/>
+                <ToggleSwitch IsEnabled="False"/>
+                <ToggleSwitch IsEnabled="False" IsChecked="True"/>
+            </StackPanel>
         </Border>
     </Design.PreviewWith>
     
