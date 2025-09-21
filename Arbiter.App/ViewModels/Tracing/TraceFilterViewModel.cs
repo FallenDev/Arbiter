@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Arbiter.App.Models;
-using Avalonia.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -33,7 +33,7 @@ public partial class TraceFilterViewModel : ViewModelBase
         {
             if (!string.IsNullOrWhiteSpace(value) && !NameFilterRegex().IsMatch(value))
             {
-                throw new DataValidationException("Invalid name filter");
+                throw new ValidationException("Invalid name filter");
             }
 
             if (!SetProperty(ref _nameFilter, value))
@@ -64,14 +64,14 @@ public partial class TraceFilterViewModel : ViewModelBase
                 var ranges = parsedRanges.ToList();
                 if (ranges.Any(range => range.Min > range.Max))
                 {
-                    throw new DataValidationException("Invalid command filter range");
+                    throw new ValidationException("Invalid command filter range");
                 }
 
                 CommandFilterRanges = ranges;
             }
             catch
             {
-                throw new DataValidationException("Invalid command filter range");
+                throw new ValidationException("Invalid command filter range");
             }
         }
     }

@@ -121,7 +121,7 @@
                                Content="Autosave Traces on Quit"
                                ToolTip.Tip="Automatically saves traces when the application exits."/>
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
-                                      IsChecked="{Binding TraceOnStartup}"/>
+                                      IsChecked="{Binding TraceAutosave}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

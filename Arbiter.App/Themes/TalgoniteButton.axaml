@@ -1,5 +1,29 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Button Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <Button>
+                    Default Button
+                </Button>
+                
+                <Button IsEnabled="False">
+                    Disabled Button
+                </Button>
+                
+                <Button Classes="destructive">
+                    Destructive Button
+                </Button>
+                
+                <Button Classes="toolbar">
+                    Toolbar Button
+                </Button>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="Button">
         <Setter Property="Background" Value="{StaticResource Talgonite.Button.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.Foreground}"/>
@@ -7,6 +31,8 @@
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="MinWidth" Value="32"/>
+        <Setter Property="MinHeight" Value="32"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="8"/>

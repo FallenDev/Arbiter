@@ -215,7 +215,12 @@
             <!-- ToggleSwitch Resources -->
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.Foreground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.CheckedForeground" Color="#81b8f5"/>
-            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBackground" Color="#262b33"/>
+            <!-- Track backgrounds -->
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.TrackBackground" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.TrackCheckedBackground" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.TrackDisabledBackground" Color="#222831"/>
+            <!-- Knob visuals -->
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBackground" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobCheckedBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobForeground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobCheckedForeground" Color="#81b8f5"/>
@@ -223,7 +228,7 @@
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.HoverBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.FocusBorderBrush" Color="#81b8f5"/>
             <sys:Double x:Key="Talgonite.ToggleSwitch.KnobSize">16</sys:Double>
-            <CornerRadius x:Key="Talgonite.ToggleSwitch.KnobCornerRadius">16</CornerRadius>
+            <CornerRadius x:Key="Talgonite.ToggleSwitch.KnobCornerRadius">4</CornerRadius>
             
             <!-- ToolTip Resources -->
             <SolidColorBrush x:Key="Talgonite.ToolTip.Background" Color="#101215"/>

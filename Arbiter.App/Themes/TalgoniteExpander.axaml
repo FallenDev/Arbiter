@@ -1,10 +1,28 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Expander Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <Expander Header="Collapsed Section" Width="200" IsExpanded="False"/>
+                
+                <Expander Header="Disabled Section" Width="200" IsExpanded="False" IsEnabled="False"/>
+                
+                <Expander Header="Expanded Section" Width="200" IsExpanded="True">
+                    <TextBlock TextWrapping="Wrap" Foreground="White" FontSize="16" Margin="8">
+                        The quick brown fox jumps over the lazy dog.
+                    </TextBlock>
+                </Expander>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="Expander">
         <Setter Property="Background" Value="{StaticResource Talgonite.Expander.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Expander.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="CornerRadius" Value="4"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Margin" Value="0,4"/>
         <Setter Property="Padding" Value="4"/>
@@ -27,8 +45,10 @@
                         <ToggleButton Name="PART_Toggle"
                                       Grid.Row="0"
                                       Classes="expander"
+                                      MinHeight="32"
                                       Content="{TemplateBinding Header}"
                                       IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                                      IsEnabled="{TemplateBinding IsEnabled}"
                                       HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                       VerticalAlignment="{TemplateBinding VerticalAlignment}"/>
                         
@@ -44,5 +64,10 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <!-- Disabled style -->
+        <Style Selector="^:disabled /template/ ToggleButton#PART_Toggle">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.TextBox.DisabledForeground}"/>
+        </Style>
     </Style>
 </Styles>

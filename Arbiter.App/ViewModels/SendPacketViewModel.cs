@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,7 +14,6 @@ using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -57,7 +57,7 @@ public partial class SendPacketViewModel : ViewModelBase
 
             if (validationError is not null)
             {
-                throw new DataValidationException(validationError);
+                throw new ValidationException(validationError);
             }
         }
     }

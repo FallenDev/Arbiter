@@ -18,25 +18,19 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         MimeTypes = ["application/octet-stream"],
     };
     
-    private ArbiterSettings _settings = new();
     private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ClientExecutablePath))]
+    [NotifyPropertyChangedFor(nameof(LocalPort))]
+    [NotifyPropertyChangedFor(nameof(RemoteServerAddress))]
+    [NotifyPropertyChangedFor(nameof(RemoteServerPort))]
+    [NotifyPropertyChangedFor(nameof(TraceOnStartup))]
+    [NotifyPropertyChangedFor(nameof(TraceAutosave))]
+    private ArbiterSettings _settings = new();
+    
     [ObservableProperty] private bool _hasChanges;
-
-    public ArbiterSettings Settings
-    {
-        get => _settings;
-        set
-        {
-            _settings = value;
-            OnPropertyChanged(nameof(ClientExecutablePath));
-            OnPropertyChanged(nameof(LocalPort));
-            OnPropertyChanged(nameof(RemoteServerAddress));
-            OnPropertyChanged(nameof(RemoteServerPort));
-            OnPropertyChanged(nameof(TraceOnStartup));
-        }
-    }
 
     public string ClientExecutablePath
     {

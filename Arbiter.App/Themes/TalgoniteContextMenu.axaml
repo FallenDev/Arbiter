@@ -1,5 +1,19 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ContextMenu Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <ContextMenu>
+                <MenuItem Header="First Item"/>
+                <MenuItem Header="Second Item"/>
+                <MenuItem Header="Third Item"/>
+                <Separator/>
+                <MenuItem Header="Last Item"/>
+            </ContextMenu>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="ContextMenu">
         <Setter Property="Background" Value="{StaticResource Talgonite.ContextMenu.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ContextMenu.BorderBrush}"/>

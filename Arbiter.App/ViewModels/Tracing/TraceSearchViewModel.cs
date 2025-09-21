@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Avalonia.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Tracing;
@@ -25,7 +25,7 @@ public partial class TraceSearchViewModel : ViewModelBase
 
             if (!byte.TryParse(value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var command))
             {
-                throw new DataValidationException("Invalid command filter");
+                throw new ValidationException("Invalid command filter");
             }
 
             SetProperty(ref _commandFilter, value);
