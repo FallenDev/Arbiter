@@ -116,7 +116,7 @@
             <Setter Property="IsVisible" Value="True"/>
         </Style>
         <Style Selector="^:toggle /template/ ContentPresenter#PART_IconPresenter, ^:radio /template/ ContentPresenter#PART_IconPresenter">
-            <Setter Property="IsVisible" Value="True"/>        
+            <Setter Property="IsVisible" Value="False"/>        
         </Style>
         
         <Style Selector="^:checked:toggle /template/ ContentControl#PART_ToggleIconPresenter">

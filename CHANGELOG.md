@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Shift+Enter` hotkey for sending packets in the send window
 - `InputDescription` for `ServerShowDialogMessage` packet
 - Redesigned settings window
+- `CanMove` property for `ServerUserIdMessage` packet
 
 ### Changed
 

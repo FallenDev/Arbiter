@@ -103,6 +103,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
+    public bool TraceAutosave
+    {
+        get => Settings.TraceAutosave;
+        set
+        {
+            Settings.TraceAutosave = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
     public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
     {
         _settingsService = settingsService;

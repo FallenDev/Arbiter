@@ -27,6 +27,7 @@
     <StyleInclude Source="./TalgoniteRadioButton.axaml"/>
     <StyleInclude Source="./TalgoniteResizeGrip.axaml"/>
     <StyleInclude Source="./TalgoniteSelectableTextBlock.axaml"/>
+    <StyleInclude Source="./TalgoniteSeparator.axaml"/>
     <StyleInclude Source="./TalgoniteScrollBar.axaml"/>
     <StyleInclude Source="./TalgoniteScrollViewer.axaml"/>
     <StyleInclude Source="./TalgoniteTabControl.axaml"/>

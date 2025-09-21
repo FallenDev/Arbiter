@@ -47,6 +47,12 @@
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TabItem.SelectedHighlight}"/>
         </Style>
         
+        <!-- Disabled Style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.DisabledBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.DisabledForeground}"/>
+        </Style>
+        
         <!-- Left Tab Placement-->
         <Style Selector="^[TabStripPlacement=Left] /template/ Border#SelectionBorder">
             <Setter Property="BorderThickness" Value="2,0,0,0"/>

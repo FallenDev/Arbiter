@@ -883,7 +883,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.UserId, p => p.ShowHex().ToolTip("ID of the user."))
                 .Property(m => m.Class, p => p.ToolTip("Base class of the user."));
             b.Section("Movement")
-                .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."));
+                .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."))
+                .Property(m => m.CanMove, p => p.ToolTip("Whether the user is allowed to move."));
             b.Section("Guild")
                 .Property(m => m.HasGuild, p => p.ToolTip("Whether the user is a member of a guild."));
         });

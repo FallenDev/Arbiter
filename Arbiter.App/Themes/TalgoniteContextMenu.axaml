@@ -3,8 +3,8 @@
     <Style Selector="ContextMenu">
         <Setter Property="Background" Value="{StaticResource Talgonite.ContextMenu.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ContextMenu.BorderBrush}"/>
-        <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Focusable" Value="True"/>
         <Setter Property="TextBlock.FontSize" Value="14"/>
