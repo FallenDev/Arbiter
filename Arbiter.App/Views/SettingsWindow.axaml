@@ -25,101 +25,31 @@
         </DockPanel>
     </controls:TalgoniteWindow.TitleBarContent>
     
-    <Grid RowDefinitions="*,Auto">
-        <StackPanel Grid.Row="0"
-                    Spacing="8"
-                    Margin="16">
-            <!-- Client Path Settings -->
-            <Label Content="Client Executable Path:"/>
-            <TextBox Name="ClientPathTextBox" 
-                     Text="{Binding ClientExecutablePath}"
-                     Watermark="Path to game client...">
-                <TextBox.InnerRightContent>
-                    <Button Command="{Binding LocateClientCommand}"
-                            Content="..."
-                            ToolTip.Tip="Opens a file dialog to locate the game client."
-                            MinWidth="40"
-                            Margin="2"
-                            Padding="4,2"/>
-                </TextBox.InnerRightContent>
-            </TextBox>
+    <Grid Margin="1,0">
+        <TabControl TabStripPlacement="Left">
+            <TabItem Header="General">
+                
+            </TabItem>
             
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Margin="0,8"/>
+            <TabItem Header="Game Client">
+                
+            </TabItem>
             
-            <!-- Local Port Settings -->
-            <Grid ColumnDefinitions="Auto,Auto">
-                <Label Grid.Column="0" Content="Local Port:"/>
-                <NumericUpDown Name="LocalPortUpDown"
-                               Grid.Column="1"
-                               Value="{Binding LocalPort}"
-                               Minimum="1"
-                               Maximum="65535"
-                               TextAlignment="Center"
-                               Watermark="1-65535"
-                               Width="100"/>
-            </Grid>
+            <TabItem Header="Tracing">
+                
+            </TabItem>
             
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Margin="0,8"/>
+            <TabItem Header="Filtering">
+                
+            </TabItem>
             
-            <!-- Remote Server Settings -->
-            <Label Content="Remote Server Host:"/>
-            <Grid ColumnDefinitions="*,Auto,Auto">
-                <TextBox Grid.Column="0"
-                         Text="{Binding RemoteServerAddress}"
-                         Watermark="Hostname..."/>
-                <Label Grid.Column="1" Content="_Port:"/>
-                <NumericUpDown Name="RemotePortUpDown"
-                               Grid.Column="2"
-                               Value="{Binding RemoteServerPort}"
-                               Minimum="1"
-                               Maximum="65535"
-                               TextAlignment="Center"
-                               Watermark="1-65535"
-                               Width="100"/>
-            </Grid>
+            <TabItem Header="Debug">
+                
+            </TabItem>
             
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Margin="0,8"/>
-            
-            <!-- Trace on Startup -->
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <ToggleSwitch IsChecked="{Binding TraceOnStartup}">
-                    <Label Content="Start Trace on Launch"/>
-                </ToggleSwitch>
-            </StackPanel>
-        </StackPanel>
-        
-        <Border Grid.Row="1"
-                Background="Transparent"
-                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                BorderThickness="0,1,0,0"
-                Padding="8">
-            <UniformGrid Rows="1" ColumnSpacing="8">
-                <Button Command="{Binding HandleOkCommand}"
-                        IsDefault="True">
-                    <TextBlock Text="Apply Changes"/>
-                    <Button.IsEnabled>
-                        <MultiBinding Converter="{x:Static BoolConverters.And}">
-                            <Binding Path="HasChanges"/>
-                            <Binding Path="#ClientPathTextBox.(DataValidationErrors.HasErrors)"
-                                     Converter="{x:Static BoolConverters.Not}"/>
-                            <Binding Path="#LocalPortUpDown.(DataValidationErrors.HasErrors)"
-                                     Converter="{x:Static BoolConverters.Not}"/>
-                            <Binding Path="#RemotePortUpDown.(DataValidationErrors.HasErrors)"
-                                     Converter="{x:Static BoolConverters.Not}"/>
-                        </MultiBinding>
-                    </Button.IsEnabled>
-                </Button>
-                <Button Command="{Binding HandleCancelCommand}"
-                        IsCancel="True">
-                    <TextBlock Text="Cancel"/>
-                </Button>
-            </UniformGrid>
-        </Border>
+            <TabItem Header="About">
+                
+            </TabItem>
+        </TabControl>
     </Grid>
 </controls:TalgoniteWindow>

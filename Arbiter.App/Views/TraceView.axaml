@@ -162,8 +162,9 @@
         <Border Grid.Row="1" IsVisible="{Binding ShowFilterBar}"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="0,8">
-            <WrapPanel ItemSpacing="4">
+                Padding="0,4"
+                Height="50">
+            <WrapPanel ItemSpacing="4" VerticalAlignment="Center">
                 <!-- Bar Icon -->
                 <Border Padding="12,4"
                         BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
@@ -192,7 +193,6 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Border BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
-                                        BorderThickness="0,0,0,1"
                                         Padding="4">
                                     <TextBlock Text="{Binding .}"
                                                Padding="8,2" />
@@ -250,8 +250,9 @@
         <Border Grid.Row="2" IsVisible="{Binding ShowSearchBar}"
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="0,8">
-            <WrapPanel ItemSpacing="4">
+                Padding="0,4"
+                Height="50">
+            <WrapPanel ItemSpacing="4" VerticalAlignment="Center">
                 <!-- Bar Icon -->
                 <Border Padding="12,4"
                         BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
@@ -282,7 +283,8 @@
                 </TextBox>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4"
-                            IsVisible="{Binding FormattedSearchResultsText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            IsVisible="{Binding FormattedSearchResultsText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            Height="40">
                     <!-- Result count -->
                     <TextBlock Text="{Binding FormattedSearchResultsText, FallbackValue=no matches}"
                                TextAlignment="Center"
@@ -290,7 +292,7 @@
                                FontSize="14"
                                VerticalAlignment="Center"
                                MinWidth="40"
-                               Margin="8,4"/>
+                               Margin="8,0"/>
                     
                     <!-- Navigation Buttons -->
                     <StackPanel Orientation="Horizontal"
@@ -314,10 +316,6 @@
                         </Button>
                     </StackPanel>
                 </StackPanel>
-  
-                
-                
-                
             </WrapPanel>
         </Border>
 

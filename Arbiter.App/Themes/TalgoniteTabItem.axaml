@@ -18,7 +18,7 @@
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Header}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                          Background="Transparent"
+                                          Background="{TemplateBinding Background}"
                                           Foreground="{TemplateBinding Foreground}"
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                           BorderThickness="{TemplateBinding BorderThickness}"
@@ -47,9 +47,19 @@
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TabItem.SelectedHighlight}"/>
         </Style>
         
+        <!-- Left Tab Placement-->
+        <Style Selector="^[TabStripPlacement=Left] /template/ Border#SelectionBorder">
+            <Setter Property="BorderThickness" Value="2,0,0,0"/>
+        </Style>
+        
         <!-- Right Tab Placement -->
         <Style Selector="^[TabStripPlacement=Right]">
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        </Style>
+        
+        <!-- Left Tab Placement-->
+        <Style Selector="^[TabStripPlacement=Right] /template/ Border#SelectionBorder">
+            <Setter Property="BorderThickness" Value="0,0,2,0"/>
         </Style>
     </Style>
 </Styles>

@@ -48,16 +48,24 @@
         </Style>
         
         <!-- Left Tab Placement -->
+        <Style Selector="^[TabStripPlacement=Left]">
+            <Setter Property="CornerRadius" Value="0"/>
+        </Style>
         <Style Selector="^[TabStripPlacement=Left] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Left"/>
+            <Setter Property="CornerRadius" Value="0"/>
         </Style>
         <Style Selector="^[TabStripPlacement=Left] /template/ ItemsPresenter#PART_ItemsPresenter > WrapPanel">
             <Setter Property="Orientation" Value="Vertical"/>
         </Style>
         
         <!-- Right Tab Placement -->
+        <Style Selector="^[TabStripPlacement=Right]">
+            <Setter Property="CornerRadius" Value="0"/>
+        </Style>
         <Style Selector="^[TabStripPlacement=Right] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Right"/>
+            <Setter Property="CornerRadius" Value="0"/>
         </Style>
         <Style Selector="^[TabStripPlacement=Right] /template/ ItemsPresenter#PART_ItemsPresenter > WrapPanel">
             <Setter Property="Orientation" Value="Vertical"/>
