@@ -122,41 +122,9 @@
         <Style Selector="^:pointerover">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.HoverBorderBrush}"/>
         </Style>
-        <Style Selector="^:pointerover /template/ Border#SelectionBorder">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
-        </Style>
-        <Style Selector="^:not(:pointerover) /template/ Border#SelectionBorder">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
-        </Style>
         
         <Style Selector="^:focus">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.FocusBorderBrush}"/>
-        </Style>
-        <Style Selector="^:focus /template/ Border#SelectionBorder">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
-        </Style>
-        <Style Selector="^:not(:focus) /template/ Border#SelectionBorder">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
         </Style>
         
         <Style Selector="^:checked">

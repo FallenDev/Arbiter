@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increase command filter box width slightly
 - Fixed `InterfacePane` enum values
 - Display `Name` for entities in Inspector
+- Remove most transition animations in the UI (need to re-standardize them)
 
 ## [0.9.4b] - 2025-09-20
 

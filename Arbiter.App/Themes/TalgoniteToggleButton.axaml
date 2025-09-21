@@ -42,12 +42,6 @@
         </Style>
         <Style Selector="^:pointerover /template/ Border#SelectionBorder">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.HoverBackground}"/>
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
         </Style>
         
         <!-- Pressed Style -->
@@ -56,12 +50,6 @@
         </Style>
         <Style Selector="^:pressed /template/ Border#SelectionBorder">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.PressedBackground}"/>
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
         </Style>
         
         <!-- Checked Style -->
@@ -70,12 +58,6 @@
         </Style>
         <Style Selector="^:checked /template/ Border#SelectionBorder">
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                    <BrushTransition Property="BorderBrush" Duration="{StaticResource Talgonite.Transition.Duration}" Easing="CubicEaseInOut"/>
-                </Transitions>
-            </Setter>
         </Style>
         
         <!-- Outline Button Style -->
