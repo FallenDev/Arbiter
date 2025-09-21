@@ -60,6 +60,12 @@
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleButton.CheckedBackground}"/>
         </Style>
         
+        <!-- Disabled Style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
+        </Style>
+        
         <!-- Outline Button Style -->
         <Style Selector="^.outline">
             <Setter Property="BorderThickness" Value="2"/>

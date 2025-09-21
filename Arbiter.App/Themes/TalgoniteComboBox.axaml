@@ -124,6 +124,7 @@
         </Style>
         <Style Selector="^:disabled /template/ ToggleButton#Toggle">
             <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.CaretDisabledForeground}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
         </Style>
     </Style>
 </Styles>

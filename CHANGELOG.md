@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display `Name` for entities in Inspector
 - Remove most transition animations in the UI (need to re-standardize them)
 - Selected tab background color
-- Fix spacing in search bar
+- Fix spacing in search and filter bars
+- Fix disable style for `ComboBox` dropdown button
 
 ## [0.9.4b] - 2025-09-20
 
