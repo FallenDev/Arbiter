@@ -1,0 +1,113 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- CheckBox Previews -->
+    <Design.PreviewWith>
+        <Border Padding="20" Background="{StaticResource Talgonite.Control.Background}">
+            <StackPanel Spacing="16">
+                <CheckBox>Normal Checkbox</CheckBox>
+                <CheckBox IsChecked="True">Checked Checkbox</CheckBox>
+                <CheckBox IsEnabled="False">Disabled Checkbox</CheckBox>
+                <CheckBox IsEnabled="False" IsChecked="True">Disabled Checked Checkbox</CheckBox>
+                <CheckBox IsChecked="{x:Null}">Indeterminate Checkbox</CheckBox>
+                <CheckBox IsEnabled="False" IsChecked="{x:Null}">Disabled Indeterminate Checkbox</CheckBox>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Talgonite CheckBox: match RadioButton visual with filled background on checked -->
+    <Style Selector="CheckBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="Auto,*"
+                      Background="{TemplateBinding Background}"
+                      ColumnSpacing="6">
+                    <!-- Indicator Box -->
+                    <Border Name="Box"
+                            Grid.Column="0"
+                            Width="{StaticResource Talgonite.RadioButton.Width}"
+                            Height="{StaticResource Talgonite.RadioButton.Height}"
+                            Background="{StaticResource Talgonite.RadioButton.Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="2"
+                            CornerRadius="2"
+                            VerticalAlignment="Center">
+                        <Panel>
+                            <Border Classes="sunken-shadow" CornerRadius="2"/>
+                            <Border Classes="sunken-highlight" CornerRadius="2"/>
+
+                            <!-- Optional mark glyph (kept invisible as background fill conveys state) -->
+                            <Path Name="CheckGlyph"
+                                  Width="14" Height="10"
+                                  StrokeThickness="2"
+                                  Stroke="#ffffff"
+                                  Data="M1,5 L5,9 L13,1"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  IsVisible="False"/>
+
+                            <!-- Indeterminate dash mark -->
+                            <Border Name="IndeterminateMark"
+                                    Width="{StaticResource Talgonite.RadioButton.CheckMarkWidth}"
+                                    Height="2"
+                                    Background="{StaticResource Talgonite.RadioButton.PressedForeground}"
+                                    CornerRadius="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsVisible="False"/>
+                        </Panel>
+                    </Border>
+
+                    <!-- Content -->
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Grid.Column="1"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"/>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hover/Focus border on the box -->
+        <Style Selector="^:pointerover /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.HoverBorderBrush}"/>
+        </Style>
+        <Style Selector="^:focus /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.FocusBorderBrush}"/>
+        </Style>
+
+        <!-- Checked state: fill the box background to the check color -->
+        <Style Selector="^:checked /template/ Border#Box">
+            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.PressedForeground}"/>
+        </Style>
+        <!-- Optionally display a white check glyph on top when checked -->
+        <Style Selector="^:checked /template/ Path#CheckGlyph">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+
+        <!-- Indeterminate state shows dash -->
+        <Style Selector="^:indeterminate /template/ Border#IndeterminateMark">
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+
+        <!-- Disabled style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Box">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.DisabledBorderBrush}"/>
+        </Style>
+        <Style Selector="^:disabled:checked /template/ Border#Box">
+            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#IndeterminateMark">
+            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+        </Style>
+    </Style>
+</Styles>
