@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -51,50 +52,48 @@ public partial class TraceFilterViewModel : ViewModelBase
     {
         InitializeCommands();
     }
-
+    
     private void InitializeCommands()
     {
         var clientCommandModels = Enum.GetValues<ClientCommand>()
             .OrderBy(cmd => cmd == ClientCommand.Unknown ? 1 : 0)
             .ThenBy(cmd => cmd.ToString())
-            .Select(cmd => new CommandFilterViewModel(cmd));
+            .Select(cmd => new CommandFilterViewModel(cmd, isSelected: true));
 
         var serverCommandModels = Enum.GetValues<ServerCommand>()
             .OrderBy(cmd => cmd == ServerCommand.Unknown ? 1 : 0)
             .ThenBy(cmd => cmd.ToString())
-            .Select(cmd => new CommandFilterViewModel(cmd));
+            .Select(cmd => new CommandFilterViewModel(cmd, isSelected: true));
 
         foreach (var vm in clientCommandModels)
         {
-            vm.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(CommandFilterViewModel.IsSelected))
-                {
-                    SelectedClientCommands = SelectedCommands.Select(x => x.Value).ToList();
-                    OnPropertyChanged(nameof(SelectedClientCommands));
-                    OnPropertyChanged(nameof(SelectedCommands));
-                }
-            };
+            vm.PropertyChanged += OnCommandFilterPropertyChanged;
             Commands.Add(vm);
-
-            vm.IsSelected = true;
         }
 
         foreach (var vm in serverCommandModels)
         {
-            vm.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(CommandFilterViewModel.IsSelected))
-                {
-                    SelectedServerCommands = SelectedCommands.Select(x => x.Value).ToList();
-                    OnPropertyChanged(nameof(SelectedServerCommands));
-                    OnPropertyChanged(nameof(SelectedCommands));
-                }
-            };
+            vm.PropertyChanged += OnCommandFilterPropertyChanged;
             Commands.Add(vm);
-
-            vm.IsSelected = true;
         }
+    }
+
+    private void OnCommandFilterPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(CommandFilterViewModel.IsSelected))
+        {
+            NotifyCommandsChanged();
+        }
+    }
+
+    private void NotifyCommandsChanged()
+    {
+        SelectedClientCommands = SelectedCommands.Select(x => x.Value).ToList();
+        SelectedServerCommands = SelectedCommands.Select(x => x.Value).ToList();
+        
+        OnPropertyChanged(nameof(SelectedClientCommands));
+        OnPropertyChanged(nameof(SelectedServerCommands));
+        OnPropertyChanged(nameof(SelectedCommands));
     }
 
     [RelayCommand]
@@ -102,4 +101,5 @@ public partial class TraceFilterViewModel : ViewModelBase
     {
         NameFilter = string.Empty;
     }
+ 
 }

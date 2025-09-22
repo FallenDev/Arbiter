@@ -95,6 +95,9 @@ public class MultiSelectDropdown : SelectingItemsControl
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is MultiSelectItem msi)
         {
+            // Establish back-reference to owner (the dropdown)
+            msi.Owner = this;
+
             // Bind the container's IsSelected to the data item's IsSelected property (TwoWay)
             msi.Bind(MultiSelectItem.IsSelectedProperty, new Binding("IsSelected")
             {
@@ -127,6 +130,7 @@ public class MultiSelectDropdown : SelectingItemsControl
             // Clear binding/value to avoid reusing stale bindings if container is recycled
             msi.ClearValue(MultiSelectItem.IsSelectedProperty);
             msi.ClearValue(MultiSelectItem.CheckMarkBrushProperty);
+            msi.ClearValue(MultiSelectItem.OwnerProperty);
             msi.PropertyChanged -= ContainerOnPropertyChanged;
         }
         base.ClearContainerForItemOverride(container);
@@ -312,5 +316,37 @@ public class MultiSelectDropdown : SelectingItemsControl
     {
         base.OnPointerCaptureLost(e);
         PseudoClasses.Set(":pressed", false);
+    }
+
+    public void SelectOnly(object? dataItem)
+    {
+        if (dataItem is null)
+        {
+            return;
+        }
+
+        var items = ItemsSource ?? Items;
+        foreach (var item in items)
+        {
+            if (item is null)
+            {
+                continue;
+            }
+
+            var shouldSelect = ReferenceEquals(item, dataItem);
+
+            // Prefer setting selection on the data item if it exposes IsSelected
+            var prop = item.GetType().GetProperty("IsSelected", BindingFlags.Public | BindingFlags.Instance);
+            if (prop?.PropertyType == typeof(bool) && prop.CanWrite)
+            {
+                prop.SetValue(item, shouldSelect);
+            }
+            else if (item is MultiSelectItem msi)
+            {
+                msi.IsSelected = shouldSelect;
+            }
+        }
+
+        UpdateSelectionText();
     }
 }

@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
+using Arbiter.App.Threading;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Tracing;
 
@@ -20,22 +24,26 @@ public partial class TraceViewModel
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
 
+    private readonly Debouncer _filterRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
+
     private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // Do not filter on this, wait for pattern list to change
+        // Ignore immediate changes to the raw NameFilter text; we'll react when NameFilterPatterns changes
         if (e.PropertyName == nameof(FilterParameters.NameFilter))
         {
             return;
         }
 
-        // Do not filter on this, wait for full list to change
-        if (e.PropertyName is nameof(FilterParameters.SelectedClientCommands)
-            or nameof(FilterParameters.SelectedServerCommands))
-        {
-            return;
-        }
+        RequestFilterRefresh();
+    }
 
-        FilteredPackets.Refresh();
+    private void RequestFilterRefresh()
+    {
+        // This is debounced to avoid excessive refreshing when multiple changes are made rapidly
+        _filterRefreshDebouncer.Execute(() =>
+        {
+            FilteredPackets.Refresh();
+        });
     }
 
     private bool MatchesFilter(TracePacketViewModel vm)
@@ -75,6 +83,15 @@ public partial class TraceViewModel
         }
 
         return true;
+    }
+
+    [RelayCommand]
+    private void SelectAllCommands()
+    {
+        foreach (var command in FilterParameters.Commands)
+        {
+            command.IsSelected = true;
+        }
     }
 
     private Regex GetRegexForFilter(string namePattern)

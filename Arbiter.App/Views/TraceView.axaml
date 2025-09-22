@@ -179,9 +179,17 @@
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <!-- Command Filter -->
                     <Label Content="Command"
-                           ToolTip.Tip="Allows filtering by client and server commands."
-                           VerticalAlignment="Center" />
-                    
+                           VerticalAlignment="Center">
+                        <ToolTip.Tip>
+                            <Span>
+                                <Run>Allows filtering by client or server commands.</Run>
+                                <LineBreak/>
+                                <Run>You can select a single command with</Run>
+                                <Run Classes="hotkey">[Ctrl+Click]</Run>
+                                <Run>.</Run>
+                            </Span>
+                        </ToolTip.Tip>
+                    </Label>
                     <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.Commands}"
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            FontSize="16"
@@ -203,6 +211,15 @@
                             </DataTemplate>
                         </c:MultiSelectDropdown.ItemTemplate>
                     </c:MultiSelectDropdown>
+                    
+                    <!-- Select All Button -->
+                    <Button Command="{Binding SelectAllCommandsCommand}"
+                            Classes="toolbar"
+                            ToolTip.Tip="Enables all packet commands to be displayed."
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Content="ALL"
+                            Padding="8,2"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="4">
