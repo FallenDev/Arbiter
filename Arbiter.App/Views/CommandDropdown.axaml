@@ -1,0 +1,104 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:v="using:Arbiter.App.Views"
+             mc:Ignorable="d" d:DesignWidth="160" d:DesignHeight="40"
+             x:Class="Arbiter.App.Views.CommandDropdown"
+             x:DataType="v:CommandDropdown">
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        
+        <Style Selector="ListBoxItem:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Hyperlink.HoverForeground}"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <Grid>
+        <Border Name="DropdownBorder"
+                Background="{StaticResource Talgonite.ComboBox.Background}"
+                BorderBrush="Transparent"
+                BorderThickness="2"
+                CornerRadius="2"
+                MinHeight="40"
+                MinWidth="80">
+            
+            <Grid ColumnDefinitions="*,Auto">
+                <!-- Sunken Effect -->
+                <Border Grid.Column="0" Grid.ColumnSpan="2" Classes="sunken-shadow" CornerRadius="2"/>
+                <Border Grid.Column="0" Grid.ColumnSpan="2" Classes="sunken-highlight" CornerRadius="2"/>
+                
+                <!-- Content Area -->
+                <Button Name="DropdownButton"
+                        Grid.Column="0" Grid.ColumnSpan="2"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="2"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Padding="8,4">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding DisplayText}"
+                                   Foreground="{StaticResource Talgonite.ComboBox.Foreground}"
+                                   TextTrimming="CharacterEllipsis"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+            </Grid>
+        </Border>
+        
+        <!-- Command Popup -->
+        <Popup Name="CommandPopup"
+               PlacementTarget="{Binding #DropdownBorder}"
+               Placement="BottomEdgeAlignedLeft"
+               MinWidth="{Binding $parent[Border].Bounds.Width}"
+               MaxHeight="400"
+               IsLightDismissEnabled="True"
+               IsOpen="{Binding IsOpen}">
+            <Border Background="{StaticResource Talgonite.ComboBox.Background}"
+                    BorderBrush="{StaticResource Talgonite.ComboBox.FocusBorderBrush}"
+                    BorderThickness="1,0,1,1"
+                    Padding="2">
+                <Panel>
+                    
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ListBox Name="CommandsList"
+                                 ItemsSource="{Binding Commands}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 SelectionMode="Toggle">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*"
+                                          ColumnSpacing="8"
+                                          Background="Transparent"
+                                          Margin="4,0">
+                                        <CheckBox Grid.Column="0"
+                                                  IsChecked="{Binding IsSelected}"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding DisplayName}"
+                                                   Foreground="{StaticResource Talgonite.ComboBox.Foreground}"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Panel>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

@@ -37,15 +37,6 @@
             <UniformGrid Columns="2" Rows="1"
                          ColumnSpacing="4" RowSpacing="4"
                          Margin="4">
-                <!-- Scroll to End Button -->
-                <Button Command="{Binding ScrollToEndCommand}"
-                        ToolTip.Tip="Scrolls to the end of the logs."
-                        Classes="toolbar">
-                    <Path Width="16"
-                          Height="16"
-                          Stroke="{Binding $parent[Button].Foreground}"
-                          Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
-                </Button>
                 <!-- Clear Logs Button -->
                 <Button Command="{Binding ClearLogsCommand}"
                         ToolTip.Tip="Clears all console messages."
@@ -54,6 +45,15 @@
                           Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"
                           Data="{StaticResource Talgonite.Icon.ClearText}"/>
+                </Button>
+                <!-- Scroll to End Button -->
+                <Button Command="{Binding ScrollToEndCommand}"
+                        ToolTip.Tip="Scrolls to the end of the logs."
+                        Classes="toolbar">
+                    <Path Width="16"
+                          Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
                 </Button>
             </UniformGrid>
             <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
@@ -71,8 +71,9 @@
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.ErrorLevel}"/>
                     <TextBlock Grid.Column="1"
-                               Text="{Binding ErrorCount}"
+                               Text="{Binding ErrorCount, FallbackValue=0}"
                                TextAlignment="Right"
+                               FontFamily="{StaticResource Talgonite.Font.ConsoleFont}"
                                VerticalAlignment="Center"
                                MinWidth="30"/>
                 </Grid>
@@ -89,8 +90,9 @@
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.WarningLevel}"/>
                     <TextBlock Grid.Column="1"
-                               Text="{Binding WarningCount}"
+                               Text="{Binding WarningCount, FallbackValue=0}"
                                TextAlignment="Right"
+                               FontFamily="{StaticResource Talgonite.Font.ConsoleFont}"
                                VerticalAlignment="Center"
                                MinWidth="30"/>
                 </Grid>
@@ -107,8 +109,9 @@
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.InfoLevel}"/>
                     <TextBlock Grid.Column="1"
-                               Text="{Binding InfoCount}"
+                               Text="{Binding InfoCount, FallbackValue=0}"
                                TextAlignment="Right"
+                               FontFamily="{StaticResource Talgonite.Font.ConsoleFont}"
                                VerticalAlignment="Center"
                                MinWidth="30"/>
                 </Grid>
@@ -125,8 +128,9 @@
                           Margin="4,0"
                           Data="{StaticResource Talgonite.Icon.DebugLevel}"/>
                     <TextBlock Grid.Column="1"
-                               Text="{Binding DebugCount}"
+                               Text="{Binding DebugCount, FallbackValue=0}"
                                TextAlignment="Right"
+                               FontFamily="{StaticResource Talgonite.Font.ConsoleFont}"
                                VerticalAlignment="Center"
                                MinWidth="30"/>
                 </Grid>

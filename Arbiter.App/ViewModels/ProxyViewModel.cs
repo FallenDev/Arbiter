@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Arbiter.Net;
 using Arbiter.Net.Proxy;
 using Microsoft.Extensions.Logging;
 

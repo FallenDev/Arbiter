@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix disable style for `ComboBox` dropdown button
 - Reduce corner radius on input controls
 - Fixed local port not working if other than default
+- Swap order of scroll to end and clear in `Console` view for consistency
 
 ## [0.9.4b] - 2025-09-20
 

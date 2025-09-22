@@ -11,12 +11,10 @@ using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Path = Avalonia.Controls.Shapes.Path;
 
 namespace Arbiter.App.ViewModels;
 
