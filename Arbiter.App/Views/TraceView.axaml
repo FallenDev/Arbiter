@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="using:Arbiter.App.Controls"
              xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels.Tracing"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
@@ -179,15 +180,26 @@
                     <Label Content="Client"
                            ToolTip.Tip="Allows filtering by client commands."
                            VerticalAlignment="Center" />
-                    <v:CommandDropdown Commands="{Binding FilterParameters.ClientCommands}"
-                                       MinWidth="160"/>
                     
-                    <!-- Client Command Filter -->
+                    <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.ClientCommands}"
+                                           DisplayMemberPath="DisplayName"
+                                           SelectedValuePath="IsSelected">
+                        
+                        
+                    </c:MultiSelectDropdown>
+
+                    <!-- Sever Command Filter -->
                     <Label Content="Server"
                            ToolTip.Tip="Allows filtering by server commands."
                            VerticalAlignment="Center" />
-                    <v:CommandDropdown Commands="{Binding FilterParameters.ServerCommands}"
-                                       MinWidth="160"/>
+                    
+                    <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.ServerCommands}"
+                                           DisplayMemberPath="DisplayName"
+                                           SelectedValuePath="IsSelected">
+                        
+                        
+                    </c:MultiSelectDropdown>
+
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="4">

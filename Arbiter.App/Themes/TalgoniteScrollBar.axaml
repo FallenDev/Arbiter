@@ -31,7 +31,7 @@
         <!-- Horizontal Scroll Bar -->
         <Style Selector="^:horizontal">
             <Setter Property="Height" Value="{StaticResource Talgonite.ScrollBar.Height}"/>
-            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Background="Transparent"
@@ -81,7 +81,7 @@
         <!-- Vertical Scroll Bar -->
         <Style Selector="^:vertical">
             <Setter Property="Width" Value="{StaticResource Talgonite.ScrollBar.Width}"/>
-            <Setter Property="Margin" Value="0,2,4,2"/>
+            <Setter Property="Margin" Value="2"/>
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Background="Transparent"

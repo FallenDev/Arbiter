@@ -72,7 +72,6 @@
                                       IsChecked="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                       Background="Transparent"
                                       Foreground="{StaticResource Talgonite.ComboBox.CaretForeground}"
-                                      BorderThickness="0"
                                       CornerRadius="{TemplateBinding CornerRadius}"
                                       ClickMode="Press"
                                       Focusable="False">
@@ -83,24 +82,19 @@
                         
                         <Popup Name="PART_Popup"
                                Grid.Column="0"
-                               MinWidth="{Binding $parent.Bounds.Width}"
+                               Width="{Binding $parent.Bounds.Width}"
                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                               PlacementTarget="{TemplateBinding}"
+                               PlacementTarget="{Binding #Border}"
                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                IsLightDismissEnabled="True"
                                InheritsTransform="True"
                                WindowManagerAddShadowHint="False">
                             <Border Name="DropdownBorder"
                                     Background="{TemplateBinding Background}"
+                                    BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
                                     BorderThickness="1,0,1,1"
-                                    CornerRadius="0,0,2,2"
-                                    Padding="2">
+                                    CornerRadius="0,0,2,2">
                                 <Panel>
-                                    <Border Classes="sunken-shadow"
-                                            CornerRadius="{Binding $parent[Border].CornerRadius}"/>
-                                    <Border Classes="sunken-highlight"
-                                            CornerRadius="{Binding $parent[Border].CornerRadius}"/>
-                                    
                                     <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                                                   VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                                                   IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">

@@ -63,7 +63,7 @@
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
-                                           Padding="8,4" />
+                                           Padding="4" />
                             </DataTemplate>
                         </ComboBox.SelectionBoxItemTemplate>
                         <ComboBox.ItemTemplate>
@@ -89,7 +89,7 @@
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
-                                           Padding="8,4" />
+                                           Padding="4" />
                             </DataTemplate>
                         </ComboBox.SelectionBoxItemTemplate>
                         <ComboBox.ItemTemplate>
