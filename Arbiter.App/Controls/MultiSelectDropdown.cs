@@ -12,7 +12,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
-using Arbiter.App.Converters;
 
 namespace Arbiter.App.Controls;
 
@@ -143,7 +142,7 @@ public class MultiSelectDropdown : SelectingItemsControl
 
         var itemType = item.GetType();
 
-        // Preferred: bind to a property named "CheckMarkBrush" if present on the data item
+        // Bind to a property named "CheckMarkBrush" if present on the data item; otherwise, leave unset for default styling
         var brushProp = itemType.GetProperty("CheckMarkBrush", BindingFlags.Public | BindingFlags.Instance);
         if (brushProp?.PropertyType != null && typeof(IBrush).IsAssignableFrom(brushProp.PropertyType))
         {
@@ -151,17 +150,15 @@ public class MultiSelectDropdown : SelectingItemsControl
             {
                 Mode = BindingMode.OneWay
             });
-            return;
         }
-
-        // Fallback: bind to Direction using the PacketDirectionColorConverter if available
-        var directionProp = itemType.GetProperty("Direction", BindingFlags.Public | BindingFlags.Instance);
-        if (directionProp?.PropertyType != null)
+        else
         {
-            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding("Direction")
+            // No per-item brush provided: default checkmark to the item's foreground by binding to the container's Foreground
+            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding
             {
-                Mode = BindingMode.OneWay,
-                Converter = PacketDirectionColorConverter.Converter
+                Path = "Foreground",
+                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                Mode = BindingMode.OneWay
             });
         }
     }
