@@ -1,0 +1,24 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Run Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}" Padding="20">
+            <StackPanel MinWidth="200" Spacing="16">
+                <TextBlock Foreground="{StaticResource Talgonite.TextBlock.DimForeground}">
+                    <Run>The quick brown fox jumps over the lazy dog.</Run>
+                    <LineBreak/>
+                    <Run>Press the</Run>
+                    <Run Classes="hotkey">[SHIFT]</Run>
+                    <Run>key.</Run>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="Run.hotkey">
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ToolTip.HotKeyForeground}"/>
+        <Setter Property="FontFamily" Value="{StaticResource Talgonite.ToolTip.HotKeyFont}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="BaselineAlignment" Value="Center"/>
+    </Style>
+</Styles>

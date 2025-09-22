@@ -1,10 +1,42 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- TabControl Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Window.Background}"
+                Padding="20">
+            <StackPanel MinWidth="400" Spacing="20">
+                <TabControl Height="150" HorizontalAlignment="Stretch">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+                
+                <TabControl Height="150" HorizontalAlignment="Stretch" TabStripPlacement="Bottom">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+                
+                <TabControl Height="150" HorizontalAlignment="Stretch" TabStripPlacement="Left">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+                
+                <TabControl Height="150" HorizontalAlignment="Stretch" TabStripPlacement="Right">
+                    <TabItem Header="Normal"/>
+                    <TabItem Header="Selected" IsSelected="True"/>
+                    <TabItem Header="Disabled" IsEnabled="False"/>
+                </TabControl>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="TabControl">
         <Setter Property="Background" Value="{StaticResource Talgonite.TabControl.Background}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="CornerRadius" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="Padding" Value="4"/>
@@ -20,7 +52,8 @@
                     <DockPanel>
                         <Border Name="ItemsPresenterBorder"
                                 Background="{StaticResource Talgonite.TabStrip.Background}"
-                                CornerRadius="0,8,0,0">
+                                CornerRadius="0"
+                                Padding="0">
                             <ItemsPresenter Name="PART_ItemsPresenter"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"/>
                         </Border>
@@ -44,12 +77,15 @@
         
         <!-- Bottom Tab Placement -->
         <Style Selector="^[TabStripPlacement=Bottom] /template/ Border#ItemsPresenterBorder">
+            <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="DockPanel.Dock" Value="Bottom"/>
         </Style>
         
         <!-- Left Tab Placement -->
         <Style Selector="^[TabStripPlacement=Left] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Left"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
         <Style Selector="^[TabStripPlacement=Left] /template/ ItemsPresenter#PART_ItemsPresenter > WrapPanel">
             <Setter Property="Orientation" Value="Vertical"/>
@@ -58,6 +94,8 @@
         <!-- Right Tab Placement -->
         <Style Selector="^[TabStripPlacement=Right] /template/ Border#ItemsPresenterBorder">
             <Setter Property="DockPanel.Dock" Value="Right"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
         <Style Selector="^[TabStripPlacement=Right] /template/ ItemsPresenter#PART_ItemsPresenter > WrapPanel">
             <Setter Property="Orientation" Value="Vertical"/>

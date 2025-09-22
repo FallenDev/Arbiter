@@ -1,5 +1,67 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ScrollViewer Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <Border BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                        BorderThickness="1"
+                        Width="200" MinHeight="40">
+                    <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+                        <TextBlock Foreground="White" Margin="8">
+                            The quick brown fox jumps over the lazy dog.
+                        </TextBlock>
+                    </ScrollViewer>
+                </Border>
+                <Border BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                        BorderThickness="1"
+                        Width="200"
+                        MaxHeight="200">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+                        <TextBlock TextWrapping="Wrap" Foreground="White" Margin="8">
+                            <Run>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididuntut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            </Run>
+                            <LineBreak/>
+                            <Run>
+                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                                nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+                                officia deserunt mollit anim id est laborum.
+                            </Run>
+                        </TextBlock>
+                    </ScrollViewer>
+                </Border>
+                
+                <Border BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                        BorderThickness="1"
+                        Width="200"
+                        MaxHeight="80">
+                    <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+                        <TextBlock TextWrapping="Wrap" Foreground="White" Margin="8">
+                            <Run>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididuntut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            </Run>
+                            <LineBreak/>
+                            <LineBreak/>
+                            <LineBreak/>
+                            <LineBreak/>
+                            <Run>
+                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                                nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+                                officia deserunt mollit anim id est laborum.
+                            </Run>
+                        </TextBlock>
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="ScrollViewer">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">

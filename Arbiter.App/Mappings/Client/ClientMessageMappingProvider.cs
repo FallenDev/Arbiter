@@ -199,9 +199,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Slot")
                 .Property(m => m.Slot, p => p.ToolTip("Slot selected by the user."))
                 .IsExpanded(m => m.Slot.HasValue);
-            b.Section("Text Input")
-                .Property(m => m.TextInputs, p => p.ShowMultiline().ToolTip("Text inputs provided by the user."))
-                .IsExpanded(m => m.TextInputs.Count > 0);
+            b.Section("Argument")
+                .Property(m => m.Arguments, p => p.ShowMultiline().ToolTip("Arguments associated with the dialog menu choice."))
+                .IsExpanded(m => m.Arguments.Count > 0);
         });
     }
 

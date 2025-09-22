@@ -117,10 +117,10 @@ TBD
 - [x] Find by Command (Next/Prev)
 - [x] Delete Trace Packets
 - [x] Save/Load Traces
-- [ ] Raw Packet Injection
+- [x] Raw Packet Injection
   - [x] To Client
   - [x] To Server
-- [ ] Revamp Settings UI
+- [x] Revamp Settings UI
 
 ### v1.1
 

@@ -1,5 +1,16 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Path Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <Path Width="32" Height="32"
+                  Stroke="White"
+                  Stretch="UniformToFill"
+                  Data="{StaticResource Talgonite.Icon.SaveDisk}"/>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="Path">
         <Setter Property="Width" Value="16"/>
         <Setter Property="Height" Value="16"/>

@@ -1,13 +1,28 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ToggleSwitch Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="8">
+                <ToggleSwitch/>
+                <ToggleSwitch IsChecked="True"/>
+                <ToggleSwitch IsEnabled="False"/>
+                <ToggleSwitch IsEnabled="False" IsChecked="True"/>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="ToggleSwitch">
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <!-- Slide animation for the knob movement -->
         <Setter Property="KnobTransitions">
             <Transitions>
-                <DoubleTransition Property="Canvas.Left" Easing="CubicEaseOut" Duration="{StaticResource Talgonite.Transition.Duration}"/>
+                <DoubleTransition Property="Canvas.Left" Easing="CubicEaseOut" 
+                                  Duration="{StaticResource Talgonite.Transition.Duration}"/>
             </Transitions>
         </Setter>
         <Setter Property="Template">
@@ -34,51 +49,72 @@
                               Background="Transparent"
                               TemplatedControl.IsTemplateFocusTarget="True"/>
                         
-                        <ContentPresenter Name="PART_OffContentPresenter"
-                                          Grid.Row="0"
-                                          Grid.Column="2"
-                                          Grid.RowSpan="3"
-                                          Content="{TemplateBinding OffContent}"
-                                          ContentTemplate="{TemplateBinding OffContent}"
-                                          Foreground="{StaticResource Talgonite.ToggleSwitch.Foreground}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        
-                        <ContentPresenter Name="PART_OnContentPresenter"
-                                          Grid.Row="0"
-                                          Grid.Column="2"
-                                          Grid.RowSpan="3"
-                                          Content="{TemplateBinding OnContent}"
-                                          ContentTemplate="{TemplateBinding OnContent}"
-                                          Foreground="{StaticResource Talgonite.ToggleSwitch.CheckedForeground}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
                         <Border Name="SwitchKnobBounds"
                                 Grid.Row="1" Grid.Column="0"
-                                Width="48" Height="24"
-                                Background="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"
+                                Width="64" Height="32"
+                                Background="{StaticResource Talgonite.ToggleSwitch.TrackBackground}"
                                 BorderBrush="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"
                                 BorderThickness="2"
-                                CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}">
+                            <Panel>
+                                <!-- Inset fill to prevent checked color from peeking under sunken borders -->
+                                <Border Name="SwitchTrackFill"
+                                        Background="{StaticResource Talgonite.ToggleSwitch.TrackBackground}"
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
+                                        Margin="2"/>
+                                <Border Classes="sunken-shadow"
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                <Border Classes="sunken-highlight"
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                            </Panel>
+                        </Border>
                         
                         <Canvas Name="PART_SwitchKnob"
                                 Grid.Row="1" Grid.Column="0"
-                                Width="24"
+                                Width="28"
                                 Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
-                                Margin="4,0,0,0"
+                                Margin="2,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center">
                             
                             <Grid Name="PART_MovingKnobs">
-                                <Ellipse Name="SwitchKnobOn"
-                                         Fill="{StaticResource Talgonite.ToggleSwitch.KnobCheckedForeground}"
-                                         Width="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
-                                         Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}"/>
-                                <Ellipse Name="SwitchKnobOff"
-                                         Fill="{StaticResource Talgonite.ToggleSwitch.KnobForeground}"
-                                         Width="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
-                                         Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}"/>
+                                <Border Name="SwitchKnobOn"
+                                        Background="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
+                                        BorderBrush="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"
+                                        BorderThickness="2"
+                                        Width="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
+                                        Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}">
+                                    <Grid>
+                                        <Border Classes="raised-shadow" CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                        <Border Classes="raised-highlight" CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                        <Path Width="12" Height="12"
+                                              Stroke="{StaticResource Talgonite.ToggleSwitch.KnobCheckedForeground}"
+                                              StrokeThickness="2"
+                                              Data="M6,2 L6,10"
+                                              StrokeLineCap="Round"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                                <Border Name="SwitchKnobOff"
+                                        Background="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
+                                        BorderBrush="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"
+                                        BorderThickness="2"
+                                        Width="{StaticResource Talgonite.ToggleSwitch.KnobSize}"
+                                        Height="{StaticResource Talgonite.ToggleSwitch.KnobSize}">
+                                    <Grid>
+                                        <Border Classes="raised-shadow" CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                        <Border Classes="raised-highlight" CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                        <Path Width="12" Height="12"
+                                              Stroke="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                              StrokeThickness="2"
+                                              Data="M6,2 A4,4 0 1,1 6,10 A4,4 0 1,1 6,2"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
                             </Grid>
                         </Canvas>
                     </Grid>
@@ -92,32 +128,28 @@
         </Style>
         
         <!-- Checked State -->
-        <Style Selector="^:checked /template/ Border#SwitchKnobBounds">
-            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.KnobCheckedBackground}"/>
+        <Style Selector="^:checked /template/ Border#SwitchTrackFill">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.TrackCheckedBackground}"/>
         </Style>
         
-        <Style Selector="^:checked /template/ Ellipse#SwitchKnobOff">
+        <Style Selector="^:checked /template/ Border#SwitchKnobOff">
             <Setter Property="IsVisible" Value="False"/>
         </Style>
         
-        <Style Selector="^:checked /template/ ContentPresenter#PART_OffContentPresenter">
-            <Setter Property="IsVisible" Value="False"/>
-        </Style>
-        
-        <Style Selector="^:checked /template/ Ellipse#SwitchKnobOn">
+        <Style Selector="^:checked /template/ Border#SwitchKnobOn">
             <Setter Property="IsVisible" Value="True"/>
         </Style>
         
-        <Style Selector="^:checked /template/ ContentPresenter#PART_OnContentPresenter">
-            <Setter Property="IsVisible" Value="True"/>
+        <Style Selector="^:checked /template/ Canvas#PART_SwitchKnob">
+            <Setter Property="Margin" Value="6,0,0,0"/>
         </Style>
         
         <!-- Unchecked State -->
-        <Style Selector="^:unchecked /template/ Border#SwitchKnobBounds">
-            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.KnobBackground}"/>
+        <Style Selector="^:unchecked /template/ Border#SwitchTrackFill">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.TrackBackground}"/>
         </Style>
         
-        <Style Selector="^:unchecked /template/ Ellipse#SwitchKnobOff">
+        <Style Selector="^:unchecked /template/ Border#SwitchKnobOff">
             <Setter Property="IsVisible" Value="True"/>
         </Style>
         
@@ -125,7 +157,7 @@
             <Setter Property="IsVisible" Value="True"/>
         </Style>
         
-        <Style Selector="^:unchecked /template/ Ellipse#SwitchKnobOn">
+        <Style Selector="^:unchecked /template/ Border#SwitchKnobOn">
             <Setter Property="IsVisible" Value="False"/>
         </Style>
         
@@ -136,6 +168,16 @@
         <!-- Focus State -->
         <Style Selector="^:focus /template/ Border#SwitchKnobBounds">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.FocusBorderBrush}"/>
+        </Style>
+        
+        <!-- Disabled State: track darker like textbox -->
+        <Style Selector="^:disabled /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.TrackDisabledBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ Border#SwitchTrackFill">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.TrackDisabledBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"/>
         </Style>
     </Style>
 </Styles>

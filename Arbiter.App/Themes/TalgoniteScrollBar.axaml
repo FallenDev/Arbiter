@@ -1,5 +1,29 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ScrollBar Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <Border BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                        BorderThickness="1"
+                        Width="200" MinHeight="40">
+                    <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
+                        <ScrollBar Grid.Row="0" Grid.Column="1" Orientation="Vertical"/>
+                        <ScrollBar Grid.Row="1" Grid.Column="0" Orientation="Horizontal"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Foreground="White"
+                                   Margin="8">
+                            The quick brown fox jumps over the lazy dog.
+                            Lorem ipsum.
+                        </TextBlock>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="ScrollBar">
         <Setter Property="Background" Value="{StaticResource Talgonite.ScrollBar.Background}"/>
         <Setter Property="Cursor" Value="Arrow"/>

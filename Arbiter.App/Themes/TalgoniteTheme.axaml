@@ -72,7 +72,7 @@
             
             <!-- ContextMenu Resources -->
             <SolidColorBrush x:Key="Talgonite.ContextMenu.Background" Color="#373d49"/>
-            <SolidColorBrush x:Key="Talgonite.ContextMenu.BorderBrush" Color="#292d34"/>
+            <SolidColorBrush x:Key="Talgonite.ContextMenu.BorderBrush" Color="#7b7e85"/>
             
             <!-- Control Resources -->
             <SolidColorBrush x:Key="Talgonite.Control.Background" Color="#373d49"/>
@@ -94,6 +94,12 @@
             <SolidColorBrush x:Key="Talgonite.GridSplitter.HoverForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.GridSplitter.PressedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.GridSplitter.DisabledForeground" Color="#373d49"/>
+            
+            <!-- HyperlinkButton Resources -->
+            <SolidColorBrush x:Key="Talgonite.Hyperlink.Foreground" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.Hyperlink.HoverForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Hyperlink.PressedForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.Hyperlink.DisabledForeground" Color="#7b7e85"/>
             
             <!-- Label Resources -->
             <SolidColorBrush x:Key="Talgonite.Label.Foreground" Color="#a6a7a9"/>
@@ -126,7 +132,8 @@
             
             <!-- ProgressBar Resources -->
             <SolidColorBrush x:Key="Talgonite.ProgressBar.Background" Color="#262b33"/>
-            <SolidColorBrush x:Key="Talgonite.ProgressBar.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.Foreground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.ProgressBar.DisabledForeground" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.ProgressBar.TextForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.ProgressBar.BorderBrush" Color="#373d49"/>
             
@@ -175,9 +182,14 @@
             <SolidColorBrush x:Key="Talgonite.TabItem.Foreground" Color="#717479"/>
             <SolidColorBrush x:Key="Talgonite.TabItem.HoverForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TabItem.SelectedForeground" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.DisabledBackground" Color="#22262d"/>
+            <SolidColorBrush x:Key="Talgonite.TabItem.DisabledForeground" Color="#373d49"/>
             
             <!-- TabStrip Resources -->
             <SolidColorBrush x:Key="Talgonite.TabStrip.Background" Color="#262b33"/>
+            
+            <!-- TabStrip Item Resources -->
+            <SolidColorBrush x:Key="Talgonite.TabStripItem.Foreground" Color="#717479"/>
             
             <!-- TextBlock Resources -->
             <SolidColorBrush x:Key="Talgonite.TextBlock.Foreground" Color="#cdcfd2"/>
@@ -213,15 +225,20 @@
             <!-- ToggleSwitch Resources -->
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.Foreground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.CheckedForeground" Color="#81b8f5"/>
-            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBackground" Color="#262b33"/>
+            <!-- Track backgrounds -->
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.TrackBackground" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.TrackCheckedBackground" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.TrackDisabledBackground" Color="#222831"/>
+            <!-- Knob visuals -->
+            <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBackground" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobCheckedBackground" Color="#222831"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobForeground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobCheckedForeground" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.KnobBorderBrush" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.HoverBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.ToggleSwitch.FocusBorderBrush" Color="#81b8f5"/>
-            <sys:Double x:Key="Talgonite.ToggleSwitch.KnobSize">16</sys:Double>
-            <CornerRadius x:Key="Talgonite.ToggleSwitch.KnobCornerRadius">16</CornerRadius>
+            <sys:Double x:Key="Talgonite.ToggleSwitch.KnobSize">28</sys:Double>
+            <CornerRadius x:Key="Talgonite.ToggleSwitch.KnobCornerRadius">2</CornerRadius>
             
             <!-- ToolTip Resources -->
             <SolidColorBrush x:Key="Talgonite.ToolTip.Background" Color="#101215"/>

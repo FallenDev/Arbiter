@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
@@ -18,26 +20,29 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         MimeTypes = ["application/octet-stream"],
     };
     
-    private ArbiterSettings _settings = new();
     private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ClientExecutablePath))]
+    [NotifyPropertyChangedFor(nameof(LocalPort))]
+    [NotifyPropertyChangedFor(nameof(RemoteServerAddress))]
+    [NotifyPropertyChangedFor(nameof(RemoteServerPort))]
+    [NotifyPropertyChangedFor(nameof(TraceOnStartup))]
+    [NotifyPropertyChangedFor(nameof(TraceAutosave))]
+    private ArbiterSettings _settings = new();
+    
     [ObservableProperty] private bool _hasChanges;
 
-    public ArbiterSettings Settings
+    public string VersionString
     {
-        get => _settings;
-        set
+        get
         {
-            _settings = value;
-            OnPropertyChanged(nameof(ClientExecutablePath));
-            OnPropertyChanged(nameof(LocalPort));
-            OnPropertyChanged(nameof(RemoteServerAddress));
-            OnPropertyChanged(nameof(RemoteServerPort));
-            OnPropertyChanged(nameof(TraceOnStartup));
+            var version = Assembly.GetEntryAssembly()!.GetName().Version!;
+            return $"v{version.Major}.{version.Minor}.{version.Build}";
         }
     }
-
+    
     public string ClientExecutablePath
     {
         get => Settings.ClientExecutablePath;
@@ -103,6 +108,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
+    public bool TraceAutosave
+    {
+        get => Settings.TraceAutosave;
+        set
+        {
+            Settings.TraceAutosave = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
     public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
     {
         _settingsService = settingsService;
@@ -162,5 +178,11 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     {
         Settings = new ArbiterSettings();
         HasChanges = true;
+    }
+
+    [RelayCommand]
+    private void VisitProjectWebsite()
+    {
+        Process.Start(new ProcessStartInfo("https://github.com/ewrogers/Arbiter") { UseShellExecute = true });
     }
 }

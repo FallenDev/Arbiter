@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,7 +14,6 @@ using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -57,7 +57,7 @@ public partial class SendPacketViewModel : ViewModelBase
 
             if (validationError is not null)
             {
-                throw new DataValidationException(validationError);
+                throw new ValidationException(validationError);
             }
         }
     }
@@ -105,8 +105,9 @@ public partial class SendPacketViewModel : ViewModelBase
     [
         TimeSpan.Zero,
         TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(300),
-        TimeSpan.FromMilliseconds(400), TimeSpan.FromMilliseconds(500), TimeSpan.FromSeconds(1),
-        TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(4),
+        TimeSpan.FromMilliseconds(400), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(600),
+        TimeSpan.FromMilliseconds(700), TimeSpan.FromMilliseconds(800), TimeSpan.FromMilliseconds(900),
+        TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(4),
         TimeSpan.FromSeconds(5)
     ];
 

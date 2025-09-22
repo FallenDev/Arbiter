@@ -11,6 +11,7 @@ public class ServerUserIdMessage : ServerMessage
     public WorldDirection Direction { get; set; }
     public bool HasGuild { get; set; }
     public CharacterClass Class { get; set; }
+    public bool CanMove { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
@@ -22,6 +23,7 @@ public class ServerUserIdMessage : ServerMessage
         HasGuild = reader.ReadBoolean();
 
         Class = (CharacterClass)reader.ReadByte();
+        CanMove = (reader.ReadByte() & 1) == 0; // seems to be a bit flag but not sure what else it affects
     }
 
     public override void Serialize(INetworkPacketBuilder builder)

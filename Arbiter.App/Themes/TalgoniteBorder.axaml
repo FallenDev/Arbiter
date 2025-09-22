@@ -1,5 +1,24 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Border Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <Border Classes="divider-h" Width="100"/>
+                
+                <Panel Height="100" Width="100">
+                    <Border Classes="sunken-shadow" />
+                    <Border Classes="sunken-highlight" />
+                </Panel>
+                
+                <Panel Height="100" Width="100">
+                    <Border Classes="raised-shadow" />
+                    <Border Classes="raised-highlight" />
+                </Panel>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
     
     <Style Selector="Border.divider-h">
         <Setter Property="Background" Value="{StaticResource Talgonite.Border.DividerBrush}"/>
@@ -33,6 +52,15 @@
     <Style Selector="Border.raised-highlight">
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Border.HighlightBrush}"/>
         <Setter Property="BorderThickness" Value="1,1,0,0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Focusable" Value="False"/>
+    </Style>
+    
+    <Style Selector="Border.raised-shadow">
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Border.ShadowBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,1,1"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="IsHitTestVisible" Value="False"/>

@@ -11,7 +11,7 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
     public uint EntityId { get; set; }
     public ushort PursuitId { get; set; }
     public byte? Slot { get; set; }
-    public List<string> TextInputs { get; set; } = [];
+    public List<string> Arguments { get; set; } = [];
 
     public override void Deserialize(INetworkPacketReader reader)
     {
@@ -27,7 +27,7 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
         }
         else
         {
-            TextInputs = reader.ReadStringArgs8().ToList();
+            Arguments = reader.ReadStringArgs8().ToList();
         }
     }
 

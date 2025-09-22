@@ -3,8 +3,8 @@
 public enum InterfacePane : byte
 {
     Inventory = 0,
-    Spells = 1,
-    Skills = 2,
-    Equipment = 3,
-    Attributes = 4
+    Skills = 1,
+    Spells = 2,
+    Chat = 3,
+    Stats = 4
 }

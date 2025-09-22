@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Additional sub-second rates for sending packets
+- `Shift+Enter` hotkey for sending packets in the send window
+- `InputDescription` for `ServerShowDialogMessage` packet
+- Redesigned settings window
+- `CanMove` property for `ServerUserIdMessage` packet
+
+### Changed
+
+- Rename `Aisling` to `Reactor` for dialog entity type
+- Rename `TextInput` to `Arguments` for `ClientDialogMenuChoiceMessage` message
+- Increase command filter box width slightly
+- Fixed `InterfacePane` enum values
+- Display `Name` for entities in Inspector
+- Remove most transition animations in the UI (need to re-standardize them)
+- Selected tab background color
+- Fix spacing in search and filter bars
+- Fix disable style for `ComboBox` dropdown button
+- Reduce corner radius on input controls
+
 ## [0.9.4b] - 2025-09-20
 
 ### Changed

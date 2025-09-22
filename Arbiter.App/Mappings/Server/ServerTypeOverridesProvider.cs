@@ -51,7 +51,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the creature."))
                 .Property(m => m.Direction, p => p.ToolTip("Direction the creature is facing."))
                 .Property(m => m.Unknown, p => p.ShowHex())
-                .DisplayName(m => $"Entity {m.Id:X}")
+                .DisplayName(m => m.Name ?? $"Entity {m.Id:X}")
                 .IsExpanded(_ => false);
         });
 

@@ -25,99 +25,159 @@
         </DockPanel>
     </controls:TalgoniteWindow.TitleBarContent>
     
-    <Grid RowDefinitions="*,Auto">
-        <StackPanel Grid.Row="0"
-                    Spacing="8"
-                    Margin="16">
-            <!-- Client Path Settings -->
-            <Label Content="Client Executable Path:"/>
-            <TextBox Name="ClientPathTextBox" 
-                     Text="{Binding ClientExecutablePath}"
-                     Watermark="Path to game client...">
-                <TextBox.InnerRightContent>
-                    <Button Command="{Binding LocateClientCommand}"
-                            Content="..."
-                            ToolTip.Tip="Opens a file dialog to locate the game client."
-                            MinWidth="40"
-                            Margin="2"
-                            Padding="4,2"/>
-                </TextBox.InnerRightContent>
-            </TextBox>
+    <Grid RowDefinitions="*,Auto" Margin="1,0">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="4">
+            <!-- Game Client Settings Tab -->
+            <TabItem Header="Game Client">
+                <StackPanel Spacing="4">
+                    <Label Content="Game Client Path"
+                           ToolTip.Tip="Path to the game executable."/>
+                    <TextBox Name="ClientPathTextBox"
+                             Text="{Binding ClientExecutablePath}"
+                             FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                             Watermark="Path to game client..."
+                             FontSize="14"
+                             Height="40">
+                        <TextBox.InnerRightContent>
+                            <Button Command="{Binding LocateClientCommand}"
+                                    Content="..."
+                                    FontFamily="{StaticResource Talgonite.Font.InterfaceFont}"
+                                    FontWeight="Bold"
+                                    FontSize="16"
+                                    Classes="outline"
+                                    MinWidth="40"
+                                    Margin="2"
+                                    Padding="2"
+                                    Cursor="Hand"/>
+                        </TextBox.InnerRightContent>
+                    </TextBox>
+                </StackPanel>
+            </TabItem>
             
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Margin="0,8"/>
+            <!-- Network Settings Tab -->
+            <TabItem Header="Network">
+                <StackPanel Spacing="4">
+                    <!-- Remote Server -->
+                    <Label Content="Remote Server Host"
+                           ToolTip.Tip="Hostname of the remote game server."/>
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4">
+                        <TextBox Grid.Column="0"
+                                   Text="{Binding RemoteServerAddress}"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                   Watermark="Enter a hostname..."
+                                   Height="40"/>
+                        
+                        <Label Grid.Column="1"
+                               Content="Port"
+                               ToolTip.Tip="Port of the remote game server."/>
+                        
+                        <NumericUpDown Grid.Column="2"
+                                       Value="{Binding RemoteServerPort}"
+                                       Minimum="1"
+                                       Maximum="65535"
+                                       Watermark="1-65535"
+                                       TextAlignment="Center"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       Width="100"
+                                       Height="40"/>
+                    </Grid>
+                    
+                    <Border Classes="divider-h" Margin="4,8"/>
+                    
+                    <!-- Local Server Port -->
+                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="4">
+                        <Label Grid.Column="0" Content="Local Port"
+                               ToolTip.Tip="Port to listen on for local client connections."/>
+                        <NumericUpDown Grid.Column="1"
+                                       Value="{Binding LocalPort}"
+                                       Minimum="1"
+                                       Maximum="65535"
+                                       Watermark="1-65535"
+                                       TextAlignment="Center"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       Width="100"
+                                       Height="40"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
             
-            <!-- Local Port Settings -->
-            <Grid ColumnDefinitions="Auto,Auto">
-                <Label Grid.Column="0" Content="Local Port:"/>
-                <NumericUpDown Name="LocalPortUpDown"
-                               Grid.Column="1"
-                               Value="{Binding LocalPort}"
-                               Minimum="1"
-                               Maximum="65535"
+            <!-- Tracing Settings Tab -->
+            <TabItem Header="Tracing">
+                <StackPanel Spacing="4">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                        <!-- Start Tracing on Startup -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Start Trace on Startup"
+                               ToolTip.Tip="Begins a trace automatically when the application starts up."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding TraceOnStartup}"/>
+                        
+                        <!-- Start Tracing on Startup -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Content="Autosave Traces on Quit"
+                               ToolTip.Tip="Automatically saves traces when the application exits."/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding TraceAutosave}"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Debug Settings Tab -->
+            <TabItem Header="Debug">
+                
+            </TabItem>
+            
+            <!-- About Tab -->
+            <TabItem Header="About">
+                <StackPanel Spacing="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Margin="32">
+                    <TextBlock Text="Arbiter"
                                TextAlignment="Center"
-                               Watermark="1-65535"
-                               Width="100"/>
-            </Grid>
-            
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Margin="0,8"/>
-            
-            <!-- Remote Server Settings -->
-            <Label Content="Remote Server Host:"/>
-            <Grid ColumnDefinitions="*,Auto,Auto">
-                <TextBox Grid.Column="0"
-                         Text="{Binding RemoteServerAddress}"
-                         Watermark="Hostname..."/>
-                <Label Grid.Column="1" Content="_Port:"/>
-                <NumericUpDown Name="RemotePortUpDown"
-                               Grid.Column="2"
-                               Value="{Binding RemoteServerPort}"
-                               Minimum="1"
-                               Maximum="65535"
+                               FontSize="48"
+                               FontWeight="Light"/>
+                    <TextBlock Text="Dark Ages Network Analysis Tool"
                                TextAlignment="Center"
-                               Watermark="1-65535"
-                               Width="100"/>
-            </Grid>
-            
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Margin="0,8"/>
-            
-            <!-- Trace on Startup -->
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <ToggleSwitch IsChecked="{Binding TraceOnStartup}">
-                    <Label Content="Start Trace on Launch"/>
-                </ToggleSwitch>
-            </StackPanel>
-        </StackPanel>
+                               FontSize="18"/>
+                    <TextBlock Text="{Binding VersionString, FallbackValue=v1.x.x}"
+                               TextAlignment="Center"
+                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                               FontSize="16"/>
+                    <Border Classes="divider-h" Margin="16,8"/>
+                    <TextBlock Text="Erik 'SiLo' Rogers - 2025"
+                               TextAlignment="Center"
+                               FontSize="18"/>
+                    <HyperlinkButton Command="{Binding VisitProjectWebsiteCommand}"
+                                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                     Margin="4"
+                                     HorizontalAlignment="Stretch">
+                        <TextBlock TextAlignment="Center">
+                            View on Github
+                        </TextBlock>
+                    </HyperlinkButton>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
         
+        <!-- Accept/Cancel Button Area -->
         <Border Grid.Row="1"
-                Background="Transparent"
-                BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                BorderThickness="0,1,0,0"
-                Padding="8">
-            <UniformGrid Rows="1" ColumnSpacing="8">
-                <Button Command="{Binding HandleOkCommand}"
-                        IsDefault="True">
-                    <TextBlock Text="Apply Changes"/>
+                BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                BorderThickness="0,2,0,0"
+                Padding="16,8">
+            <UniformGrid Columns="2" ColumnSpacing="8" Margin="0,0,0,0">
+                <!-- OK button -->
+                <Button Command="{Binding HandleOkCommand}" IsDefault="True">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{x:Static BoolConverters.And}">
                             <Binding Path="HasChanges"/>
                             <Binding Path="#ClientPathTextBox.(DataValidationErrors.HasErrors)"
                                      Converter="{x:Static BoolConverters.Not}"/>
-                            <Binding Path="#LocalPortUpDown.(DataValidationErrors.HasErrors)"
-                                     Converter="{x:Static BoolConverters.Not}"/>
-                            <Binding Path="#RemotePortUpDown.(DataValidationErrors.HasErrors)"
-                                     Converter="{x:Static BoolConverters.Not}"/>
                         </MultiBinding>
                     </Button.IsEnabled>
+                    <TextBlock Text="Apply"></TextBlock>
                 </Button>
-                <Button Command="{Binding HandleCancelCommand}"
-                        IsCancel="True">
-                    <TextBlock Text="Cancel"/>
+                <!-- Cancel Button -->
+                <Button Command="{Binding HandleCancelCommand}" IsCancel="True">
+                    <TextBlock Text="Cancel"></TextBlock>
                 </Button>
             </UniformGrid>
         </Border>

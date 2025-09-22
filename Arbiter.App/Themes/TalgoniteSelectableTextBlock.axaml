@@ -1,5 +1,16 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- SelectableTextBlock Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <SelectableTextBlock Text="Selectable Text" Foreground="White"/>
+                <SelectableTextBlock Text="Disabled Selectable Text" Foreground="White" IsEnabled="False"/>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="SelectableTextBlock">
         <Setter Property="Theme">
             <ControlTheme TargetType="SelectableTextBlock">

@@ -1,19 +1,35 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:control="using:Arbiter.App.Controls">
+    <!-- ResizeGrip Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <Grid Classes="resize-grip-container">
+                    <Path Classes="resize-grip"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="Path.resize-grip">
         <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.Foreground}"/>
         <Setter Property="StrokeThickness" Value="2"/>
         <Setter Property="StrokeLineCap" Value="Square"/>
         <Setter Property="Stretch" Value="None"/>
         <Setter Property="Opacity" Value="0.5"/>
+        <Setter Property="Data" Value="M2 14 L14 2 M7 14 L14 7 M12 14 L14 12"/>
     </Style>
     
-    <Style Selector="Grid.resize-grip-container">
+    <Style Selector="Panel.resize-grip-container">
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Cursor" Value="BottomRightCorner"/>
     </Style>
     
-    <Style Selector="Grid.resize-grip-container:pointerover Path.resize-grip">
+    <Style Selector="Panel.resize-grip-container:pointerover Path.resize-grip">
         <Setter Property="Stroke" Value="{StaticResource Talgonite.ResizeGrip.HoverForeground}"/>
         <Setter Property="Opacity" Value="1.0"/>
     </Style>

@@ -631,7 +631,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.MenuChoices)
                 .IsExpanded(m => m.DialogType is DialogType.Menu or DialogType.CreatureMenu);
             b.Section("Text Input")
-                .Property(m => m.InputPrompt, p => p.ShowMultiline().ToolTip("Prompt displayed in the text input."))
+                .Property(m => m.InputPrompt, p => p.ShowMultiline().ToolTip("Prompt displayed above the text input."))
+                .Property(m => m.InputDescription, p=> p.ShowMultiline().ToolTip("Description displayed below the text input."))
                 .Property(m => m.InputMaxLength, p => p.ToolTip("Maximum length of the text input."))
                 .IsExpanded(m => m.DialogType == DialogType.TextInput);
             b.Section("Navigation")
@@ -882,7 +883,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.UserId, p => p.ShowHex().ToolTip("ID of the user."))
                 .Property(m => m.Class, p => p.ToolTip("Base class of the user."));
             b.Section("Movement")
-                .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."));
+                .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."))
+                .Property(m => m.CanMove, p => p.ToolTip("Whether the user is allowed to move."));
             b.Section("Guild")
                 .Property(m => m.HasGuild, p => p.ToolTip("Whether the user is a member of a guild."));
         });

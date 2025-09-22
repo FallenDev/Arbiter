@@ -1,5 +1,55 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- GridSplitter Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <Panel Width="100" Height="100">
+            <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*,*" ShowGridLines="True">
+                <GridSplitter Grid.Row="0" Grid.Column="0"
+                              ResizeDirection="Rows"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                
+                <GridSplitter Grid.Row="1" Grid.Column="0"
+                              ResizeDirection="Rows"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                
+                <GridSplitter Grid.Row="1" Grid.Column="0"
+                              ResizeDirection="Rows"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                
+                <GridSplitter Grid.Row="2" Grid.Column="0"
+                              ResizeDirection="Rows"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                
+                <GridSplitter Grid.Row="0" Grid.Column="1"
+                              ResizeDirection="Columns"
+                              HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+                
+                <GridSplitter Grid.Row="1" Grid.Column="1"
+                              ResizeDirection="Columns"
+                              HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+                
+                <GridSplitter Grid.Row="2" Grid.Column="1"
+                              ResizeDirection="Columns"
+                              HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+                
+                <GridSplitter Grid.Row="0" Grid.Column="2"
+                              ResizeDirection="Columns"
+                              HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+                
+                <GridSplitter Grid.Row="1" Grid.Column="2"
+                              ResizeDirection="Columns"
+                              HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+                
+                <GridSplitter Grid.Row="2" Grid.Column="2"
+                              ResizeDirection="Columns"
+                              HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+            </Grid>
+            </Panel>
+        </Border>
+    </Design.PreviewWith>
+    
     <Style Selector="GridSplitter">
         <Setter Property="Background" Value="{StaticResource Talgonite.GridSplitter.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.GridSplitter.Foreground}"/>
