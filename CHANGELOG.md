@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `InputDescription` for `ServerShowDialogMessage` packet
 - Redesigned settings window
 - `CanMove` property for `ServerUserIdMessage` packet
+- Autosave for traces on application exit
 
 ### Changed
 
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix spacing in search and filter bars
 - Fix disable style for `ComboBox` dropdown button
 - Reduce corner radius on input controls
+- Fixed local port not working if other than default
 
 ## [0.9.4b] - 2025-09-20
 

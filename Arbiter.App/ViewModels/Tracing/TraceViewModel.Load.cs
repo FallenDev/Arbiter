@@ -19,7 +19,8 @@ public partial class TraceViewModel
 
         if (!append)
         {
-            _allPackets.Clear();
+            ClearPackets();
+            IsLive = false;
         }
 
         foreach (var packet in packets)

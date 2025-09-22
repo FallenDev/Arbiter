@@ -12,7 +12,9 @@ namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel
 {
-    public async Task SaveToFileAsync(IEnumerable<TracePacketViewModel> viewModels, string outputPath)
+    public Task SaveAllToFileAsync(string outputPath) => SaveToFileAsync(_allPackets, outputPath);
+    
+    private async Task SaveToFileAsync(IEnumerable<TracePacketViewModel> viewModels, string outputPath)
     {
         var snapshot = viewModels.ToList();
         var packets = snapshot.Select(vm => vm.ToTracePacket());
@@ -30,7 +32,9 @@ public partial class TraceViewModel
             return;
         }
 
-        await SaveToFileAsync(_allPackets, outputPath);
+        await SaveAllToFileAsync(outputPath);
+        IsDirty = false;
+        
         _logger.LogInformation("Trace saved to {Filename}", Path.GetFileName(outputPath));
     }
     

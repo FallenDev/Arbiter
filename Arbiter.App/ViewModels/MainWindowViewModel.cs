@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
@@ -10,15 +11,19 @@ using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Path = Avalonia.Controls.Shapes.Path;
 
 namespace Arbiter.App.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private static readonly string AutosaveDirectory = AppHelper.GetRelativePath("autosave");
+    
     private ArbiterSettings Settings { get; set; } = new();
 
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -103,7 +108,7 @@ public partial class MainWindowViewModel : ViewModelBase
         try
         {
             var clientExecutablePath = Settings.ClientExecutablePath;
-            await _gameClientService.LaunchLoopbackClient(clientExecutablePath);
+            await _gameClientService.LaunchLoopbackClient(clientExecutablePath, Settings.LocalPort);
         }
         catch (Exception ex)
         {
@@ -165,17 +170,43 @@ public partial class MainWindowViewModel : ViewModelBase
 
     internal async Task<bool> OnClosing(WindowCloseReason reason)
     {
-        await SaveWindowPositionAsync();
-        
         if (Trace.IsRunning)
         {
             Trace.StopTracing();
         }
+        
+        // Autosave live traces on exit
+        if (Settings.TraceAutosave && Trace is { IsLive: true, IsEmpty: false })
+        {
+            try
+            {
+                await AutoSaveTraceAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to autosave trace: {Message}", ex.Message);
+            }
+        }
 
+        await SaveWindowPositionAsync();
         return true;
     }
 
-    private async Task SaveWindowPositionAsync()
+    private async Task AutoSaveTraceAsync()
+    {
+        if (!Directory.Exists(AutosaveDirectory))
+        {
+            Directory.CreateDirectory(AutosaveDirectory);
+        }
+
+        var defaultFilename = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-autosave.json";
+        var outputPath = System.IO.Path.Join(AutosaveDirectory, defaultFilename);
+
+        await Trace.SaveAllToFileAsync(outputPath);
+        _logger.LogInformation("Autosaved trace to {Filename}", outputPath);
+    }
+
+    private Task SaveWindowPositionAsync()
     {
         Settings.StartupLocation = new WindowRect
         {
@@ -186,7 +217,7 @@ public partial class MainWindowViewModel : ViewModelBase
             IsMaximized = _mainWindow.WindowState == WindowState.Maximized
         };
 
-        await _settingsService.SaveToFileAsync(Settings);
+        return _settingsService.SaveToFileAsync(Settings);
     }
 
     private void RestoreWindowPosition(WindowRect rect)

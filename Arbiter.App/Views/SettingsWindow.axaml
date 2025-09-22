@@ -112,10 +112,10 @@
                         <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding TraceOnStartup}"/>
                         
-                        <!-- Start Tracing on Startup -->
+                        <!-- Autosave traces -->
                         <Label Grid.Row="1" Grid.Column="0"
                                Content="Autosave Traces on Quit"
-                               ToolTip.Tip="Automatically saves traces when the application exits."/>
+                               ToolTip.Tip="Automatically saves live trace packets when the application exits."/>
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding TraceAutosave}"/>
                     </Grid>

@@ -48,8 +48,13 @@ public partial class TraceViewModel
         {
             _allPackets.Remove(packet);
         }
-
+        
         SelectedPackets.Clear();
         RefreshSearchResults();
+        
+        if (selectedPackets.Count > 0)
+        {
+            IsDirty = true;
+        }
     }
 }

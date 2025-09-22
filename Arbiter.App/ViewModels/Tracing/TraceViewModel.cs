@@ -40,7 +40,9 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private int? _scrollToIndexRequested;
     [ObservableProperty] private bool _isRunning;
-
+    [ObservableProperty] private bool _isLive;
+    [ObservableProperty] private bool _isDirty;
+    
     public bool IsEmpty => _isEmpty;
 
     public bool ShowRawPackets
@@ -118,6 +120,16 @@ public partial class TraceViewModel : ViewModelBase
         vm.Opacity = matchesSearch ? 1 : 0.5;
 
         _allPackets.Add(vm);
+        IsDirty = true;
+    }
+
+    private void ClearPackets()
+    {
+        _allPackets.Clear();
+        SelectedPackets.Clear();
+        
+        IsDirty = false;
+        OnPropertyChanged(nameof(FilteredPackets));
     }
 
     [RelayCommand]
@@ -133,7 +145,8 @@ public partial class TraceViewModel : ViewModelBase
 
         StartTime = DateTime.Now;
         IsRunning = true;
-
+        IsLive = true;
+        
         _logger.LogInformation("Trace started");
     }
 
@@ -168,12 +181,8 @@ public partial class TraceViewModel : ViewModelBase
         {
             return;
         }
-
-        _allPackets.Clear();
-        OnPropertyChanged(nameof(FilteredPackets));
-
-        SelectedPackets.Clear();
-
+        
+        ClearPackets();
         _logger.LogInformation("Trace cleared");
     }
 
