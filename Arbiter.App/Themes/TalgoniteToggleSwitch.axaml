@@ -175,5 +175,9 @@
             <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.TrackDisabledBackground}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"/>
         </Style>
+        <Style Selector="^:disabled /template/ Border#SwitchTrackFill">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ToggleSwitch.TrackDisabledBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleSwitch.KnobBorderBrush}"/>
+        </Style>
     </Style>
 </Styles>

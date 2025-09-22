@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
@@ -32,6 +34,15 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     
     [ObservableProperty] private bool _hasChanges;
 
+    public string VersionString
+    {
+        get
+        {
+            var version = Assembly.GetEntryAssembly()!.GetName().Version!;
+            return $"v{version.Major}.{version.Minor}.{version.Build}";
+        }
+    }
+    
     public string ClientExecutablePath
     {
         get => Settings.ClientExecutablePath;
@@ -167,5 +178,11 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     {
         Settings = new ArbiterSettings();
         HasChanges = true;
+    }
+
+    [RelayCommand]
+    private void VisitProjectWebsite()
+    {
+        Process.Start(new ProcessStartInfo("https://github.com/ewrogers/Arbiter") { UseShellExecute = true });
     }
 }

@@ -26,11 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="3">
-            <!-- General Settings Tab -->
-            <TabItem Header="General" IsEnabled="False">
-            </TabItem>
-            
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -133,7 +129,30 @@
             
             <!-- About Tab -->
             <TabItem Header="About">
-                
+                <StackPanel Spacing="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Margin="32">
+                    <TextBlock Text="Arbiter"
+                               TextAlignment="Center"
+                               FontSize="48"
+                               FontWeight="Light"/>
+                    <TextBlock Text="Dark Ages Network Analysis Tool"
+                               TextAlignment="Center"
+                               FontSize="18"/>
+                    <TextBlock Text="{Binding VersionString, FallbackValue=v1.x.x}"
+                               TextAlignment="Center"
+                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                               FontSize="16"/>
+                    <Border Classes="divider-h" Margin="16,8"/>
+                    <TextBlock Text="Erik 'SiLo' Rogers - 2025"
+                               TextAlignment="Center"
+                               FontSize="18"/>
+                    <HyperlinkButton Command="{Binding VisitProjectWebsiteCommand}"
+                                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                     Margin="4"
+                                     HorizontalContentAlignment="Center">
+                        View on Github
+                    </HyperlinkButton>
+                </StackPanel>
             </TabItem>
         </TabControl>
         
