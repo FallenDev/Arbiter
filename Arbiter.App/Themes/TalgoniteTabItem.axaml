@@ -35,8 +35,6 @@
     <Style Selector="TabItem">
         <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.Background}"/>
         <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.Foreground}"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -45,8 +43,7 @@
             <ControlTemplate>
                 <Panel>
                     <Border Name="SelectionBorder"
-                            BorderBrush="Transparent"
-                            BorderThickness="0,2,0,0">
+                            BorderBrush="Transparent">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Header}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}"
@@ -77,13 +74,17 @@
         </Style>
         <Style Selector="^:selected /template/ Border#SelectionBorder">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.TabItem.SelectedHighlight}"/>
-            <Setter Property="BorderThickness" Value="0,1,0,0"/>
         </Style>
         
         <!-- Disabled Style -->
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.DisabledBackground}"/>
             <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.DisabledForeground}"/>
+        </Style>
+        
+        <!-- Bottom Tab Placement-->
+        <Style Selector="^[TabStripPlacement=Top] /template/ Border#SelectionBorder">
+            <Setter Property="BorderThickness" Value="0,2,0,0"/>
         </Style>
         
         <!-- Left Tab Placement-->
@@ -93,7 +94,7 @@
         
         <!-- Right Tab Placement -->
         <Style Selector="^[TabStripPlacement=Right]">
-            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="BorderThickness" Value="0,0,2,0"/>
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
         </Style>
         
