@@ -181,13 +181,15 @@
                     <Label Content="Command"
                            VerticalAlignment="Center">
                         <ToolTip.Tip>
-                            <Span>
-                                <Run>Allows filtering by client or server commands.</Run>
-                                <LineBreak/>
-                                <Run>You can select a single command with</Run>
-                                <Run Classes="hotkey">[Ctrl+Click]</Run>
-                                <Run>.</Run>
-                            </Span>
+                            <TextBlock>
+                                <Span>
+                                    <Run>Allows filtering by client or server commands.</Run>
+                                    <LineBreak/>
+                                    <Run>You can select a single command with</Run>
+                                    <Run Classes="hotkey" BaselineAlignment="Center">[Ctrl+Click]</Run>
+                                    <Run>.</Run>
+                                </Span>
+                            </TextBlock>
                         </ToolTip.Tip>
                     </Label>
                     <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.Commands}"

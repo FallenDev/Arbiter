@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Arbiter.App.Models;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -76,21 +77,29 @@ public partial class TraceFilterViewModel : ViewModelBase
             vm.PropertyChanged += OnCommandFilterPropertyChanged;
             Commands.Add(vm);
         }
+        
+        UpdateSelectedCommands();
     }
 
     private void OnCommandFilterPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(CommandFilterViewModel.IsSelected))
         {
+            UpdateSelectedCommands();
             NotifyCommandsChanged();
         }
     }
 
+    private void UpdateSelectedCommands()
+    {
+        SelectedClientCommands = SelectedCommands.Where(x => x.Direction == PacketDirection.Client).Select(x => x.Value)
+            .ToList();
+        SelectedServerCommands = SelectedCommands.Where(x => x.Direction == PacketDirection.Server).Select(x => x.Value)
+            .ToList();
+    }
+
     private void NotifyCommandsChanged()
     {
-        SelectedClientCommands = SelectedCommands.Select(x => x.Value).ToList();
-        SelectedServerCommands = SelectedCommands.Select(x => x.Value).ToList();
-        
         OnPropertyChanged(nameof(SelectedClientCommands));
         OnPropertyChanged(nameof(SelectedServerCommands));
         OnPropertyChanged(nameof(SelectedCommands));
