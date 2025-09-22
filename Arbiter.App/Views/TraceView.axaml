@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:Arbiter.App.Controls"
+             xmlns:converters="using:Arbiter.App.Converters"
              xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels.Tracing"
              xmlns:behaviors="using:Arbiter.App.Behaviors"
@@ -189,10 +190,13 @@
                             <DataTemplate DataType="vm:CommandFilterViewModel">
                                 <Grid ColumnDefinitions="Auto,*,Auto">
                                     <TextBlock Grid.Column="1" Text="{Binding DisplayName}"
+                                               Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                                FontSize="14"
                                                VerticalAlignment="Center"/>
                                     <Border Grid.Column="2">
                                         <TextBlock Text="{Binding Value, StringFormat={}0x{0:X2}}"
+                                                   Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                                   FontSize="14"
                                                    VerticalAlignment="Center"/>
                                     </Border>
                                 </Grid>
