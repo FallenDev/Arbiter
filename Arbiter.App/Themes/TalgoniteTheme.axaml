@@ -17,7 +17,6 @@
             <!-- Global Transition Durations -->
             <x:TimeSpan x:Key="Talgonite.Transition.Duration">0:0:0.250</x:TimeSpan>
             
-            
             <!-- Editor Resources -->
             <FontFamily x:Key="Talgonite.Font.Monospace">Consolas</FontFamily>
             <sys:Double x:Key="Talgonite.Editor.FontSize">14</sys:Double>
@@ -46,6 +45,20 @@
             <SolidColorBrush x:Key="Talgonite.DestructiveButton.Foreground" Color="#e0e0e0"/>
             <SolidColorBrush x:Key="Talgonite.DestructiveButton.HoverForeground" Color="#ed6a5e"/>
             <SolidColorBrush x:Key="Talgonite.DestructiveButton.PressedForeground" Color="#ffffff"/>
+            
+            <!-- CheckBox Resources -->
+            <SolidColorBrush x:Key="Talgonite.CheckBox.Background" Color="#262b33"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.Foreground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.PressedForeground" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.DisabledForeground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.BorderBrush" Color="#373d49"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.HoverBorderBrush" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.FocusBorderBrush" Color="#81b8f5"/>
+            <SolidColorBrush x:Key="Talgonite.CheckBox.DisabledBorderBrush" Color="#4d535d"/>
+            <sys:Double x:Key="Talgonite.CheckBox.Width">24</sys:Double>
+            <sys:Double x:Key="Talgonite.CheckBox.Height">24</sys:Double>
+            <sys:Double x:Key="Talgonite.CheckBox.CheckMarkWidth">12</sys:Double>
+            <sys:Double x:Key="Talgonite.CheckBox.CheckMarkHeight">12</sys:Double>
             
             <!-- ComboBox Resources -->
             <SolidColorBrush x:Key="Talgonite.ComboBox.Background" Color="#262b33"/>

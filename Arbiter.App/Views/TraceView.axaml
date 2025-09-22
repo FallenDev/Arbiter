@@ -182,12 +182,15 @@
                            VerticalAlignment="Center" />
                     
                     <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.Commands}"
-                                           Width="200">
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           FontSize="16"
+                                           Width="300">
                         <c:MultiSelectDropdown.ItemTemplate>
                             <DataTemplate DataType="vm:CommandFilterViewModel">
-                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
-                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}"
+                                               FontSize="14"
+                                               VerticalAlignment="Center"/>
                                     <Border Grid.Column="2">
                                         <TextBlock Text="{Binding Value, StringFormat={}0x{0:X2}}"
                                                    VerticalAlignment="Center"/>

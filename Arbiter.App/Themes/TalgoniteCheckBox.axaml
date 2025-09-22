@@ -14,11 +14,11 @@
         </Border>
     </Design.PreviewWith>
 
-    <!-- Talgonite CheckBox: match RadioButton visual with filled background on checked -->
+    <!-- Talgonite CheckBox -->
     <Style Selector="CheckBox">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.Foreground}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.BorderBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.CheckBox.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Talgonite.CheckBox.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="0"/>
         <Setter Property="Template">
@@ -29,9 +29,9 @@
                     <!-- Indicator Box -->
                     <Border Name="Box"
                             Grid.Column="0"
-                            Width="{StaticResource Talgonite.RadioButton.Width}"
-                            Height="{StaticResource Talgonite.RadioButton.Height}"
-                            Background="{StaticResource Talgonite.RadioButton.Background}"
+                            Width="{StaticResource Talgonite.CheckBox.Width}"
+                            Height="{StaticResource Talgonite.CheckBox.Height}"
+                            Background="{StaticResource Talgonite.CheckBox.Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="2"
                             CornerRadius="2"
@@ -40,21 +40,21 @@
                             <Border Classes="sunken-shadow" CornerRadius="2"/>
                             <Border Classes="sunken-highlight" CornerRadius="2"/>
 
-                            <!-- Optional mark glyph (kept invisible as background fill conveys state) -->
+                            <!-- Optional mark glyph-->
                             <Path Name="CheckGlyph"
-                                  Width="14" Height="10"
+                                  Width="12" Height="8"
                                   StrokeThickness="2"
                                   Stroke="#ffffff"
-                                  Data="M1,5 L5,9 L13,1"
+                                  Data="M1,5 L4,8 L10,0"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
                                   IsVisible="False"/>
 
                             <!-- Indeterminate dash mark -->
                             <Border Name="IndeterminateMark"
-                                    Width="{StaticResource Talgonite.RadioButton.CheckMarkWidth}"
+                                    Width="{StaticResource Talgonite.CheckBox.CheckMarkWidth}"
                                     Height="2"
-                                    Background="{StaticResource Talgonite.RadioButton.PressedForeground}"
+                                    Background="{StaticResource Talgonite.CheckBox.PressedForeground}"
                                     CornerRadius="1"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
@@ -75,19 +75,16 @@
 
         <!-- Hover/Focus border on the box -->
         <Style Selector="^:pointerover /template/ Border#Box">
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.HoverBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.CheckBox.HoverBorderBrush}"/>
         </Style>
         <Style Selector="^:focus /template/ Border#Box">
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.FocusBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.CheckBox.FocusBorderBrush}"/>
         </Style>
 
-        <!-- Checked state: fill the box background to the check color -->
-        <Style Selector="^:checked /template/ Border#Box">
-            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.PressedForeground}"/>
-        </Style>
-        <!-- Optionally display a white check glyph on top when checked -->
+        <!-- Checked state -->
         <Style Selector="^:checked /template/ Path#CheckGlyph">
             <Setter Property="IsVisible" Value="True"/>
+            <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.PressedForeground}"/>
         </Style>
 
         <!-- Indeterminate state shows dash -->
@@ -97,17 +94,17 @@
 
         <!-- Disabled style -->
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
             <Setter Property="Focusable" Value="False"/>
         </Style>
         <Style Selector="^:disabled /template/ Border#Box">
-            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.RadioButton.DisabledBorderBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.CheckBox.DisabledBorderBrush}"/>
         </Style>
-        <Style Selector="^:disabled:checked /template/ Border#Box">
-            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+        <Style Selector="^:disabled /template/ Path#CheckGlyph">
+            <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
         </Style>
         <Style Selector="^:disabled /template/ Border#IndeterminateMark">
-            <Setter Property="Background" Value="{StaticResource Talgonite.RadioButton.DisabledForeground}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
         </Style>
     </Style>
 </Styles>

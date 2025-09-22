@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Arbiter.App.Models;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using CommunityToolkit.Mvvm.ComponentModel;
