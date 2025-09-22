@@ -1,0 +1,51 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- HyperlinkButton Previews -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}" Padding="20">
+            <StackPanel Spacing="8">
+                <HyperlinkButton NavigateUri="https://example.com">Normal link</HyperlinkButton>
+                <HyperlinkButton IsEnabled="False">Disabled link</HyperlinkButton>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="HyperlinkButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.Hyperlink.Foreground}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      RecognizesAccessKey="True"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Hover style -->
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Hyperlink.HoverForeground}"/>
+        </Style>
+
+        <!-- Pressed style -->
+        <Style Selector="^:pressed">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Hyperlink.PressedForeground}"/>
+        </Style>
+
+        <!-- Disabled style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Hyperlink.DisabledForeground}"/>
+        </Style>
+    </Style>
+</Styles>

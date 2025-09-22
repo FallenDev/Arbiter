@@ -15,6 +15,7 @@
     <StyleInclude Source="./TalgoniteContextMenu.axaml"/>
     <StyleInclude Source="./TalgoniteExpander.axaml"/>
     <StyleInclude Source="./TalgoniteGridSplitter.axaml"/>
+    <StyleInclude Source="./TalgoniteHyperlinkButton.axaml"/>
     <StyleInclude Source="./TalgoniteItemsControl.axaml"/>
     <StyleInclude Source="./TalgoniteLabel.axaml"/>
     <StyleInclude Source="./TalgoniteListBox.axaml"/>
