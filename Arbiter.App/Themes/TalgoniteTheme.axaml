@@ -97,7 +97,7 @@
             
             <!-- HyperlinkButton Resources -->
             <SolidColorBrush x:Key="Talgonite.Hyperlink.Foreground" Color="#81b8f5"/>
-            <SolidColorBrush x:Key="Talgonite.Hyperlink.HoverForeground" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Hyperlink.HoverForeground" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.Hyperlink.PressedForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.Hyperlink.DisabledForeground" Color="#7b7e85"/>
             

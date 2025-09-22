@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="4">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -150,7 +150,7 @@
                                      FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                      Margin="4"
                                      HorizontalAlignment="Stretch">
-                        <TextBlock TextAlignment="Center">
+                        <TextBlock TextAlignment="Center" Classes="link">
                             View on Github
                         </TextBlock>
                     </HyperlinkButton>

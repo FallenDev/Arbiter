@@ -1,0 +1,12 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20" Background="{StaticResource Talgonite.Control.Background}">
+            <TextBlock Classes="link" Text="https://www.darkages.com"></TextBlock>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="TextBlock.link:pointerover">
+        <Setter Property="TextDecorations" Value="Underline"/>
+    </Style>
+</Styles>
