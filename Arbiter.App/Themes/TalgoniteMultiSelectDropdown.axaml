@@ -133,7 +133,18 @@
                         <CheckBox Grid.Column="0"
                                   Margin="4,0"
                                   IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
-                                  Focusable="False"/>
+                                  Focusable="False">
+                            <CheckBox.Styles>
+                                <!-- Override check glyph stroke when checked to use MultiSelectItem.CheckMarkBrush if provided -->
+                                <Style Selector=":checked /template/ Path#CheckGlyph">
+                                    <Setter Property="Stroke" Value="{Binding CheckMarkBrush, RelativeSource={RelativeSource AncestorType=c:MultiSelectItem}, FallbackValue={StaticResource Talgonite.CheckBox.PressedForeground}}"/>
+                                </Style>
+                                <!-- Ensure disabled state uses disabled color regardless of custom brush -->
+                                <Style Selector=":disabled /template/ Path#CheckGlyph">
+                                    <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
+                                </Style>
+                            </CheckBox.Styles>
+                        </CheckBox>
                         <ContentPresenter Grid.Column="1"
                                           Margin="0,2"
                                           Content="{TemplateBinding Content}"

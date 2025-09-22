@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -10,6 +11,8 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Media;
+using Arbiter.App.Converters;
 
 namespace Arbiter.App.Controls;
 
@@ -99,6 +102,9 @@ public class MultiSelectDropdown : SelectingItemsControl
                 Mode = BindingMode.TwoWay
             });
 
+            // Bind the container's CheckMarkBrush for per-item customization
+            TryBindCheckMarkBrush(msi, item);
+
             // Update summary text whenever a container becomes prepared
             UpdateSelectionText();
 
@@ -121,10 +127,43 @@ public class MultiSelectDropdown : SelectingItemsControl
         {
             // Clear binding/value to avoid reusing stale bindings if container is recycled
             msi.ClearValue(MultiSelectItem.IsSelectedProperty);
+            msi.ClearValue(MultiSelectItem.CheckMarkBrushProperty);
             msi.PropertyChanged -= ContainerOnPropertyChanged;
         }
         base.ClearContainerForItemOverride(container);
         UpdateSelectionText();
+    }
+
+    private static void TryBindCheckMarkBrush(MultiSelectItem msi, object? item)
+    {
+        if (item is null)
+        {
+            return;
+        }
+
+        var itemType = item.GetType();
+
+        // Preferred: bind to a property named "CheckMarkBrush" if present on the data item
+        var brushProp = itemType.GetProperty("CheckMarkBrush", BindingFlags.Public | BindingFlags.Instance);
+        if (brushProp?.PropertyType != null && typeof(IBrush).IsAssignableFrom(brushProp.PropertyType))
+        {
+            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding("CheckMarkBrush")
+            {
+                Mode = BindingMode.OneWay
+            });
+            return;
+        }
+
+        // Fallback: bind to Direction using the PacketDirectionColorConverter if available
+        var directionProp = itemType.GetProperty("Direction", BindingFlags.Public | BindingFlags.Instance);
+        if (directionProp?.PropertyType != null)
+        {
+            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding("Direction")
+            {
+                Mode = BindingMode.OneWay,
+                Converter = PacketDirectionColorConverter.Converter
+            });
+        }
     }
 
 
