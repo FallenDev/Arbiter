@@ -28,6 +28,13 @@ public partial class TraceViewModel
             return;
         }
 
+        // Do not filter on this, wait for full list to change
+        if (e.PropertyName is nameof(FilterParameters.SelectedClientCommands)
+            or nameof(FilterParameters.SelectedServerCommands))
+        {
+            return;
+        }
+
         FilteredPackets.Refresh();
     }
 
@@ -35,16 +42,18 @@ public partial class TraceViewModel
     {
         if (vm.Direction == PacketDirection.Client)
         {
-            var selectedCommands = FilterParameters.SelectedClientCommands;
-            if (selectedCommands.All(cmd => cmd.Value != vm.Command))
+            var packet = vm.DecryptedPacket as ClientPacket;
+            var clientCommands = FilterParameters.SelectedClientCommands;
+            if (clientCommands.All(cmd => cmd != (byte)packet!.Command))
             {
                 return false;
             }
         }
         else if (vm.Direction == PacketDirection.Server)
         {
-            var selectedCommands = FilterParameters.SelectedServerCommands;
-            if (selectedCommands.All(cmd => cmd.Value != vm.Command))
+            var packet = vm.DecryptedPacket as ServerPacket;
+            var serverCommands = FilterParameters.SelectedServerCommands;
+            if (serverCommands.All(cmd => cmd != (byte)packet!.Command))
             {
                 return false;
             }

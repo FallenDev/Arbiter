@@ -632,7 +632,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.DialogType is DialogType.Menu or DialogType.CreatureMenu);
             b.Section("Text Input")
                 .Property(m => m.InputPrompt, p => p.ShowMultiline().ToolTip("Prompt displayed above the text input."))
-                .Property(m => m.InputDescription, p=> p.ShowMultiline().ToolTip("Description displayed below the text input."))
+                .Property(m => m.InputDescription,
+                    p => p.ShowMultiline().ToolTip("Description displayed below the text input."))
                 .Property(m => m.InputMaxLength, p => p.ToolTip("Maximum length of the text input."))
                 .IsExpanded(m => m.DialogType == DialogType.TextInput);
             b.Section("Navigation")
@@ -645,7 +646,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
         });
     }
-    
+
     private static void RegisterServerShowDialogMenuMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerShowDialogMenuMessage>(b =>
@@ -819,10 +820,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Fields")
                 .Property(m => m.Fields,
                     p => p.ShowMultiline().ToolTip("Which fields are included within the update."));
-            ;
             b.Section("Flags")
                 .Property(m => m.IsAdmin, p => p.ToolTip("Whether the user is an administrator (GM)."))
-                .Property(m => m.IsSwimming, p => p.ToolTip("Whether the user is currently swimming."));
+                .Property(m => m.IsSwimming, p => p.ToolTip("Whether the user is currently swimming."))
+                .IsExpanded(_ => false);
             b.Section("Level")
                 .Property(m => m.Level, p => p.ToolTip("Level of the user's base class."))
                 .Property(m => m.AbilityLevel, p => p.ToolTip("Level of the user's ability class."))
@@ -870,7 +871,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Stats));
             b.Section("Mail")
                 .Property(m => m.HasUnreadMail, p => p.ToolTip("Whether the user has unread mail."))
-                .Property(m => m.HasParcelsAvailable, p => p.ToolTip("Whether the user has available parcels to pickup."))
+                .Property(m => m.HasParcelsAvailable,
+                    p => p.ToolTip("Whether the user has available parcels to pickup."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Modifiers));
         });
     }

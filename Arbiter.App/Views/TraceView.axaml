@@ -176,12 +176,12 @@
                 </Border>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <!-- Client Command Filter -->
-                    <Label Content="Client"
-                           ToolTip.Tip="Allows filtering by client commands."
+                    <!-- Command Filter -->
+                    <Label Content="Command"
+                           ToolTip.Tip="Allows filtering by client and server commands."
                            VerticalAlignment="Center" />
                     
-                    <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.ClientCommands}"
+                    <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.Commands}"
                                            Width="200">
                         <c:MultiSelectDropdown.ItemTemplate>
                             <DataTemplate DataType="vm:CommandFilterViewModel">
@@ -196,12 +196,6 @@
                             </DataTemplate>
                         </c:MultiSelectDropdown.ItemTemplate>
                     </c:MultiSelectDropdown>
-
-                    <!-- Sever Command Filter -->
-                    <Label Content="Server"
-                           ToolTip.Tip="Allows filtering by server commands."
-                           VerticalAlignment="Center" />
-
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="4">

@@ -16,21 +16,17 @@ public partial class TraceFilterViewModel : ViewModelBase
 {
     [GeneratedRegex(@"^([a-z,\?\*]{1,13},?)+$", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
     private static partial Regex NameFilterRegex();
-
-    public static IReadOnlyList<PacketDirection> AvailablePacketDirections =>
-        [PacketDirection.Client, PacketDirection.Server, PacketDirection.Both];
-
     
     private string _nameFilter = string.Empty;
-    private string _commandFilter = string.Empty;
     
     [ObservableProperty] private IReadOnlyList<string> _nameFilterPatterns = [];
     
-    public ObservableCollection<CommandFilterViewModel> ClientCommands { get; } = [];
-    public ObservableCollection<CommandFilterViewModel> ServerCommands { get; } = [];
+    public ObservableCollection<CommandFilterViewModel> Commands { get; } = [];
 
-    public IEnumerable<CommandFilterViewModel> SelectedClientCommands => ClientCommands.Where(x => x.IsSelected);
-    public IEnumerable<CommandFilterViewModel> SelectedServerCommands => ServerCommands.Where(x => x.IsSelected);
+    public IEnumerable<CommandFilterViewModel> SelectedCommands => Commands.Where(x => x.IsSelected);
+
+    public IEnumerable<byte> SelectedClientCommands { get; set; } = [];
+    public IEnumerable<byte> SelectedServerCommands { get; set; } = [];
     
     public string NameFilter
     {
@@ -54,28 +50,48 @@ public partial class TraceFilterViewModel : ViewModelBase
 
     public TraceFilterViewModel()
     {
+        InitializeCommands();
+    }
+
+    private void InitializeCommands()
+    {
         var clientCommandModels = Enum.GetValues<ClientCommand>()
-            .OrderBy(cmd => cmd.ToString())
+            .OrderBy(cmd => cmd == ClientCommand.Unknown ? 1 : 0)
+            .ThenBy(cmd => cmd.ToString())
             .Select(cmd => new CommandFilterViewModel(cmd, true));
 
         var serverCommandModels = Enum.GetValues<ServerCommand>()
-            .OrderBy(cmd => cmd.ToString())
+            .OrderBy(cmd => cmd == ServerCommand.Unknown ? 1 : 0)
+            .ThenBy(cmd => cmd.ToString())
             .Select(cmd => new CommandFilterViewModel(cmd, true));
 
         foreach (var vm in clientCommandModels)
         {
-            vm.PropertyChanged += (_, _) => OnPropertyChanged(nameof(SelectedClientCommands));
-            ClientCommands.Add(vm);
+            vm.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(CommandFilterViewModel.IsSelected))
+                {
+                    SelectedClientCommands = SelectedCommands.Select(x => x.Value).ToList();
+                    OnPropertyChanged(nameof(SelectedClientCommands));
+                    OnPropertyChanged(nameof(SelectedCommands));
+                }
+            };
+            Commands.Add(vm);
         }
 
         foreach (var vm in serverCommandModels)
         {
-            vm.PropertyChanged += (_, _) => OnPropertyChanged(nameof(SelectedServerCommands));
-            ServerCommands.Add(vm);
+            vm.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(CommandFilterViewModel.IsSelected))
+                {
+                    SelectedServerCommands = SelectedCommands.Select(x => x.Value).ToList();
+                    OnPropertyChanged(nameof(SelectedServerCommands));
+                    OnPropertyChanged(nameof(SelectedCommands));
+                }
+            };
+            Commands.Add(vm);
         }
-        
-        OnPropertyChanged(nameof(ClientCommands));
-        OnPropertyChanged(nameof(ServerCommands));
     }
 
     [RelayCommand]
