@@ -21,6 +21,7 @@
     <StyleInclude Source="./TalgoniteListBox.axaml"/>
     <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>
     <StyleInclude Source="./TalgoniteMenuItem.axaml"/>
+    <StyleInclude Source="./TalgoniteMultiSelectDropdown.axaml"/>
     <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgonitePath.axaml"/>
     <StyleInclude Source="./TalgoniteProgressBar.axaml"/>

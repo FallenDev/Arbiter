@@ -182,23 +182,25 @@
                            VerticalAlignment="Center" />
                     
                     <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.ClientCommands}"
-                                           DisplayMemberPath="DisplayName"
-                                           SelectedValuePath="IsSelected">
-                        
-                        
+                                           Width="200">
+                        <c:MultiSelectDropdown.ItemTemplate>
+                            <DataTemplate DataType="vm:CommandFilterViewModel">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="2">
+                                        <TextBlock Text="{Binding Value, StringFormat={}0x{0:X2}}"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </c:MultiSelectDropdown.ItemTemplate>
                     </c:MultiSelectDropdown>
 
                     <!-- Sever Command Filter -->
                     <Label Content="Server"
                            ToolTip.Tip="Allows filtering by server commands."
                            VerticalAlignment="Center" />
-                    
-                    <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.ServerCommands}"
-                                           DisplayMemberPath="DisplayName"
-                                           SelectedValuePath="IsSelected">
-                        
-                        
-                    </c:MultiSelectDropdown>
 
                 </StackPanel>
 

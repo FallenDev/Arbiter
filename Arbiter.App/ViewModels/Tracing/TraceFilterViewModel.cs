@@ -73,6 +73,9 @@ public partial class TraceFilterViewModel : ViewModelBase
             vm.PropertyChanged += (_, _) => OnPropertyChanged(nameof(SelectedServerCommands));
             ServerCommands.Add(vm);
         }
+        
+        OnPropertyChanged(nameof(ClientCommands));
+        OnPropertyChanged(nameof(ServerCommands));
     }
 
     [RelayCommand]

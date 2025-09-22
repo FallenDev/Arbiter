@@ -1,0 +1,163 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:Arbiter.App.Controls">
+    <!-- MultiSelectDropdown Preview -->
+    <Design.PreviewWith>
+        <Border Background="{StaticResource Talgonite.Control.Background}"
+                Padding="20">
+            <StackPanel Spacing="16">
+                <c:MultiSelectDropdown Width="180" />
+                <c:MultiSelectDropdown Width="180" IsEnabled="False" />
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- MultiSelectDropdown Style -->
+    <Style Selector="c|MultiSelectDropdown">
+        <Setter Property="Background" Value="{StaticResource Talgonite.ComboBox.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.Foreground}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Popup.Placement" Value="BottomEdgeAlignedLeft"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        MinWidth="{TemplateBinding MinWidth}"
+                        MinHeight="{TemplateBinding MinHeight}">
+                    <Grid ColumnDefinitions="*,Auto" MaxWidth="{Binding $parent.Bounds.Width}">
+                        <!-- Shadow/Highlight like ComboBox -->
+                        <Border Grid.Column="0" Grid.ColumnSpan="2"
+                                Classes="sunken-shadow"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                        <Border Grid.Column="0" Grid.ColumnSpan="2"
+                                Classes="sunken-highlight"
+                                CornerRadius="{TemplateBinding CornerRadius}"/>
+
+                        <!-- Selection Text -->
+                        <TextBlock Grid.Column="0"
+                                   Text="{TemplateBinding SelectionText}"
+                                   TextWrapping="NoWrap"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Margin="{TemplateBinding Padding}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"/>
+
+                        <!-- Dropdown Toggle (caret) -->
+                        <ToggleButton Name="Toggle"
+                                      Grid.Column="1"
+                                      Width="32"
+                                      IsChecked="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                                      Background="Transparent"
+                                      Foreground="{StaticResource Talgonite.ComboBox.CaretForeground}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      ClickMode="Press"
+                                      Focusable="False">
+                            <Path Width="16" Height="8"
+                                  Stroke="{Binding $parent[ToggleButton].Foreground}"
+                                  Data="{StaticResource Talgonite.Icon.DownCaret}"/>
+                        </ToggleButton>
+
+                        <!-- Popup Dropdown -->
+                        <Popup Name="PART_Popup"
+                               Grid.Column="0"
+                               Width="{Binding $parent.Bounds.Width}"
+                               PlacementTarget="{Binding #Border}"
+                               MaxHeight="400"
+                               IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                               IsLightDismissEnabled="True"
+                               InheritsTransform="True"
+                               WindowManagerAddShadowHint="False">
+                            <Border Name="DropdownBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
+                                    BorderThickness="1,0,1,1"
+                                    CornerRadius="0,0,2,2">
+                                <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                              IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Focus Style -->
+        <Style Selector="^:focus">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ComboBox.FocusBorderBrush}"/>
+        </Style>
+        
+        <!-- Pressed Style -->
+        <Style Selector="^:pressed /template/ ToggleButton#Toggle">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.PressedForeground}"/>
+        </Style>
+        
+        <!-- Dropdown Open Style -->
+        <Style Selector="^:dropdownopen /template/ ToggleButton#Toggle">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ToggleButton.PressedForeground}"/>
+        </Style>
+        
+        <!-- Disabled Style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.DisabledForeground}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ToggleButton#Toggle">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.CaretDisabledForeground}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.DisabledBackground}"/>
+        </Style>
+    </Style>
+
+    <!-- MultiSelectItem visual to align with ComboBoxItem -->
+    <Style Selector="c|MultiSelectItem">
+        <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.Background}"/>
+        <Setter Property="Padding" Value="4,2"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                        <CheckBox Grid.Column="0"
+                                  Margin="8,4"
+                                  IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        <ContentPresenter Grid.Column="1"
+                                          Margin="4,2,8,2"
+                                          Content="{TemplateBinding Content}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <!-- Hover Style -->
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.HoverForeground}"/>
+        </Style>
+        
+        <!-- Selected Style -->
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.SelectedForeground}"/>
+        </Style>
+        
+        <!-- Disabled Style -->
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.DisabledForeground}"/>
+        </Style>
+    </Style>
+</Styles>

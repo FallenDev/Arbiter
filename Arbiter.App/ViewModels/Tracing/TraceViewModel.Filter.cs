@@ -15,7 +15,7 @@ public partial class TraceViewModel
 {
     private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
-    [ObservableProperty] private bool _showFilterBar;
+    [ObservableProperty] private bool _showFilterBar = true;
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
