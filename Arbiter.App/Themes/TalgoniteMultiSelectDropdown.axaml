@@ -42,16 +42,14 @@
                                 Classes="sunken-highlight"
                                 CornerRadius="{TemplateBinding CornerRadius}"/>
 
-                        <!-- Selection Text -->
-                        <TextBlock Grid.Column="0"
-                                   Text="{TemplateBinding SelectionText}"
-                                   TextWrapping="NoWrap"
-                                   FontFamily="{TemplateBinding FontFamily}"
-                                   FontSize="{TemplateBinding FontSize}"
-                                   Foreground="{TemplateBinding Foreground}"
-                                   Margin="{TemplateBinding Padding}"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"/>
+                        <!-- Selection Text (templatable) -->
+                        <ContentControl Grid.Column="0"
+                                        Content="{TemplateBinding SelectionText}"
+                                        ContentTemplate="{TemplateBinding SelectionTextTemplate}"
+                                        Margin="{TemplateBinding Padding}"
+                                        HorizontalContentAlignment="Left"
+                                        VerticalContentAlignment="Center"
+                                        Foreground="{TemplateBinding Foreground}"/>
 
                         <!-- Dropdown Toggle (caret) -->
                         <ToggleButton Name="Toggle"

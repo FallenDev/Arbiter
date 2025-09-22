@@ -57,12 +57,12 @@ public partial class TraceFilterViewModel : ViewModelBase
         var clientCommandModels = Enum.GetValues<ClientCommand>()
             .OrderBy(cmd => cmd == ClientCommand.Unknown ? 1 : 0)
             .ThenBy(cmd => cmd.ToString())
-            .Select(cmd => new CommandFilterViewModel(cmd, true));
+            .Select(cmd => new CommandFilterViewModel(cmd));
 
         var serverCommandModels = Enum.GetValues<ServerCommand>()
             .OrderBy(cmd => cmd == ServerCommand.Unknown ? 1 : 0)
             .ThenBy(cmd => cmd.ToString())
-            .Select(cmd => new CommandFilterViewModel(cmd, true));
+            .Select(cmd => new CommandFilterViewModel(cmd));
 
         foreach (var vm in clientCommandModels)
         {
@@ -76,6 +76,8 @@ public partial class TraceFilterViewModel : ViewModelBase
                 }
             };
             Commands.Add(vm);
+
+            vm.IsSelected = true;
         }
 
         foreach (var vm in serverCommandModels)
@@ -90,6 +92,8 @@ public partial class TraceFilterViewModel : ViewModelBase
                 }
             };
             Commands.Add(vm);
+
+            vm.IsSelected = true;
         }
     }
 

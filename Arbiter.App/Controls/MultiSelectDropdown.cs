@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 
 namespace Arbiter.App.Controls;
 
@@ -14,14 +20,43 @@ public class MultiSelectDropdown : SelectingItemsControl
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<MultiSelectDropdown, bool>(nameof(IsDropDownOpen));
 
-
     public static readonly StyledProperty<string> SelectionTextProperty =
         AvaloniaProperty.Register<MultiSelectDropdown, string>(
-            nameof(SelectionText), 
-            "All");
-    
+            nameof(SelectionText),
+            "None");
+
+    public static readonly StyledProperty<IDataTemplate?> SelectionTextTemplateProperty =
+        AvaloniaProperty.Register<MultiSelectDropdown, IDataTemplate?>(nameof(SelectionTextTemplate));
+
     protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
-    
+
+    private INotifyCollectionChanged? _currentCollection;
+    private readonly List<INotifyPropertyChanged> _itemSubscriptions = new();
+
+    static MultiSelectDropdown()
+    {
+        // Ensure the control starts in multiple selection mode so initial item selections aren't collapsed to a single one
+        SelectionModeProperty.OverrideDefaultValue<MultiSelectDropdown>(SelectionMode.Multiple);
+
+        // Reflect IsDropDownOpen into the :dropdownopen pseudo-class
+        IsDropDownOpenProperty.Changed.AddClassHandler<MultiSelectDropdown>((o, e) =>
+        {
+            o.PseudoClasses.Set(":dropdownopen", o.IsDropDownOpen);
+        });
+
+        // React to ItemsSource changes to keep selection summary current even before popup is opened
+        ItemsSourceProperty.Changed.AddClassHandler<MultiSelectDropdown>((o, e) =>
+        {
+            o.WireUpItemsFromItemsSource();
+            o.UpdateSelectionText();
+        });
+    }
+
+    public MultiSelectDropdown()
+    {
+        // nothing special in the instance constructor
+    }
+
     // Multi-select specific properties
     public bool IsDropDownOpen
     {
@@ -34,7 +69,13 @@ public class MultiSelectDropdown : SelectingItemsControl
         get => GetValue(SelectionTextProperty);
         private set => SetValue(SelectionTextProperty, value);
     }
-    
+
+    public IDataTemplate? SelectionTextTemplate
+    {
+        get => GetValue(SelectionTextTemplateProperty);
+        set => SetValue(SelectionTextTemplateProperty, value);
+    }
+
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         // Create a container that wraps the item in a checkable container
@@ -86,6 +127,92 @@ public class MultiSelectDropdown : SelectingItemsControl
         UpdateSelectionText();
     }
 
+
+    private void WireUpItemsFromItemsSource()
+    {
+        IEnumerable? source = ItemsSource as IEnumerable ?? Items;
+        UnwireCollectionAndItems();
+
+        if (source is INotifyCollectionChanged incc)
+        {
+            _currentCollection = incc;
+            incc.CollectionChanged += OnCollectionChanged;
+        }
+
+        // Subscribe to current items' property changes (IsSelected)
+        if (source is IEnumerable enumerable)
+        {
+            foreach (var obj in enumerable)
+            {
+                if (obj is INotifyPropertyChanged inpc)
+                {
+                    inpc.PropertyChanged += OnItemPropertyChanged;
+                    _itemSubscriptions.Add(inpc);
+                }
+            }
+        }
+    }
+
+    private void UnwireCollectionAndItems()
+    {
+        if (_currentCollection is not null)
+        {
+            _currentCollection.CollectionChanged -= OnCollectionChanged;
+            _currentCollection = null;
+        }
+
+        foreach (var inpc in _itemSubscriptions)
+        {
+            inpc.PropertyChanged -= OnItemPropertyChanged;
+        }
+        _itemSubscriptions.Clear();
+    }
+
+    private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Reset)
+        {
+            UnwireCollectionAndItems();
+            WireUpItemsFromItemsSource();
+            UpdateSelectionText();
+            return;
+        }
+
+        if (e.OldItems is not null)
+        {
+            foreach (var obj in e.OldItems)
+            {
+                if (obj is INotifyPropertyChanged oldInpc)
+                {
+                    oldInpc.PropertyChanged -= OnItemPropertyChanged;
+                    _itemSubscriptions.Remove(oldInpc);
+                }
+            }
+        }
+
+        if (e.NewItems is not null)
+        {
+            foreach (var obj in e.NewItems)
+            {
+                if (obj is INotifyPropertyChanged newInpc)
+                {
+                    newInpc.PropertyChanged += OnItemPropertyChanged;
+                    _itemSubscriptions.Add(newInpc);
+                }
+            }
+        }
+
+        UpdateSelectionText();
+    }
+
+    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "IsSelected")
+        {
+            UpdateSelectionText();
+        }
+    }
+
     private void UpdateSelectionText()
     {
         var items = Items;
@@ -131,5 +258,23 @@ public class MultiSelectDropdown : SelectingItemsControl
         {
             SelectionText = $"{selectedCount} Selected";
         }
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        PseudoClasses.Set(":pressed", true);
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        PseudoClasses.Set(":pressed", false);
+    }
+
+    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
+    {
+        base.OnPointerCaptureLost(e);
+        PseudoClasses.Set(":pressed", false);
     }
 }
