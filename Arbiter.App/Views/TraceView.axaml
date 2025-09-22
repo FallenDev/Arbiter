@@ -175,31 +175,19 @@
                 </Border>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <!-- Direction Filter -->
-                    <Label Content="Direction"
-                           ToolTip.Tip="Allows filtering by packet direction."
+                    <!-- Client Command Filter -->
+                    <Label Content="Client"
+                           ToolTip.Tip="Allows filtering by client commands."
                            VerticalAlignment="Center" />
-                    <ComboBox ItemsSource="{Binding FilterParameters.AvailablePacketDirections}"
-                              SelectedValue="{Binding FilterParameters.PacketDirection}"
-                              PlaceholderText="No Selection"
-                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                              Width="130">
-                        <ComboBox.SelectionBoxItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding .}"
-                                           Padding="8,4" />
-                            </DataTemplate>
-                        </ComboBox.SelectionBoxItemTemplate>
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="{StaticResource Talgonite.ComboBox.BorderBrush}"
-                                        Padding="4">
-                                    <TextBlock Text="{Binding .}"
-                                               Padding="8,2" />
-                                </Border>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    <v:CommandDropdown Commands="{Binding FilterParameters.ClientCommands}"
+                                       MinWidth="160"/>
+                    
+                    <!-- Client Command Filter -->
+                    <Label Content="Server"
+                           ToolTip.Tip="Allows filtering by server commands."
+                           VerticalAlignment="Center" />
+                    <v:CommandDropdown Commands="{Binding FilterParameters.ServerCommands}"
+                                       MinWidth="160"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="4">
@@ -214,27 +202,6 @@
                         <TextBox.InnerRightContent>
                             <Button Command="{Binding FilterParameters.ClearNameFilterCommand}"
                                     IsVisible="{Binding FilterParameters.NameFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                    Classes="clear destructive">
-                                <Path Width="12" Height="12"
-                                      Stroke="{Binding $parent[Button].Foreground}"
-                                      Data="M1,1 L11,11 M11,1 L1,11" />
-                            </Button>
-                        </TextBox.InnerRightContent>
-                    </TextBox>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <!-- Command Filter -->
-                    <Label Content="Commands"
-                           ToolTip.Tip="Allows filtering by command hex codes (comma-separated).&#x0a;Supports single values and ranges."
-                           VerticalAlignment="Center" />
-                    <TextBox Text="{Binding FilterParameters.CommandFilter}"
-                             FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                             Width="120"
-                             Height="36">
-                        <TextBox.InnerRightContent>
-                            <Button Command="{Binding FilterParameters.ClearCommandFilterCommand}"
-                                    IsVisible="{Binding FilterParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                     Classes="clear destructive">
                                 <Path Width="12" Height="12"
                                       Stroke="{Binding $parent[Button].Foreground}"
@@ -269,7 +236,7 @@
                 <TextBox Text="{Binding SearchParameters.CommandFilter}"
                          FontFamily="{StaticResource Talgonite.Font.Monospace}"
                          MaxLength="2"
-                         Width="120"
+                         Width="200"
                          Height="36">
                     <TextBox.InnerRightContent>
                         <Button Command="{Binding SearchParameters.ClearCommandFilterCommand}"

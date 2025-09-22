@@ -28,32 +28,28 @@ public partial class TraceViewModel
             return;
         }
 
-        // Do not filter on this, wait for command list to change
-        if (e.PropertyName == nameof(FilterParameters.CommandFilter))
-        {
-            return;
-        }
-
         FilteredPackets.Refresh();
     }
 
     private bool MatchesFilter(TracePacketViewModel vm)
     {
-        // Filter by packet direction
-        if (!FilterParameters.PacketDirection.HasFlag(vm.Direction))
+        if (vm.Direction == PacketDirection.Client)
         {
-            return false;
-        }
-
-        // Filter by command
-        if (FilterParameters.CommandFilterRanges.Count > 0)
-        {
-            if (!FilterParameters.CommandFilterRanges.Any(range => range.Contains(vm.Command)))
+            var selectedCommands = FilterParameters.SelectedClientCommands;
+            if (selectedCommands.All(cmd => cmd.Value != vm.Command))
             {
                 return false;
             }
         }
-
+        else if (vm.Direction == PacketDirection.Server)
+        {
+            var selectedCommands = FilterParameters.SelectedServerCommands;
+            if (selectedCommands.All(cmd => cmd.Value != vm.Command))
+            {
+                return false;
+            }
+        }
+        
         // Filter by client name matches
         if (FilterParameters.NameFilterPatterns.Count > 0)
         {

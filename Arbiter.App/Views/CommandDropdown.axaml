@@ -7,6 +7,12 @@
              x:Class="Arbiter.App.Views.CommandDropdown"
              x:DataType="v:CommandDropdown">
     <UserControl.Styles>
+        <!-- Match ComboBox hover/focus border behavior on the host border -->
+        <Style Selector="Border#DropdownBorder.focused">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ComboBox.FocusBorderBrush}"/>
+        </Style>
+        
+        <!-- Popup item visuals similar to ComboBox items -->
         <Style Selector="ListBoxItem">
             <Setter Property="Padding" Value="8,4"/>
             <Setter Property="MinHeight" Value="32"/>
@@ -20,7 +26,8 @@
         </Style>
         
         <Style Selector="ListBoxItem:pointerover">
-            <Setter Property="Background" Value="{StaticResource Talgonite.Hyperlink.HoverForeground}"/>
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.HoverForeground}"/>
         </Style>
     </UserControl.Styles>
     
@@ -38,23 +45,32 @@
                 <Border Grid.Column="0" Grid.ColumnSpan="2" Classes="sunken-shadow" CornerRadius="2"/>
                 <Border Grid.Column="0" Grid.ColumnSpan="2" Classes="sunken-highlight" CornerRadius="2"/>
                 
-                <!-- Content Area -->
+                <!-- Display Area (non-clickable) -->
+                <Border Grid.Column="0"
+                        Background="Transparent"
+                        Padding="8,4"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="{Binding DisplayText, RelativeSource={RelativeSource AncestorType=v:CommandDropdown}}"
+                               Foreground="{StaticResource Talgonite.ComboBox.Foreground}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center"/>
+                </Border>
+                
+                <!-- Caret Button (opens popup) -->
                 <Button Name="DropdownButton"
-                        Grid.Column="0" Grid.ColumnSpan="2"
+                        Grid.Column="1"
                         Background="Transparent"
                         BorderThickness="0"
-                        CornerRadius="2"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Center"
-                        Padding="8,4">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding DisplayText}"
-                                   Foreground="{StaticResource Talgonite.ComboBox.Foreground}"
-                                   TextTrimming="CharacterEllipsis"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center"/>
-                    </Grid>
+                        CornerRadius="0,2,2,0"
+                        Padding="8,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="OnDropdownButtonClick">
+                    <Path Width="16" Height="8"
+                          Stroke="{StaticResource Talgonite.ComboBox.CaretForeground}"
+                          VerticalAlignment="Center"
+                          Data="{StaticResource Talgonite.Icon.DownCaret}"/>
                 </Button>
             </Grid>
         </Border>
@@ -63,40 +79,39 @@
         <Popup Name="CommandPopup"
                PlacementTarget="{Binding #DropdownBorder}"
                Placement="BottomEdgeAlignedLeft"
-               MinWidth="{Binding $parent[Border].Bounds.Width}"
+               Width="{Binding #DropdownBorder.Bounds.Width}"
                MaxHeight="400"
                IsLightDismissEnabled="True"
-               IsOpen="{Binding IsOpen}">
+               IsOpen="{Binding IsOpen, RelativeSource={RelativeSource AncestorType=v:CommandDropdown}}">
             <Border Background="{StaticResource Talgonite.ComboBox.Background}"
-                    BorderBrush="{StaticResource Talgonite.ComboBox.FocusBorderBrush}"
+                    BorderBrush="{StaticResource Talgonite.ComboBox.PopupBorderBrush}"
                     BorderThickness="1,0,1,1"
                     Padding="2">
                 <Panel>
+                    <Border Classes="sunken-shadow" CornerRadius="0,0,2,2"/>
+                    <Border Classes="sunken-highlight" CornerRadius="0,0,2,2"/>
                     
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                  VerticalScrollBarVisibility="Auto">
-                        <ListBox Name="CommandsList"
-                                 ItemsSource="{Binding Commands}"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 SelectionMode="Toggle">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid ColumnDefinitions="Auto,*"
-                                          ColumnSpacing="8"
-                                          Background="Transparent"
-                                          Margin="4,0">
-                                        <CheckBox Grid.Column="0"
-                                                  IsChecked="{Binding IsSelected}"/>
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding DisplayName}"
-                                                   Foreground="{StaticResource Talgonite.ComboBox.Foreground}"
-                                                   VerticalAlignment="Center"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </ScrollViewer>
+                    <ListBox Name="CommandsList"
+                             ItemsSource="{Binding Commands, RelativeSource={RelativeSource AncestorType=v:CommandDropdown}}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             SelectionMode="Toggle">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,*"
+                                      ColumnSpacing="8"
+                                      Background="Transparent"
+                                      Margin="4,0">
+                                    <CheckBox Grid.Column="0"
+                                              IsChecked="{Binding IsSelected}"/>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding DisplayName}"
+                                               Foreground="{StaticResource Talgonite.ComboBox.Foreground}"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Panel>
             </Border>
         </Popup>

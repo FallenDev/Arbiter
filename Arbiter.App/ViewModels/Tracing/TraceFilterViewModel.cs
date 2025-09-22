@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Arbiter.App.Models;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,14 +20,18 @@ public partial class TraceFilterViewModel : ViewModelBase
     public static IReadOnlyList<PacketDirection> AvailablePacketDirections =>
         [PacketDirection.Client, PacketDirection.Server, PacketDirection.Both];
 
-    [ObservableProperty] private PacketDirection _packetDirection = PacketDirection.Both;
-
+    
     private string _nameFilter = string.Empty;
     private string _commandFilter = string.Empty;
-
+    
     [ObservableProperty] private IReadOnlyList<string> _nameFilterPatterns = [];
-    [ObservableProperty] private IReadOnlyList<ValueRange<byte>> _commandFilterRanges = [];
+    
+    public ObservableCollection<CommandFilterViewModel> ClientCommands { get; } = [];
+    public ObservableCollection<CommandFilterViewModel> ServerCommands { get; } = [];
 
+    public IEnumerable<CommandFilterViewModel> SelectedClientCommands => ClientCommands.Where(x => x.IsSelected);
+    public IEnumerable<CommandFilterViewModel> SelectedServerCommands => ServerCommands.Where(x => x.IsSelected);
+    
     public string NameFilter
     {
         get => _nameFilter;
@@ -46,33 +52,26 @@ public partial class TraceFilterViewModel : ViewModelBase
         }
     }
 
-    public string CommandFilter
+    public TraceFilterViewModel()
     {
-        get => _commandFilter;
-        set
+        var clientCommandModels = Enum.GetValues<ClientCommand>()
+            .OrderBy(cmd => cmd.ToString())
+            .Select(cmd => new CommandFilterViewModel(cmd, true));
+
+        var serverCommandModels = Enum.GetValues<ServerCommand>()
+            .OrderBy(cmd => cmd.ToString())
+            .Select(cmd => new CommandFilterViewModel(cmd, true));
+
+        foreach (var vm in clientCommandModels)
         {
-            if (!SetProperty(ref _commandFilter, value))
-            {
-                return;
-            }
+            vm.PropertyChanged += (_, _) => OnPropertyChanged(nameof(SelectedClientCommands));
+            ClientCommands.Add(vm);
+        }
 
-            var parsedRanges = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(range => ValueRange<byte>.ParseByteRange(range.TrimEnd('-'), NumberStyles.HexNumber));
-
-            try
-            {
-                var ranges = parsedRanges.ToList();
-                if (ranges.Any(range => range.Min > range.Max))
-                {
-                    throw new ValidationException("Invalid command filter range");
-                }
-
-                CommandFilterRanges = ranges;
-            }
-            catch
-            {
-                throw new ValidationException("Invalid command filter range");
-            }
+        foreach (var vm in serverCommandModels)
+        {
+            vm.PropertyChanged += (_, _) => OnPropertyChanged(nameof(SelectedServerCommands));
+            ServerCommands.Add(vm);
         }
     }
 
@@ -80,11 +79,5 @@ public partial class TraceFilterViewModel : ViewModelBase
     private void ClearNameFilter()
     {
         NameFilter = string.Empty;
-    }
-
-    [RelayCommand]
-    private void ClearCommandFilter()
-    {
-        CommandFilter = string.Empty;
     }
 }

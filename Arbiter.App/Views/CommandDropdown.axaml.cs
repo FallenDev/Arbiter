@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace Arbiter.App.Views;
 
@@ -44,22 +45,31 @@ public partial class CommandDropdown : UserControl
     public CommandDropdown()
     {
         InitializeComponent();
-        DataContext = this;
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        base.OnApplyTemplate(e);
+        base.OnAttachedToVisualTree(e);
         
         _dropdownBorder = this.FindControl<Border>("DropdownBorder");
-
-        if (_dropdownBorder is null)
+        if (_dropdownBorder is not null)
         {
-            return;
+            _dropdownBorder.PointerEntered += OnPointerEntered;
+            _dropdownBorder.PointerExited += OnPointerExited;
         }
-        
-        _dropdownBorder.PointerEntered += OnPointerEntered;
-        _dropdownBorder.PointerExited += OnPointerExited;
+
+        // Ensure initial display text reflects current selections
+        UpdateDisplayText();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (_dropdownBorder is not null)
+        {
+            _dropdownBorder.PointerEntered -= OnPointerEntered;
+            _dropdownBorder.PointerExited -= OnPointerExited;
+        }
     }
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
