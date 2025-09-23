@@ -16,7 +16,7 @@ public partial class TraceViewModel
     private readonly Debouncer _searchRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
     private readonly List<int> _searchResultIndexes = [];
 
-    [ObservableProperty] private bool _showSearchBar = true;
+    [ObservableProperty] private bool _showSearchBar;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
