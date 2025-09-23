@@ -297,6 +297,7 @@
                             <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding DisplayName}"
+                                           TextTrimming="CharacterEllipsis"
                                            Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                            FontSize="16"
                                            VerticalAlignment="Center"/>
@@ -314,6 +315,16 @@
                 <StackPanel Orientation="Horizontal" Spacing="4"
                             IsVisible="{Binding ShowSearchResults}"
                             Height="40">
+                    
+                    <!-- Clear Button -->
+                    <Button Command="{Binding SearchParameters.ClearCommand}"
+                            Classes="toolbar destructive"
+                            ToolTip.Tip="Clears the search criteria.">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                    </Button>
+                    
                     <!-- Result count -->
                     <TextBlock Text="{Binding FormattedSearchResultsText, FallbackValue=no matches}"
                                TextAlignment="Center"
@@ -375,8 +386,8 @@
                     <MenuItem Header="Delete Selected"
                               Command="{Binding DeleteSelectedCommand}"/>
                     <Separator/>
-                    <MenuItem Header="Highlight Selected"
-                              Command="{Binding HighlightSelectedCommand}"/>
+                    <MenuItem Header="Find Selected"
+                              Command="{Binding FindSelectedCommand}"/>
                     <MenuItem Header="Exclude Selected"
                               Command="{Binding ExcludeSelectedCommand}"/>
                 </ContextMenu>

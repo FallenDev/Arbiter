@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Find Selected` context menu to add selected packet command to search
+- `Exclude Selected` context menu to add selected packets command to filter exclusions (uncheck)
+- Quick clear button next to search dropdown
 
 ### Changed
 

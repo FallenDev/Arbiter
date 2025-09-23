@@ -81,10 +81,12 @@ public partial class TraceViewModel
         {
             FilterParameters.UnselectCommand(serverCommand);
         }
+
+        ShowFilterBar = true;
     }
 
     [RelayCommand(CanExecute = nameof(HasSingleSelection))]
-    private void HighlightSelected()
+    private void FindSelected()
     {
         if (SelectedPackets.Count != 1)
         {
@@ -102,5 +104,7 @@ public partial class TraceViewModel
                 SearchParameters.SelectCommand(serverPacket.Command);
                 break;
         }
+
+        ShowSearchBar = true;
     }
 }

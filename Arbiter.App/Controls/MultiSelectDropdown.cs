@@ -274,11 +274,11 @@ public class MultiSelectDropdown : SelectingItemsControl
 
     private void UpdateSelectionText()
     {
-        var items = Items;
+        var itemsEnumerable = (IEnumerable)(ItemsSource ?? Items);
         var totalCount = 0;
         var selectedCount = 0;
 
-        foreach (var item in items)
+        foreach (var item in itemsEnumerable)
         {
             if (item is null)
             {

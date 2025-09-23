@@ -22,7 +22,7 @@ public partial class TraceSearchViewModel : ViewModelBase
     public TraceSearchViewModel()
     {
         InitializeCommands();
-        SelectedCommand = Commands.FirstOrDefault(command => command.Value is null);
+        Clear();
     }
 
     public void SelectCommand(ClientCommand command)
@@ -46,6 +46,12 @@ public partial class TraceSearchViewModel : ViewModelBase
             SelectedCommand = matching;
         }
     }
+    
+    [RelayCommand]
+    public void Clear()
+    {
+        SelectedCommand = Commands.FirstOrDefault(command => command.Value is null);
+    }
 
     private void InitializeCommands()
     {
@@ -68,11 +74,5 @@ public partial class TraceSearchViewModel : ViewModelBase
         {
             Commands.Add(vm);
         }
-    }
-    
-    [RelayCommand]
-    private void ClearCommandSearch()
-    {
-        SelectedCommand = null;
     }
 }
