@@ -14,7 +14,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Arbiter.App.Threading;
-using Avalonia.VisualTree;
 
 namespace Arbiter.App.Controls;
 
@@ -22,7 +21,6 @@ namespace Arbiter.App.Controls;
 [PseudoClasses(":dropdownopen", ":pressed")]
 public class MultiSelectDropdown : SelectingItemsControl
 {
-    private Popup? _popup;
     private static readonly FuncTemplate<Panel?> DefaultPanel = new(() => new VirtualizingStackPanel());
     
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
@@ -40,8 +38,10 @@ public class MultiSelectDropdown : SelectingItemsControl
         AvaloniaProperty.Register<MultiSelectDropdown, IDataTemplate?>(nameof(SelectionTextTemplate));
 
     private readonly List<INotifyPropertyChanged> _itemSubscriptions = [];
-    private INotifyCollectionChanged? _currentCollection;
     private readonly Debouncer _selectionTextDebouncer = new(TimeSpan.FromMilliseconds(25), Dispatcher.UIThread);
+    
+    private Popup? _popup;
+    private INotifyCollectionChanged? _currentCollection;
     
     protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
     
@@ -156,14 +156,6 @@ public class MultiSelectDropdown : SelectingItemsControl
             // Virtualization realizes containers while scrolling; triggering summary updates here
             // causes repeated full scans of ItemsSource and lags scrolling.
             // Selection text will be updated on actual selection or collection changes instead.
-        }
-    }
-
-    private void ContainerOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == MultiSelectItem.IsSelectedProperty)
-        {
-            UpdateSelectionText();
         }
     }
 

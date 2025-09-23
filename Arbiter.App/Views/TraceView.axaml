@@ -270,6 +270,7 @@
                        VerticalAlignment="Center" />
                 <ComboBox ItemsSource="{Binding SearchParameters.Commands}"
                           SelectedItem="{Binding SearchParameters.SelectedCommand}"
+                          IsTextSearchEnabled="True"
                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
                           FontSize="16"
                           MaxDropDownHeight="400"
