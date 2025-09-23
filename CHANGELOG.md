@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Shadow effect on popup for readability
 - Shadow effect on tooltip for readability
 - Outline effect for combox/dropdown borders for readability
+- Graphical issue when search results show incorrectly momentarily
 
 ## [0.9.5] - 2025-09-22
 

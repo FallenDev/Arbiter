@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Arbiter.App.Extensions;
 using Arbiter.App.Models;
 using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 
@@ -11,9 +12,10 @@ namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel
 {
-    private bool CanCopyToClipboard() => SelectedPackets.Count > 0;
+    private bool HasSelection() => SelectedPackets.Count > 0;
+    private bool HasSingleSelection() => SelectedPackets.Count == 1;
 
-    [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
+    [RelayCommand(CanExecute = nameof(HasSelection))]
     private async Task CopyToClipboard()
     {
         var clipboard = Application.Current?.TryGetClipboard();
@@ -33,9 +35,7 @@ public partial class TraceViewModel
         await clipboard.SetTextAsync(lines);
     }
     
-    private bool CanDeleteSelected() => SelectedPackets.Count > 0;
-
-    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
+    [RelayCommand(CanExecute = nameof(HasSelection))]
     private void DeleteSelected()
     {
         if (SelectedPackets.Count == 0)
@@ -55,6 +55,52 @@ public partial class TraceViewModel
         if (selectedPackets.Count > 0)
         {
             IsDirty = true;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private void ExcludeSelected()
+    {
+        if (SelectedPackets.Count == 0)
+        {
+            return;
+        }
+
+        var clientCommandsToExclude = SelectedPackets.Where(vm => vm.Direction == PacketDirection.Client)
+            .Select(vm => (ClientCommand)vm.DecryptedPacket.Command).ToList();
+
+        var serverCommandsToExclude = SelectedPackets.Where(vm => vm.Direction == PacketDirection.Server)
+            .Select(vm => (ServerCommand)vm.DecryptedPacket.Command).ToList();
+
+        foreach (var clientCommand in clientCommandsToExclude)
+        {
+            FilterParameters.UnselectCommand(clientCommand);
+        }
+
+        foreach (var serverCommand in serverCommandsToExclude)
+        {
+            FilterParameters.UnselectCommand(serverCommand);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSingleSelection))]
+    private void HighlightSelected()
+    {
+        if (SelectedPackets.Count != 1)
+        {
+            return;
+        }
+
+        var packet = SelectedPackets[0].DecryptedPacket;
+        
+        switch (packet)
+        {
+            case ClientPacket clientPacket:
+                SearchParameters.SelectCommand(clientPacket.Command);
+                break;
+            case ServerPacket serverPacket:
+                SearchParameters.SelectCommand(serverPacket.Command);
+                break;
         }
     }
 }

@@ -53,6 +53,26 @@ public partial class TraceFilterViewModel : ViewModelBase
     {
         InitializeCommands();
     }
+
+    public void UnselectCommand(ClientCommand command)
+    {
+        var matching =
+            SelectedCommands.FirstOrDefault(c => c.Direction == PacketDirection.Client && c.Value == (byte)command);
+        if (matching is not null)
+        {
+            matching.IsSelected = false;
+        }
+    }
+
+    public void UnselectCommand(ServerCommand command)
+    {
+        var matching =
+            SelectedCommands.FirstOrDefault(c => c.Direction == PacketDirection.Server && c.Value == (byte)command);
+        if (matching is not null)
+        {
+            matching.IsSelected = false;
+        }
+    }
     
     private void InitializeCommands()
     {

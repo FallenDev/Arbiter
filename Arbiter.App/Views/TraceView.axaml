@@ -373,13 +373,12 @@
                               Command="{Binding SaveSelectedCommand}"/>
                     <Separator/>
                     <MenuItem Header="Delete Selected"
-                              Command="{Binding DeleteSelectedCommand}">
-                        <MenuItem.Icon>
-                            <PathIcon Width="16" Height="16"
-                                      Foreground="White"
-                                      Data="{StaticResource Talgonite.Icon.ArrowDown}"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                              Command="{Binding DeleteSelectedCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Highlight Selected"
+                              Command="{Binding HighlightSelectedCommand}"/>
+                    <MenuItem Header="Exclude Selected"
+                              Command="{Binding ExcludeSelectedCommand}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
