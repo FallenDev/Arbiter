@@ -132,32 +132,35 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="4,2">
-                    <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
-                        <CheckBox Grid.Column="0"
-                                  Margin="4,0"
-                                  IsChecked="{Binding ModelIsSelected, RelativeSource={RelativeSource TemplatedParent}}"
-                                  Focusable="False">
-                            <CheckBox.Styles>
-                                <!-- Override check glyph stroke when checked to use MultiSelectItem.CheckMarkBrush if provided -->
-                                <Style Selector=":checked /template/ Path#CheckGlyph">
-                                    <Setter Property="Stroke" Value="{Binding CheckMarkBrush, RelativeSource={RelativeSource AncestorType=c:MultiSelectItem}, FallbackValue={StaticResource Talgonite.CheckBox.PressedForeground}}"/>
-                                </Style>
-                                <!-- Ensure disabled state uses disabled color regardless of custom brush -->
-                                <Style Selector=":disabled /template/ Path#CheckGlyph">
-                                    <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
-                                </Style>
-                            </CheckBox.Styles>
-                        </CheckBox>
-                        <ContentPresenter Grid.Column="1"
-                                          Margin="0,2"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                    </Grid>
-                </Border>
+                <Grid>
+                    <Border Name="ItemRoot"
+                            Background="{TemplateBinding Background}"
+                            Padding="4,2">
+                        <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                            <CheckBox Grid.Column="0"
+                                      Margin="4,0"
+                                      IsChecked="{Binding ModelIsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Focusable="False">
+                                <CheckBox.Styles>
+                                    <!-- Override check glyph stroke when checked to use MultiSelectItem.CheckMarkBrush if provided -->
+                                    <Style Selector=":checked /template/ Path#CheckGlyph">
+                                        <Setter Property="Stroke" Value="{Binding CheckMarkBrush, RelativeSource={RelativeSource AncestorType=c:MultiSelectItem}, FallbackValue={StaticResource Talgonite.CheckBox.PressedForeground}}"/>
+                                    </Style>
+                                    <!-- Ensure disabled state uses disabled color regardless of custom brush -->
+                                    <Style Selector=":disabled /template/ Path#CheckGlyph">
+                                        <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
+                                    </Style>
+                                </CheckBox.Styles>
+                            </CheckBox>
+                            <ContentPresenter Grid.Column="1"
+                                              Margin="0,2"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                    </Border>
+                </Grid>
             </ControlTemplate>
         </Setter>
         
@@ -187,6 +190,11 @@
         <Style Selector="^:disabled /template/ ToggleButton#Toggle /template/ Border#SelectionBorder">
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!-- Persistent highlight for matched text search item -->
+        <Style Selector="^:match">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.HoverBackground}"/>
         </Style>
     </Style>
 </Styles>

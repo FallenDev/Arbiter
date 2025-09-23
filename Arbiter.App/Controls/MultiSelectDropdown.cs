@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -10,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 using Avalonia.Threading;
 using Arbiter.App.Threading;
 
@@ -41,6 +43,8 @@ public class MultiSelectDropdown : SelectingItemsControl
     private Popup? _popup;
     private INotifyCollectionChanged? _currentCollection;
     private DateTime _lastKeyNavigationAt;
+    private ScrollViewer? _popupScrollViewer;
+    private int _lastMatchIndex = -1;
     
     protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
     
@@ -82,6 +86,10 @@ public class MultiSelectDropdown : SelectingItemsControl
         IsDropDownOpenProperty.Changed.AddClassHandler<MultiSelectDropdown>((o, e) =>
         {
             o.PseudoClasses.Set(":dropdownopen", o.IsDropDownOpen);
+            if (!o.IsDropDownOpen)
+            {
+                o.ClearActiveMatchHighlight();
+            }
         });
 
         // React to ItemsSource changes to keep selection summary current even before popup is opened
@@ -108,11 +116,20 @@ public class MultiSelectDropdown : SelectingItemsControl
 
     private void PopupOnOpened(object? sender, EventArgs e)
     {
-        // Scroll to the first item when popup opens
+        // Cache the ScrollViewer inside the popup and perform a gentle initial scroll
         Dispatcher.UIThread.Post(() =>
         {
             try
             {
+                _popupScrollViewer ??= _popup?.Child
+                    ?.GetVisualDescendants()
+                    .OfType<ScrollViewer>()
+                    .FirstOrDefault();
+
+                // Clear any lingering highlight from previous sessions
+                ClearActiveMatchHighlight();
+
+                // Ensure first item is realized so further alignment operations work reliably
                 ScrollIntoView(0);
             }
             catch
@@ -178,6 +195,8 @@ public class MultiSelectDropdown : SelectingItemsControl
             msi.ClearValue(MultiSelectItem.ModelIsSelectedProperty);
             // Reset selection visual to a safe default to avoid stale checked state during recycling
             msi.IsSelected = false;
+            // Ensure no lingering match highlight on recycled containers
+            msi.SetMatchHighlight(false);
         }
         base.ClearContainerForItemOverride(container);
     }
@@ -377,6 +396,41 @@ public class MultiSelectDropdown : SelectingItemsControl
         }
     }
 
+    private void BringIndexToTop(int index)
+    {
+        try { ScrollIntoView(index); } catch { }
+        Dispatcher.UIThread.Post(() =>
+        {
+            var sv = _popupScrollViewer ?? _popup?.Child?.GetVisualDescendants()?.OfType<ScrollViewer>()?.FirstOrDefault();
+            if (sv is null)
+            {
+                return;
+            }
+            if (ContainerFromIndex(index) is Control container)
+            {
+                var pt = container.TranslatePoint(new Point(0, 0), sv);
+                if (pt.HasValue)
+                {
+                    var offset = sv.Offset;
+                    var targetY = offset.Y + pt.Value.Y;
+                    sv.Offset = new Vector(offset.X, targetY);
+                }
+            }
+        }, DispatcherPriority.Background);
+    }
+
+    private void ClearActiveMatchHighlight()
+    {
+        if (_lastMatchIndex >= 0)
+        {
+            if (ContainerFromIndex(_lastMatchIndex) is MultiSelectItem prev)
+            {
+                prev.SetMatchHighlight(false);
+            }
+            _lastMatchIndex = -1;
+        }
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -387,15 +441,22 @@ public class MultiSelectDropdown : SelectingItemsControl
             {
                 // Only auto-scroll to selection if it likely came from keyboard text search recently.
                 var since = DateTime.UtcNow - _lastKeyNavigationAt;
-                if (since.TotalMilliseconds <= 800)
+                if (since.TotalMilliseconds <= 300)
                 {
-                    try
+                    BringIndexToTop(index);
+                    // Clear previous highlight if different
+                    if (_lastMatchIndex >= 0 && _lastMatchIndex != index)
                     {
-                        ScrollIntoView(index);
+                        if (ContainerFromIndex(_lastMatchIndex) is MultiSelectItem prev)
+                        {
+                            prev.SetMatchHighlight(false);
+                        }
                     }
-                    catch
+                    // Highlight the new match persistently
+                    if (ContainerFromIndex(index) is MultiSelectItem msi)
                     {
-                        // ignore
+                        msi.SetMatchHighlight(true);
+                        _lastMatchIndex = index;
                     }
                 }
             }
@@ -440,7 +501,7 @@ public class MultiSelectDropdown : SelectingItemsControl
     protected override void OnTextInput(TextInputEventArgs e)
     {
         base.OnTextInput(e);
-        if (!e.Handled && IsTextSearchEnabled)
+        if (IsTextSearchEnabled)
         {
             _lastKeyNavigationAt = DateTime.UtcNow;
         }

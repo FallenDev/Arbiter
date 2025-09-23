@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace Arbiter.App.Controls;
 
+[PseudoClasses(":match")]
 public class MultiSelectItem : ContentControl, ISelectable
 {
     public static readonly StyledProperty<bool> ModelIsSelectedProperty =
@@ -49,38 +50,29 @@ public class MultiSelectItem : ContentControl, ISelectable
         get => GetValue(OwnerProperty);
         set => SetValue(OwnerProperty, value);
     }
-
-    static MultiSelectItem()
-    {
-        FocusableProperty.OverrideDefaultValue<MultiSelectItem>(true);
-    }
-
-    public void SetIsSelectedFromModel(bool value)
-    {
-        try
-        {
-            _suppressModelSync = true;
-            IsSelected = value;
-        }
-        finally
-        {
-            _suppressModelSync = false;
-        }
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == IsSelectedProperty)
-        {
-            // Do not propagate container selection changes to the data model.
-            // Base SelectingItemsControl will toggle IsSelected for focus/selection (e.g., during text search),
-            // and we must not treat that as a change to the multi-select model.
-            // Model changes are driven by direct bindings (ModelIsSelected) and explicit pointer handling.
-            return;
-        }
-    }
+ 
+     static MultiSelectItem()
+     {
+         FocusableProperty.OverrideDefaultValue<MultiSelectItem>(true);
+     }
+ 
+     public void SetIsSelectedFromModel(bool value)
+     {
+         try
+         {
+             _suppressModelSync = true;
+             IsSelected = value;
+         }
+         finally
+         {
+             _suppressModelSync = false;
+         }
+     }
+ 
+     public void SetMatchHighlight(bool on)
+     {
+         PseudoClasses.Set(":match", on);
+     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
@@ -110,7 +102,7 @@ public class MultiSelectItem : ContentControl, ISelectable
         if (data is not null)
         {
             var prop = data.GetType().GetProperty("IsSelected");
-            if (prop?.PropertyType == typeof(bool) && prop.CanRead && prop.CanWrite)
+            if (prop?.PropertyType == typeof(bool) && prop is { CanRead: true, CanWrite: true })
             {
                 var current = (bool)(prop.GetValue(data) ?? false);
                 prop.SetValue(data, !current);
