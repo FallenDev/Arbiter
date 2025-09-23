@@ -22,6 +22,9 @@ public class MultiSelectDropdown : SelectingItemsControl
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<MultiSelectDropdown, bool>(nameof(IsDropDownOpen));
 
+    public static readonly StyledProperty<double> MaxDropdownHeightProperty = AvaloniaProperty.Register<MultiSelectDropdown, double>(
+        nameof(MaxDropdownHeight), 300);
+
     public static readonly StyledProperty<string> SelectionTextProperty =
         AvaloniaProperty.Register<MultiSelectDropdown, string>(
             nameof(SelectionText),
@@ -30,11 +33,36 @@ public class MultiSelectDropdown : SelectingItemsControl
     public static readonly StyledProperty<IDataTemplate?> SelectionTextTemplateProperty =
         AvaloniaProperty.Register<MultiSelectDropdown, IDataTemplate?>(nameof(SelectionTextTemplate));
 
-    protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
-
+    private readonly List<INotifyPropertyChanged> _itemSubscriptions = [];
     private INotifyCollectionChanged? _currentCollection;
-    private readonly List<INotifyPropertyChanged> _itemSubscriptions = new();
+    
+    protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
+    
+    // Multi-select specific properties
+    public bool IsDropDownOpen
+    {
+        get => GetValue(IsDropDownOpenProperty);
+        set => SetValue(IsDropDownOpenProperty, value);
+    }
+    
+    public double MaxDropdownHeight
+    {
+        get => GetValue(MaxDropdownHeightProperty);
+        set => SetValue(MaxDropdownHeightProperty, value);
+    }
 
+    public string SelectionText
+    {
+        get => GetValue(SelectionTextProperty);
+        private set => SetValue(SelectionTextProperty, value);
+    }
+
+    public IDataTemplate? SelectionTextTemplate
+    {
+        get => GetValue(SelectionTextTemplateProperty);
+        set => SetValue(SelectionTextTemplateProperty, value);
+    }
+    
     static MultiSelectDropdown()
     {
         // Ensure the control starts in multiple selection mode so initial item selections aren't collapsed to a single one
@@ -52,30 +80,6 @@ public class MultiSelectDropdown : SelectingItemsControl
             o.WireUpItemsFromItemsSource();
             o.UpdateSelectionText();
         });
-    }
-
-    public MultiSelectDropdown()
-    {
-        // nothing special in the instance constructor
-    }
-
-    // Multi-select specific properties
-    public bool IsDropDownOpen
-    {
-        get => GetValue(IsDropDownOpenProperty);
-        set => SetValue(IsDropDownOpenProperty, value);
-    }
-
-    public string SelectionText
-    {
-        get => GetValue(SelectionTextProperty);
-        private set => SetValue(SelectionTextProperty, value);
-    }
-
-    public IDataTemplate? SelectionTextTemplate
-    {
-        get => GetValue(SelectionTextTemplateProperty);
-        set => SetValue(SelectionTextTemplateProperty, value);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

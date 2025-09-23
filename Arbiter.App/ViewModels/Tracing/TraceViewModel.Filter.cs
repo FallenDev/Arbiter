@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Threading;
@@ -17,14 +16,13 @@ namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel
 {
+    private readonly Debouncer _filterRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
     private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty] private bool _showFilterBar;
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
-
-    private readonly Debouncer _filterRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
 
     private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
     {

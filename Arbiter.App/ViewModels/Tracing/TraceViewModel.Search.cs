@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Arbiter.App.Models;
+using Arbiter.App.Threading;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -8,9 +13,10 @@ namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel
 {
+    private readonly Debouncer _searchRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
     private readonly List<int> _searchResultIndexes = [];
 
-    [ObservableProperty] private bool _showSearchBar;
+    [ObservableProperty] private bool _showSearchBar = true;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
@@ -25,7 +31,7 @@ public partial class TraceViewModel
     public TraceSearchViewModel SearchParameters { get; } = new();
 
     public string? FormattedSearchResultsText =>
-        SearchParameters.Command is not null
+        SearchParameters.SelectedCommand is not null
             ? SearchResultCount > 0 ? $"{Math.Max(1, SelectedSearchIndex)} of {SearchResultCount}" : "no matches"
             : null;
 
@@ -34,7 +40,7 @@ public partial class TraceViewModel
     private void OnSearchParametersChanged(object? sender, PropertyChangedEventArgs e)
     {
         // Do not filter on this, wait for actual command byte to change
-        if (e.PropertyName == nameof(SearchParameters.CommandFilter))
+        if (e.PropertyName == nameof(SearchParameters.SelectedCommand))
         {
 
         }
@@ -44,22 +50,25 @@ public partial class TraceViewModel
 
     private void RefreshSearchResults()
     {
-        _searchResultIndexes.Clear();
-        SearchResultCount = 0;
-
-        for (var i = 0; i < FilteredPackets.Count; i++)
+        _searchRefreshDebouncer.Execute(() =>
         {
-            var packet = FilteredPackets[i];
-            var isMatch = MatchesSearch(packet);
-            if (isMatch)
+            _searchResultIndexes.Clear();
+            SearchResultCount = 0;
+
+            for (var i = 0; i < FilteredPackets.Count; i++)
             {
-                AddSearchResultIndex(i);
+                var packet = FilteredPackets[i];
+                var isMatch = MatchesSearch(packet);
+                if (isMatch)
+                {
+                    AddSearchResultIndex(i);
+                }
+
+                packet.Opacity = isMatch ? 1 : 0.5;
             }
 
-            packet.Opacity = isMatch ? 1 : 0.5;
-        }
-
-        SelectedSearchIndex = 0;
+            SelectedSearchIndex = 0;
+        });
     }
 
     private void AddSearchResultIndex(int index)
@@ -70,12 +79,29 @@ public partial class TraceViewModel
 
     private bool MatchesSearch(TracePacketViewModel vm)
     {
-        if (SearchParameters.Command is null)
+        if (SearchParameters.SelectedCommand?.Value is null)
         {
             return true;
         }
 
-        return vm.Command == SearchParameters.Command;
+        if (vm.Direction != SearchParameters.SelectedCommand.Direction)
+        {
+            return false;
+        }
+
+        if (vm.Direction == PacketDirection.Client)
+        {
+            var command = (ClientCommand)vm.DecryptedPacket.Command;
+            return (byte)command == SearchParameters.SelectedCommand.Value;
+        }
+
+        if (vm.Direction == PacketDirection.Server)
+        {
+            var command = (ServerCommand)vm.DecryptedPacket.Command;
+            return (byte)command == SearchParameters.SelectedCommand.Value;
+        }
+
+        return false;
     }
 
     [RelayCommand]

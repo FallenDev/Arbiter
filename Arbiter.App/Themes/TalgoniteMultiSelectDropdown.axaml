@@ -71,7 +71,7 @@
                                Grid.Column="0"
                                Width="{Binding $parent.Bounds.Width}"
                                PlacementTarget="{Binding #Border}"
-                               MaxHeight="400"
+                               MaxHeight="{TemplateBinding MaxDropdownHeight}"
                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                                IsLightDismissEnabled="True"
                                InheritsTransform="True"

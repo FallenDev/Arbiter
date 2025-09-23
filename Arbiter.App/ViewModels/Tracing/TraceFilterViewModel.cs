@@ -92,9 +92,13 @@ public partial class TraceFilterViewModel : ViewModelBase
 
     private void UpdateSelectedCommands()
     {
-        SelectedClientCommands = SelectedCommands.Where(x => x.Direction == PacketDirection.Client).Select(x => x.Value)
+        SelectedClientCommands = SelectedCommands
+            .Where(x => x is { Direction: PacketDirection.Client, Value: not null })
+            .Select(x => x.Value ?? 0xFF)
             .ToList();
-        SelectedServerCommands = SelectedCommands.Where(x => x.Direction == PacketDirection.Server).Select(x => x.Value)
+        SelectedServerCommands = SelectedCommands
+            .Where(x => x is { Direction: PacketDirection.Server, Value: not null })
+            .Select(x => x.Value ?? 0xFF)
             .ToList();
     }
 

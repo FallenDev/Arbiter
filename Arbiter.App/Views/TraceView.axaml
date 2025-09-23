@@ -195,10 +195,11 @@
                     <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.Commands}"
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            FontSize="16"
+                                           MaxDropdownHeight="400"
                                            Width="300">
                         <c:MultiSelectDropdown.ItemTemplate>
                             <DataTemplate DataType="vm:CommandFilterViewModel">
-                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch">
                                     <TextBlock Grid.Column="1" Text="{Binding DisplayName}"
                                                Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                                FontSize="14"
@@ -267,21 +268,48 @@
                 <Label Content="Command"
                        ToolTip.Tip="Searches for packets matching the command hex code."
                        VerticalAlignment="Center" />
-                <TextBox Text="{Binding SearchParameters.CommandFilter}"
-                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                         MaxLength="2"
-                         Width="200"
-                         Height="36">
-                    <TextBox.InnerRightContent>
-                        <Button Command="{Binding SearchParameters.ClearCommandFilterCommand}"
-                                IsVisible="{Binding SearchParameters.CommandFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                Classes="clear destructive">
-                            <Path Width="12" Height="12"
-                                  Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="M1,1 L11,11 M11,1 L1,11" />
-                        </Button>
-                    </TextBox.InnerRightContent>
-                </TextBox>
+                <ComboBox ItemsSource="{Binding SearchParameters.Commands}"
+                          SelectedItem="{Binding SearchParameters.SelectedCommand}"
+                          FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                          FontSize="16"
+                          MaxDropDownHeight="400"
+                          Width="300"
+                          HorizontalContentAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" Margin="8,2">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding DisplayName}"
+                                           Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"/>
+                                <Border Grid.Column="1" IsVisible="{Binding Value, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <TextBlock Text="{Binding Value, StringFormat={}0x{0:X2}}"
+                                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                               FontSize="14"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBox.SelectionBoxItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding DisplayName}"
+                                           Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"/>
+                                <Border Grid.Column="1" IsVisible="{Binding Value, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <TextBlock Text="{Binding Value, StringFormat={}0x{0:X2}}"
+                                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                               FontSize="16"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.SelectionBoxItemTemplate>
+                </ComboBox>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4"
                             IsVisible="{Binding FormattedSearchResultsText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
