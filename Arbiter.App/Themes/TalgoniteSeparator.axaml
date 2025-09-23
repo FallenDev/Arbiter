@@ -4,26 +4,31 @@
     <Design.PreviewWith>
         <Border Background="{StaticResource Talgonite.Control.Background}"
                 Padding="20">
-            <StackPanel MinWidth="200">
+            <ContextMenu MinWidth="200">
                 <MenuItem Header="Before Separator"/>
                 <Separator/>
                 <MenuItem Header="After Separator"/>
-            </StackPanel>
+            </ContextMenu>
         </Border>
     </Design.PreviewWith>
     
-    <Style Selector="Separator.menu">
-        <Setter Property="Background" Value="{StaticResource Talgonite.Border.DividerBrush}"/>
+    <!-- Context menu and menu separators -->
+    <Style Selector="Separator">
+        <Setter Property="Background" Value="{StaticResource Talgonite.ContextMenu.SeparatorBrush}"/>
         <Setter Property="Height" Value="1"/>
-        <Setter Property="Margin" Value="8,8"/>
+        <Setter Property="Margin" Value="8,4"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
+                <Border Height="{TemplateBinding Height}" 
+                        Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Margin="{TemplateBinding Margin}"/>
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        Padding="{TemplateBinding Margin}"/>
             </ControlTemplate>
         </Setter>
     </Style>

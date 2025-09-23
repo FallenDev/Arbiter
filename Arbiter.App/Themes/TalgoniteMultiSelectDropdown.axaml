@@ -76,17 +76,21 @@
                                IsLightDismissEnabled="True"
                                InheritsTransform="True"
                                WindowManagerAddShadowHint="False">
-                            <Border Name="DropdownBorder"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
-                                    BorderThickness="1,0,1,1"
+                            <Border BorderThickness="1,0,1,1"
+                                    BorderBrush="{StaticResource Talgonite.Border.ShadowBrush}"
                                     CornerRadius="0,0,2,2">
-                                <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                              IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
-                                    <ItemsPresenter Name="PART_ItemsPresenter"
-                                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
-                                </ScrollViewer>
+                                <Border Name="DropdownBorder"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
+                                        BorderThickness="1,0,1,1"
+                                        CornerRadius="0,0,2,2">
+                                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                                  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                                        ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                    </ScrollViewer>
+                                </Border>
                             </Border>
                         </Popup>
                     </Grid>
@@ -169,7 +173,19 @@
         
         <!-- Disabled Style -->
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.DisabledForeground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.DisabledForeground}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ToggleButton#Toggle">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.CaretDisabledForeground}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        
+        <!-- Ensure the inner border of the ToggleButton template also loses its disabled border -->
+        <Style Selector="^:disabled /template/ ToggleButton#Toggle /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
         </Style>
     </Style>
 </Styles>

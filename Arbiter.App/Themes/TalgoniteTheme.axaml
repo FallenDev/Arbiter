@@ -85,7 +85,8 @@
             
             <!-- ContextMenu Resources -->
             <SolidColorBrush x:Key="Talgonite.ContextMenu.Background" Color="#373d49"/>
-            <SolidColorBrush x:Key="Talgonite.ContextMenu.BorderBrush" Color="#7b7e85"/>
+            <SolidColorBrush x:Key="Talgonite.ContextMenu.BorderBrush" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.ContextMenu.SeparatorBrush" Color="#4d535d"/>
             
             <!-- Control Resources -->
             <SolidColorBrush x:Key="Talgonite.Control.Background" Color="#373d49"/>
