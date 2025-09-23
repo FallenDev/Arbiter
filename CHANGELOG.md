@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Fixed issue when switching tabs in `Trace` view
+- Shadow effect on popup for readability
+- Shadow effect on tooltip for readability
+- Outline effect for combox/dropdown borders for readability
 
 ## [0.9.5] - 2025-09-22
 

@@ -312,7 +312,7 @@
                 </ComboBox>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4"
-                            IsVisible="{Binding SearchParameters.SelectedCommand.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:False}}"
+                            IsVisible="{Binding ShowSearchResults}"
                             Height="40">
                     <!-- Result count -->
                     <TextBlock Text="{Binding FormattedSearchResultsText, FallbackValue=no matches}"
