@@ -14,6 +14,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Arbiter.App.Threading;
+using Avalonia.VisualTree;
 
 namespace Arbiter.App.Controls;
 
@@ -21,6 +22,9 @@ namespace Arbiter.App.Controls;
 [PseudoClasses(":dropdownopen", ":pressed")]
 public class MultiSelectDropdown : SelectingItemsControl
 {
+    private Popup? _popup;
+    private static readonly FuncTemplate<Panel?> DefaultPanel = new(() => new VirtualizingStackPanel());
+    
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<MultiSelectDropdown, bool>(nameof(IsDropDownOpen));
 
@@ -68,6 +72,9 @@ public class MultiSelectDropdown : SelectingItemsControl
     
     static MultiSelectDropdown()
     {
+        ItemsPanelProperty.OverrideDefaultValue<MultiSelectDropdown>(DefaultPanel);
+        IsTextSearchEnabledProperty.OverrideDefaultValue<MultiSelectDropdown>(true);
+        
         // Ensure the control starts in multiple selection mode so initial item selections aren't collapsed to a single one
         SelectionModeProperty.OverrideDefaultValue<MultiSelectDropdown>(SelectionMode.Multiple);
 
@@ -83,6 +90,36 @@ public class MultiSelectDropdown : SelectingItemsControl
             o.WireUpItemsFromItemsSource();
             o.UpdateSelectionText();
         });
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        if (_popup is not null)
+        {
+            _popup.Opened -= PopupOnOpened;
+        }
+        _popup = e.NameScope.Find<Popup>("PART_Popup");
+        if (_popup is not null)
+        {
+            _popup.Opened += PopupOnOpened;
+        }
+    }
+
+    private void PopupOnOpened(object? sender, EventArgs e)
+    {
+        // Scroll to the first item when popup opens
+        Dispatcher.UIThread.Post(() =>
+        {
+            try
+            {
+                ScrollIntoView(0);
+            }
+            catch
+            {
+                // ItemsControl.ScrollIntoView may throw if items aren't ready yet; ignore and let layout settle.
+            }
+        }, DispatcherPriority.Background);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -115,8 +152,10 @@ public class MultiSelectDropdown : SelectingItemsControl
             // Bind the container's CheckMarkBrush for per-item customization
             TryBindCheckMarkBrush(msi, item);
 
-            // Update summary text whenever a container becomes prepared
-            RequestSelectionTextUpdate();
+            // Do not update summary text during container preparation.
+            // Virtualization realizes containers while scrolling; triggering summary updates here
+            // causes repeated full scans of ItemsSource and lags scrolling.
+            // Selection text will be updated on actual selection or collection changes instead.
         }
     }
 
@@ -137,7 +176,8 @@ public class MultiSelectDropdown : SelectingItemsControl
             msi.ClearValue(MultiSelectItem.OwnerProperty);
         }
         base.ClearContainerForItemOverride(container);
-        RequestSelectionTextUpdate();
+        // Avoid triggering selection text refresh on container recycle/clear; this happens frequently during scroll.
+        // Selection text is updated via item selection changes and collection changes.
     }
 
     private static void TryBindCheckMarkBrush(MultiSelectItem msi, object? item)
