@@ -109,7 +109,7 @@ public class MultiSelectDropdown : SelectingItemsControl
             var prop = item?.GetType().GetProperty("IsSelected", BindingFlags.Public | BindingFlags.Instance);
             if (prop?.PropertyType == typeof(bool))
             {
-                msi.IsSelected = (bool)(prop.GetValue(item) ?? false);
+                msi.SetIsSelectedFromModel((bool)(prop.GetValue(item) ?? false));
             }
 
             // Bind the container's CheckMarkBrush for per-item customization
@@ -263,7 +263,7 @@ public class MultiSelectDropdown : SelectingItemsControl
         // Use the built-in container lookup to avoid linear scans
         if (ContainerFromItem(item) is MultiSelectItem msi)
         {
-            msi.IsSelected = isSelected;
+            msi.SetIsSelectedFromModel(isSelected);
         }
     }
 

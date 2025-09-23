@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -18,6 +19,8 @@ public class MultiSelectItem : ContentControl, ISelectable
     // Back-reference to owning dropdown, set by MultiSelectDropdown during container prep
     public static readonly StyledProperty<MultiSelectDropdown?> OwnerProperty =
         AvaloniaProperty.Register<MultiSelectItem, MultiSelectDropdown?>(nameof(Owner));
+
+    private bool _suppressModelSync;
 
     protected override Type StyleKeyOverride => typeof(MultiSelectItem);
 
@@ -44,6 +47,55 @@ public class MultiSelectItem : ContentControl, ISelectable
         FocusableProperty.OverrideDefaultValue<MultiSelectItem>(true);
     }
 
+    public void SetIsSelectedFromModel(bool value)
+    {
+        try
+        {
+            _suppressModelSync = true;
+            IsSelected = value;
+        }
+        finally
+        {
+            _suppressModelSync = false;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property != IsSelectedProperty)
+        {
+            return;
+        }
+
+        // When the container selection changes (e.g., via checkbox), propagate to the data item unless suppressed
+        if (_suppressModelSync)
+        {
+            return;
+        }
+
+        var dataItem = Content;
+        if (dataItem is null)
+        {
+            return;
+        }
+
+        var prop = dataItem.GetType().GetProperty("IsSelected", BindingFlags.Public | BindingFlags.Instance);
+        if (prop?.PropertyType != typeof(bool) || !prop.CanWrite)
+        {
+            return;
+        }
+
+        var newObj = change.NewValue;
+        var desired = newObj is bool b ? b : (newObj as bool?) ?? false;
+        var current = (bool)(prop.GetValue(dataItem) ?? false);
+        if (current != desired)
+        {
+            prop.SetValue(dataItem, desired);
+        }
+    }
+
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -68,17 +120,17 @@ public class MultiSelectItem : ContentControl, ISelectable
         }
         
         // Default behavior: toggle the data item's selection without using SelectingItemsControl's selection state
-        var dataItem = Content;
-        if (dataItem is not null)
+        var data = Content;
+        if (data is not null)
         {
-            var prop = dataItem.GetType().GetProperty("IsSelected");
+            var prop = data.GetType().GetProperty("IsSelected");
             if (prop?.PropertyType == typeof(bool) && prop.CanRead && prop.CanWrite)
             {
-                var current = (bool)(prop.GetValue(dataItem) ?? false);
-                prop.SetValue(dataItem, !current);
+                var current = (bool)(prop.GetValue(data) ?? false);
+                prop.SetValue(data, !current);
 
                 // Keep the container visual in sync for immediate feedback
-                IsSelected = !current;
+                SetIsSelectedFromModel(!current);
             }
         }
         e.Handled = true;
