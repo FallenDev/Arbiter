@@ -67,8 +67,20 @@ public class MultiSelectItem : ContentControl, ISelectable
             }
         }
         
-        // Default behavior: toggle selection
-        IsSelected = !IsSelected;
+        // Default behavior: toggle the data item's selection without using SelectingItemsControl's selection state
+        var dataItem = Content;
+        if (dataItem is not null)
+        {
+            var prop = dataItem.GetType().GetProperty("IsSelected");
+            if (prop?.PropertyType == typeof(bool) && prop.CanRead && prop.CanWrite)
+            {
+                var current = (bool)(prop.GetValue(dataItem) ?? false);
+                prop.SetValue(dataItem, !current);
+
+                // Keep the container visual in sync for immediate feedback
+                IsSelected = !current;
+            }
+        }
         e.Handled = true;
     }
 }

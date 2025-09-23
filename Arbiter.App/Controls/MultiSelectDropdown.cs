@@ -12,6 +12,8 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
+using Arbiter.App.Threading;
 
 namespace Arbiter.App.Controls;
 
@@ -35,6 +37,7 @@ public class MultiSelectDropdown : SelectingItemsControl
 
     private readonly List<INotifyPropertyChanged> _itemSubscriptions = [];
     private INotifyCollectionChanged? _currentCollection;
+    private readonly Debouncer _selectionTextDebouncer = new(TimeSpan.FromMilliseconds(25), Dispatcher.UIThread);
     
     protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
     
@@ -102,20 +105,18 @@ public class MultiSelectDropdown : SelectingItemsControl
             // Establish back-reference to owner (the dropdown)
             msi.Owner = this;
 
-            // Bind the container's IsSelected to the data item's IsSelected property (TwoWay)
-            msi.Bind(MultiSelectItem.IsSelectedProperty, new Binding("IsSelected")
+            // Initialize the container's visual selection state from the data item once
+            var prop = item?.GetType().GetProperty("IsSelected", BindingFlags.Public | BindingFlags.Instance);
+            if (prop?.PropertyType == typeof(bool))
             {
-                Mode = BindingMode.TwoWay
-            });
+                msi.IsSelected = (bool)(prop.GetValue(item) ?? false);
+            }
 
             // Bind the container's CheckMarkBrush for per-item customization
             TryBindCheckMarkBrush(msi, item);
 
             // Update summary text whenever a container becomes prepared
-            UpdateSelectionText();
-
-            // Track selection changes on the container to keep header text in sync
-            msi.PropertyChanged += ContainerOnPropertyChanged;
+            RequestSelectionTextUpdate();
         }
     }
 
@@ -131,14 +132,12 @@ public class MultiSelectDropdown : SelectingItemsControl
     {
         if (container is MultiSelectItem msi)
         {
-            // Clear binding/value to avoid reusing stale bindings if container is recycled
-            msi.ClearValue(MultiSelectItem.IsSelectedProperty);
+            // Clear values to avoid reusing stale values if container is recycled
             msi.ClearValue(MultiSelectItem.CheckMarkBrushProperty);
             msi.ClearValue(MultiSelectItem.OwnerProperty);
-            msi.PropertyChanged -= ContainerOnPropertyChanged;
         }
         base.ClearContainerForItemOverride(container);
-        UpdateSelectionText();
+        RequestSelectionTextUpdate();
     }
 
     private static void TryBindCheckMarkBrush(MultiSelectItem msi, object? item)
@@ -171,10 +170,9 @@ public class MultiSelectDropdown : SelectingItemsControl
         }
     }
 
-
     private void WireUpItemsFromItemsSource()
     {
-        IEnumerable? source = ItemsSource as IEnumerable ?? Items;
+        var source = ItemsSource ?? Items;
         UnwireCollectionAndItems();
 
         if (source is INotifyCollectionChanged incc)
@@ -184,15 +182,12 @@ public class MultiSelectDropdown : SelectingItemsControl
         }
 
         // Subscribe to current items' property changes (IsSelected)
-        if (source is IEnumerable enumerable)
+        foreach (var obj in source)
         {
-            foreach (var obj in enumerable)
+            if (obj is INotifyPropertyChanged inpc)
             {
-                if (obj is INotifyPropertyChanged inpc)
-                {
-                    inpc.PropertyChanged += OnItemPropertyChanged;
-                    _itemSubscriptions.Add(inpc);
-                }
+                inpc.PropertyChanged += OnItemPropertyChanged;
+                _itemSubscriptions.Add(inpc);
             }
         }
     }
@@ -218,7 +213,7 @@ public class MultiSelectDropdown : SelectingItemsControl
         {
             UnwireCollectionAndItems();
             WireUpItemsFromItemsSource();
-            UpdateSelectionText();
+            RequestSelectionTextUpdate();
             return;
         }
 
@@ -246,15 +241,35 @@ public class MultiSelectDropdown : SelectingItemsControl
             }
         }
 
-        UpdateSelectionText();
+        RequestSelectionTextUpdate();
     }
 
     private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == "IsSelected")
         {
-            UpdateSelectionText();
+            // Sync container visual state to the data item selection change
+            if (sender is not null)
+            {
+                var itemIsSelected = (bool?)sender.GetType().GetProperty("IsSelected")?.GetValue(sender) ?? false;
+                SyncContainerSelectionToItem(sender, itemIsSelected);
+            }
+            RequestSelectionTextUpdate();
         }
+    }
+
+    private void SyncContainerSelectionToItem(object item, bool isSelected)
+    {
+        // Use the built-in container lookup to avoid linear scans
+        if (ContainerFromItem(item) is MultiSelectItem msi)
+        {
+            msi.IsSelected = isSelected;
+        }
+    }
+
+    private void RequestSelectionTextUpdate()
+    {
+        _selectionTextDebouncer.Execute(UpdateSelectionText);
     }
 
     private void UpdateSelectionText()
@@ -351,6 +366,6 @@ public class MultiSelectDropdown : SelectingItemsControl
             }
         }
 
-        UpdateSelectionText();
+        RequestSelectionTextUpdate();
     }
 }
