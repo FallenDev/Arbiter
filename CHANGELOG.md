@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reduce corner radius on input controls
 - Fixed local port not working if other than default
 - Swap order of scroll to end and clear in `Console` view for consistency
+- Collapse `Flags` section in `ServerUpdateStatsMessage` message by default
+- Multiselect dropdown for filtering by command instead of user textbox input
+- Dropdown for searching by command instead of user textbox input
 
 ## [0.9.4b] - 2025-09-20
 

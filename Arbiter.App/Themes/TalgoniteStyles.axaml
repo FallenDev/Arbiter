@@ -10,6 +10,7 @@
     
     <StyleInclude Source="./TalgoniteBorder.axaml"/>
     <StyleInclude Source="./TalgoniteButton.axaml"/>
+    <StyleInclude Source="./TalgoniteCheckBox.axaml"/>
     <StyleInclude Source="./TalgoniteComboBox.axaml"/>
     <StyleInclude Source="./TalgoniteComboBoxItem.axaml"/>
     <StyleInclude Source="./TalgoniteContextMenu.axaml"/>
@@ -21,6 +22,7 @@
     <StyleInclude Source="./TalgoniteListBox.axaml"/>
     <StyleInclude Source="./TalgoniteListBoxItem.axaml"/>
     <StyleInclude Source="./TalgoniteMenuItem.axaml"/>
+    <StyleInclude Source="./TalgoniteMultiSelectDropdown.axaml"/>
     <StyleInclude Source="./TalgoniteNumericUpDown.axaml"/>
     <StyleInclude Source="./TalgonitePath.axaml"/>
     <StyleInclude Source="./TalgoniteProgressBar.axaml"/>

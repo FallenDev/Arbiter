@@ -1,41 +1,56 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Globalization;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Arbiter.App.Models;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceSearchViewModel : ViewModelBase
 {
-    private byte? _command;
-    private string _commandFilter = string.Empty;
+    [ObservableProperty] private CommandFilterViewModel? _selectedCommand;
 
-    public byte? Command => _command;
-
-    public string? CommandFilter
+    public ObservableCollection<CommandFilterViewModel?> Commands { get; } =
+    [
+        // Placeholder 'None' command
+        new(PacketDirection.Auto, "None", null)
+    ];
+    
+    public TraceSearchViewModel()
     {
-        get => _commandFilter;
-        set
+        InitializeCommands();
+        SelectedCommand = Commands.FirstOrDefault(command => !command?.Value.HasValue ?? true);
+    }
+    
+    private void InitializeCommands()
+    {
+        var clientCommandModels = Enum.GetValues<ClientCommand>()
+            .OrderBy(cmd => cmd == ClientCommand.Unknown ? 1 : 0)
+            .ThenBy(cmd => cmd.ToString())
+            .Select(cmd => new CommandFilterViewModel(cmd));
+
+        var serverCommandModels = Enum.GetValues<ServerCommand>()
+            .OrderBy(cmd => cmd == ServerCommand.Unknown ? 1 : 0)
+            .ThenBy(cmd => cmd.ToString())
+            .Select(cmd => new CommandFilterViewModel(cmd));
+
+        foreach (var vm in clientCommandModels)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                SetProperty(ref _commandFilter, string.Empty);
-                SetProperty(ref _command, null);
-                return;
-            }
+            Commands.Add(vm);
+        }
 
-            if (!byte.TryParse(value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var command))
-            {
-                throw new ValidationException("Invalid command filter");
-            }
-
-            SetProperty(ref _commandFilter, value);
-            SetProperty(ref _command, command);
+        foreach (var vm in serverCommandModels)
+        {
+            Commands.Add(vm);
         }
     }
-
+    
     [RelayCommand]
-    private void ClearCommandFilter()
+    private void ClearCommandSearch()
     {
-        CommandFilter = string.Empty;
+        SelectedCommand = null;
     }
 }
