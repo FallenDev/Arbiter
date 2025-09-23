@@ -10,11 +10,19 @@ namespace Arbiter.App.Controls;
 
 public class MultiSelectItem : ContentControl, ISelectable
 {
+    public static readonly StyledProperty<bool> ModelIsSelectedProperty =
+        AvaloniaProperty.Register<MultiSelectItem, bool>(nameof(ModelIsSelected));
     public static readonly StyledProperty<bool> IsSelectedProperty =
         ListBoxItem.IsSelectedProperty.AddOwner<MultiSelectItem>();
 
     public static readonly StyledProperty<IBrush?> CheckMarkBrushProperty =
         AvaloniaProperty.Register<MultiSelectItem, IBrush?>(nameof(CheckMarkBrush));
+
+    public bool ModelIsSelected
+    {
+        get => GetValue(ModelIsSelectedProperty);
+        set => SetValue(ModelIsSelectedProperty, value);
+    }
 
     // Back-reference to owning dropdown, set by MultiSelectDropdown during container prep
     public static readonly StyledProperty<MultiSelectDropdown?> OwnerProperty =
@@ -64,35 +72,13 @@ public class MultiSelectItem : ContentControl, ISelectable
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property != IsSelectedProperty)
+        if (change.Property == IsSelectedProperty)
         {
+            // Do not propagate container selection changes to the data model.
+            // Base SelectingItemsControl will toggle IsSelected for focus/selection (e.g., during text search),
+            // and we must not treat that as a change to the multi-select model.
+            // Model changes are driven by direct bindings (ModelIsSelected) and explicit pointer handling.
             return;
-        }
-
-        // When the container selection changes (e.g., via checkbox), propagate to the data item unless suppressed
-        if (_suppressModelSync)
-        {
-            return;
-        }
-
-        var dataItem = Content;
-        if (dataItem is null)
-        {
-            return;
-        }
-
-        var prop = dataItem.GetType().GetProperty("IsSelected", BindingFlags.Public | BindingFlags.Instance);
-        if (prop?.PropertyType != typeof(bool) || !prop.CanWrite)
-        {
-            return;
-        }
-
-        var newObj = change.NewValue;
-        var desired = newObj is bool b ? b : (newObj as bool?) ?? false;
-        var current = (bool)(prop.GetValue(dataItem) ?? false);
-        if (current != desired)
-        {
-            prop.SetValue(dataItem, desired);
         }
     }
 

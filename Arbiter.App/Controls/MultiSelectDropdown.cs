@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -11,7 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Media;
 using Avalonia.Threading;
 using Arbiter.App.Threading;
 
@@ -42,6 +40,7 @@ public class MultiSelectDropdown : SelectingItemsControl
     
     private Popup? _popup;
     private INotifyCollectionChanged? _currentCollection;
+    private DateTime _lastKeyNavigationAt;
     
     protected override Type StyleKeyOverride => typeof(MultiSelectDropdown);
     
@@ -74,6 +73,7 @@ public class MultiSelectDropdown : SelectingItemsControl
     {
         ItemsPanelProperty.OverrideDefaultValue<MultiSelectDropdown>(DefaultPanel);
         IsTextSearchEnabledProperty.OverrideDefaultValue<MultiSelectDropdown>(true);
+        FocusableProperty.OverrideDefaultValue<MultiSelectDropdown>(true);
         
         // Ensure the control starts in multiple selection mode so initial item selections aren't collapsed to a single one
         SelectionModeProperty.OverrideDefaultValue<MultiSelectDropdown>(SelectionMode.Multiple);
@@ -147,15 +147,24 @@ public class MultiSelectDropdown : SelectingItemsControl
             if (prop?.PropertyType == typeof(bool))
             {
                 msi.SetIsSelectedFromModel((bool)(prop.GetValue(item) ?? false));
+                // Bind the container's ModelIsSelected to the data item's IsSelected for direct checkbox binding
+                msi.Bind(MultiSelectItem.ModelIsSelectedProperty, new Binding("IsSelected") { Mode = BindingMode.TwoWay });
             }
 
-            // Bind the container's CheckMarkBrush for per-item customization
-            TryBindCheckMarkBrush(msi, item);
+            // Bind the container's check mark brush for per-item customization
+            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding
+            {
+                Path = "Foreground",
+                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                Mode = BindingMode.OneWay
+            });
 
-            // Do not update summary text during container preparation.
-            // Virtualization realizes containers while scrolling; triggering summary updates here
-            // causes repeated full scans of ItemsSource and lags scrolling.
-            // Selection text will be updated on actual selection or collection changes instead.
+            // Provide text used by Avalonia's TextSearch for keyboard lookup
+            var searchText = GetItemSearchText(item);
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                TextSearch.SetText(msi, searchText);
+            }
         }
     }
 
@@ -166,40 +175,57 @@ public class MultiSelectDropdown : SelectingItemsControl
             // Clear values to avoid reusing stale values if container is recycled
             msi.ClearValue(MultiSelectItem.CheckMarkBrushProperty);
             msi.ClearValue(MultiSelectItem.OwnerProperty);
+            msi.ClearValue(MultiSelectItem.ModelIsSelectedProperty);
+            // Reset selection visual to a safe default to avoid stale checked state during recycling
+            msi.IsSelected = false;
         }
         base.ClearContainerForItemOverride(container);
-        // Avoid triggering selection text refresh on container recycle/clear; this happens frequently during scroll.
-        // Selection text is updated via item selection changes and collection changes.
     }
 
-    private static void TryBindCheckMarkBrush(MultiSelectItem msi, object? item)
+    private static string? GetItemSearchText(object? item)
     {
         if (item is null)
         {
-            return;
+            return null;
         }
 
-        var itemType = item.GetType();
+        if (item is string s)
+        {
+            return s;
+        }
 
-        // Bind to a property named "CheckMarkBrush" if present on the data item; otherwise, leave unset for default styling
-        var brushProp = itemType.GetProperty("CheckMarkBrush", BindingFlags.Public | BindingFlags.Instance);
-        if (brushProp?.PropertyType != null && typeof(IBrush).IsAssignableFrom(brushProp.PropertyType))
+        try
         {
-            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding("CheckMarkBrush")
+            var type = item.GetType();
+
+            var displayNameProp = type.GetProperty("DisplayName", BindingFlags.Public | BindingFlags.Instance);
+            if (displayNameProp?.CanRead == true)
             {
-                Mode = BindingMode.OneWay
-            });
+                var val = displayNameProp.GetValue(item);
+                var text = val?.ToString();
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    return text;
+                }
+            }
+
+            var nameProp = type.GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
+            if (nameProp?.CanRead == true)
+            {
+                var val = nameProp.GetValue(item);
+                var text = val?.ToString();
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    return text;
+                }
+            }
         }
-        else
+        catch
         {
-            // No per-item brush provided: default checkmark to the item's foreground by binding to the container's Foreground
-            msi.Bind(MultiSelectItem.CheckMarkBrushProperty, new Binding
-            {
-                Path = "Foreground",
-                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
-                Mode = BindingMode.OneWay
-            });
+            // ignore and fallback
         }
+
+        return item.ToString();
     }
 
     private void WireUpItemsFromItemsSource()
@@ -232,9 +258,9 @@ public class MultiSelectDropdown : SelectingItemsControl
             _currentCollection = null;
         }
 
-        foreach (var inpc in _itemSubscriptions)
+        foreach (var item in _itemSubscriptions)
         {
-            inpc.PropertyChanged -= OnItemPropertyChanged;
+            item.PropertyChanged -= OnItemPropertyChanged;
         }
         _itemSubscriptions.Clear();
     }
@@ -253,10 +279,10 @@ public class MultiSelectDropdown : SelectingItemsControl
         {
             foreach (var obj in e.OldItems)
             {
-                if (obj is INotifyPropertyChanged oldInpc)
+                if (obj is INotifyPropertyChanged oldItem)
                 {
-                    oldInpc.PropertyChanged -= OnItemPropertyChanged;
-                    _itemSubscriptions.Remove(oldInpc);
+                    oldItem.PropertyChanged -= OnItemPropertyChanged;
+                    _itemSubscriptions.Remove(oldItem);
                 }
             }
         }
@@ -265,10 +291,10 @@ public class MultiSelectDropdown : SelectingItemsControl
         {
             foreach (var obj in e.NewItems)
             {
-                if (obj is INotifyPropertyChanged newInpc)
+                if (obj is INotifyPropertyChanged newItem)
                 {
-                    newInpc.PropertyChanged += OnItemPropertyChanged;
-                    _itemSubscriptions.Add(newInpc);
+                    newItem.PropertyChanged += OnItemPropertyChanged;
+                    _itemSubscriptions.Add(newItem);
                 }
             }
         }
@@ -306,7 +332,7 @@ public class MultiSelectDropdown : SelectingItemsControl
 
     private void UpdateSelectionText()
     {
-        var itemsEnumerable = (IEnumerable)(ItemsSource ?? Items);
+        var itemsEnumerable = ItemsSource ?? Items;
         var totalCount = 0;
         var selectedCount = 0;
 
@@ -348,6 +374,75 @@ public class MultiSelectDropdown : SelectingItemsControl
         else
         {
             SelectionText = $"{selectedCount} Selected";
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SelectedIndexProperty)
+        {
+            var index = change.NewValue is int i ? i : (change.NewValue as int?) ?? -1;
+            if (index >= 0 && IsDropDownOpen)
+            {
+                // Only auto-scroll to selection if it likely came from keyboard text search recently.
+                var since = DateTime.UtcNow - _lastKeyNavigationAt;
+                if (since.TotalMilliseconds <= 800)
+                {
+                    try
+                    {
+                        ScrollIntoView(index);
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
+            }
+        }
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (e.Handled)
+        {
+            return;
+        }
+
+        var alt = (e.KeyModifiers & KeyModifiers.Alt) == KeyModifiers.Alt;
+        switch (e.Key)
+        {
+            case Key.F4:
+                IsDropDownOpen = !IsDropDownOpen;
+                e.Handled = true;
+                return;
+            case Key.Down when alt:
+                IsDropDownOpen = true;
+                e.Handled = true;
+                return;
+            case Key.Up when alt:
+                IsDropDownOpen = false;
+                e.Handled = true;
+                return;
+            case Key.Space:
+            case Key.Enter:
+                IsDropDownOpen = !IsDropDownOpen;
+                e.Handled = true;
+                return;
+            case Key.Escape when IsDropDownOpen:
+                IsDropDownOpen = false;
+                e.Handled = true;
+                return;
+        }
+    }
+
+    protected override void OnTextInput(TextInputEventArgs e)
+    {
+        base.OnTextInput(e);
+        if (!e.Handled && IsTextSearchEnabled)
+        {
+            _lastKeyNavigationAt = DateTime.UtcNow;
         }
     }
 
