@@ -43,12 +43,12 @@
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
                         <TextBlock Text="{Binding DisplayLevel}"
                                    TextAlignment="Right"
-                                   FontSize="12"
+                                   FontSize="14"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
                                    VerticalAlignment="Top"/>
                         <TextBlock Text="{Binding Class}"
                                    TextAlignment="Right"
-                                   FontSize="12"
+                                   FontSize="14"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
                                    VerticalAlignment="Top"/>
                     </StackPanel>

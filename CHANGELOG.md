@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Graphical issue when search results show incorrectly momentarily
 - Fix for some performance issues with large trace files
 - Fix issue when clicking checkbox versus clicking item in `Filter` dropdown
+- Allow keyboard typing of search text in dropdowns
+- Increase font size for level + class in `Client` view
+- Remove `Filters` and `Triggers` tab
 
 ## [0.9.5] - 2025-09-22
 

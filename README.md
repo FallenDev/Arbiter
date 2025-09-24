@@ -104,37 +104,6 @@ By selecting a range of bytes you can visualize various values in different form
 
 TBD
 
-## Roadmap 📌
-
-### v1.0
-
-- [x] Character View
-  - [x] Name
-  - [x] Level + Class
-  - [x] HP / MP
-  - [x] Map Location
-- [x] Inspector Tooltips
-- [x] Find by Command (Next/Prev)
-- [x] Delete Trace Packets
-- [x] Save/Load Traces
-- [x] Raw Packet Injection
-  - [x] To Client
-  - [x] To Server
-- [x] Revamp Settings UI
-
-### v1.1
-
-- [ ] Filter Rules
-    - [ ] Simple Conditions
-    - [ ] Lua Scripting
-- [ ] Trigger Rules
-    - [ ] Simple Conditions
-    - [ ] Lua Scripting
-
-### v1.2
-
-- [ ] Custom Scripts
-
 ## Contributing 👨🏻‍💻
 
 Contributions are welcomed for this project! Please open an issue or pull request if you have any suggestions, fixes, or improvements.
