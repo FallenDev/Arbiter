@@ -138,13 +138,30 @@ public partial class MainWindowViewModel : ViewModelBase
         var isNowVisible = IsInspectorPanelCollapsed;
         IsInspectorPanelCollapsed = !IsInspectorPanelCollapsed;
 
-        if (isNowVisible && !string.IsNullOrWhiteSpace(tabName))
+        if (isNowVisible)
         {
-            SelectedInspectorTabIndex = tabName switch
+            // Panel is being expanded - restore the saved width
+            RightPanelWidth = SavedRightPanelWidth;
+            RightPanelMinWidth = 240;
+            RightPanelMaxWidth = 480;
+            
+            // Set the selected tab if specified
+            if (!string.IsNullOrWhiteSpace(tabName))
             {
-                "hex" => 1,
-                _ => 0
-            };
+                SelectedInspectorTabIndex = tabName switch
+                {
+                    "hex" => 1,
+                    _ => 0
+                };
+            }
+        }
+        else
+        {
+            // Panel is being collapsed - save current width and set to collapsed size
+            SavedRightPanelWidth = RightPanelWidth;
+            RightPanelWidth = new GridLength(CollapsedInspectorWidth);
+            RightPanelMinWidth = CollapsedInspectorWidth;
+            RightPanelMaxWidth = CollapsedInspectorWidth;
         }
     }
 
@@ -266,6 +283,3 @@ public partial class MainWindowViewModel : ViewModelBase
         _mainWindow.WindowState = rect.IsMaximized ? WindowState.Maximized : WindowState.Normal;
     }
 }
-
-
-

@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `Filters` and `Triggers` tab
 - Client filtering is now a multi-select dropdown
 - Allow wrapping of `Command` and `Sequence` in `Hex` view when resizing panel
+- `Send` toolbar layout
 
 ## [0.9.5] - 2025-09-22
 

@@ -102,7 +102,8 @@
             </TabControl>
         </Grid>
         
-        <GridSplitter Grid.Column="3" ResizeDirection="Columns"/>
+        <GridSplitter Grid.Column="3" ResizeDirection="Columns"
+                      IsVisible="{Binding !IsInspectorPanelCollapsed}"/>
         
         <!-- Right Panel Tabs -->
         <Panel Grid.Column="4" IsVisible="{Binding !IsInspectorPanelCollapsed}">
