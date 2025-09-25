@@ -36,8 +36,6 @@ public partial class MainWindowViewModel
     private void ToggleRightPanel(string? tabName)
     {
         var isNowVisible = IsRightPanelCollapsed;
-        IsRightPanelCollapsed = !IsRightPanelCollapsed;
-
         if (isNowVisible)
         {
             // Panel is being expanded - restore the saved width
@@ -54,23 +52,30 @@ public partial class MainWindowViewModel
                     _ => 0
                 };
             }
+
+            IsRightPanelCollapsed = false;
         }
         else
         {
-            // Panel is being collapsed - save current width and set to collapsed size
-            SavedRightPanelWidth = RightPanelWidth;
-            RightPanelWidth = new GridLength(CollapsedInspectorWidth);
-            RightPanelMinWidth = CollapsedInspectorWidth;
-            RightPanelMaxWidth = CollapsedInspectorWidth;
+            CollapseRightPanel();
         }
+    }
+
+    private void CollapseRightPanel()
+    {
+        IsRightPanelCollapsed = true;
+        
+        // Panel is being collapsed - save current width and set to collapsed size
+        SavedRightPanelWidth = RightPanelWidth;
+        RightPanelWidth = new GridLength(CollapsedInspectorWidth);
+        RightPanelMinWidth = CollapsedInspectorWidth;
+        RightPanelMaxWidth = CollapsedInspectorWidth;
     }
     
     [RelayCommand]
     private void ToggleBottomPanel(string? tabName)
     {
         var isNowVisible = IsBottomPanelCollapsed;
-        IsBottomPanelCollapsed = !IsBottomPanelCollapsed;
-
         if (isNowVisible)
         {
             // Panel is being expanded - restore the saved height
@@ -87,15 +92,24 @@ public partial class MainWindowViewModel
                     _ => 0
                 };
             }
+
+            IsBottomPanelCollapsed = false;
         }
         else
         {
-            // Panel is being collapsed - save current height and set to collapsed size
-            SavedBottomPanelHeight = BottomPanelHeight;
-            BottomPanelHeight = new GridLength(CollapsedBottomHeight);
-            BottomPanelMinHeight = CollapsedBottomHeight;
-            BottomPanelMaxHeight = CollapsedBottomHeight;
+            CollapseBottomPanel();
         }
+    }
+
+    private void CollapseBottomPanel()
+    {
+        IsBottomPanelCollapsed = true;
+        
+        // Panel is being collapsed - save current height and set to collapsed size
+        SavedBottomPanelHeight = BottomPanelHeight;
+        BottomPanelHeight = new GridLength(CollapsedBottomHeight);
+        BottomPanelMinHeight = CollapsedBottomHeight;
+        BottomPanelMaxHeight = CollapsedBottomHeight;
     }
 
     [RelayCommand]
@@ -125,27 +139,7 @@ public partial class MainWindowViewModel
             IsMaximized = _mainWindow.WindowState == WindowState.Maximized
         };
     }
-
-    private void SaveLayout()
-    {
-        Settings.LeftPanel = new InterfacePanelState
-        {
-            Width = LeftPanelWidth.Value > 10 ? LeftPanelWidth.Value : null
-        };
-
-        Settings.RightPanel = new InterfacePanelState
-        {
-            IsCollapsed = IsRightPanelCollapsed,
-            Width = RightPanelWidth.Value > 10 ? RightPanelWidth.Value : null
-        };
-
-        Settings.BottomPanel = new InterfacePanelState
-        {
-            IsCollapsed = IsBottomPanelCollapsed,
-            Height = BottomPanelHeight.Value > 10 ? BottomPanelHeight.Value : null
-        };
-    }
-
+    
     private void RestoreWindowPosition()
     {
         var rect = Settings.StartupLocation;
@@ -173,6 +167,26 @@ public partial class MainWindowViewModel
         _mainWindow.WindowState = rect.IsMaximized ? WindowState.Maximized : WindowState.Normal;
     }
 
+    private void SaveLayout()
+    {
+        Settings.LeftPanel = new InterfacePanelState
+        {
+            Width = LeftPanelWidth.Value > 10 ? LeftPanelWidth.Value : null
+        };
+
+        Settings.RightPanel = new InterfacePanelState
+        {
+            IsCollapsed = IsRightPanelCollapsed,
+            Width = RightPanelWidth.Value > 10 ? RightPanelWidth.Value : null
+        };
+
+        Settings.BottomPanel = new InterfacePanelState
+        {
+            IsCollapsed = IsBottomPanelCollapsed,
+            Height = BottomPanelHeight.Value > 10 ? BottomPanelHeight.Value : null
+        };
+    }
+    
     private void RestoreLayout()
     {
         if (Settings.LeftPanel is not null)
@@ -185,7 +199,11 @@ public partial class MainWindowViewModel
 
         if (Settings.RightPanel is not null)
         {
-            IsRightPanelCollapsed = Settings.RightPanel.IsCollapsed;
+            if (Settings.RightPanel.IsCollapsed)
+            {
+                CollapseRightPanel();
+            }
+            
             if (Settings.RightPanel.Width.HasValue)
             {
                 RightPanelWidth = new GridLength(Settings.RightPanel.Width.Value, GridUnitType.Pixel);
@@ -194,7 +212,11 @@ public partial class MainWindowViewModel
 
         if (Settings.BottomPanel is not null)
         {
-            IsBottomPanelCollapsed = Settings.BottomPanel.IsCollapsed;
+            if (Settings.BottomPanel.IsCollapsed)
+            {
+                CollapseBottomPanel();
+            }
+            
             if (Settings.BottomPanel.Height.HasValue)
             {
                 BottomPanelHeight = new GridLength(Settings.BottomPanel.Height.Value, GridUnitType.Pixel);
