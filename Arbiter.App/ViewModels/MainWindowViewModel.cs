@@ -21,7 +21,8 @@ namespace Arbiter.App.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private static readonly string AutosaveDirectory = AppHelper.GetRelativePath("autosave");
-    
+    private const double CollapsedInspectorWidth = 40;
+
     private ArbiterSettings Settings { get; set; } = new();
 
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -36,6 +37,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private bool _isInspectorPanelCollapsed;
     [ObservableProperty] private int _selectedInspectorTabIndex;
+
+    // Right panel sizing state (bound from XAML)
+    [ObservableProperty] private GridLength _rightPanelWidth = new(1, GridUnitType.Star);
+    [ObservableProperty] private double _rightPanelMinWidth = 240;
+    [ObservableProperty] private double _rightPanelMaxWidth = 480;
+
+    // Stores the previous (pre-collapse) width so it can be restored when expanded
+    [ObservableProperty] private GridLength _savedRightPanelWidth = new(1, GridUnitType.Star);
     
     public ClientManagerViewModel ClientManager { get; }
     public SendPacketViewModel SendPacket { get; }

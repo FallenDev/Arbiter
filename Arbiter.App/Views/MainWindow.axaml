@@ -41,7 +41,7 @@
             <ColumnDefinition Width="8"/>
             <ColumnDefinition Width="2*" MinWidth="780"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="240" MaxWidth="480"/>
+            <ColumnDefinition Width="{Binding RightPanelWidth, Mode=TwoWay}" MinWidth="{Binding RightPanelMinWidth}" MaxWidth="{Binding RightPanelMaxWidth}"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
@@ -127,14 +127,18 @@
             </Button>
         </Panel>
         <!-- Right Panel Collapsed View -->
-        <Panel Grid.Column="4" IsVisible="{Binding IsInspectorPanelCollapsed, FallbackValue={x:False}}">
+        <Panel Grid.Column="4"
+               Background="{StaticResource Talgonite.TabStrip.Background}"
+               IsVisible="{Binding IsInspectorPanelCollapsed, FallbackValue={x:False}}">
             <LayoutTransformControl LayoutTransform="rotate(90deg)">
                 <WrapPanel ItemSpacing="4">
                     <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="inspector"
                             Content="Inspector"
+                            Classes="tab"
                             ToolTip.Tip="Shows the Inspector view."/>
                     <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="hex"
                             Content="Hex"
+                            Classes="tab"
                             ToolTip.Tip="Shows the Hex view."/>
                 </WrapPanel>
             </LayoutTransformControl>

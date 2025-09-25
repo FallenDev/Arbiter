@@ -13,12 +13,34 @@
                     Disabled Button
                 </Button>
                 
+                <Border Classes="divider-h"/>
+                
                 <Button Classes="destructive">
                     Destructive Button
                 </Button>
                 
+                <Button Classes="destructive" IsEnabled="False">
+                    Destructive Disabled Button
+                </Button>
+                
+                <Border Classes="divider-h"/>
+                
                 <Button Classes="toolbar">
                     Toolbar Button
+                </Button>
+                
+                <Button Classes="toolbar" IsEnabled="False">
+                    Toolbar Disabled Button
+                </Button>
+                
+                <Border Classes="divider-h"/>
+                
+                <Button Classes="tab">
+                    Tab Disabled Button
+                </Button>
+                
+                <Button Classes="tab" IsEnabled="False">
+                    Tab Disabled Button
                 </Button>
             </StackPanel>
         </Border>
@@ -117,5 +139,35 @@
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="IsTabStop" Value="False"/>
+    </Style>
+    
+    <!-- Tab Button Style -->
+    <Style Selector="Button.tab">
+        <Setter Property="Background" Value="{StaticResource Talgonite.TabControl.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.Foreground}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0,2,0,0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        
+        <!-- Hover Style -->
+        <Style Selector="^.tab:pointerover">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.HoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.HoverForeground}"/>
+        </Style>
+        
+        <!-- Pressed Style -->
+        <Style Selector="^.tab:pressed">
+            <Setter Property="Background" Value="{StaticResource Talgonite.Button.PressedBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Button.PressedForeground}"/>
+        </Style>
+        
+        <!-- Disabled Style -->
+        <Style Selector="^.tab:disabled">
+            <Setter Property="Background" Value="{StaticResource Talgonite.TabItem.DisabledBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.TabItem.DisabledForeground}"/>
+        </Style>
     </Style>
 </Styles>
