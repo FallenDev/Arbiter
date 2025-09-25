@@ -10,12 +10,17 @@ namespace Arbiter.App.ViewModels;
 
 public partial class MainWindowViewModel
 {
-    private const double CollapsedInspectorWidth = 40;
-    private const double CollapsedBottomHeight = 40;
+    private const double CollapsedWidth = 40;
+    private const double CollapsedHeight = 40;
 
     // Left panel sizing state
+    [ObservableProperty] private bool _isLeftPanelCollapsed;
+    [ObservableProperty] private int _selectedLeftPanelTabIndex;
     [ObservableProperty] private GridLength _leftPanelWidth = new(1, GridUnitType.Star);
-    
+    [ObservableProperty] private double _leftPanelMinWidth = 240;
+    [ObservableProperty] private double _leftPanelMaxWidth = 360;
+    [ObservableProperty] private GridLength _savedLeftPanelWidth = new(1, GridUnitType.Star);
+
     // Right panel sizing state
     [ObservableProperty] private bool _isRightPanelCollapsed;
     [ObservableProperty] private int _selectedRightPanelTabIndex;
@@ -31,6 +36,46 @@ public partial class MainWindowViewModel
     [ObservableProperty] private double _bottomPanelMinHeight = 300;
     [ObservableProperty] private double _bottomPanelMaxHeight = 720;
     [ObservableProperty] private GridLength _savedBottomPanelHeight = new(1, GridUnitType.Star);
+
+    [RelayCommand]
+    private void ToggleLeftPanel(string? tabName)
+    {
+        var isNowVisible = IsLeftPanelCollapsed;
+        if (isNowVisible)
+        {
+            // Panel is being expanded - restore the saved width
+            LeftPanelWidth = SavedLeftPanelWidth;
+            LeftPanelMinWidth = 240;
+            LeftPanelMaxWidth = 360;
+
+            // Set the selected tab if specified
+            if (!string.IsNullOrWhiteSpace(tabName))
+            {
+                SelectedLeftPanelTabIndex = tabName switch
+                {
+                    "hex" => 1,
+                    _ => 0
+                };
+            }
+
+            IsLeftPanelCollapsed = false;
+        }
+        else
+        {
+            CollapseLeftPanel();
+        }
+    }
+
+    private void CollapseLeftPanel()
+    {
+        IsLeftPanelCollapsed = true;
+
+        // Panel is being collapsed - save current width and set to collapsed size
+        SavedLeftPanelWidth = LeftPanelWidth;
+        LeftPanelWidth = new GridLength(CollapsedWidth);
+        LeftPanelMinWidth = CollapsedWidth;
+        LeftPanelMaxWidth = CollapsedWidth;
+    }
 
     [RelayCommand]
     private void ToggleRightPanel(string? tabName)
@@ -64,14 +109,14 @@ public partial class MainWindowViewModel
     private void CollapseRightPanel()
     {
         IsRightPanelCollapsed = true;
-        
+
         // Panel is being collapsed - save current width and set to collapsed size
         SavedRightPanelWidth = RightPanelWidth;
-        RightPanelWidth = new GridLength(CollapsedInspectorWidth);
-        RightPanelMinWidth = CollapsedInspectorWidth;
-        RightPanelMaxWidth = CollapsedInspectorWidth;
+        RightPanelWidth = new GridLength(CollapsedWidth);
+        RightPanelMinWidth = CollapsedWidth;
+        RightPanelMaxWidth = CollapsedWidth;
     }
-    
+
     [RelayCommand]
     private void ToggleBottomPanel(string? tabName)
     {
@@ -104,12 +149,12 @@ public partial class MainWindowViewModel
     private void CollapseBottomPanel()
     {
         IsBottomPanelCollapsed = true;
-        
+
         // Panel is being collapsed - save current height and set to collapsed size
         SavedBottomPanelHeight = BottomPanelHeight;
-        BottomPanelHeight = new GridLength(CollapsedBottomHeight);
-        BottomPanelMinHeight = CollapsedBottomHeight;
-        BottomPanelMaxHeight = CollapsedBottomHeight;
+        BottomPanelHeight = new GridLength(CollapsedHeight);
+        BottomPanelMinHeight = CollapsedHeight;
+        BottomPanelMaxHeight = CollapsedHeight;
     }
 
     [RelayCommand]
@@ -139,16 +184,16 @@ public partial class MainWindowViewModel
             IsMaximized = _mainWindow.WindowState == WindowState.Maximized
         };
     }
-    
+
     private void RestoreWindowPosition()
     {
         var rect = Settings.StartupLocation;
-        
+
         if (rect is null)
         {
             return;
         }
-        
+
         if (rect is { X: >= 0, Y: >= 0 })
         {
             _mainWindow.Position = new PixelPoint(rect.X.Value, rect.Y.Value);
@@ -171,6 +216,7 @@ public partial class MainWindowViewModel
     {
         Settings.LeftPanel = new InterfacePanelState
         {
+            IsCollapsed = IsLeftPanelCollapsed,
             Width = LeftPanelWidth.Value > 10 ? LeftPanelWidth.Value : null
         };
 
@@ -186,14 +232,19 @@ public partial class MainWindowViewModel
             Height = BottomPanelHeight.Value > 10 ? BottomPanelHeight.Value : null
         };
     }
-    
+
     private void RestoreLayout()
     {
         if (Settings.LeftPanel is not null)
         {
             if (Settings.LeftPanel.Width.HasValue)
             {
-                LeftPanelWidth = new GridLength(Settings.LeftPanel.Width.Value, GridUnitType.Pixel);
+                if (Settings.LeftPanel.IsCollapsed)
+                {
+                    CollapseLeftPanel();
+                }
+
+                LeftPanelWidth = new GridLength(Settings.LeftPanel.Width.Value);
             }
         }
 
@@ -203,10 +254,10 @@ public partial class MainWindowViewModel
             {
                 CollapseRightPanel();
             }
-            
+
             if (Settings.RightPanel.Width.HasValue)
             {
-                RightPanelWidth = new GridLength(Settings.RightPanel.Width.Value, GridUnitType.Pixel);
+                RightPanelWidth = new GridLength(Settings.RightPanel.Width.Value);
             }
         }
 
@@ -216,10 +267,10 @@ public partial class MainWindowViewModel
             {
                 CollapseBottomPanel();
             }
-            
+
             if (Settings.BottomPanel.Height.HasValue)
             {
-                BottomPanelHeight = new GridLength(Settings.BottomPanel.Height.Value, GridUnitType.Pixel);
+                BottomPanelHeight = new GridLength(Settings.BottomPanel.Height.Value);
             }
         }
     }
