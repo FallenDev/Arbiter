@@ -62,7 +62,9 @@
                     </WrapPanel>
                     <ListBox ItemsSource="{Binding ClientManager.Clients}"
                              SelectedItem="{Binding SelectedClient}"
-                             Classes="bubble">
+                             Classes="bubble"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListBox.DataTemplates>
                             <DataTemplate DataType="vmc:ClientViewModel">
                                 <v:ClientView/>

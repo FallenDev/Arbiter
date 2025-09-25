@@ -392,6 +392,7 @@
                  FontSize="{StaticResource Talgonite.FontSize.Trace}"
                  SelectionMode="Multiple"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                  behaviors:ScrollToIndexBehavior.ScrollToIndex="{Binding ScrollToIndexRequested}"
                  behaviors:ScrollToEndBehavior.ScrollToEnd="{Binding ScrollToEndRequested}"
                  behaviors:ScrollToEndBehavior.AutoScrollToEnd="True">

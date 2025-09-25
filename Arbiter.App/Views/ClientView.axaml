@@ -20,25 +20,26 @@
         <SolidColorBrush x:Key="Talgonite.Client.ManaForeground" Color="#82baf7"/>
     </UserControl.Resources>
     
-    <Panel Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <!-- Allow double click for bringing the client to front -->
         <Interaction.Behaviors>
             <DoubleTappedTrigger>
                 <InvokeCommandAction Command="{Binding BringToFrontCommand}"/>
-            </DoubleTappedTrigger>    
+            </DoubleTappedTrigger>
         </Interaction.Behaviors>
-        
+
         <Border Padding="8,4"
-                Margin="0,0,0,4">
+                Margin="0,0,0,4"
+                HorizontalAlignment="Stretch">
             <StackPanel Spacing="4">
                 <Grid ColumnDefinitions="*,Auto">
-                <!-- Name -->
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="{Binding Name}"
-                           FontSize="24"
-                           Foreground="{StaticResource Talgonite.Client.NameForeground}"
-                           VerticalAlignment="Bottom"/>
-                
+                    <!-- Name -->
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Text="{Binding Name}"
+                               FontSize="24"
+                               Foreground="{StaticResource Talgonite.Client.NameForeground}"
+                               VerticalAlignment="Bottom"/>
+
                     <!-- Level and Class -->
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
                         <TextBlock Text="{Binding DisplayLevel}"
@@ -53,7 +54,7 @@
                                    VerticalAlignment="Top"/>
                     </StackPanel>
                 </Grid>
-                
+
                 <!-- Map Location -->
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <TextBlock Text="{Binding MapName}"
@@ -63,10 +64,10 @@
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
                 </StackPanel>
-                
+
                 <Border Classes="divider-h" Background="{StaticResource Talgonite.Border.DividerBrush}"
                         Margin="0,4"/>
-                
+
                 <!-- HP Amount -->
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <TextBlock Grid.Column="0"
@@ -75,7 +76,7 @@
                                FontWeight="SemiBold"
                                Foreground="{StaticResource Talgonite.Client.TextForeground}"
                                Margin="0,0,4,0"/>
-                    
+
                     <!-- Current and Max -->
                     <TextBlock Grid.Column="1"
                                FontSize="14"
@@ -87,13 +88,13 @@
                         <Run Text="{Binding MaxHealth}"/>
                     </TextBlock>
                 </Grid>
-                
+
                 <!-- HP Bar -->
                 <ProgressBar Minimum="0" Maximum="100"
                              Value="{Binding BoundedHealthPercent}"
                              ShowProgressText="False"
                              Foreground="{StaticResource Talgonite.Client.HealthForeground}"/>
-                
+
                 <!-- MP Amount -->
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <TextBlock Grid.Column="0"
@@ -102,7 +103,7 @@
                                FontWeight="SemiBold"
                                Foreground="{StaticResource Talgonite.Client.TextForeground}"
                                Margin="0,0,4,0"/>
-                    
+
                     <!-- Current and Max -->
                     <TextBlock Grid.Column="1"
                                FontSize="14"
@@ -114,7 +115,7 @@
                         <Run Text="{Binding MaxMana}"/>
                     </TextBlock>
                 </Grid>
-                
+
                 <!-- MP Bar -->
                 <ProgressBar Minimum="0" Maximum="100"
                              Value="{Binding BoundedManaPercent}"
@@ -122,5 +123,5 @@
                              Foreground="{StaticResource Talgonite.Client.ManaForeground}"/>
             </StackPanel>
         </Border>
-    </Panel>
+    </Grid>
 </UserControl>
