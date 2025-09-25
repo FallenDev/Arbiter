@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
@@ -8,8 +7,6 @@ using Arbiter.App.ViewModels.Client;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Tracing;
-using Arbiter.App.Views;
-using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,9 +17,6 @@ namespace Arbiter.App.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private static readonly string AutosaveDirectory = AppHelper.GetRelativePath("autosave");
-    private const double CollapsedInspectorWidth = 40;
-
     private ArbiterSettings Settings { get; set; } = new();
 
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -34,17 +28,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _title = "Arbiter";
     [ObservableProperty] private ClientViewModel? _selectedClient;
     [ObservableProperty] private RawHexViewModel? _selectedRawHex;
-
-    [ObservableProperty] private bool _isInspectorPanelCollapsed;
-    [ObservableProperty] private int _selectedInspectorTabIndex;
-
-    // Right panel sizing state (bound from XAML)
-    [ObservableProperty] private GridLength _rightPanelWidth = new(1, GridUnitType.Star);
-    [ObservableProperty] private double _rightPanelMinWidth = 240;
-    [ObservableProperty] private double _rightPanelMaxWidth = 480;
-
-    // Stores the previous (pre-collapse) width so it can be restored when expanded
-    [ObservableProperty] private GridLength _savedRightPanelWidth = new(1, GridUnitType.Star);
     
     public ClientManagerViewModel ClientManager { get; }
     public SendPacketViewModel SendPacket { get; }
@@ -77,38 +60,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         Trace.SelectedPacketChanged += OnPacketSelected;
     }
-
-    private void OnPacketSelected(TracePacketViewModel? viewModel)
-    {
-        if (viewModel is null)
-        {
-            SelectedRawHex = null;
-            Inspector.SelectedPacket = null;
-            return;
-        }
-
-        SelectedRawHex = new RawHexViewModel(viewModel.DecryptedPacket);
-        SelectedRawHex.ClearSelection();
-
-        Inspector.SelectedPacket = viewModel.DecryptedPacket;
-    }
-
-    [RelayCommand]
-    private async Task ShowSettings()
-    {
-        var newSettings =
-            await _dialogService.ShowDialogAsync<SettingsWindow, SettingsViewModel, ArbiterSettings>();
-
-        if (newSettings is null)
-        {
-            return;
-        }
-
-        Settings = newSettings;
-        await _settingsService.SaveToFileAsync(Settings);
-        LaunchClientCommand.NotifyCanExecuteChanged();
-    }
-
+    
     private bool CanLaunchClient() =>
         !string.IsNullOrWhiteSpace(Settings.ClientExecutablePath) && OperatingSystem.IsWindows();
 
@@ -129,39 +81,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 Message = $"An error occurred while launching the client:\n\n{ex.Message}",
                 Description = "You can change the client executable path in Settings."
             });
-        }
-    }
-
-    [RelayCommand]
-    private void ToggleInspectorPanel(string? tabName)
-    {
-        var isNowVisible = IsInspectorPanelCollapsed;
-        IsInspectorPanelCollapsed = !IsInspectorPanelCollapsed;
-
-        if (isNowVisible)
-        {
-            // Panel is being expanded - restore the saved width
-            RightPanelWidth = SavedRightPanelWidth;
-            RightPanelMinWidth = 240;
-            RightPanelMaxWidth = 480;
-            
-            // Set the selected tab if specified
-            if (!string.IsNullOrWhiteSpace(tabName))
-            {
-                SelectedInspectorTabIndex = tabName switch
-                {
-                    "hex" => 1,
-                    _ => 0
-                };
-            }
-        }
-        else
-        {
-            // Panel is being collapsed - save current width and set to collapsed size
-            SavedRightPanelWidth = RightPanelWidth;
-            RightPanelWidth = new GridLength(CollapsedInspectorWidth);
-            RightPanelMinWidth = CollapsedInspectorWidth;
-            RightPanelMaxWidth = CollapsedInspectorWidth;
         }
     }
 
@@ -189,97 +108,19 @@ public partial class MainWindowViewModel : ViewModelBase
             });
         }
     }
-
-    internal async Task OnOpened()
+    
+    private void OnPacketSelected(TracePacketViewModel? viewModel)
     {
-        Settings = await _settingsService.LoadFromFileAsync();
-        LaunchClientCommand.NotifyCanExecuteChanged();
-
-        if (Settings.StartupLocation is not null)
+        if (viewModel is null)
         {
-            RestoreWindowPosition(Settings.StartupLocation);
-        }
-    }
-
-    internal async Task OnLoaded()
-    {
-        await StartProxyAsync();
-
-        if (Settings.TraceOnStartup)
-        {
-            Trace.StartTracing();
-        }
-    }
-
-    internal async Task<bool> OnClosing(WindowCloseReason reason)
-    {
-        if (Trace.IsRunning)
-        {
-            Trace.StopTracing();
-        }
-        
-        // Autosave live traces on exit
-        if (Settings.TraceAutosave && Trace is { IsLive: true, IsEmpty: false })
-        {
-            try
-            {
-                await AutoSaveTraceAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to autosave trace: {Message}", ex.Message);
-            }
+            SelectedRawHex = null;
+            Inspector.SelectedPacket = null;
+            return;
         }
 
-        await SaveWindowPositionAsync();
-        return true;
-    }
+        SelectedRawHex = new RawHexViewModel(viewModel.DecryptedPacket);
+        SelectedRawHex.ClearSelection();
 
-    private async Task AutoSaveTraceAsync()
-    {
-        if (!Directory.Exists(AutosaveDirectory))
-        {
-            Directory.CreateDirectory(AutosaveDirectory);
-        }
-
-        var defaultFilename = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-autosave.json";
-        var outputPath = System.IO.Path.Join(AutosaveDirectory, defaultFilename);
-
-        await Trace.SaveAllToFileAsync(outputPath);
-        _logger.LogInformation("Autosaved trace to {Filename}", outputPath);
-    }
-
-    private Task SaveWindowPositionAsync()
-    {
-        Settings.StartupLocation = new WindowRect
-        {
-            X = _mainWindow.Position.X,
-            Y = _mainWindow.Position.Y,
-            Width = (int)_mainWindow.Width,
-            Height = (int)_mainWindow.Height,
-            IsMaximized = _mainWindow.WindowState == WindowState.Maximized
-        };
-
-        return _settingsService.SaveToFileAsync(Settings);
-    }
-
-    private void RestoreWindowPosition(WindowRect rect)
-    {
-        if (rect is { X: >= 0, Y: >= 0 })
-        {
-            _mainWindow.Position = new PixelPoint(rect.X.Value, rect.Y.Value);
-        }
-
-        if (rect.Width is > 0)
-        {
-            _mainWindow.Width = rect.Width.Value;
-        }
-
-        if (rect.Height is > 0)
-        {
-            _mainWindow.Height = rect.Height.Value;       
-        }
-
-        _mainWindow.WindowState = rect.IsMaximized ? WindowState.Maximized : WindowState.Normal;
+        Inspector.SelectedPacket = viewModel.DecryptedPacket;
     }
 }

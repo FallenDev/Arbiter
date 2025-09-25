@@ -12,7 +12,23 @@ namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel
 {
+    private static readonly string AutosaveDirectory = AppHelper.GetRelativePath("autosave");
+    
     public Task SaveAllToFileAsync(string outputPath) => SaveToFileAsync(_allPackets, outputPath);
+    
+    public async Task AutoSaveTraceAsync()
+    {
+        if (!Directory.Exists(AutosaveDirectory))
+        {
+            Directory.CreateDirectory(AutosaveDirectory);
+        }
+
+        var defaultFilename = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-autosave.json";
+        var outputPath = System.IO.Path.Join(AutosaveDirectory, defaultFilename);
+
+        await SaveAllToFileAsync(outputPath);
+        _logger.LogInformation("Autosaved trace to {Filename}", outputPath);
+    }
     
     private async Task SaveToFileAsync(IEnumerable<TracePacketViewModel> viewModels, string outputPath)
     {
