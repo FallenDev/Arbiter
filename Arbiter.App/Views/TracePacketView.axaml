@@ -32,7 +32,7 @@
                 BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="4,2">
-            <Grid ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="4">
+            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="4">
                 <!-- Timestamp and Client Name -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
                     <TextBlock Name="TimestampText"
@@ -67,15 +67,16 @@
                 </StackPanel>
                 
                 <!-- Payload Display -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-                    <TextBlock Name="CommandText"
+                <Grid Grid.Column="2" ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                    <TextBlock Grid.Column="0" Name="CommandText"
                                Text="{Binding Command, StringFormat={}{0:X2}}"
                                Foreground="{Binding #CommandNameText.Foreground}"/>
                     
-                    <TextBlock Name="PayloadText"
+                    <TextBlock Grid.Column="1" Name="PayloadText"
                                Text="{Binding DisplayValue}"
-                               TextWrapping="Wrap"/>
-                </StackPanel>
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"/>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
