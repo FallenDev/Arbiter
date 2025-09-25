@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Globalization;
 using Arbiter.App.Models;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
@@ -20,7 +21,7 @@ public partial class TraceFilterViewModel : ViewModelBase
     public IEnumerable<byte> SelectedServerCommands { get; set; } = [];
 
     public IEnumerable<string> SelectedClientNames { get; set; } = [];
-    
+
     public TraceFilterViewModel()
     {
         InitializeCommands();
@@ -58,8 +59,8 @@ public partial class TraceFilterViewModel : ViewModelBase
 
         var newClient = new ClientFilterViewModel { DisplayName = name, IsSelected = isSelected };
         newClient.PropertyChanged += OnClientFilterPropertyChanged;
-        
-        Clients.Add(newClient);
+
+        InsertClientSorted(newClient);
         return true;
     }
 
@@ -85,6 +86,7 @@ public partial class TraceFilterViewModel : ViewModelBase
     }
 
     #region Command Filter Management
+
     private void InitializeCommands()
     {
         var clientCommandModels = Enum.GetValues<ClientCommand>()
@@ -108,7 +110,7 @@ public partial class TraceFilterViewModel : ViewModelBase
             vm.PropertyChanged += OnCommandFilterPropertyChanged;
             Commands.Add(vm);
         }
-        
+
         UpdateSelectedCommands();
     }
 
@@ -139,8 +141,9 @@ public partial class TraceFilterViewModel : ViewModelBase
         OnPropertyChanged(nameof(SelectedServerCommands));
         OnPropertyChanged(nameof(SelectedCommands));
     }
+
     #endregion
-    
+
     #region Client Name Filter Management
 
     private void OnClientFilterPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -161,5 +164,34 @@ public partial class TraceFilterViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(SelectedClientNames));
     }
+
+    private void InsertClientSorted(ClientFilterViewModel newClient)
+    {
+        // Place empty names after non-empty; then alphabetical (case-insensitive)
+        for (var i = 0; i < Clients.Count; i++)
+        {
+            if (CompareClients(newClient, Clients[i]) < 0)
+            {
+                Clients.Insert(i, newClient);
+                return;
+            }
+        }
+
+        Clients.Add(newClient);
+    }
+
+    private static int CompareClients(ClientFilterViewModel a, ClientFilterViewModel b)
+    {
+        var aEmpty = string.IsNullOrEmpty(a?.DisplayName);
+        var bEmpty = string.IsNullOrEmpty(b?.DisplayName);
+        if (aEmpty != bEmpty)
+        {
+            // empty goes last
+            return aEmpty ? 1 : -1;
+        }
+
+        return string.Compare(a?.DisplayName, b?.DisplayName, true, CultureInfo.InvariantCulture);
+    }
+
     #endregion
 }

@@ -59,14 +59,10 @@ public partial class TraceViewModel
         // Filter by client name matches
         if (FilterParameters.Clients.Count > 0)
         {
-            if (string.IsNullOrEmpty(vm.ClientName))
-            {
-                return true;
-            }
-
+            // Unauthenticated clients use the empty string as their name (ex: `connection 1`)
             var nameMatches = FilterParameters.Clients.Any(client =>
                 client.IsSelected &&
-                string.Equals(client.DisplayName, vm.ClientName, StringComparison.OrdinalIgnoreCase));
+                string.Equals(client.DisplayName, vm.ClientName ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 
             if (!nameMatches)
             {

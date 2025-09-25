@@ -245,11 +245,13 @@
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            FontSize="16"
                                            MaxDropdownHeight="400"
-                                           Width="140">
+                                           Width="160">
                         <c:MultiSelectDropdown.ItemTemplate>
                             <DataTemplate DataType="vm:ClientFilterViewModel">
                                 <Grid ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch">
-                                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}"
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding DisplayName, Converter={x:Static converters:PlaceholderConverter.Converter}, ConverterParameter=&lt;unknown&gt;}"
+                                               Foreground="{Binding DisplayName, Converter={x:Static converters:NullOrEmptyBrushConverter.Converter}, ConverterParameter={StaticResource Talgonite.TextBlock.DimForeground}}"
                                                FontSize="14"
                                                VerticalAlignment="Center"/>
                                 </Grid>
