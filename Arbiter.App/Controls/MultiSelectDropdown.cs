@@ -355,7 +355,7 @@ public class MultiSelectDropdown : SelectingItemsControl
         var totalCount = 0;
         var selectedCount = 0;
         object? firstSelected = null;
-        
+
         foreach (var item in itemsEnumerable)
         {
             if (item is null)
@@ -388,49 +388,48 @@ public class MultiSelectDropdown : SelectingItemsControl
             }
         }
 
-        if (totalCount == 0 || selectedCount == 0)
+        switch (selectedCount)
         {
-            SelectionText = "None";
-        }
-        else if (selectedCount == 1)
-        {
-            // Show the DisplayName of the selected item (if available) or fall back to ToString()
-            string? display = null;
-
-            var dataForName = firstSelected;
-            if (dataForName is MultiSelectItem container)
+            case 0:
+                SelectionText = totalCount > 0 ? "None" : "All";
+                return;
+            case 1:
             {
-                dataForName = container.Content ?? container;
-            }
+                // Show the DisplayName of the selected item (if available) or fall back to ToString()
+                string? display = null;
 
-            if (dataForName is not null)
-            {
-                var dnProp = dataForName.GetType().GetProperty("DisplayName", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-                if (dnProp is not null && dnProp.CanRead)
+                var dataForName = firstSelected;
+                if (dataForName is MultiSelectItem container)
                 {
-                    try
-                    {
-                        var value = dnProp.GetValue(dataForName);
-                        display = value?.ToString();
-                    }
-                    catch
-                    {
-                        // ignore and fall back to ToString()
-                    }
+                    dataForName = container.Content ?? container;
                 }
 
-                display ??= dataForName.ToString();
-            }
+                if (dataForName is not null)
+                {
+                    var dnProp = dataForName.GetType().GetProperty("DisplayName",
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                    if (dnProp is not null && dnProp.CanRead)
+                    {
+                        try
+                        {
+                            var value = dnProp.GetValue(dataForName);
+                            display = value?.ToString();
+                        }
+                        catch
+                        {
+                            // ignore and fall back to ToString()
+                        }
+                    }
 
-            SelectionText = string.IsNullOrWhiteSpace(display) ? "1 Selected" : display;
-        }
-        else if (selectedCount == totalCount)
-        {
-            SelectionText = "All";
-        }
-        else
-        {
-            SelectionText = $"{selectedCount} Selected";
+                    display ??= dataForName.ToString();
+                }
+
+                SelectionText = string.IsNullOrWhiteSpace(display) ? "1 Selected" : display;
+                return;
+            }
+            default:
+                SelectionText = selectedCount == totalCount ? "All" : $"{selectedCount} Selected";
+                break;
         }
     }
 
