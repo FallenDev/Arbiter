@@ -264,6 +264,12 @@ public partial class SendPacketViewModel : ViewModelBase
                 continue;
             }
 
+            // Allow comments
+            if (line.StartsWith('#') || line.StartsWith("//"))
+            {
+                continue;
+            }
+
             var match = PacketLineRegex.Match(line.Trim());
             if (!match.Success)
             {
