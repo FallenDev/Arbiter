@@ -6,10 +6,11 @@ using System.Threading;
 using Arbiter.App.Services;
 using Arbiter.Net.Proxy;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Client;
 
-public class ClientManagerViewModel : ViewModelBase
+public partial class ClientManagerViewModel : ViewModelBase
 {
     private readonly ProxyServer _proxyServer;
     private readonly IGameClientService _gameClientService;
@@ -18,7 +19,13 @@ public class ClientManagerViewModel : ViewModelBase
     private readonly Dictionary<int, ClientViewModel> _clientMap = [];
 
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
+    
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasClients))]
+    private int _clientCount;
 
+    public bool HasClients => ClientCount > 0;
+    
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService)
     {
         _proxyServer = proxyServer;
@@ -61,7 +68,11 @@ public class ClientManagerViewModel : ViewModelBase
         client.BringToFrontRequested += OnClientBringToFront;
 
         // We are fully logged in and can display this client in the list
-        Dispatcher.UIThread.Post(() => Clients.Add(client));
+        Dispatcher.UIThread.Post(() =>
+        {
+            Clients.Add(client);
+            ClientCount = Clients.Count;
+        });
     }
 
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
@@ -78,7 +89,11 @@ public class ClientManagerViewModel : ViewModelBase
         client.BringToFrontRequested -= OnClientBringToFront;
         
         // We are fully logged out and can remove the client
-        Dispatcher.UIThread.Post(() => Clients.Remove(client));
+        Dispatcher.UIThread.Post(() =>
+        {
+            Clients.Remove(client);
+            ClientCount = Clients.Count;
+        });
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
@@ -100,7 +115,11 @@ public class ClientManagerViewModel : ViewModelBase
         client.BringToFrontRequested -= OnClientBringToFront;
 
         // Try removing the client from the list
-        Dispatcher.UIThread.Post(() => Clients.Remove(client));
+        Dispatcher.UIThread.Post(() =>
+        {
+            Clients.Remove(client);
+            ClientCount = Clients.Count;
+        });
 
         using var _ = _clientLock.EnterScope();
         _clientMap.Remove(client.Id);
