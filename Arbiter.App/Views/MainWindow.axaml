@@ -102,7 +102,7 @@
             
             <!-- Bottom Panel -->
             <Panel Grid.Row="2" IsVisible="{Binding !IsBottomPanelCollapsed}">
-                <TabControl SelectedIndex="{Binding SelectedBottomTabIndex}">
+                <TabControl SelectedIndex="{Binding SelectedBottomPanelTabIndex}">
                     <!-- Bottom Area -->
                     <TabItem Header="Send">
                         <v:SendPacketView DataContext="{Binding SendPacket}"/>
@@ -143,11 +143,11 @@
         </Grid>
         
         <GridSplitter Grid.Column="3" ResizeDirection="Columns"
-                      IsVisible="{Binding !IsInspectorPanelCollapsed}"/>
+                      IsVisible="{Binding !IsRightPanelCollapsed}"/>
         
         <!-- Right Panel Tabs -->
-        <Panel Grid.Column="4" IsVisible="{Binding !IsInspectorPanelCollapsed}">
-            <TabControl Name="RightPanelTabStrip" SelectedIndex="{Binding SelectedInspectorTabIndex}">
+        <Panel Grid.Column="4" IsVisible="{Binding !IsRightPanelCollapsed}">
+            <TabControl Name="RightPanelTabStrip" SelectedIndex="{Binding SelectedRightPanelTabIndex}">
                 <TabItem Header="Inspector" IsSelected="True">
                     <v:InspectorView DataContext="{Binding Inspector}"/>
                 </TabItem>
@@ -156,7 +156,7 @@
                 </TabItem>
             </TabControl>
             <!-- Collapse Button -->
-            <Button Command="{Binding ToggleInspectorPanelCommand}"
+            <Button Command="{Binding ToggleRightPanelCommand}"
                     Classes="toolbar"
                     ToolTip.Tip="Collapses the inspector panel."
                     CornerRadius="2"
@@ -171,14 +171,14 @@
         <!-- Right Panel Collapsed View -->
         <Panel Grid.Column="4"
                Background="{StaticResource Talgonite.TabStrip.Background}"
-               IsVisible="{Binding IsInspectorPanelCollapsed, FallbackValue={x:False}}">
+               IsVisible="{Binding IsRightPanelCollapsed, FallbackValue={x:False}}">
             <LayoutTransformControl LayoutTransform="rotate(90deg)">
                 <WrapPanel ItemSpacing="4">
-                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="inspector"
+                    <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="inspector"
                             Content="Inspector"
                             Classes="tab"
                             ToolTip.Tip="Shows the Inspector view."/>
-                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="hex"
+                    <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="hex"
                             Content="Hex"
                             Classes="tab"
                             ToolTip.Tip="Shows the Hex view."/>

@@ -10,6 +10,8 @@ namespace Arbiter.App.Services;
 
 public class SettingsService : ISettingsService
 {
+    private const string SettingsFileName = "settings.json";
+    
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -18,13 +20,12 @@ public class SettingsService : ISettingsService
         {
             new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
         },
-        WriteIndented = true
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
     // Default to the folder where the application is running
     private static readonly string SettingsDirectory = AppHelper.GetStartupLocation();
-
-    private const string SettingsFileName = "settings.json";
 
     private readonly IStorageProvider _storageProvider;
 

@@ -15,7 +15,12 @@ public class ArbiterSettings : ICloneable
     
     public bool TraceOnStartup { get; set; }
     public bool TraceAutosave { get; set; }
-    public WindowRect? StartupLocation { get; set; } = new();
+    
+    public WindowRect? StartupLocation { get; set; }
+
+    public InterfacePanelState? LeftPanel { get; set; }
+    public InterfacePanelState? RightPanel { get; set; }
+    public InterfacePanelState? BottomPanel { get; set; }
 
     public object Clone() => new ArbiterSettings
     {
@@ -25,7 +30,10 @@ public class ArbiterSettings : ICloneable
         RemoteServerPort = RemoteServerPort,
         TraceOnStartup = TraceOnStartup,
         TraceAutosave = TraceAutosave,
-        StartupLocation = StartupLocation?.Clone() as WindowRect
+        StartupLocation = StartupLocation?.Clone() as WindowRect,
+        LeftPanel = LeftPanel?.Clone() as InterfacePanelState,
+        RightPanel = RightPanel?.Clone() as InterfacePanelState,
+        BottomPanel = BottomPanel?.Clone() as InterfacePanelState,
     };
 
 }

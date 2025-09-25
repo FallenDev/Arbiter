@@ -17,8 +17,8 @@ public partial class MainWindowViewModel
     [ObservableProperty] private GridLength _leftPanelWidth = new(1, GridUnitType.Star);
     
     // Right panel sizing state
-    [ObservableProperty] private bool _isInspectorPanelCollapsed;
-    [ObservableProperty] private int _selectedInspectorTabIndex;
+    [ObservableProperty] private bool _isRightPanelCollapsed;
+    [ObservableProperty] private int _selectedRightPanelTabIndex;
     [ObservableProperty] private GridLength _rightPanelWidth = new(1, GridUnitType.Star);
     [ObservableProperty] private double _rightPanelMinWidth = 240;
     [ObservableProperty] private double _rightPanelMaxWidth = 480;
@@ -26,17 +26,17 @@ public partial class MainWindowViewModel
 
     // Bottom panel sizing state
     [ObservableProperty] private bool _isBottomPanelCollapsed;
-    [ObservableProperty] private int _selectedBottomTabIndex;
+    [ObservableProperty] private int _selectedBottomPanelTabIndex;
     [ObservableProperty] private GridLength _bottomPanelHeight = new(1, GridUnitType.Star);
     [ObservableProperty] private double _bottomPanelMinHeight = 300;
     [ObservableProperty] private double _bottomPanelMaxHeight = 720;
     [ObservableProperty] private GridLength _savedBottomPanelHeight = new(1, GridUnitType.Star);
 
     [RelayCommand]
-    private void ToggleInspectorPanel(string? tabName)
+    private void ToggleRightPanel(string? tabName)
     {
-        var isNowVisible = IsInspectorPanelCollapsed;
-        IsInspectorPanelCollapsed = !IsInspectorPanelCollapsed;
+        var isNowVisible = IsRightPanelCollapsed;
+        IsRightPanelCollapsed = !IsRightPanelCollapsed;
 
         if (isNowVisible)
         {
@@ -48,7 +48,7 @@ public partial class MainWindowViewModel
             // Set the selected tab if specified
             if (!string.IsNullOrWhiteSpace(tabName))
             {
-                SelectedInspectorTabIndex = tabName switch
+                SelectedRightPanelTabIndex = tabName switch
                 {
                     "hex" => 1,
                     _ => 0
@@ -81,7 +81,7 @@ public partial class MainWindowViewModel
             // Set the selected tab if specified
             if (!string.IsNullOrWhiteSpace(tabName))
             {
-                SelectedBottomTabIndex = tabName switch
+                SelectedBottomPanelTabIndex = tabName switch
                 {
                     "console" => 1,
                     _ => 0
@@ -128,11 +128,33 @@ public partial class MainWindowViewModel
 
     private void SaveLayout()
     {
-        
+        Settings.LeftPanel = new InterfacePanelState
+        {
+            Width = LeftPanelWidth.Value > 10 ? LeftPanelWidth.Value : null
+        };
+
+        Settings.RightPanel = new InterfacePanelState
+        {
+            IsCollapsed = IsRightPanelCollapsed,
+            Width = RightPanelWidth.Value > 10 ? RightPanelWidth.Value : null
+        };
+
+        Settings.BottomPanel = new InterfacePanelState
+        {
+            IsCollapsed = IsBottomPanelCollapsed,
+            Height = BottomPanelHeight.Value > 10 ? BottomPanelHeight.Value : null
+        };
     }
 
-    private void RestoreWindowPosition(WindowRect rect)
+    private void RestoreWindowPosition()
     {
+        var rect = Settings.StartupLocation;
+        
+        if (rect is null)
+        {
+            return;
+        }
+        
         if (rect is { X: >= 0, Y: >= 0 })
         {
             _mainWindow.Position = new PixelPoint(rect.X.Value, rect.Y.Value);
@@ -153,6 +175,30 @@ public partial class MainWindowViewModel
 
     private void RestoreLayout()
     {
-        
+        if (Settings.LeftPanel is not null)
+        {
+            if (Settings.LeftPanel.Width.HasValue)
+            {
+                LeftPanelWidth = new GridLength(Settings.LeftPanel.Width.Value, GridUnitType.Pixel);
+            }
+        }
+
+        if (Settings.RightPanel is not null)
+        {
+            IsRightPanelCollapsed = Settings.RightPanel.IsCollapsed;
+            if (Settings.RightPanel.Width.HasValue)
+            {
+                RightPanelWidth = new GridLength(Settings.RightPanel.Width.Value, GridUnitType.Pixel);
+            }
+        }
+
+        if (Settings.BottomPanel is not null)
+        {
+            IsBottomPanelCollapsed = Settings.BottomPanel.IsCollapsed;
+            if (Settings.BottomPanel.Height.HasValue)
+            {
+                BottomPanelHeight = new GridLength(Settings.BottomPanel.Height.Value, GridUnitType.Pixel);
+            }
+        }
     }
 }

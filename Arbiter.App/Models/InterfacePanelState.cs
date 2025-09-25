@@ -1,17 +1,15 @@
-﻿
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
 
 namespace Arbiter.App.Models;
 
-public class WindowRect : ICloneable
+public class InterfacePanelState : ICloneable
 {
-    public int? X { get; set; }
-    public int? Y { get; set; }
+    [JsonPropertyName("collapsed")]
+    public bool IsCollapsed { get; set; }
+    
     public double? Width { get; set; }
     public double? Height { get; set; }
-
-    [JsonPropertyName("maximized")] public bool IsMaximized { get; set; }
-
+    
     public object Clone() => MemberwiseClone();
 }

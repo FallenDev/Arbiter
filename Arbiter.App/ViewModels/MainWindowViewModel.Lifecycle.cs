@@ -11,12 +11,8 @@ public partial class MainWindowViewModel
     {
         Settings = await _settingsService.LoadFromFileAsync();
         LaunchClientCommand.NotifyCanExecuteChanged();
-
-        if (Settings.StartupLocation is not null)
-        {
-            RestoreWindowPosition(Settings.StartupLocation);
-        }
-
+        
+        RestoreWindowPosition();
         RestoreLayout();
     }
 
