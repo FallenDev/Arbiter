@@ -80,6 +80,8 @@ public partial class SendPacketViewModel : ViewModelBase
 
     [ObservableProperty] private TimeSpan _selectedDelay = TimeSpan.Zero;
     [ObservableProperty] private TimeSpan _selectedRate = TimeSpan.FromMilliseconds(100);
+    [ObservableProperty] private bool _repeatEnabled;
+    [ObservableProperty] private int _repeatCount;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
@@ -184,6 +186,7 @@ public partial class SendPacketViewModel : ViewModelBase
 
     private async Task RunSendLoopAsync(CancellationToken token)
     {
+        var repeatCount = RepeatEnabled ? RepeatCount : 0;
         var packetsToSend = _parsedPackets.ToList();
 
         try
@@ -199,24 +202,34 @@ public partial class SendPacketViewModel : ViewModelBase
                 await Task.Delay(SelectedDelay, token).ConfigureAwait(false);
             }
 
-            for (var i = 0; i < packetsToSend.Count; i++)
+            do
             {
-                token.ThrowIfCancellationRequested();
-
-                var packet = packetsToSend[i];
-                var queued = client.EnqueuePacket(packet);
-                if (!queued)
+                for (var i = 0; i < packetsToSend.Count; i++)
                 {
-                    _logger.LogWarning("[{ClientName}] Failed to enqueue packet {Index}",
-                        client.Name ?? client.Id.ToString(), i + 1);
+                    token.ThrowIfCancellationRequested();
+
+                    var packet = packetsToSend[i];
+                    var queued = client.EnqueuePacket(packet);
+                    if (!queued)
+                    {
+                        _logger.LogWarning("[{ClientName}] Failed to enqueue packet {Index}",
+                            client.Name ?? client.Id.ToString(), i + 1);
+                    }
+
+                    var hasMore = i < packetsToSend.Count - 1;
+                    if (hasMore && SelectedRate > TimeSpan.Zero)
+                    {
+                        await Task.Delay(SelectedRate, token).ConfigureAwait(false);
+                    }
                 }
 
-                var hasMore = i < packetsToSend.Count - 1;
-                if (hasMore && SelectedRate > TimeSpan.Zero)
+                // Decrement the repeat count
+                if (repeatCount > 0)
                 {
-                    await Task.Delay(SelectedRate, token).ConfigureAwait(false);
+                    repeatCount--;
                 }
             }
+            while (!token.IsCancellationRequested && repeatCount is < 0 or > 0);
         }
         catch (OperationCanceledException)
         {
