@@ -116,13 +116,14 @@
                     <!-- Rate Dropdown -->
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <CheckBox IsChecked="{Binding RepeatEnabled}"
+                                  IsEnabled="{Binding !IsSending}"
                                   VerticalAlignment="Center"
                                   Margin="0"
                                   Padding="0">
                             <Label Content="Repeat"
                                    Width="60"
                                    Margin="0"
-                                   Padding="0">
+                                   Padding="2">
                                 <ToolTip.Tip>
                                     <TextBlock>
                                         <Run>Number of times to send the packets.</Run>
@@ -141,8 +142,14 @@
                                        MaxWidth="80"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                        FontSize="16"
-                                       Width="160" Height="40"
-                                       IsEnabled="{Binding RepeatEnabled}"/>
+                                       Width="160" Height="40">
+                            <NumericUpDown.IsEnabled>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding Path="!IsSending"/>
+                                    <Binding Path="RepeatEnabled"/>
+                                </MultiBinding>
+                            </NumericUpDown.IsEnabled>
+                        </NumericUpDown>
                     </StackPanel>
                 </StackPanel>
                 
