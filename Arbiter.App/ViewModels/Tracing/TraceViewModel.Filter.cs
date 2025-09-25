@@ -16,7 +16,7 @@ public partial class TraceViewModel
 {
     private readonly Debouncer _filterRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
 
-    [ObservableProperty] private bool _showFilterBar = true;
+    [ObservableProperty] private bool _showFilterBar;
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();

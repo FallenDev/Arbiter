@@ -33,6 +33,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _title = "Arbiter";
     [ObservableProperty] private ClientViewModel? _selectedClient;
     [ObservableProperty] private RawHexViewModel? _selectedRawHex;
+
+    [ObservableProperty] private bool _isInspectorPanelCollapsed;
+    [ObservableProperty] private int _selectedInspectorTabIndex;
     
     public ClientManagerViewModel ClientManager { get; }
     public SendPacketViewModel SendPacket { get; }
@@ -117,6 +120,22 @@ public partial class MainWindowViewModel : ViewModelBase
                 Message = $"An error occurred while launching the client:\n\n{ex.Message}",
                 Description = "You can change the client executable path in Settings."
             });
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleInspectorPanel(string? tabName)
+    {
+        var isNowVisible = IsInspectorPanelCollapsed;
+        IsInspectorPanelCollapsed = !IsInspectorPanelCollapsed;
+
+        if (isNowVisible && !string.IsNullOrWhiteSpace(tabName))
+        {
+            SelectedInspectorTabIndex = tabName switch
+            {
+                "hex" => 1,
+                _ => 0
+            };
         }
     }
 

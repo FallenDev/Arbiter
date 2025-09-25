@@ -152,14 +152,24 @@
         M8,1 L15,8 L8,15 L1,8 Z
     </Geometry>
     
+    <!-- Up Caret -->
+    <Geometry x:Key="Talgonite.Icon.UpCaret">
+        M1 8 L15 8 L8 1 Z
+    </Geometry>
+    
     <!-- Down Caret -->
     <Geometry x:Key="Talgonite.Icon.DownCaret">
         M1 1 L15 1 L8 8 Z
     </Geometry>
+
+    <!-- Left Chevron -->
+    <Geometry x:Key="Talgonite.Icon.LeftChevron">
+        M9 3 L6 8 L9 13
+    </Geometry>
     
-    <!-- Up Caret -->
-    <Geometry x:Key="Talgonite.Icon.UpCaret">
-        M1 8 L15 8 L8 1 Z
+    <!-- Right Chevron -->
+    <Geometry x:Key="Talgonite.Icon.RightChevron">
+        M7 3 L10 8 L7 13
     </Geometry>
     
     <!-- Up Arrow -->

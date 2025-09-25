@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Find Selected` context menu to add selected packet command to search
 - `Exclude Selected` context menu to add selected packets command to filter exclusions (uncheck)
 - Quick clear button next to search dropdown
+- Collapsible `Inspector`/`Hex` panel
 
 ### Changed
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increase font size for level + class in `Client` view
 - Remove `Filters` and `Triggers` tab
 - Client filtering is now a multi-select dropdown
+- Allow wrapping of `Command` and `Sequence` in `Hex` view when resizing panel
 
 ## [0.9.5] - 2025-09-22
 

@@ -105,14 +105,40 @@
         <GridSplitter Grid.Column="3" ResizeDirection="Columns"/>
         
         <!-- Right Panel Tabs -->
-        <TabControl Name="RightPanelTabStrip" Grid.Column="4">
-            <TabItem Header="Inspector" IsSelected="True">
-                <v:InspectorView DataContext="{Binding Inspector}"/>
-            </TabItem>
-            <TabItem Header="Hex">
-                <v:HexView DataContext="{Binding SelectedRawHex}"/>
-            </TabItem>
-        </TabControl>
+        <Panel Grid.Column="4" IsVisible="{Binding !IsInspectorPanelCollapsed}">
+            <TabControl Name="RightPanelTabStrip" SelectedIndex="{Binding SelectedInspectorTabIndex}">
+                <TabItem Header="Inspector" IsSelected="True">
+                    <v:InspectorView DataContext="{Binding Inspector}"/>
+                </TabItem>
+                <TabItem Header="Hex">
+                    <v:HexView DataContext="{Binding SelectedRawHex}"/>
+                </TabItem>
+            </TabControl>
+            <Button Command="{Binding ToggleInspectorPanelCommand}"
+                    Classes="toolbar"
+                    ToolTip.Tip="Collapses the inspector panel."
+                    CornerRadius="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Padding="4"
+                    Margin="2">
+                <Path Stroke="{Binding $parent[Button].Foreground}"
+                      Data="{StaticResource Talgonite.Icon.RightChevron}"/>
+            </Button>
+        </Panel>
+        <!-- Right Panel Collapsed View -->
+        <Panel Grid.Column="4" IsVisible="{Binding IsInspectorPanelCollapsed, FallbackValue={x:False}}">
+            <LayoutTransformControl LayoutTransform="rotate(90deg)">
+                <WrapPanel ItemSpacing="4">
+                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="inspector"
+                            Content="Inspector"
+                            ToolTip.Tip="Shows the Inspector view."/>
+                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="hex"
+                            Content="Hex"
+                            ToolTip.Tip="Shows the Hex view."/>
+                </WrapPanel>
+            </LayoutTransformControl>
+        </Panel>
     </Grid>
     
 
