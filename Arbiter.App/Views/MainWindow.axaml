@@ -37,11 +37,15 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="240" MaxWidth="360"/>
+            <ColumnDefinition Width="{Binding LeftPanelWidth, Mode=TwoWay}"
+                              MinWidth="240"
+                              MaxWidth="360"/>
             <ColumnDefinition Width="8"/>
             <ColumnDefinition Width="2*" MinWidth="780"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="{Binding RightPanelWidth, Mode=TwoWay}" MinWidth="{Binding RightPanelMinWidth}" MaxWidth="{Binding RightPanelMaxWidth}"/>
+            <ColumnDefinition Width="{Binding RightPanelWidth, Mode=TwoWay}"
+                              MinWidth="{Binding RightPanelMinWidth}"
+                              MaxWidth="{Binding RightPanelMaxWidth}"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
@@ -82,7 +86,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" MinHeight="160"/>
                 <RowDefinition Height="8"/>
-                <RowDefinition Height="*" MinHeight="300"/>
+                <RowDefinition Height="{Binding BottomPanelHeight, Mode=TwoWay}"
+                               MinHeight="{Binding BottomPanelMinHeight}"
+                               MaxHeight="{Binding BottomPanelMaxHeight}"/>
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
@@ -91,25 +97,57 @@
                 </TabItem>
             </TabControl>
             
-            <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
+            <GridSplitter Grid.Row="1" ResizeDirection="Rows"
+                          IsVisible="{Binding !IsBottomPanelCollapsed}"/>
             
-            <TabControl Grid.Row="2">
-                <!-- Bottom Area -->
-                <TabItem Header="Send">
-                    <v:SendPacketView DataContext="{Binding SendPacket}"/>
-                </TabItem>
-                <TabItem Header="Console">
-                    <v:ConsoleLogView DataContext="{Binding Console}"/>
-                </TabItem>
-            </TabControl>
+            <!-- Bottom Panel -->
+            <Panel Grid.Row="2" IsVisible="{Binding !IsBottomPanelCollapsed}">
+                <TabControl SelectedIndex="{Binding SelectedBottomPanelTabIndex}">
+                    <!-- Bottom Area -->
+                    <TabItem Header="Send">
+                        <v:SendPacketView DataContext="{Binding SendPacket}"/>
+                    </TabItem>
+                    <TabItem Header="Console">
+                        <v:ConsoleLogView DataContext="{Binding Console}"/>
+                    </TabItem>
+                </TabControl>
+                <!-- Collapse Button -->
+                <Button Command="{Binding ToggleBottomPanelCommand}"
+                        Classes="toolbar"
+                        ToolTip.Tip="Collapses the bottom panel."
+                        CornerRadius="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Padding="4"
+                        Margin="2">
+                    <Path Stroke="{Binding $parent[Button].Foreground}"
+                          Data="{StaticResource Talgonite.Icon.DownChevron}"/>
+                </Button>
+            </Panel>
+            
+            <!-- Collapsed Bottom Panel -->
+            <Panel Grid.Row="2"
+                   Background="{StaticResource Talgonite.TabStrip.Background}"
+                   IsVisible="{Binding IsBottomPanelCollapsed, FallbackValue={x:False}}">
+                <WrapPanel ItemSpacing="4">
+                    <Button Command="{Binding ToggleBottomPanelCommand}" CommandParameter="send"
+                            Content="Send"
+                            Classes="tab"
+                            ToolTip.Tip="Shows the Send packet view."/>
+                    <Button Command="{Binding ToggleBottomPanelCommand}" CommandParameter="console"
+                            Content="Console"
+                            Classes="tab"
+                            ToolTip.Tip="Shows the Console view."/>
+                </WrapPanel>
+            </Panel>
         </Grid>
         
         <GridSplitter Grid.Column="3" ResizeDirection="Columns"
-                      IsVisible="{Binding !IsInspectorPanelCollapsed}"/>
+                      IsVisible="{Binding !IsRightPanelCollapsed}"/>
         
         <!-- Right Panel Tabs -->
-        <Panel Grid.Column="4" IsVisible="{Binding !IsInspectorPanelCollapsed}">
-            <TabControl Name="RightPanelTabStrip" SelectedIndex="{Binding SelectedInspectorTabIndex}">
+        <Panel Grid.Column="4" IsVisible="{Binding !IsRightPanelCollapsed}">
+            <TabControl Name="RightPanelTabStrip" SelectedIndex="{Binding SelectedRightPanelTabIndex}">
                 <TabItem Header="Inspector" IsSelected="True">
                     <v:InspectorView DataContext="{Binding Inspector}"/>
                 </TabItem>
@@ -117,7 +155,8 @@
                     <v:HexView DataContext="{Binding SelectedRawHex}"/>
                 </TabItem>
             </TabControl>
-            <Button Command="{Binding ToggleInspectorPanelCommand}"
+            <!-- Collapse Button -->
+            <Button Command="{Binding ToggleRightPanelCommand}"
                     Classes="toolbar"
                     ToolTip.Tip="Collapses the inspector panel."
                     CornerRadius="2"
@@ -132,14 +171,14 @@
         <!-- Right Panel Collapsed View -->
         <Panel Grid.Column="4"
                Background="{StaticResource Talgonite.TabStrip.Background}"
-               IsVisible="{Binding IsInspectorPanelCollapsed, FallbackValue={x:False}}">
+               IsVisible="{Binding IsRightPanelCollapsed, FallbackValue={x:False}}">
             <LayoutTransformControl LayoutTransform="rotate(90deg)">
                 <WrapPanel ItemSpacing="4">
-                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="inspector"
+                    <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="inspector"
                             Content="Inspector"
                             Classes="tab"
                             ToolTip.Tip="Shows the Inspector view."/>
-                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="hex"
+                    <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="hex"
                             Content="Hex"
                             Classes="tab"
                             ToolTip.Tip="Shows the Hex view."/>

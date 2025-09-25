@@ -162,6 +162,16 @@
         M1 1 L15 1 L8 8 Z
     </Geometry>
 
+    <!-- Up Chevron -->
+    <Geometry x:Key="Talgonite.Icon.UpChevron">
+        M3 9 L8 6 L13 9
+    </Geometry>
+    
+    <!-- Down Chevron -->
+    <Geometry x:Key="Talgonite.Icon.DownChevron">
+        M3 7 L8 10 L13 7
+    </Geometry>
+    
     <!-- Left Chevron -->
     <Geometry x:Key="Talgonite.Icon.LeftChevron">
         M9 3 L6 8 L9 13

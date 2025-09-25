@@ -50,7 +50,7 @@
                     </ComboBox>
                 </StackPanel>
                 
-                <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="8" LineSpacing="4" VerticalAlignment="Center">
+                <WrapPanel Grid.Column="1" Orientation="Horizontal" ItemSpacing="8" LineSpacing="4" VerticalAlignment="Center">
                     <!-- Delay Dropdown -->
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <Label Content="Delay"
@@ -111,6 +111,47 @@
                         </ComboBox>
                     </StackPanel>
                 </WrapPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <!-- Rate Dropdown -->
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <CheckBox IsChecked="{Binding RepeatEnabled}"
+                                  IsEnabled="{Binding !IsSending}"
+                                  VerticalAlignment="Center"
+                                  Margin="0"
+                                  Padding="0">
+                            <Label Content="Repeat"
+                                   Width="60"
+                                   Margin="0"
+                                   Padding="2">
+                                <ToolTip.Tip>
+                                    <TextBlock>
+                                        <Run>Number of times to send the packets.</Run>
+                                        <LineBreak/>
+                                        <Run>Use</Run>
+                                        <Run Classes="hotkey">-1</Run>
+                                        <Run>for infinite loop.</Run>
+                                    </TextBlock>
+                                </ToolTip.Tip>
+                            </Label>
+                        </CheckBox>
+                        <NumericUpDown Minimum="-1"
+                                       Maximum="10000"
+                                       Value="{Binding RepeatCount}"
+                                       Watermark="&lt;times&gt;"
+                                       MaxWidth="80"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="16"
+                                       Width="160" Height="40">
+                            <NumericUpDown.IsEnabled>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding Path="!IsSending"/>
+                                    <Binding Path="RepeatEnabled"/>
+                                </MultiBinding>
+                            </NumericUpDown.IsEnabled>
+                        </NumericUpDown>
+                    </StackPanel>
+                </StackPanel>
                 
                 <StackPanel Grid.Column="3" Orientation="Horizontal">
                     <!-- Send Button -->
