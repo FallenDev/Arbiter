@@ -90,6 +90,12 @@ public partial class TraceViewModel : ViewModelBase
         {
             Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(IsEmpty)), DispatcherPriority.Background);
         }
+
+        // When packets are removed/reset, prune client filters that no longer exist in any remaining packet
+        if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset)
+        {
+            PruneClientsNotInPackets();
+        }
     }
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)

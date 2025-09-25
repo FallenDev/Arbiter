@@ -29,10 +29,7 @@ public partial class TraceViewModel
     private void RequestFilterRefresh()
     {
         // This is debounced to avoid excessive refreshing when multiple changes are made rapidly
-        _filterRefreshDebouncer.Execute(() =>
-        {
-            FilteredPackets.Refresh();
-        });
+        _filterRefreshDebouncer.Execute(() => { FilteredPackets.Refresh(); });
     }
 
     private bool MatchesFilter(TracePacketViewModel vm)
@@ -55,7 +52,7 @@ public partial class TraceViewModel
                 return false;
             }
         }
-        
+
         // Filter by client name matches
         if (FilterParameters.Clients.Count > 0)
         {
@@ -81,13 +78,45 @@ public partial class TraceViewModel
             command.IsSelected = true;
         }
     }
-    
+
     [RelayCommand]
     private void SelectAllClients()
     {
         foreach (var client in FilterParameters.Clients)
         {
             client.IsSelected = true;
+        }
+    }
+
+    // Prune any client entries from filter parameters that are no longer present in the packet list
+    private void PruneClientsNotInPackets()
+    {
+        // Build case-insensitive set of remaining client names from all packets
+        var remaining = _allPackets
+            .Select(p => p.ClientName ?? string.Empty)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (FilterParameters.Clients.Count == 0)
+        {
+            return;
+        }
+
+        // Determine which client filter entries are no longer present
+        var toRemove = FilterParameters.Clients
+            .Where(c => !remaining.Contains(c.DisplayName ?? string.Empty))
+            .Select(c => c.DisplayName ?? string.Empty)
+            .ToList();
+
+        foreach (var name in toRemove)
+        {
+            FilterParameters.TryRemoveClient(name);
+        }
+
+        if (toRemove.Count > 0)
+        {
+            // Trigger a refresh of the filtered view since client filters changed
+            RequestFilterRefresh();
         }
     }
 }
