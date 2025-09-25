@@ -35,11 +35,11 @@
                     <Grid RowDefinitions="Auto,*">
                         <Border Grid.Row="1"
                                 Classes="sunken-shadow"
-                                CornerRadius="0,0,8,8"
+                                CornerRadius="0,0,4,4"
                                 IsVisible="{TemplateBinding IsExpanded}"/>
                         <Border Grid.Row="1"
                                 Classes="sunken-highlight"
-                                CornerRadius="0,0,8,8"
+                                CornerRadius="0,0,4,4"
                                 IsVisible="{TemplateBinding IsExpanded}"/>
                         
                         <ToggleButton Name="PART_Toggle"

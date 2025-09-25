@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.6] - 2025-09-25
+
+### Added
+
+- `Find Selected` context menu to add selected packet command to search
+- `Exclude Selected` context menu to add selected packets command to filter exclusions (uncheck)
+- Quick clear button next to search dropdown
+- Collapsible `Inspector`/`Hex` panel
+
+### Changed
+
+- Fixed issue when switching tabs in `Trace` view
+- Shadow effect on popup for readability
+- Shadow effect on tooltip for readability
+- Outline effect for combox/dropdown borders for readability
+- Graphical issue when search results show incorrectly momentarily
+- Fix for some performance issues with large trace files
+- Fix issue when clicking checkbox versus clicking item in `Filter` dropdown
+- Allow keyboard typing of search text in dropdowns
+- Increase font size for level + class in `Client` view
+- Remove `Filters` and `Triggers` tab
+- Client filtering is now a multi-select dropdown
+- Allow wrapping of `Command` and `Sequence` in `Hex` view when resizing panel
+- `Send` toolbar layout
+
 ## [0.9.5] - 2025-09-22
 
 ### Added

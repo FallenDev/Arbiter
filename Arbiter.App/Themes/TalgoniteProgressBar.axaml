@@ -51,9 +51,9 @@
                                    Margin="4,2">
                             <TextBlock.Effect>
                                 <DropShadowDirectionEffect
-                                    Direction="180"
-                                    ShadowDepth="0"
-                                    BlurRadius="2"/>
+                                    Direction="0"
+                                    ShadowDepth="1"
+                                    BlurRadius="1"/>
                             </TextBlock.Effect>
                         </TextBlock>
                     </LayoutTransformControl>

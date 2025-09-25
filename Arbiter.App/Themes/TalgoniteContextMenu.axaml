@@ -19,7 +19,8 @@
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ContextMenu.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="2"/>
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Margin" Value="4"/>
         <Setter Property="Focusable" Value="True"/>
         <Setter Property="TextBlock.FontSize" Value="14"/>
         <Setter Property="TextBlock.FontWeight" Value="Normal"/>
@@ -37,6 +38,9 @@
                     </ScrollViewer>
                 </Border>
             </ControlTemplate>
+        </Setter>
+        <Setter Property="Effect">
+            <DropShadowDirectionEffect ShadowDepth="9" Direction="0" BlurRadius="4"/>
         </Setter>
     </Style>
 </Styles>

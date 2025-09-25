@@ -29,4 +29,6 @@ public partial class CommandFilterViewModel : ViewModelBase
         Value = value;
         IsSelected = isSelected;
     }
+
+    public override string ToString() => DisplayName;
 }

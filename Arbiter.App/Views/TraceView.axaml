@@ -228,22 +228,45 @@
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <!-- Character Filter -->
                     <Label Content="Clients"
-                           ToolTip.Tip="Allows filtering by client names (comma-separated).&#x0a;Supports '*' and '?' wildcards."
-                           VerticalAlignment="Center" />
-                    <TextBox Text="{Binding FilterParameters.NameFilter}"
-                             FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                             Width="140"
-                             Height="36">
-                        <TextBox.InnerRightContent>
-                            <Button Command="{Binding FilterParameters.ClearNameFilterCommand}"
-                                    IsVisible="{Binding FilterParameters.NameFilter, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                    Classes="clear destructive">
-                                <Path Width="12" Height="12"
-                                      Stroke="{Binding $parent[Button].Foreground}"
-                                      Data="M1,1 L11,11 M11,1 L1,11" />
-                            </Button>
-                        </TextBox.InnerRightContent>
-                    </TextBox>
+                           VerticalAlignment="Center">
+                        <ToolTip.Tip>
+                            <TextBlock>
+                                <Span>
+                                    <Run>Allows filtering by client name.</Run>
+                                    <LineBreak/>
+                                    <Run>You can select a single client name with</Run>
+                                    <Run Classes="hotkey" BaselineAlignment="Center">[Ctrl+Click]</Run>
+                                    <Run>.</Run>
+                                </Span>
+                            </TextBlock>
+                        </ToolTip.Tip>
+                    </Label>
+                    <c:MultiSelectDropdown ItemsSource="{Binding FilterParameters.Clients}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           FontSize="16"
+                                           MaxDropdownHeight="400"
+                                           Width="160">
+                        <c:MultiSelectDropdown.ItemTemplate>
+                            <DataTemplate DataType="vm:ClientFilterViewModel">
+                                <Grid ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch">
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding DisplayName, Converter={x:Static converters:PlaceholderConverter.Converter}, ConverterParameter=&lt;unknown&gt;}"
+                                               Foreground="{Binding DisplayName, Converter={x:Static converters:NullOrEmptyBrushConverter.Converter}, ConverterParameter={StaticResource Talgonite.TextBlock.DimForeground}}"
+                                               FontSize="14"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </c:MultiSelectDropdown.ItemTemplate>
+                    </c:MultiSelectDropdown>
+                    
+                    <!-- Select All Button -->
+                    <Button Command="{Binding SelectAllClientsCommand}"
+                            Classes="toolbar"
+                            ToolTip.Tip="Enables all client trace data to be displayed."
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Content="ALL"
+                            Padding="8,2"/>
                 </StackPanel>
             </WrapPanel>
         </Border>
@@ -270,6 +293,7 @@
                        VerticalAlignment="Center" />
                 <ComboBox ItemsSource="{Binding SearchParameters.Commands}"
                           SelectedItem="{Binding SearchParameters.SelectedCommand}"
+                          IsTextSearchEnabled="True"
                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
                           FontSize="16"
                           MaxDropDownHeight="400"
@@ -297,6 +321,7 @@
                             <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding DisplayName}"
+                                           TextTrimming="CharacterEllipsis"
                                            Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                            FontSize="16"
                                            VerticalAlignment="Center"/>
@@ -312,8 +337,18 @@
                 </ComboBox>
                 
                 <StackPanel Orientation="Horizontal" Spacing="4"
-                            IsVisible="{Binding SearchParameters.SelectedCommand.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:False}}"
+                            IsVisible="{Binding ShowSearchResults}"
                             Height="40">
+                    
+                    <!-- Clear Button -->
+                    <Button Command="{Binding SearchParameters.ClearCommand}"
+                            Classes="toolbar destructive"
+                            ToolTip.Tip="Clears the search criteria.">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                    </Button>
+                    
                     <!-- Result count -->
                     <TextBlock Text="{Binding FormattedSearchResultsText, FallbackValue=no matches}"
                                TextAlignment="Center"
@@ -373,13 +408,12 @@
                               Command="{Binding SaveSelectedCommand}"/>
                     <Separator/>
                     <MenuItem Header="Delete Selected"
-                              Command="{Binding DeleteSelectedCommand}">
-                        <MenuItem.Icon>
-                            <PathIcon Width="16" Height="16"
-                                      Foreground="White"
-                                      Data="{StaticResource Talgonite.Icon.ArrowDown}"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                              Command="{Binding DeleteSelectedCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Find Selected"
+                              Command="{Binding FindSelectedCommand}"/>
+                    <MenuItem Header="Exclude Selected"
+                              Command="{Binding ExcludeSelectedCommand}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

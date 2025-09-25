@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Threading;
@@ -17,7 +15,6 @@ namespace Arbiter.App.ViewModels.Tracing;
 public partial class TraceViewModel
 {
     private readonly Debouncer _filterRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
-    private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
     [ObservableProperty] private bool _showFilterBar;
 
@@ -26,22 +23,13 @@ public partial class TraceViewModel
 
     private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // Ignore immediate changes to the raw NameFilter text; we'll react when NameFilterPatterns changes
-        if (e.PropertyName == nameof(FilterParameters.NameFilter))
-        {
-            return;
-        }
-
         RequestFilterRefresh();
     }
 
     private void RequestFilterRefresh()
     {
         // This is debounced to avoid excessive refreshing when multiple changes are made rapidly
-        _filterRefreshDebouncer.Execute(() =>
-        {
-            FilteredPackets.Refresh();
-        });
+        _filterRefreshDebouncer.Execute(() => { FilteredPackets.Refresh(); });
     }
 
     private bool MatchesFilter(TracePacketViewModel vm)
@@ -64,15 +52,14 @@ public partial class TraceViewModel
                 return false;
             }
         }
-        
+
         // Filter by client name matches
-        if (FilterParameters.NameFilterPatterns.Count > 0)
+        if (FilterParameters.Clients.Count > 0)
         {
-            var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
-            {
-                var regex = GetRegexForFilter(namePattern);
-                return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
-            });
+            // Unauthenticated clients use the empty string as their name (ex: `connection 1`)
+            var nameMatches = FilterParameters.Clients.Any(client =>
+                client.IsSelected &&
+                string.Equals(client.DisplayName, vm.ClientName ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 
             if (!nameMatches)
             {
@@ -92,18 +79,44 @@ public partial class TraceViewModel
         }
     }
 
-    private Regex GetRegexForFilter(string namePattern)
+    [RelayCommand]
+    private void SelectAllClients()
     {
-        if (_nameFilterRegexes.TryGetValue(namePattern, out var regex))
+        foreach (var client in FilterParameters.Clients)
         {
-            return regex;
+            client.IsSelected = true;
+        }
+    }
+
+    // Prune any client entries from filter parameters that are no longer present in the packet list
+    private void PruneClientsNotInPackets()
+    {
+        // Build case-insensitive set of remaining client names from all packets
+        var remaining = _allPackets
+            .Select(p => p.ClientName ?? string.Empty)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (FilterParameters.Clients.Count == 0)
+        {
+            return;
         }
 
-        var escaped = Regex.Escape(namePattern);
-        var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        var newRegex = new Regex($"^{regexPattern}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        // Determine which client filter entries are no longer present
+        var toRemove = FilterParameters.Clients
+            .Where(c => !remaining.Contains(c.DisplayName ?? string.Empty))
+            .Select(c => c.DisplayName ?? string.Empty)
+            .ToList();
 
-        _nameFilterRegexes.Add(namePattern, newRegex);
-        return newRegex;
+        foreach (var name in toRemove)
+        {
+            FilterParameters.TryRemoveClient(name);
+        }
+
+        if (toRemove.Count > 0)
+        {
+            // Trigger a refresh of the filtered view since client filters changed
+            RequestFilterRefresh();
+        }
     }
 }

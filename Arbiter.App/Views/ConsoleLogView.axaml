@@ -56,9 +56,9 @@
                           Data="{StaticResource Talgonite.Icon.ArrowDownEnd}"/>
                 </Button>
             </UniformGrid>
-            <Border BorderBrush="{StaticResource Talgonite.Window.TitleBorderBrush}"
-                    BorderThickness="1"
-                    Margin="4"/>
+            
+            <Border Classes="divider-h" Margin="4"/>
+            
             <!-- Error Filter Button -->
             <ToggleButton IsChecked="{Binding ShowErrorMessages}"
                           ToolTip.Tip="Toggles displaying of error messages."

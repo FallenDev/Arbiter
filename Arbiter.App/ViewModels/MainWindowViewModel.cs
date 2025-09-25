@@ -21,7 +21,8 @@ namespace Arbiter.App.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private static readonly string AutosaveDirectory = AppHelper.GetRelativePath("autosave");
-    
+    private const double CollapsedInspectorWidth = 40;
+
     private ArbiterSettings Settings { get; set; } = new();
 
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -33,6 +34,17 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _title = "Arbiter";
     [ObservableProperty] private ClientViewModel? _selectedClient;
     [ObservableProperty] private RawHexViewModel? _selectedRawHex;
+
+    [ObservableProperty] private bool _isInspectorPanelCollapsed;
+    [ObservableProperty] private int _selectedInspectorTabIndex;
+
+    // Right panel sizing state (bound from XAML)
+    [ObservableProperty] private GridLength _rightPanelWidth = new(1, GridUnitType.Star);
+    [ObservableProperty] private double _rightPanelMinWidth = 240;
+    [ObservableProperty] private double _rightPanelMaxWidth = 480;
+
+    // Stores the previous (pre-collapse) width so it can be restored when expanded
+    [ObservableProperty] private GridLength _savedRightPanelWidth = new(1, GridUnitType.Star);
     
     public ClientManagerViewModel ClientManager { get; }
     public SendPacketViewModel SendPacket { get; }
@@ -117,6 +129,39 @@ public partial class MainWindowViewModel : ViewModelBase
                 Message = $"An error occurred while launching the client:\n\n{ex.Message}",
                 Description = "You can change the client executable path in Settings."
             });
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleInspectorPanel(string? tabName)
+    {
+        var isNowVisible = IsInspectorPanelCollapsed;
+        IsInspectorPanelCollapsed = !IsInspectorPanelCollapsed;
+
+        if (isNowVisible)
+        {
+            // Panel is being expanded - restore the saved width
+            RightPanelWidth = SavedRightPanelWidth;
+            RightPanelMinWidth = 240;
+            RightPanelMaxWidth = 480;
+            
+            // Set the selected tab if specified
+            if (!string.IsNullOrWhiteSpace(tabName))
+            {
+                SelectedInspectorTabIndex = tabName switch
+                {
+                    "hex" => 1,
+                    _ => 0
+                };
+            }
+        }
+        else
+        {
+            // Panel is being collapsed - save current width and set to collapsed size
+            SavedRightPanelWidth = RightPanelWidth;
+            RightPanelWidth = new GridLength(CollapsedInspectorWidth);
+            RightPanelMinWidth = CollapsedInspectorWidth;
+            RightPanelMaxWidth = CollapsedInspectorWidth;
         }
     }
 
@@ -238,6 +283,3 @@ public partial class MainWindowViewModel : ViewModelBase
         _mainWindow.WindowState = rect.IsMaximized ? WindowState.Maximized : WindowState.Normal;
     }
 }
-
-
-

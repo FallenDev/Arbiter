@@ -15,8 +15,8 @@
     <Panel Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid RowDefinitions="Auto,*,Auto">
             <!-- Top Toolbar -->
-            <Grid Row="0" ColumnDefinitions="Auto,*,Auto">
-                <WrapPanel Grid.Column="0" Orientation="Horizontal" ItemSpacing="4" Margin="8,4">
+            <Grid Row="0" ColumnDefinitions="Auto,*,Auto,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4" Margin="4">
                     <!-- Client Dropdown -->
                     <Label Content="Client"
                            ToolTip.Tip="The client connection to send packets to or from."/>
@@ -24,7 +24,7 @@
                               SelectedValue="{Binding SelectedClient}"
                               PlaceholderText="&lt;none&gt;"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                              Width="180" Height="40">
+                              Width="160" Height="40">
                         <ComboBox.IsEnabled>
                             <MultiBinding Converter="{x:Static BoolConverters.And}">
                                 <Binding Path="!IsSending"/>
@@ -48,61 +48,71 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                </WrapPanel>
+                </StackPanel>
                 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                <WrapPanel Grid.Column="2" Orientation="Horizontal" ItemSpacing="8" LineSpacing="4" VerticalAlignment="Center">
                     <!-- Delay Dropdown -->
-                    <Label Content="Delay"
-                           ToolTip.Tip="The initial delay before sending starts."/>
-                    <ComboBox ItemsSource="{Binding AvailableDelays}"
-                              SelectedValue="{Binding SelectedDelay}"
-                              PlaceholderText="&lt;none&gt;"
-                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                              Width="150" Height="40"
-                              IsEnabled="{Binding !IsSending}">
-                        <ComboBox.SelectionBoxItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
-                                           Padding="4" />
-                            </DataTemplate>
-                        </ComboBox.SelectionBoxItemTemplate>
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
-                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                           TextAlignment="Left"
-                                           VerticalAlignment="Center"
-                                           Padding="8,4"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <Label Content="Delay"
+                               Width="60"
+                               ToolTip.Tip="The initial delay before sending starts."/>
+                        <ComboBox ItemsSource="{Binding AvailableDelays}"
+                                  SelectedValue="{Binding SelectedDelay}"
+                                  PlaceholderText="&lt;none&gt;"
+                                  FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                  FontSize="16"
+                                  Width="150" Height="40"
+                                  IsEnabled="{Binding !IsSending}">
+                            <ComboBox.SelectionBoxItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
+                                               Padding="4" />
+                                </DataTemplate>
+                            </ComboBox.SelectionBoxItemTemplate>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=None}"
+                                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                               TextAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Padding="8,4"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
                     
                     <!-- Rate Dropdown -->
-                    <Label Content="Rate"
-                           ToolTip.Tip="The delay between each packet being sent."/>
-                    <ComboBox ItemsSource="{Binding AvailableRates}"
-                              SelectedValue="{Binding SelectedRate}"
-                              PlaceholderText="&lt;none&gt;"
-                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                              Width="160" Height="40"
-                              IsEnabled="{Binding !IsSending}">
-                        <ComboBox.SelectionBoxItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
-                                           Padding="4" />
-                            </DataTemplate>
-                        </ComboBox.SelectionBoxItemTemplate>
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
-                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                           TextAlignment="Left"
-                                           VerticalAlignment="Center"
-                                           Padding="8,4"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <Label Content="Rate"
+                               Width="50"
+                               ToolTip.Tip="The delay between each packet being sent."/>
+                        <ComboBox ItemsSource="{Binding AvailableRates}"
+                                  SelectedValue="{Binding SelectedRate}"
+                                  PlaceholderText="&lt;none&gt;"
+                                  FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                  FontSize="16"
+                                  Width="160" Height="40"
+                                  IsEnabled="{Binding !IsSending}">
+                            <ComboBox.SelectionBoxItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
+                                               Padding="4" />
+                                </DataTemplate>
+                            </ComboBox.SelectionBoxItemTemplate>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ., Converter={StaticResource TimeSpanConverter}, ConverterParameter=Instant}"
+                                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                               TextAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Padding="8,4"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </WrapPanel>
+                
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
                     <!-- Send Button -->
                     <Button Command="{Binding StartSendCommand}"
                             ToolTip.Tip="Starts sending the packets provided in the text box."
@@ -126,7 +136,7 @@
                     <Button Command="{Binding CancelSendCommand}"
                             ToolTip.Tip="Stops sending any pending packets from the text box."
                             Classes="toolbar destructive"
-                            IsVisible="{Binding IsSending}"
+                            IsVisible="{Binding IsSending, FallbackValue={x:False}}"
                             MinWidth="120" Height="40"
                             Padding="16,4"
                             Margin="2,0">

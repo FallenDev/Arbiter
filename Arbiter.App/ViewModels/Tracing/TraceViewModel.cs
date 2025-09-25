@@ -90,6 +90,12 @@ public partial class TraceViewModel : ViewModelBase
         {
             Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(IsEmpty)), DispatcherPriority.Background);
         }
+
+        // When packets are removed/reset, prune client filters that no longer exist in any remaining packet
+        if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset)
+        {
+            PruneClientsNotInPackets();
+        }
     }
 
     private void OnPacketReceived(object? sender, ProxyConnectionDataEventArgs e)
@@ -119,6 +125,7 @@ public partial class TraceViewModel : ViewModelBase
         vm.Opacity = matchesSearch ? 1 : 0.5;
 
         _allPackets.Add(vm);
+        FilterParameters.TryAddClient(vm.ClientName ?? string.Empty);
         IsDirty = true;
     }
 
@@ -126,6 +133,8 @@ public partial class TraceViewModel : ViewModelBase
     {
         _allPackets.Clear();
         SelectedPackets.Clear();
+        
+        FilterParameters.ClearClients();
         
         IsDirty = false;
         OnPropertyChanged(nameof(FilteredPackets));

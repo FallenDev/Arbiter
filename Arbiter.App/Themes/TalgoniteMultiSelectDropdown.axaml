@@ -23,6 +23,7 @@
         <Setter Property="MinWidth" Value="80"/>
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Popup.Placement" Value="BottomEdgeAlignedLeft"/>
+        <Setter Property="ScrollViewer.IsScrollInertiaEnabled" Value="False"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="Template">
             <ControlTemplate>
@@ -76,17 +77,21 @@
                                IsLightDismissEnabled="True"
                                InheritsTransform="True"
                                WindowManagerAddShadowHint="False">
-                            <Border Name="DropdownBorder"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
-                                    BorderThickness="1,0,1,1"
+                            <Border BorderThickness="1,0,1,1"
+                                    BorderBrush="{StaticResource Talgonite.Border.ShadowBrush}"
                                     CornerRadius="0,0,2,2">
-                                <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                              VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                              IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
-                                    <ItemsPresenter Name="PART_ItemsPresenter"
-                                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
-                                </ScrollViewer>
+                                <Border Name="DropdownBorder"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
+                                        BorderThickness="1,0,1,1"
+                                        CornerRadius="0,0,2,2">
+                                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                                  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}">
+                                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                                        ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                                    </ScrollViewer>
+                                </Border>
                             </Border>
                         </Popup>
                     </Grid>
@@ -127,32 +132,35 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="4,2">
-                    <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
-                        <CheckBox Grid.Column="0"
-                                  Margin="4,0"
-                                  IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
-                                  Focusable="False">
-                            <CheckBox.Styles>
-                                <!-- Override check glyph stroke when checked to use MultiSelectItem.CheckMarkBrush if provided -->
-                                <Style Selector=":checked /template/ Path#CheckGlyph">
-                                    <Setter Property="Stroke" Value="{Binding CheckMarkBrush, RelativeSource={RelativeSource AncestorType=c:MultiSelectItem}, FallbackValue={StaticResource Talgonite.CheckBox.PressedForeground}}"/>
-                                </Style>
-                                <!-- Ensure disabled state uses disabled color regardless of custom brush -->
-                                <Style Selector=":disabled /template/ Path#CheckGlyph">
-                                    <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
-                                </Style>
-                            </CheckBox.Styles>
-                        </CheckBox>
-                        <ContentPresenter Grid.Column="1"
-                                          Margin="0,2"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                    </Grid>
-                </Border>
+                <Grid>
+                    <Border Name="ItemRoot"
+                            Background="{TemplateBinding Background}"
+                            Padding="4,2">
+                        <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center">
+                            <CheckBox Grid.Column="0"
+                                      Margin="4,0"
+                                      IsChecked="{Binding ModelIsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Focusable="False">
+                                <CheckBox.Styles>
+                                    <!-- Override check glyph stroke when checked to use MultiSelectItem.CheckMarkBrush if provided -->
+                                    <Style Selector=":checked /template/ Path#CheckGlyph">
+                                        <Setter Property="Stroke" Value="{Binding CheckMarkBrush, RelativeSource={RelativeSource AncestorType=c:MultiSelectItem}, FallbackValue={StaticResource Talgonite.CheckBox.PressedForeground}}"/>
+                                    </Style>
+                                    <!-- Ensure disabled state uses disabled color regardless of custom brush -->
+                                    <Style Selector=":disabled /template/ Path#CheckGlyph">
+                                        <Setter Property="Stroke" Value="{StaticResource Talgonite.CheckBox.DisabledForeground}"/>
+                                    </Style>
+                                </CheckBox.Styles>
+                            </CheckBox>
+                            <ContentPresenter Grid.Column="1"
+                                              Margin="0,2"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                    </Border>
+                </Grid>
             </ControlTemplate>
         </Setter>
         
@@ -169,7 +177,24 @@
         
         <!-- Disabled Style -->
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBoxItem.DisabledForeground}"/>
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.DisabledForeground}"/>
+        </Style>
+        <Style Selector="^:disabled /template/ ToggleButton#Toggle">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.ComboBox.CaretDisabledForeground}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        
+        <!-- Ensure the inner border of the ToggleButton template also loses its disabled border -->
+        <Style Selector="^:disabled /template/ ToggleButton#Toggle /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <!-- Persistent highlight for matched text search item -->
+        <Style Selector="^:match">
+            <Setter Property="Background" Value="{StaticResource Talgonite.ComboBoxItem.HoverBackground}"/>
         </Style>
     </Style>
 </Styles>

@@ -2,58 +2,91 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Globalization;
 using Arbiter.App.Models;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceFilterViewModel : ViewModelBase
 {
-    [GeneratedRegex(@"^([a-z,\?\*]{1,13},?)+$", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
-    private static partial Regex NameFilterRegex();
-    
-    private string _nameFilter = string.Empty;
-    
-    [ObservableProperty] private IReadOnlyList<string> _nameFilterPatterns = [];
-    
+    public ObservableCollection<ClientFilterViewModel> Clients { get; } = [];
     public ObservableCollection<CommandFilterViewModel> Commands { get; } = [];
 
     public IEnumerable<CommandFilterViewModel> SelectedCommands => Commands.Where(x => x.IsSelected);
 
     public IEnumerable<byte> SelectedClientCommands { get; set; } = [];
     public IEnumerable<byte> SelectedServerCommands { get; set; } = [];
-    
-    public string NameFilter
-    {
-        get => _nameFilter;
-        set
-        {
-            if (!string.IsNullOrWhiteSpace(value) && !NameFilterRegex().IsMatch(value))
-            {
-                throw new ValidationException("Invalid name filter");
-            }
 
-            if (!SetProperty(ref _nameFilter, value))
-            {
-                return;
-            }
-
-            NameFilterPatterns = value.Split(',',
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct().ToList();
-        }
-    }
+    public IEnumerable<string> SelectedClientNames { get; set; } = [];
 
     public TraceFilterViewModel()
     {
         InitializeCommands();
     }
-    
+
+    public void UnselectCommand(ClientCommand command)
+    {
+        var matching =
+            SelectedCommands.FirstOrDefault(c => c.Direction == PacketDirection.Client && c.Value == (byte)command);
+        if (matching is not null)
+        {
+            matching.IsSelected = false;
+        }
+    }
+
+    public void UnselectCommand(ServerCommand command)
+    {
+        var matching =
+            SelectedCommands.FirstOrDefault(c => c.Direction == PacketDirection.Server && c.Value == (byte)command);
+        if (matching is not null)
+        {
+            matching.IsSelected = false;
+        }
+    }
+
+    public bool TryAddClient(string name, bool isSelected = true)
+    {
+        var existing = Clients.FirstOrDefault(client =>
+            string.Equals(client.DisplayName, name, StringComparison.OrdinalIgnoreCase));
+
+        if (existing is not null)
+        {
+            return false;
+        }
+
+        var newClient = new ClientFilterViewModel { DisplayName = name, IsSelected = isSelected };
+        newClient.PropertyChanged += OnClientFilterPropertyChanged;
+
+        InsertClientSorted(newClient);
+        return true;
+    }
+
+    public bool TryRemoveClient(string name)
+    {
+        var existing = Clients.FirstOrDefault(client =>
+            string.Equals(client.DisplayName, name, StringComparison.OrdinalIgnoreCase));
+
+        if (existing is null)
+        {
+            return false;
+        }
+
+        existing.PropertyChanged -= OnClientFilterPropertyChanged;
+        Clients.Remove(existing);
+
+        return true;
+    }
+
+    public void ClearClients()
+    {
+        Clients.Clear();
+    }
+
+    #region Command Filter Management
+
     private void InitializeCommands()
     {
         var clientCommandModels = Enum.GetValues<ClientCommand>()
@@ -77,7 +110,7 @@ public partial class TraceFilterViewModel : ViewModelBase
             vm.PropertyChanged += OnCommandFilterPropertyChanged;
             Commands.Add(vm);
         }
-        
+
         UpdateSelectedCommands();
     }
 
@@ -109,10 +142,56 @@ public partial class TraceFilterViewModel : ViewModelBase
         OnPropertyChanged(nameof(SelectedCommands));
     }
 
-    [RelayCommand]
-    private void ClearNameFilter()
+    #endregion
+
+    #region Client Name Filter Management
+
+    private void OnClientFilterPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        NameFilter = string.Empty;
+        if (e.PropertyName == nameof(ClientFilterViewModel.IsSelected))
+        {
+            UpdateSelectedClients();
+            NotifyClientsChanged();
+        }
     }
- 
+
+    private void UpdateSelectedClients()
+    {
+        SelectedClientNames = Clients.Where(x => x.IsSelected).Select(x => x.DisplayName).ToList();
+    }
+
+    private void NotifyClientsChanged()
+    {
+        OnPropertyChanged(nameof(SelectedClientNames));
+    }
+
+    private void InsertClientSorted(ClientFilterViewModel newClient)
+    {
+        // Place empty names after non-empty; then alphabetical (case-insensitive)
+        for (var i = 0; i < Clients.Count; i++)
+        {
+            if (CompareClients(newClient, Clients[i]) < 0)
+            {
+                Clients.Insert(i, newClient);
+                return;
+            }
+        }
+
+        Clients.Add(newClient);
+    }
+
+    private static int CompareClients(ClientFilterViewModel a, ClientFilterViewModel b)
+    {
+        var aEmpty = string.IsNullOrEmpty(a?.DisplayName);
+        var bEmpty = string.IsNullOrEmpty(b?.DisplayName);
+        if (aEmpty != bEmpty)
+        {
+            // empty goes last
+            return aEmpty ? 1 : -1;
+        }
+
+        return string.Compare(a?.DisplayName, b?.DisplayName, true, CultureInfo.InvariantCulture);
+    }
+
+    #endregion
 }

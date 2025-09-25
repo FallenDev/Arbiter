@@ -21,6 +21,7 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="Margin" Value="4"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="ShowDelay" Value="400"/>
         <Setter Property="Template">
@@ -48,6 +49,9 @@
                     </WrapPanel>
                 </Border>
             </ControlTemplate>
+        </Setter>
+        <Setter Property="Effect">
+            <DropShadowDirectionEffect Direction="0" ShadowDepth="1" BlurRadius="4"/>
         </Setter>
         
         <Style Selector="^">

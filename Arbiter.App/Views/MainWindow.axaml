@@ -37,11 +37,11 @@
     
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="200" MaxWidth="360"/>
+            <ColumnDefinition Width="*" MinWidth="240" MaxWidth="360"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="2*" MinWidth="660"/>
+            <ColumnDefinition Width="2*" MinWidth="780"/>
             <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*" MinWidth="320" MaxWidth="480"/>
+            <ColumnDefinition Width="{Binding RightPanelWidth, Mode=TwoWay}" MinWidth="{Binding RightPanelMinWidth}" MaxWidth="{Binding RightPanelMaxWidth}"/>
         </Grid.ColumnDefinitions>
         
         <!-- Left Panel Tabs -->
@@ -87,30 +87,6 @@
                 <TabItem Header="Trace">
                     <v:TraceView DataContext="{Binding Trace}"/>
                 </TabItem>
-                <TabItem Header="Filters">
-                    <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Border Classes="sunken-shadow" CornerRadius="4" Background="{StaticResource Talgonite.ListBox.Background}"/>
-                        <Border Classes="sunken-highlight" CornerRadius="4"/>
-                        <TextBlock Foreground="{StaticResource Talgonite.TextBlock.DimForeground}" 
-                                   FontSize="16"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center">
-                            Coming Soon
-                        </TextBlock>
-                    </Panel>
-                </TabItem>
-                <TabItem Header="Triggers">
-                    <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Border Classes="sunken-shadow" CornerRadius="4" Background="{StaticResource Talgonite.ListBox.Background}"/>
-                        <Border Classes="sunken-highlight" CornerRadius="4"/>
-                        <TextBlock Foreground="{StaticResource Talgonite.TextBlock.DimForeground}" 
-                                   FontSize="16"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center">
-                            Coming Soon
-                        </TextBlock>
-                    </Panel>
-                </TabItem>
             </TabControl>
             
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"/>
@@ -126,17 +102,48 @@
             </TabControl>
         </Grid>
         
-        <GridSplitter Grid.Column="3" ResizeDirection="Columns"/>
+        <GridSplitter Grid.Column="3" ResizeDirection="Columns"
+                      IsVisible="{Binding !IsInspectorPanelCollapsed}"/>
         
         <!-- Right Panel Tabs -->
-        <TabControl Name="RightPanelTabStrip" Grid.Column="4">
-            <TabItem Header="Inspector" IsSelected="True">
-                <v:InspectorView DataContext="{Binding Inspector}"/>
-            </TabItem>
-            <TabItem Header="Hex">
-                <v:HexView DataContext="{Binding SelectedRawHex}"/>
-            </TabItem>
-        </TabControl>
+        <Panel Grid.Column="4" IsVisible="{Binding !IsInspectorPanelCollapsed}">
+            <TabControl Name="RightPanelTabStrip" SelectedIndex="{Binding SelectedInspectorTabIndex}">
+                <TabItem Header="Inspector" IsSelected="True">
+                    <v:InspectorView DataContext="{Binding Inspector}"/>
+                </TabItem>
+                <TabItem Header="Hex">
+                    <v:HexView DataContext="{Binding SelectedRawHex}"/>
+                </TabItem>
+            </TabControl>
+            <Button Command="{Binding ToggleInspectorPanelCommand}"
+                    Classes="toolbar"
+                    ToolTip.Tip="Collapses the inspector panel."
+                    CornerRadius="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Padding="4"
+                    Margin="2">
+                <Path Stroke="{Binding $parent[Button].Foreground}"
+                      Data="{StaticResource Talgonite.Icon.RightChevron}"/>
+            </Button>
+        </Panel>
+        <!-- Right Panel Collapsed View -->
+        <Panel Grid.Column="4"
+               Background="{StaticResource Talgonite.TabStrip.Background}"
+               IsVisible="{Binding IsInspectorPanelCollapsed, FallbackValue={x:False}}">
+            <LayoutTransformControl LayoutTransform="rotate(90deg)">
+                <WrapPanel ItemSpacing="4">
+                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="inspector"
+                            Content="Inspector"
+                            Classes="tab"
+                            ToolTip.Tip="Shows the Inspector view."/>
+                    <Button Command="{Binding ToggleInspectorPanelCommand}" CommandParameter="hex"
+                            Content="Hex"
+                            Classes="tab"
+                            ToolTip.Tip="Shows the Hex view."/>
+                </WrapPanel>
+            </LayoutTransformControl>
+        </Panel>
     </Grid>
     
 

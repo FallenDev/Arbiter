@@ -17,7 +17,8 @@ public partial class TraceViewModel
     private readonly List<int> _searchResultIndexes = [];
 
     [ObservableProperty] private bool _showSearchBar;
-
+    [ObservableProperty] private bool _showSearchResults;
+    
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(FormattedSearchResultsText))]
     [NotifyPropertyChangedFor(nameof(HasSearchResults))]
@@ -50,11 +51,13 @@ public partial class TraceViewModel
 
     private void RefreshSearchResults()
     {
+        ShowSearchResults = false;
+        
         _searchRefreshDebouncer.Execute(() =>
         {
             _searchResultIndexes.Clear();
             SearchResultCount = 0;
-
+            
             for (var i = 0; i < FilteredPackets.Count; i++)
             {
                 var packet = FilteredPackets[i];
@@ -68,6 +71,7 @@ public partial class TraceViewModel
             }
 
             SelectedSearchIndex = 0;
+            ShowSearchResults = SearchParameters.SelectedCommand?.Value is not null;
         });
     }
 

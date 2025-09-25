@@ -13,7 +13,7 @@ public partial class TraceSearchViewModel : ViewModelBase
 {
     [ObservableProperty] private CommandFilterViewModel? _selectedCommand;
 
-    public ObservableCollection<CommandFilterViewModel?> Commands { get; } =
+    public ObservableCollection<CommandFilterViewModel> Commands { get; } =
     [
         // Placeholder 'None' command
         new(PacketDirection.Auto, "None", null)
@@ -22,9 +22,37 @@ public partial class TraceSearchViewModel : ViewModelBase
     public TraceSearchViewModel()
     {
         InitializeCommands();
-        SelectedCommand = Commands.FirstOrDefault(command => !command?.Value.HasValue ?? true);
+        Clear();
+    }
+
+    public void SelectCommand(ClientCommand command)
+    {
+        var matching = Commands.FirstOrDefault(c =>
+            c.Direction == PacketDirection.Client && c.Value == (byte)command);
+
+        if (matching is not null)
+        {
+            SelectedCommand = matching;
+        }
+    }
+
+    public void SelectCommand(ServerCommand command)
+    {
+        var matching = Commands.FirstOrDefault(c =>
+            c.Direction == PacketDirection.Server && c.Value == (byte)command);
+
+        if (matching is not null)
+        {
+            SelectedCommand = matching;
+        }
     }
     
+    [RelayCommand]
+    public void Clear()
+    {
+        SelectedCommand = Commands.FirstOrDefault(command => command.Value is null);
+    }
+
     private void InitializeCommands()
     {
         var clientCommandModels = Enum.GetValues<ClientCommand>()
@@ -46,11 +74,5 @@ public partial class TraceSearchViewModel : ViewModelBase
         {
             Commands.Add(vm);
         }
-    }
-    
-    [RelayCommand]
-    private void ClearCommandSearch()
-    {
-        SelectedCommand = null;
     }
 }
