@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Threading;
@@ -17,21 +15,14 @@ namespace Arbiter.App.ViewModels.Tracing;
 public partial class TraceViewModel
 {
     private readonly Debouncer _filterRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
-    private readonly Dictionary<string, Regex> _nameFilterRegexes = new(StringComparer.OrdinalIgnoreCase);
 
-    [ObservableProperty] private bool _showFilterBar;
+    [ObservableProperty] private bool _showFilterBar = true;
 
     public FilteredObservableCollection<TracePacketViewModel> FilteredPackets { get; }
     public TraceFilterViewModel FilterParameters { get; } = new();
 
     private void OnFilterParametersChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // Ignore immediate changes to the raw NameFilter text; we'll react when NameFilterPatterns changes
-        if (e.PropertyName == nameof(FilterParameters.NameFilter))
-        {
-            return;
-        }
-
         RequestFilterRefresh();
     }
 
@@ -66,13 +57,16 @@ public partial class TraceViewModel
         }
         
         // Filter by client name matches
-        if (FilterParameters.NameFilterPatterns.Count > 0)
+        if (FilterParameters.Clients.Count > 0)
         {
-            var nameMatches = FilterParameters.NameFilterPatterns.Any(namePattern =>
+            if (string.IsNullOrEmpty(vm.ClientName))
             {
-                var regex = GetRegexForFilter(namePattern);
-                return vm.ClientName is not null && regex.IsMatch(vm.ClientName);
-            });
+                return true;
+            }
+
+            var nameMatches = FilterParameters.Clients.Any(client =>
+                client.IsSelected &&
+                string.Equals(client.DisplayName, vm.ClientName, StringComparison.OrdinalIgnoreCase));
 
             if (!nameMatches)
             {
@@ -91,19 +85,13 @@ public partial class TraceViewModel
             command.IsSelected = true;
         }
     }
-
-    private Regex GetRegexForFilter(string namePattern)
+    
+    [RelayCommand]
+    private void SelectAllClients()
     {
-        if (_nameFilterRegexes.TryGetValue(namePattern, out var regex))
+        foreach (var client in FilterParameters.Clients)
         {
-            return regex;
+            client.IsSelected = true;
         }
-
-        var escaped = Regex.Escape(namePattern);
-        var regexPattern = escaped.Replace("\\*", ".*").Replace("\\?", ".");
-        var newRegex = new Regex($"^{regexPattern}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        _nameFilterRegexes.Add(namePattern, newRegex);
-        return newRegex;
     }
 }

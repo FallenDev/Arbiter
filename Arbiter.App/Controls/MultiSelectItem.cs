@@ -29,8 +29,6 @@ public class MultiSelectItem : ContentControl, ISelectable
     public static readonly StyledProperty<MultiSelectDropdown?> OwnerProperty =
         AvaloniaProperty.Register<MultiSelectItem, MultiSelectDropdown?>(nameof(Owner));
 
-    private bool _suppressModelSync;
-
     protected override Type StyleKeyOverride => typeof(MultiSelectItem);
 
     public bool IsSelected
@@ -56,18 +54,7 @@ public class MultiSelectItem : ContentControl, ISelectable
          FocusableProperty.OverrideDefaultValue<MultiSelectItem>(true);
      }
  
-     public void SetIsSelectedFromModel(bool value)
-     {
-         try
-         {
-             _suppressModelSync = true;
-             IsSelected = value;
-         }
-         finally
-         {
-             _suppressModelSync = false;
-         }
-     }
+     public void SetIsSelectedFromModel(bool value) => IsSelected = value;
  
      public void SetMatchHighlight(bool on)
      {

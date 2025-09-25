@@ -354,7 +354,8 @@ public class MultiSelectDropdown : SelectingItemsControl
         var itemsEnumerable = ItemsSource ?? Items;
         var totalCount = 0;
         var selectedCount = 0;
-
+        object? firstSelected = null;
+        
         foreach (var item in itemsEnumerable)
         {
             if (item is null)
@@ -379,12 +380,49 @@ public class MultiSelectDropdown : SelectingItemsControl
             if (isSelected)
             {
                 selectedCount++;
+                if (selectedCount == 1)
+                {
+                    // Remember the first and only selected item (so far)
+                    firstSelected = item;
+                }
             }
         }
 
         if (totalCount == 0 || selectedCount == 0)
         {
             SelectionText = "None";
+        }
+        else if (selectedCount == 1)
+        {
+            // Show the DisplayName of the selected item (if available) or fall back to ToString()
+            string? display = null;
+
+            var dataForName = firstSelected;
+            if (dataForName is MultiSelectItem container)
+            {
+                dataForName = container.Content ?? container;
+            }
+
+            if (dataForName is not null)
+            {
+                var dnProp = dataForName.GetType().GetProperty("DisplayName", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                if (dnProp is not null && dnProp.CanRead)
+                {
+                    try
+                    {
+                        var value = dnProp.GetValue(dataForName);
+                        display = value?.ToString();
+                    }
+                    catch
+                    {
+                        // ignore and fall back to ToString()
+                    }
+                }
+
+                display ??= dataForName.ToString();
+            }
+
+            SelectionText = string.IsNullOrWhiteSpace(display) ? "1 Selected" : display;
         }
         else if (selectedCount == totalCount)
         {

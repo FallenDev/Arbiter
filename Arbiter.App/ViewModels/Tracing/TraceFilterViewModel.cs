@@ -2,53 +2,25 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Arbiter.App.Models;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceFilterViewModel : ViewModelBase
 {
-    [GeneratedRegex(@"^([a-z,\?\*]{1,13},?)+$", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
-    private static partial Regex NameFilterRegex();
-    
-    private string _nameFilter = string.Empty;
-    
-    [ObservableProperty] private IReadOnlyList<string> _nameFilterPatterns = [];
-    
+    public ObservableCollection<ClientFilterViewModel> Clients { get; } = [];
     public ObservableCollection<CommandFilterViewModel> Commands { get; } = [];
 
     public IEnumerable<CommandFilterViewModel> SelectedCommands => Commands.Where(x => x.IsSelected);
 
     public IEnumerable<byte> SelectedClientCommands { get; set; } = [];
     public IEnumerable<byte> SelectedServerCommands { get; set; } = [];
+
+    public IEnumerable<string> SelectedClientNames { get; set; } = [];
     
-    public string NameFilter
-    {
-        get => _nameFilter;
-        set
-        {
-            if (!string.IsNullOrWhiteSpace(value) && !NameFilterRegex().IsMatch(value))
-            {
-                throw new ValidationException("Invalid name filter");
-            }
-
-            if (!SetProperty(ref _nameFilter, value))
-            {
-                return;
-            }
-
-            NameFilterPatterns = value.Split(',',
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct().ToList();
-        }
-    }
-
     public TraceFilterViewModel()
     {
         InitializeCommands();
@@ -73,7 +45,46 @@ public partial class TraceFilterViewModel : ViewModelBase
             matching.IsSelected = false;
         }
     }
-    
+
+    public bool TryAddClient(string name, bool isSelected = true)
+    {
+        var existing = Clients.FirstOrDefault(client =>
+            string.Equals(client.DisplayName, name, StringComparison.OrdinalIgnoreCase));
+
+        if (existing is not null)
+        {
+            return false;
+        }
+
+        var newClient = new ClientFilterViewModel { DisplayName = name, IsSelected = isSelected };
+        newClient.PropertyChanged += OnClientFilterPropertyChanged;
+        
+        Clients.Add(newClient);
+        return true;
+    }
+
+    public bool TryRemoveClient(string name)
+    {
+        var existing = Clients.FirstOrDefault(client =>
+            string.Equals(client.DisplayName, name, StringComparison.OrdinalIgnoreCase));
+
+        if (existing is null)
+        {
+            return false;
+        }
+
+        existing.PropertyChanged -= OnClientFilterPropertyChanged;
+        Clients.Remove(existing);
+
+        return true;
+    }
+
+    public void ClearClients()
+    {
+        Clients.Clear();
+    }
+
+    #region Command Filter Management
     private void InitializeCommands()
     {
         var clientCommandModels = Enum.GetValues<ClientCommand>()
@@ -128,11 +139,27 @@ public partial class TraceFilterViewModel : ViewModelBase
         OnPropertyChanged(nameof(SelectedServerCommands));
         OnPropertyChanged(nameof(SelectedCommands));
     }
+    #endregion
+    
+    #region Client Name Filter Management
 
-    [RelayCommand]
-    private void ClearNameFilter()
+    private void OnClientFilterPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        NameFilter = string.Empty;
+        if (e.PropertyName == nameof(ClientFilterViewModel.IsSelected))
+        {
+            UpdateSelectedClients();
+            NotifyClientsChanged();
+        }
     }
- 
+
+    private void UpdateSelectedClients()
+    {
+        SelectedClientNames = Clients.Where(x => x.IsSelected).Select(x => x.DisplayName).ToList();
+    }
+
+    private void NotifyClientsChanged()
+    {
+        OnPropertyChanged(nameof(SelectedClientNames));
+    }
+    #endregion
 }
