@@ -186,9 +186,16 @@ public partial class SendPacketViewModel : ViewModelBase
 
     private async Task RunSendLoopAsync(CancellationToken token)
     {
-        var repeatCount = RepeatEnabled ? RepeatCount : 0;
+        // Add 1 since we are technically sending N+1 times
+        int? repeatCount = RepeatEnabled
+            ? RepeatCount >= 0 ? RepeatCount+1 : null
+            : 0;
+        
         var packetsToSend = _parsedPackets.ToList();
 
+        var initialDelay = SelectedDelay;
+        var interval = SelectedRate;
+        
         try
         {
             var client = SelectedClient;
@@ -197,9 +204,9 @@ public partial class SendPacketViewModel : ViewModelBase
                 return;
             }
 
-            if (SelectedDelay > TimeSpan.Zero)
+            if (initialDelay > TimeSpan.Zero)
             {
-                await Task.Delay(SelectedDelay, token).ConfigureAwait(false);
+                await Task.Delay(initialDelay, token).ConfigureAwait(false);
             }
 
             do
@@ -217,19 +224,22 @@ public partial class SendPacketViewModel : ViewModelBase
                     }
 
                     var hasMore = i < packetsToSend.Count - 1;
-                    if (hasMore && SelectedRate > TimeSpan.Zero)
+                    if (interval > TimeSpan.Zero && (hasMore || repeatCount is not 0))
                     {
-                        await Task.Delay(SelectedRate, token).ConfigureAwait(false);
+                        await Task.Delay(interval, token).ConfigureAwait(false);
                     }
                 }
 
                 // Decrement the repeat count
-                if (repeatCount > 0)
+                if (repeatCount is > 0)
                 {
                     repeatCount--;
                 }
+
+                // Add a small delay between iterations to prevent busy loop
+                await Task.Delay(1, token).ConfigureAwait(false);
             }
-            while (!token.IsCancellationRequested && repeatCount is < 0 or > 0);
+            while (!token.IsCancellationRequested && repeatCount is not 0);
         }
         catch (OperationCanceledException)
         {
