@@ -123,5 +123,12 @@
                              Foreground="{StaticResource Talgonite.Client.ManaForeground}"/>
             </StackPanel>
         </Border>
+        
+        <!-- Right Click Menu -->
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Bring to Front" Command="{Binding BringToFrontCommand}"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
     </Grid>
 </UserControl>

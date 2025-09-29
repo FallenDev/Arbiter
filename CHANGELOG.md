@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Right-click context menu for `Client` view items
+- CRC calculator view in the right panel
+
+### Changed
+
+- Tooltip styling
+- Use folder icon for `Browse` button in `Settings` view
+
 ## [0.9.7b] - 2025-09-25
 
 ### Changed
