@@ -30,12 +30,7 @@ public class ServerMapInfoMessage : ServerMessage
 
         Width = (ushort)(widthHi << 8 | widthLo);
         Height = (ushort)(heightHi << 8 | heightLo);
-
-        // These are swapped with the normal "big endian" order
-        var checksumLo = reader.ReadByte();
-        var checksumHi = reader.ReadByte();
-        Checksum = (ushort)(checksumHi << 8 | checksumLo);
-
+        Checksum = reader.ReadUInt16();
         Name = reader.ReadString8();
     }
 
