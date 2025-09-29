@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Tooltip styling
+- Use folder icon for `Browse` button in `Settings` view
 
 ## [0.9.7b] - 2025-09-25
 

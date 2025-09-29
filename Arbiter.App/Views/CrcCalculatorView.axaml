@@ -25,14 +25,21 @@
             <UniformGrid Columns="2">
                 <!-- Algorithm Selection -->
                 <Label Content="Algorithm"
-                       ToolTip.Tip="Select the CRC algorithm to use for calculation."/>
+                       ToolTip.Tip="The CRC algorithm to use for calculation."/>
                 <ComboBox ItemsSource="{Binding AvailableAlgorithms}"
                           SelectedValue="{Binding SelectedAlgorithm}"
                           IsEnabled="{Binding !IsCalculating}"/>
                 
+                <!-- Compression Selection -->
+                <Label Content="Compression"
+                       ToolTip.Tip="The data compression used prior to calculating."/>
+                <ComboBox ItemsSource="{Binding AvailableCompression}"
+                          SelectedValue="{Binding SelectedCompression}"
+                          IsEnabled="{Binding !IsCalculating}"/>
+                
                 <!-- Input Type Selection -->
                 <Label Content="Input"
-                       ToolTip.Tip="Select the input data type."/>
+                       ToolTip.Tip="The input data type."/>
                 <ComboBox ItemsSource="{Binding AvailableInputTypes}"
                           SelectedValue="{Binding SelectedInputType}"
                           IsEnabled="{Binding !IsCalculating}"/>

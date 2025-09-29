@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,27 +21,31 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     private const string Crc16AlgorithmName = "CRC-16";
     private const string Crc32AlgorithmName = "CRC-32";
 
+    private const string ZlibCompressionName = "Zlib";
+    private const string NoCompressionName = "None";
+
     private readonly ILogger<CrcCalculatorViewModel> _logger;
     private readonly IStorageProvider _storageProvider;
-    
+
     private readonly Crc16Provider _crc16 = new();
     private readonly Crc32Provider _crc32 = new();
 
     private CancellationTokenSource? _cancellationTokenSource;
     private byte[] _inputBytes = [];
 
-    [ObservableProperty] private string? _selectedAlgorithm;
+    [ObservableProperty] private string _selectedAlgorithm = Crc16AlgorithmName;
 
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsTextInput), nameof(IsBinaryInput), nameof(IsFileInput))]
-    [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
-    private string? _selectedInputType;
+    [ObservableProperty] private string _selectedCompression = NoCompressionName;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsTextInput), nameof(IsBinaryInput), nameof(IsFileInput))]
     [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
+    private string _selectedInputType = "File";
+
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
     private string _inputText = string.Empty;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
     private string _inputFilePath = string.Empty;
 
     [ObservableProperty] private double _progressPercentage;
@@ -52,6 +56,7 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     private bool _isCalculating;
 
     public List<string> AvailableAlgorithms { get; } = [Crc16AlgorithmName, Crc32AlgorithmName];
+    public List<string> AvailableCompression { get; } = [ZlibCompressionName, NoCompressionName];
     public List<string> AvailableInputTypes { get; } = ["Text", "Binary", "File"];
 
     public bool IsTextInput => SelectedInputType == "Text";
@@ -70,9 +75,6 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     {
         _logger = logger;
         _storageProvider = storageProvider;
-
-        SelectedAlgorithm = AvailableAlgorithms.FirstOrDefault();
-        SelectedInputType = AvailableInputTypes.FirstOrDefault();
     }
 
     private bool CanCalculate() => !IsCalculating && (IsTextInput && !string.IsNullOrEmpty(InputText) ||
@@ -92,15 +94,23 @@ public partial class CrcCalculatorViewModel : ViewModelBase
             var progress = new Progress<double>(value =>
                 Dispatcher.UIThread.Post(() => ProgressPercentage = value, DispatcherPriority.Background));
 
-            var result = SelectedAlgorithm switch
+            switch (SelectedAlgorithm)
             {
-                Crc16AlgorithmName => await CalculateCrc16Async(progress, _cancellationTokenSource.Token),
-                Crc32AlgorithmName => await CalculateCrc32Async(progress, _cancellationTokenSource.Token),
-                _ => throw new InvalidOperationException("Invalid CRC algorithm")
-            };
-
-            ChecksumValue.Value = result;
-            ProgressPercentage = 100;
+                case Crc16AlgorithmName:
+                {
+                    var crc16 = await CalculateCrc16Async(progress, _cancellationTokenSource.Token);
+                    ChecksumValue.Value = crc16;
+                    break;
+                }
+                case Crc32AlgorithmName:
+                {
+                    var crc32 = await CalculateCrc32Async(progress, _cancellationTokenSource.Token);
+                    ChecksumValue.Value = crc32;
+                    break;
+                }
+                default:
+                    throw new NotSupportedException("Unsupported CRC algorithm");
+            }
         }
         catch (OperationCanceledException)
         {
@@ -117,7 +127,7 @@ public partial class CrcCalculatorViewModel : ViewModelBase
             IsCalculating = false;
         }
     }
-    
+
     private bool CanCancel() => IsCalculating;
 
     [RelayCommand(CanExecute = nameof(CanCancel))]
@@ -167,66 +177,74 @@ public partial class CrcCalculatorViewModel : ViewModelBase
         }
     }
 
+    private async Task<Stream> GetDataStreamAsync()
+    {
+        Stream stream;
+
+        if (IsTextInput)
+        {
+            var bytes = Encoding.UTF8.GetBytes(InputText);
+            stream = new MemoryStream(bytes, writable: false);
+        }
+        else if (IsBinaryInput)
+        {
+            stream = new MemoryStream(_inputBytes, writable: false);
+        }
+        else if (IsFileInput)
+        {
+            var file = await _storageProvider.TryGetFileFromPathAsync(InputFilePath);
+            if (file is null)
+            {
+                throw new FileNotFoundException("File not found");
+            }
+
+            stream = await file.OpenReadAsync();
+        }
+        else
+        {
+            throw new NotSupportedException("Unsupported input type");
+        }
+
+        if (SelectedCompression == ZlibCompressionName)
+        {
+            stream = new ZLibStream(stream, CompressionMode.Decompress);
+        }
+
+        return stream;
+    }
+
     #region CRC-16
 
     private async Task<ushort> CalculateCrc16Async(IProgress<double> progress, CancellationToken token = default)
     {
-        if (IsTextInput)
-        {
-            var bytes = Encoding.UTF8.GetBytes(InputText);
-            return CalculateCrc16(bytes, 0, progress, token);
-        }
-
-        if (IsBinaryInput)
-        {
-            return CalculateCrc16(_inputBytes, 0, progress, token);
-        }
-
-        await using var stream = File.OpenRead(InputFilePath);
-        var crc = await CalculateCrc16StreamAsync(stream, progress, token);
-
-        return crc;
-    }
-
-    private ushort CalculateCrc16(ReadOnlyMemory<byte> bytes, ushort initial, IProgress<double> progress,
-        CancellationToken token = default)
-    {
-        progress.Report(0);
-
-        var crc = initial;
-
-        for (var i = 0; i < bytes.Length; i++)
-        {
-            token.ThrowIfCancellationRequested();
-            crc = _crc16.ComputeNext(crc, bytes.Span[i]);
-
-            progress.Report((i + 1) * 100.0 / _inputBytes.Length);
-        }
-
-        progress.Report(100);
-        return crc;
-    }
-
-    private async Task<ushort> CalculateCrc16StreamAsync(Stream stream, IProgress<double> progress,
-        CancellationToken token = default)
-    {
+        await using var stream = await GetDataStreamAsync();
         var readBuffer = ArrayPool<byte>.Shared.Rent(4096);
 
         try
         {
-            var length = stream.Length;
+            progress.Report(0);
+
+            var length = TryGetStreamLength(stream);
             var current = 0;
 
             ushort crc = 0;
-            while (current < length)
+            while (!token.IsCancellationRequested)
             {
                 token.ThrowIfCancellationRequested();
-
                 var readCount = await stream.ReadAsync(readBuffer, token);
-                crc = CalculateCrc16(readBuffer.AsMemory(0, readCount), crc, progress, token);
 
+                if (readCount <= 0)
+                {
+                    break;
+                }
+
+                crc = _crc16.Compute(readBuffer.AsSpan(0, readCount), crc, 0);
                 current += readCount;
-                progress.Report(current * 100.0 / length);
+
+                if (length.HasValue)
+                {
+                    progress.Report(current * 100.0 / length.Value);
+                }
             }
 
             progress.Report(100);
@@ -244,62 +262,34 @@ public partial class CrcCalculatorViewModel : ViewModelBase
 
     private async Task<uint> CalculateCrc32Async(IProgress<double> progress, CancellationToken token = default)
     {
-        if (IsTextInput)
-        {
-            var bytes = Encoding.UTF8.GetBytes(InputText);
-            return CalculateCrc32(bytes, 0, uint.MaxValue, progress, token);
-        }
-
-        if (IsBinaryInput)
-        {
-            return CalculateCrc32(_inputBytes, 0, uint.MaxValue, progress, token);
-        }
-
-        await using var stream = File.OpenRead(InputFilePath);
-        var crc = await CalculateCrc32StreamAsync(stream, progress, token);
-
-        return crc;
-    }
-
-    private uint CalculateCrc32(ReadOnlyMemory<byte> bytes, uint initial, uint finalXor, IProgress<double> progress,
-        CancellationToken token = default)
-    {
-        progress.Report(0);
-
-        var crc = initial;
-
-        for (var i = 0; i < bytes.Length; i++)
-        {
-            token.ThrowIfCancellationRequested();
-            crc = _crc32.ComputeNext(crc, bytes.Span[i]);
-
-            progress.Report((i + 1) * 100.0 / _inputBytes.Length);
-        }
-
-        progress.Report(100);
-        return crc ^ finalXor;
-    }
-
-    private async Task<uint> CalculateCrc32StreamAsync(Stream stream, IProgress<double> progress,
-        CancellationToken token = default)
-    {
+        await using var stream = await GetDataStreamAsync();
         var readBuffer = ArrayPool<byte>.Shared.Rent(4096);
 
         try
         {
-            var length = stream.Length;
+            progress.Report(0);
+
+            var length = TryGetStreamLength(stream);
             var current = 0;
 
             var crc = uint.MaxValue;
-            while (current < length)
+            while (!token.IsCancellationRequested)
             {
                 token.ThrowIfCancellationRequested();
-
                 var readCount = await stream.ReadAsync(readBuffer, token);
-                crc = CalculateCrc32(readBuffer.AsMemory(0, readCount), crc, 0, progress, token);
 
+                if (readCount <= 0)
+                {
+                    break;
+                }
+
+                crc = _crc32.Compute(readBuffer.AsSpan(0, readCount), crc, 0);
                 current += readCount;
-                progress.Report(current * 100.0 / length);
+
+                if (length.HasValue)
+                {
+                    progress.Report(current * 100.0 / length.Value);
+                }
             }
 
             progress.Report(100);
@@ -312,4 +302,16 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     }
 
     #endregion
+
+    private static long? TryGetStreamLength(Stream stream)
+    {
+        try
+        {
+            return stream.Length;
+        }
+        catch (NotSupportedException)
+        {
+            return null;
+        }
+    }
 }
