@@ -116,11 +116,9 @@
             <TextBox Grid.Row="1"
                      Classes="editor"
                      FontSize="16"
-                     Text="{Binding InputText}"
+                     Text="{Binding InputBytesText}"
                      TextWrapping="Wrap"
                      Watermark="Enter raw hex values here..."
-                     AcceptsReturn="True"
-                     AcceptsTab="True"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </Grid>

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,6 +58,21 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ProgressPercentage))]
     [NotifyCanExecuteChangedFor(nameof(CalculateCommand), nameof(CancelCalculationCommand))]
     private bool _isCalculating;
+
+    public string InputBytesText
+    {
+        get => string.Join(" ", _inputBytes.Select(x => x.ToString("X2")));
+        set
+        {
+            if (!TryParseBytes(value, out _inputBytes))
+            {
+                throw new ValidationException("Invalid binary syntax");
+            }
+
+            OnPropertyChanged();
+            CalculateCommand.NotifyCanExecuteChanged();
+        }
+    }
 
     public List<string> AvailableAlgorithms { get; } = [Crc16AlgorithmName, Crc32AlgorithmName];
     public List<string> AvailableCompression { get; } = [ZlibDecompressName, ZlibCompressName, NoCompressionName];
@@ -329,5 +347,26 @@ public partial class CrcCalculatorViewModel : ViewModelBase
         {
             return null;
         }
+    }
+
+    private static bool TryParseBytes(string text, out byte[] bytes)
+    {
+        bytes = [];
+
+        var values = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var parsed = new byte[values.Length];
+
+        for (var i = 0; i < values.Length; i++)
+        {
+            if (!byte.TryParse(values[i], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var byteValue))
+            {
+                return false;
+            }
+
+            parsed[i] = byteValue;
+        }
+
+        bytes = parsed;
+        return true;
     }
 }
