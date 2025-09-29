@@ -21,7 +21,8 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     private const string Crc16AlgorithmName = "CRC-16";
     private const string Crc32AlgorithmName = "CRC-32";
 
-    private const string ZlibCompressionName = "Zlib";
+    private const string ZlibCompressName = "Zlib - Compress";
+    private const string ZlibDecompressName = "Zlib - Decompress";
     private const string NoCompressionName = "None";
 
     private readonly ILogger<CrcCalculatorViewModel> _logger;
@@ -56,7 +57,7 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     private bool _isCalculating;
 
     public List<string> AvailableAlgorithms { get; } = [Crc16AlgorithmName, Crc32AlgorithmName];
-    public List<string> AvailableCompression { get; } = [ZlibCompressionName, NoCompressionName];
+    public List<string> AvailableCompression { get; } = [ZlibDecompressName, ZlibCompressName, NoCompressionName];
     public List<string> AvailableInputTypes { get; } = ["Text", "Binary", "File"];
 
     public bool IsTextInput => SelectedInputType == "Text";
@@ -205,12 +206,27 @@ public partial class CrcCalculatorViewModel : ViewModelBase
             throw new NotSupportedException("Unsupported input type");
         }
 
-        if (SelectedCompression == ZlibCompressionName)
+        switch (SelectedCompression)
         {
-            stream = new ZLibStream(stream, CompressionMode.Decompress);
-        }
+            case ZlibCompressName:
+            {
+                // Compress the data first with Zlib
+                var compressedStream = new MemoryStream();
+                await using var z = new ZLibStream(compressedStream, CompressionMode.Compress, leaveOpen: true);
+                await stream.CopyToAsync(z);
+                await z.FlushAsync();
+                await stream.DisposeAsync();
 
-        return stream;
+                stream = compressedStream;
+                stream.Position = 0;
+
+                return stream;
+            }
+            case ZlibDecompressName:
+                return new ZLibStream(stream, CompressionMode.Decompress);
+            default:
+                return stream;
+        }
     }
 
     #region CRC-16
