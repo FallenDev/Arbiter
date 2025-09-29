@@ -83,21 +83,66 @@
         </Grid>
         
         <!-- Text Input -->
-        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8" IsVisible="{Binding IsTextInput, FallbackValue={x:False}}"
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8"
+              IsVisible="{Binding IsTextInput, FallbackValue={x:False}}"
               Margin="8,4">
             <Label Grid.Row="0" Content="Text"
-                   ToolTip.Tip="Input text to be used for calculation."/>
-            <TextBox Grid.Row="1" Classes="editor"
+                   ToolTip.Tip="Input text used for calculating CRC checksum."/>
+            <TextBox Grid.Row="1"
+                     Classes="editor"
                      FontSize="16"
-                     Text="{Binding InputText}"/>
+                     Text="{Binding InputText}"
+                     TextWrapping="Wrap"
+                     Watermark="Enter text here..."
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </Grid>
         
         <!-- Binary Input -->
-        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8" IsVisible="{Binding IsBinaryInput, FallbackValue={x:False}}"
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8"
+              IsVisible="{Binding IsBinaryInput, FallbackValue={x:False}}"
               Margin="8,4">
             <Label Grid.Row="0" Content="Binary (Hex)"
-                   ToolTip.Tip="Input binary (hex) to be used for calculation."/>
-            <TextBox Grid.Row="1" Classes="editor"/>
+                   ToolTip.Tip="Input binary (hex) used for calculating CRC checksum."/>
+            <TextBox Grid.Row="1"
+                     Classes="editor"
+                     FontSize="16"
+                     Text="{Binding InputText}"
+                     TextWrapping="Wrap"
+                     Watermark="Enter raw hex values here..."
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </Grid>
+        
+        <Grid Grid.Row="2" RowDefinitions="Auto,Auto" RowSpacing="8"
+              IsVisible="{Binding IsFileInput}"
+              Margin="8,4">
+            <Label Grid.Row="0" Content="File"
+                   ToolTip.Tip="Input file to be read for calculating CRC checksum."/>
+            <TextBox Grid.Row="1"
+                     Text="{Binding InputFilePath}"
+                     Classes="read-only"
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                     FontSize="14"
+                     Watermark="Select a file"
+                     Height="50"
+                     IsEnabled="{Binding !IsCalculating}">
+                <TextBox.InnerRightContent>
+                    <Button Command="{Binding SelectFileCommand}"
+                            Classes="toolbar outline"
+                            ToolTip.Tip="Opens a file dialog.."
+                            Margin="4,2"
+                            Cursor="Hand">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.LoadFolder}"/>
+                    </Button>
+                </TextBox.InnerRightContent>
+            </TextBox>
         </Grid>
     </Grid>
 </UserControl>

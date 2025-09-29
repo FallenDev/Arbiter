@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Arbiter.App.Threading;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.Net.Security;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -22,9 +22,10 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     private const string Crc32AlgorithmName = "CRC-32";
 
     private readonly ILogger<CrcCalculatorViewModel> _logger;
+    private readonly IStorageProvider _storageProvider;
+    
     private readonly Crc16Provider _crc16 = new();
     private readonly Crc32Provider _crc32 = new();
-    private readonly Debouncer _crcDebouncer = new(TimeSpan.FromMilliseconds(500));
 
     private CancellationTokenSource? _cancellationTokenSource;
     private byte[] _inputBytes = [];
@@ -32,11 +33,16 @@ public partial class CrcCalculatorViewModel : ViewModelBase
     [ObservableProperty] private string? _selectedAlgorithm;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsTextInput), nameof(IsBinaryInput), nameof(IsFileInput))]
+    [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
     private string? _selectedInputType;
 
-    [ObservableProperty] private string _inputText = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
+    private string _inputText = string.Empty;
 
-    [ObservableProperty] private string _inputFilePath = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CalculateCommand))]
+    private string _inputFilePath = string.Empty;
 
     [ObservableProperty] private double _progressPercentage;
 
@@ -60,15 +66,18 @@ public partial class CrcCalculatorViewModel : ViewModelBase
         ShowHex = true
     };
 
-    public CrcCalculatorViewModel(ILogger<CrcCalculatorViewModel> logger)
+    public CrcCalculatorViewModel(ILogger<CrcCalculatorViewModel> logger, IStorageProvider storageProvider)
     {
         _logger = logger;
+        _storageProvider = storageProvider;
 
         SelectedAlgorithm = AvailableAlgorithms.FirstOrDefault();
         SelectedInputType = AvailableInputTypes.FirstOrDefault();
     }
 
-    private bool CanCalculate() => !IsCalculating;
+    private bool CanCalculate() => !IsCalculating && (IsTextInput && !string.IsNullOrEmpty(InputText) ||
+                                                      (IsBinaryInput && _inputBytes.Length > 0) ||
+                                                      (IsFileInput && !string.IsNullOrWhiteSpace(InputFilePath)));
 
     [RelayCommand(CanExecute = nameof(CanCalculate))]
     private async Task Calculate()
@@ -130,6 +139,32 @@ public partial class CrcCalculatorViewModel : ViewModelBase
 
         IsCalculating = false;
         ProgressPercentage = 0;
+    }
+
+    [RelayCommand]
+    private async Task SelectFile()
+    {
+        var existingFolder =
+            await _storageProvider.TryGetFolderFromPathAsync(
+                Path.GetDirectoryName(InputFilePath) ?? string.Empty);
+
+        var files = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Select File",
+            FileTypeFilter =
+            [
+                FilePickerFileTypes.All,
+            ],
+            SuggestedStartLocation = existingFolder,
+            AllowMultiple = false
+        });
+
+        var selectedFile = files.Count > 0 ? files[0] : null;
+
+        if (selectedFile is not null)
+        {
+            InputFilePath = selectedFile.TryGetLocalPath() ?? string.Empty;
+        }
     }
 
     #region CRC-16
@@ -209,15 +244,71 @@ public partial class CrcCalculatorViewModel : ViewModelBase
 
     private async Task<uint> CalculateCrc32Async(IProgress<double> progress, CancellationToken token = default)
     {
-        for (var i = 0; i < 100; i++)
+        if (IsTextInput)
         {
-            token.ThrowIfCancellationRequested();
-
-            progress.Report(i);
-            await Task.Delay(100, token);
+            var bytes = Encoding.UTF8.GetBytes(InputText);
+            return CalculateCrc32(bytes, 0, uint.MaxValue, progress, token);
         }
 
-        return 0;
+        if (IsBinaryInput)
+        {
+            return CalculateCrc32(_inputBytes, 0, uint.MaxValue, progress, token);
+        }
+
+        await using var stream = File.OpenRead(InputFilePath);
+        var crc = await CalculateCrc32StreamAsync(stream, progress, token);
+
+        return crc;
+    }
+
+    private uint CalculateCrc32(ReadOnlyMemory<byte> bytes, uint initial, uint finalXor, IProgress<double> progress,
+        CancellationToken token = default)
+    {
+        progress.Report(0);
+
+        var crc = initial;
+
+        for (var i = 0; i < bytes.Length; i++)
+        {
+            token.ThrowIfCancellationRequested();
+            crc = _crc32.ComputeNext(crc, bytes.Span[i]);
+
+            progress.Report((i + 1) * 100.0 / _inputBytes.Length);
+        }
+
+        progress.Report(100);
+        return crc ^ finalXor;
+    }
+
+    private async Task<uint> CalculateCrc32StreamAsync(Stream stream, IProgress<double> progress,
+        CancellationToken token = default)
+    {
+        var readBuffer = ArrayPool<byte>.Shared.Rent(4096);
+
+        try
+        {
+            var length = stream.Length;
+            var current = 0;
+
+            var crc = uint.MaxValue;
+            while (current < length)
+            {
+                token.ThrowIfCancellationRequested();
+
+                var readCount = await stream.ReadAsync(readBuffer, token);
+                crc = CalculateCrc32(readBuffer.AsMemory(0, readCount), crc, 0, progress, token);
+
+                current += readCount;
+                progress.Report(current * 100.0 / length);
+            }
+
+            progress.Report(100);
+            return crc ^ uint.MaxValue;
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(readBuffer);
+        }
     }
 
     #endregion
