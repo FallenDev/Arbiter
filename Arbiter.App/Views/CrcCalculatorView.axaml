@@ -1,0 +1,103 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="using:System"
+             xmlns:v="using:Arbiter.App.Views"
+             xmlns:vm="using:Arbiter.App.ViewModels"
+             xmlns:converters="using:Arbiter.App.Converters"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
+             x:Class="Arbiter.App.Views.CrcCalculatorView"
+             x:DataType="vm:CrcCalculatorViewModel">
+    <UserControl.DataTemplates>
+        <DataTemplate x:DataType="{x:Type sys:String}">
+            <TextBlock Text="{Binding .}"
+                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                       VerticalAlignment="Center"
+                       Margin="8,4"/>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+    
+    <Grid Background="{StaticResource Talgonite.Control.Background}"
+          RowDefinitions="Auto,Auto,*">
+        <!-- Parameters -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="8">
+            <UniformGrid Columns="2">
+                <!-- Algorithm Selection -->
+                <Label Content="Algorithm"
+                       ToolTip.Tip="Select the CRC algorithm to use for calculation."/>
+                <ComboBox ItemsSource="{Binding AvailableAlgorithms}"
+                          SelectedValue="{Binding SelectedAlgorithm}"
+                          IsEnabled="{Binding !IsCalculating}"/>
+                
+                <!-- Input Type Selection -->
+                <Label Content="Input"
+                       ToolTip.Tip="Select the input data type."/>
+                <ComboBox ItemsSource="{Binding AvailableInputTypes}"
+                          SelectedValue="{Binding SelectedInputType}"
+                          IsEnabled="{Binding !IsCalculating}"/>
+                
+            </UniformGrid>
+            <v:InspectorValueView DataContext="{Binding ChecksumValue}"/>
+        </StackPanel>
+        
+        <!-- Calculate Button -->
+        <Button Grid.Row="1"
+                Command="{Binding CalculateCommand}"
+                Classes="outline"
+                IsVisible="{Binding !IsCalculating}"
+                Margin="4">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Path Width="16" Height="16"
+                      Stroke="{Binding $parent[Button].Foreground}"
+                      Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
+                <TextBlock Text="Calculate"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Margin="8,2"/>
+            </StackPanel>
+        </Button>
+        
+        <!-- Progress -->
+        <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto"
+              RowSpacing="4" ColumnSpacing="8"
+              IsVisible="{Binding IsCalculating, FallbackValue={x:False}}"
+              Margin="4">
+            <Label Grid.Row="0" Grid.Column="0" Content="Calculating..."/>
+            <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                         Minimum="0" Maximum="100"
+                         Value="{Binding ProgressPercentage, FallbackValue=50}" Margin="8,0,8,8"/>
+            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                    Command="{Binding CancelCalculationCommand}"
+                    Classes="destructive">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Path Width="16" Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                    <TextBlock Text="Cancel"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Margin="8,2"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        
+        <!-- Text Input -->
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8" IsVisible="{Binding IsTextInput, FallbackValue={x:False}}"
+              Margin="8,4">
+            <Label Grid.Row="0" Content="Text"
+                   ToolTip.Tip="Input text to be used for calculation."/>
+            <TextBox Grid.Row="1" Classes="editor"
+                     FontSize="16"
+                     Text="{Binding InputText}"/>
+        </Grid>
+        
+        <!-- Binary Input -->
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8" IsVisible="{Binding IsBinaryInput, FallbackValue={x:False}}"
+              Margin="8,4">
+            <Label Grid.Row="0" Content="Binary (Hex)"
+                   ToolTip.Tip="Input binary (hex) to be used for calculation."/>
+            <TextBox Grid.Row="1" Classes="editor"/>
+        </Grid>
+    </Grid>
+</UserControl>

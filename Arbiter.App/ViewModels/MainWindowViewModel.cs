@@ -33,6 +33,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public SendPacketViewModel SendPacket { get; }
     public ConsoleViewModel Console { get; }
     public InspectorViewModel Inspector { get; }
+    public CrcCalculatorViewModel CrcCalculator { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
 
@@ -55,6 +56,7 @@ public partial class MainWindowViewModel : ViewModelBase
         SendPacket = serviceProvider.GetRequiredService<SendPacketViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
         Inspector = serviceProvider.GetRequiredService<InspectorViewModel>();
+        CrcCalculator = serviceProvider.GetRequiredService<CrcCalculatorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
 

@@ -58,7 +58,7 @@
                                     HotKey="Ctrl+N"
                                     ToolTip.Tip="Launch a new client."
                                     Classes="toolbar">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="8"> 
                                     <Path Width="16" Height="16"
                                           Stroke="{Binding Path=$parent[Button].Foreground}"
                                           Data="{StaticResource Talgonite.Icon.NewPlus}"/>
@@ -95,7 +95,7 @@
         <!-- Collapsed Left Panel -->
         <Panel Grid.Column="0"
                Background="{StaticResource Talgonite.TabStrip.Background}"
-               IsVisible="{Binding IsLeftPanelCollapsed}">
+               IsVisible="{Binding IsLeftPanelCollapsed, FallbackValue={x:False}}">
             <LayoutTransformControl LayoutTransform="rotate(90deg)">
                 <WrapPanel ItemSpacing="4">
                     <Button Command="{Binding ToggleLeftPanelCommand}" CommandParameter="clients"
@@ -189,6 +189,9 @@
                 <TabItem Header="Hex">
                     <v:HexView DataContext="{Binding SelectedRawHex}"/>
                 </TabItem>
+                <TabItem Header="CRC">
+                    <v:CrcCalculatorView DataContext="{Binding CrcCalculator}"/>
+                </TabItem>
             </TabControl>
             <!-- Collapse Button -->
             <Button Command="{Binding ToggleRightPanelCommand}"
@@ -217,6 +220,10 @@
                             Content="Hex"
                             Classes="tab"
                             ToolTip.Tip="Shows the Hex view."/>
+                    <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="crc"
+                            Content="CRC"
+                            Classes="tab"
+                            ToolTip.Tip="Shows the CRC calculator view."/>
                 </WrapPanel>
             </LayoutTransformControl>
         </Panel>

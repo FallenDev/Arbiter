@@ -103,6 +103,7 @@ public class App : Application
         // Singletons
         services.AddSingleton<ConsoleViewModel>();
         services.AddSingleton<ClientManagerViewModel>();
+        services.AddSingleton<CrcCalculatorViewModel>();
         services.AddSingleton<InspectorViewModel>();
         services.AddSingleton<ProxyViewModel>();
         services.AddSingleton<SendPacketViewModel>();

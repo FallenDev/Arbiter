@@ -25,7 +25,7 @@ public partial class MainWindowViewModel
     [ObservableProperty] private bool _isRightPanelCollapsed;
     [ObservableProperty] private int _selectedRightPanelTabIndex;
     [ObservableProperty] private GridLength _rightPanelWidth = new(1, GridUnitType.Star);
-    [ObservableProperty] private double _rightPanelMinWidth = 240;
+    [ObservableProperty] private double _rightPanelMinWidth = 260;
     [ObservableProperty] private double _rightPanelMaxWidth = 480;
     [ObservableProperty] private GridLength _savedRightPanelWidth = new(1, GridUnitType.Star);
 
@@ -94,6 +94,7 @@ public partial class MainWindowViewModel
                 SelectedRightPanelTabIndex = tabName switch
                 {
                     "hex" => 1,
+                    "crc" => 2,
                     _ => 0
                 };
             }

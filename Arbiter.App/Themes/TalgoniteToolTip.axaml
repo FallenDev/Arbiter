@@ -18,8 +18,9 @@
         <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToolTip.BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.Monospace}"/>
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="Margin" Value="4"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -43,7 +44,7 @@
                             <TextBlock Text="{Binding $parent[Button], Converter={x:Static converters:HotKeyConverter.GestureText}, StringFormat={}[{0}]}"
                                        Foreground="{StaticResource Talgonite.ToolTip.HotKeyForeground}"
                                        FontFamily="{StaticResource Talgonite.ToolTip.HotKeyFont}"
-                                       FontWeight="Normal"
+                                       FontWeight="SemiBold"
                                        VerticalAlignment="Center"/>
                         </Border>
                     </WrapPanel>
