@@ -8,7 +8,7 @@ namespace Arbiter.Net.Server.Messages;
 public class ServerMapInfoMessage : ServerMessage
 {
     public ushort MapId { get; set; }
-    public MapWeatherFlags Weather { get; set; }
+    public MapFlags Flags { get; set; }
     public ushort Width { get; set; }
     public ushort Height { get; set; }
     public ushort Checksum { get; set; }
@@ -23,7 +23,7 @@ public class ServerMapInfoMessage : ServerMessage
         var widthLo = reader.ReadByte();
         var heightLo = reader.ReadByte();
 
-        Weather = (MapWeatherFlags)reader.ReadByte();
+        Flags = (MapFlags)reader.ReadByte();
 
         var widthHi = reader.ReadByte();
         var heightHi = reader.ReadByte();

@@ -1,7 +1,7 @@
 ﻿namespace Arbiter.Net.Types;
 
 [Flags]
-public enum MapWeatherFlags : byte
+public enum MapFlags : byte
 {
     None = 0,
     Snow = 0x1,
