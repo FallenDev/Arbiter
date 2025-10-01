@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using Arbiter.App.Models;
 using Arbiter.Net;
-using Arbiter.Net.Client;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
@@ -13,8 +14,13 @@ namespace Arbiter.App.ViewModels;
 
 public class ProxyViewModel : ViewModelBase
 {
+    private const string DebugAddEntityFilterName = "DebugAddEntityFilter";
+    
+    private readonly Lock _debugLock = new();
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
+    
+    public bool DebugFiltersEnabled { get; private set; }
 
     public bool IsRunning => _proxyServer.IsRunning;
 
@@ -44,20 +50,40 @@ public class ProxyViewModel : ViewModelBase
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
         OnPropertyChanged(nameof(IsRunning));
 
-        var filter = new NetworkPacketFilter(FilterTestFunc)
-        {
-            Name = nameof(FilterTestFunc)
-        };
-
-        _proxyServer.AddFilter(ServerCommand.AnimateEntity, filter);
+        _logger.LogInformation("Proxy started on 127.0.0.1:{Port}", localPort);
     }
 
-    private NetworkPacket? FilterTestFunc(NetworkPacket packet)
+    public void ApplyDebugFilters(DebugSettings settings)
     {
-        var reader = new NetworkPacketReader(packet);
+        using var _ = _debugLock.EnterScope();
 
-        _logger.LogInformation("AnimateEntity: {Value:X2}", reader.ReadByte());
-        return packet;
+        var debugFilter = new NetworkPacketFilter(HandleAddEntityPacket, settings)
+        {
+            Name = DebugAddEntityFilterName,
+            Priority = int.MaxValue
+        };
+        
+        // Add debug filters
+        _proxyServer.AddFilter(ServerCommand.AddEntity, debugFilter);
+        
+        DebugFiltersEnabled = true;
+        _logger.LogInformation("Debug packet filters enabled");
+    }
+
+    public void RemoveDebugFilters()
+    {
+        using var _ = _debugLock.EnterScope();
+
+        if (!DebugFiltersEnabled)
+        {
+            return;
+        }
+        
+        // Remove debug filters
+        _proxyServer.RemoveFilter(ServerCommand.AddEntity, DebugAddEntityFilterName);
+
+        DebugFiltersEnabled = false;
+        _logger.LogInformation("Debug packet filters disabled");
     }
 
     private void OnClientConnected(object? sender, ProxyConnectionEventArgs e)
@@ -89,13 +115,13 @@ public class ProxyViewModel : ViewModelBase
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client authenticated", name);
     }
-    
+
     private void OnClientLoggedIn(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client logged in", name);
     }
-    
+
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
@@ -116,4 +142,16 @@ public class ProxyViewModel : ViewModelBase
         _logger.LogWarning("[{Name}] Bad packet: {Packet}", name, packetString);
     }
 
+    private static NetworkPacket? HandleAddEntityPacket(NetworkPacket packet, object? parameter)
+    {
+        // Ignore if settings are not present
+        if (parameter is not DebugSettings settings)
+        {
+            return packet;
+        }
+
+        var reader = new NetworkPacketReader(packet);
+
+        return packet;
+    }
 }

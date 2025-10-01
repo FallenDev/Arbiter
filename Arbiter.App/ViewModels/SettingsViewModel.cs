@@ -123,10 +123,10 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     public bool DebugShowNpcId
     {
-        get => Settings.DebugShowNpcId;
+        get => Settings.Debug.ShowNpcId;
         set
         {
-            Settings.DebugShowNpcId = value;
+            Settings.Debug.ShowNpcId = value;
             OnPropertyChanged();
             HasChanges = true;
         }
@@ -134,10 +134,10 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     public bool DebugShowMonsterId
     {
-        get => Settings.DebugShowMonsterId;
+        get => Settings.Debug.ShowMonsterId;
         set
         {
-            Settings.DebugShowMonsterId = value;
+            Settings.Debug.ShowMonsterId = value;
             OnPropertyChanged();
             HasChanges = true;
         }
