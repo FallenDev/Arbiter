@@ -63,7 +63,7 @@ public class ProxyViewModel : ViewModelBase
             Priority = int.MaxValue
         };
         
-        // Add debug filters
+        // Add debug filters (named filters will be replaced, not duplicated)
         _proxyServer.AddFilter(ServerCommand.AddEntity, debugFilter);
         
         DebugFiltersEnabled = true;

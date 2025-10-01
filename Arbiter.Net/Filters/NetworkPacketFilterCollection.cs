@@ -5,7 +5,9 @@ namespace Arbiter.Net.Filters;
 public class NetworkPacketFilterCollection
 {
     private readonly ReaderWriterLockSlim _lock = new();
-    private readonly ImmutableArray<INetworkPacketFilter>[] _filters = new ImmutableArray<INetworkPacketFilter>[byte.MaxValue];
+
+    private readonly ImmutableArray<INetworkPacketFilter>[] _filters =
+        new ImmutableArray<INetworkPacketFilter>[byte.MaxValue];
 
     public NetworkPacketFilterCollection()
     {
@@ -25,6 +27,16 @@ public class NetworkPacketFilterCollection
         _lock.EnterWriteLock();
         try
         {
+            // If a filter with same name exists, remove it first
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                var existingFilter = _filters[command].FirstOrDefault(f => f.Name == filter.Name);
+                if (existingFilter is not null)
+                {
+                    _filters[command] = _filters[command].Remove(existingFilter);
+                }
+            }
+
             // Add the filter to the list, keep sorted by priority (highest first)
             var filters = _filters[command].Add(filter);
             _filters[command] = filters.Sort((a, b) => b.Priority.CompareTo(a.Priority));
@@ -56,6 +68,16 @@ public class NetworkPacketFilterCollection
             // Global filters are just applied to all commands
             for (var i = 0; i < _filters.Length; i++)
             {
+                // If a filter with same name exists, remove it first
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    var existingFilter = _filters[i].FirstOrDefault(f => f.Name == filter.Name);
+                    if (existingFilter is not null)
+                    {
+                        _filters[i] = _filters[i].Remove(existingFilter);
+                    }
+                }
+
                 // Add the filter to the list, keep sorted by priority (highest first)
                 var filters = _filters[i].Add(filter);
                 _filters[i] = filters.Sort((a, b) => b.Priority.CompareTo(a.Priority));
