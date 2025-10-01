@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
+using Arbiter.Net.Server.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
@@ -16,9 +16,9 @@ public class ProxyViewModel : ViewModelBase
 {
     private const string DebugAddEntityFilterName = "DebugAddEntityFilter";
     
-    private readonly Lock _debugLock = new();
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
+    private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
     
     public bool DebugFiltersEnabled { get; private set; }
 
@@ -55,8 +55,6 @@ public class ProxyViewModel : ViewModelBase
 
     public void ApplyDebugFilters(DebugSettings settings)
     {
-        using var _ = _debugLock.EnterScope();
-
         var debugFilter = new NetworkPacketFilter(HandleAddEntityPacket, settings)
         {
             Name = DebugAddEntityFilterName,
@@ -72,8 +70,6 @@ public class ProxyViewModel : ViewModelBase
 
     public void RemoveDebugFilters()
     {
-        using var _ = _debugLock.EnterScope();
-
         if (!DebugFiltersEnabled)
         {
             return;
@@ -142,16 +138,30 @@ public class ProxyViewModel : ViewModelBase
         _logger.LogWarning("[{Name}] Bad packet: {Packet}", name, packetString);
     }
 
-    private static NetworkPacket? HandleAddEntityPacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket? HandleAddEntityPacket(NetworkPacket packet, object? parameter)
     {
-        // Ignore if settings are not present
-        if (parameter is not DebugSettings settings)
+        // Ensure the packet is the correct type and we have settings as a parameter
+        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings settings)
         {
             return packet;
         }
 
-        var reader = new NetworkPacketReader(packet);
+        // If no debug settings enabled, ignore the packet
+        if (settings is { ShowMonsterId: false, ShowNpcId: false })
+        {
+            return packet;
+        }
+        
+        // Ignore if the packet could not be read as the expected message type
+        if (!_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
+        {
+            return packet;
+        }
 
-        return packet;
+        // Build a new packet with the modified entity data
+        var builder = new NetworkPacketBuilder(ServerCommand.AddEntity);
+        message.Serialize(builder);
+        
+        return builder.ToPacket();
     }
 }

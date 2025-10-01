@@ -13,7 +13,7 @@ public class ServerAddEntityMessage : ServerMessage
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
+
         var entityCount = reader.ReadUInt16();
 
         for (var i = 0; i < entityCount; i++)
@@ -67,6 +67,39 @@ public class ServerAddEntityMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        var entityCount = Entities.Count;
+        builder.AppendUInt16((ushort)entityCount);
+
+        for (var i = 0; i < entityCount; i++)
+        {
+            var entity = Entities[i];
+
+            builder.AppendUInt16(entity.X);
+            builder.AppendUInt16(entity.Y);
+            builder.AppendUInt32(entity.Id);
+            builder.AppendUInt16(entity.Sprite);
+
+            switch (entity)
+            {
+                case ServerCreatureEntity creature:
+                {
+                    builder.AppendUInt32(creature.Unknown);
+                    builder.AppendByte((byte)creature.Direction);
+                    builder.AppendByte(0x00); // not sure what this is for
+                    builder.AppendByte((byte)creature.CreatureType);
+
+                    if (creature.CreatureType == CreatureType.Mundane)
+                    {
+                        builder.AppendString8(creature.Name ?? string.Empty);
+                    }
+
+                    break;
+                }
+                case ServerItemEntity item:
+                    builder.AppendByte((byte)item.Color);
+                    builder.AppendUInt16(item.Unknown);
+                    break;
+            }
+        }
     }
 }

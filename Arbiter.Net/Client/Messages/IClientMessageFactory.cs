@@ -22,4 +22,22 @@ public interface IClientMessageFactory
             return false;
         }
     }
+
+    bool TryCreate<T>(ClientPacket packet, [NotNullWhen(true)] out T? message) where T : IClientMessage
+    {
+        message = default;
+
+        if (!TryCreate(packet, out var clientMessage))
+        {
+            return false;
+        }
+
+        if (clientMessage is not T expectedMessage)
+        {
+            return false;
+        }
+
+        message = expectedMessage;
+        return true;
+    }
 }
