@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using Arbiter.Net;
+using Arbiter.Net.Client;
+using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
+using Arbiter.Net.Serialization;
+using Arbiter.Net.Server;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
@@ -38,6 +43,21 @@ public class ProxyViewModel : ViewModelBase
 
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
         OnPropertyChanged(nameof(IsRunning));
+
+        var filter = new NetworkPacketFilter(FilterTestFunc)
+        {
+            Name = nameof(FilterTestFunc)
+        };
+
+        _proxyServer.AddFilter(ServerCommand.AnimateEntity, filter);
+    }
+
+    private NetworkPacket? FilterTestFunc(NetworkPacket packet)
+    {
+        var reader = new NetworkPacketReader(packet);
+
+        _logger.LogInformation("AnimateEntity: {Value:X2}", reader.ReadByte());
+        return packet;
     }
 
     private void OnClientConnected(object? sender, ProxyConnectionEventArgs e)

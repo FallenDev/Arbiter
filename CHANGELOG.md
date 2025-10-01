@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Debug` options for displaying entity IDs in-game
 - `NetworkPacketBuilder` implementation
 - Additional expand button for collapsible panels
+- Packet filtering backend
 
 ### Changed
 

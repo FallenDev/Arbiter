@@ -72,7 +72,7 @@ public class NetworkPacketFilterCollection
         _lock.EnterWriteLock();
         try
         {
-            var filter = _filters[command].FirstOrDefault(f => f.Name == name);
+            var filter = _filters[command].FirstOrDefault(f => f.Name is not null && f.Name == name);
             if (filter is null)
             {
                 return false;
@@ -97,7 +97,7 @@ public class NetworkPacketFilterCollection
             // Global filters are just applied to all commands
             for (var i = 0; i < _filters.Length; i++)
             {
-                var filter = _filters[i].FirstOrDefault(f => f.Name == name);
+                var filter = _filters[i].FirstOrDefault(f => f.Name is not null && f.Name == name);
                 if (filter is null)
                 {
                     continue;

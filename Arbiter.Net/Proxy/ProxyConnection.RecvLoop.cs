@@ -82,7 +82,7 @@ public partial class ProxyConnection
                     
                     // Process any filters for the packet
                     var filterResult = FilterPacket(decrypted);
-
+                    
                     // Notify that we have received a packet
                     PacketReceived?.Invoke(this,
                         new NetworkTransferEventArgs(NetworkDirection.Receive, encryptedPacket, decrypted));

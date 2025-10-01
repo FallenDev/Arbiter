@@ -2,7 +2,7 @@
 
 public interface INetworkPacketFilter
 {
-    string Name { get; set; }
+    string? Name { get; set; }
     int Priority { get; set; }
     object? Parameter { get; }
     Func<NetworkPacket, object?, NetworkPacket?> Filter { get; }
