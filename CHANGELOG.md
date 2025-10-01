@@ -11,10 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Application icon
 - `NoMap` flag for `MapInfo` packet flags
+- `Debug` options for displaying entity IDs in-game
+- `NetworkPacketBuilder` implementation
+- Additional expand button for collapsible panels
 
 ### Changed
 
 - Rename `Weather` to `Flags` for `MapInfo` packet 
+- CRC calculator styling and spacing
 
 ## [0.9.8] - 2025-09-29
 
