@@ -5,17 +5,18 @@ using Arbiter.Net.Client;
 
 namespace Arbiter.Net.Proxy;
 
-public class ProxyServer : IDisposable
+public partial class ProxyServer : IDisposable
 {
     private bool _isDisposed;
     private IPEndPoint? _remoteEndpoint;
     private TcpListener? _listener;
     private CancellationTokenSource? _cancelTokenSource;
+    
     private readonly Lock _connectionsLock = new();
     private readonly List<ProxyConnection> _connections = [];
     private int _nextConnectionId;
     private readonly ConcurrentQueue<IPEndPoint> _pendingRedirects = new();
-
+    
     public bool IsRunning => _listener is not null;
     public IPEndPoint? LocalEndpoint => _listener?.LocalEndpoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _remoteEndpoint;
@@ -94,7 +95,10 @@ public class ProxyServer : IDisposable
                 using var _ = _connectionsLock.EnterScope();
                 _connections.Add(connection);
             }
-
+            
+            // Inherit proxy-wide filters for newly connected client
+            InheritFilters(connection);
+            
             ClientConnected?.Invoke(this, new ProxyConnectionEventArgs(connection));
 
             _ = HandleConnectionAsync(connection, token);
