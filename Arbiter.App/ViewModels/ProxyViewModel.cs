@@ -1,29 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Arbiter.App.Models;
-using Arbiter.Net;
-using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Serialization;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
-using Arbiter.Net.Server.Types;
-using Arbiter.Net.Types;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
 
-public class ProxyViewModel : ViewModelBase
+public partial class ProxyViewModel : ViewModelBase
 {
-    private const string DebugAddEntityFilterName = "DebugAddEntityFilter";
-    
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
     private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
     
-    public bool DebugFiltersEnabled { get; private set; }
-
     public bool IsRunning => _proxyServer.IsRunning;
 
     public ProxyViewModel(ILogger<ProxyViewModel> logger, ProxyServer proxyServer)
@@ -53,35 +42,6 @@ public class ProxyViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsRunning));
 
         _logger.LogInformation("Proxy started on 127.0.0.1:{Port}", localPort);
-    }
-
-    public void ApplyDebugFilters(DebugSettings settings)
-    {
-        var debugFilter = new NetworkPacketFilter(HandleAddEntityPacket, settings)
-        {
-            Name = DebugAddEntityFilterName,
-            Priority = int.MaxValue
-        };
-        
-        // Add debug filters (named filters will be replaced, not duplicated)
-        _proxyServer.AddFilter(ServerCommand.AddEntity, debugFilter);
-        
-        DebugFiltersEnabled = true;
-        _logger.LogInformation("Debug packet filters enabled");
-    }
-
-    public void RemoveDebugFilters()
-    {
-        if (!DebugFiltersEnabled)
-        {
-            return;
-        }
-        
-        // Remove debug filters
-        _proxyServer.RemoveFilter(ServerCommand.AddEntity, DebugAddEntityFilterName);
-
-        DebugFiltersEnabled = false;
-        _logger.LogInformation("Debug packet filters disabled");
     }
 
     private void OnClientConnected(object? sender, ProxyConnectionEventArgs e)
@@ -138,68 +98,5 @@ public class ProxyViewModel : ViewModelBase
 
         var packetString = string.Join(' ', e.Packet.Data.Select(b => b.ToString("X2")));
         _logger.LogWarning("[{Name}] Bad packet: {Packet}", name, packetString);
-    }
-
-    private NetworkPacket? HandleAddEntityPacket(NetworkPacket packet, object? parameter)
-    {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
-        {
-            return packet;
-        }
-
-        // If no debug settings enabled, ignore the packet
-        if (filterSettings is { ShowMonsterId: false, ShowNpcId: false })
-        {
-            return packet;
-        }
-
-        // Ignore if the packet could not be read as the expected message type
-        if (!_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
-        {
-            return packet;
-        }
-
-        // Inject monster IDs into the entity names
-        if (filterSettings.ShowMonsterId)
-        {
-            foreach (var entity in message.Entities)
-            {
-                if (entity is not ServerCreatureEntity { CreatureType: CreatureType.Monster } monsterEntity)
-                {
-                    continue;
-                }
-
-                var name = monsterEntity.Name ?? "Monster";
-                
-                // Need to set the creature type to Mundane to display hover name
-                monsterEntity.CreatureType = CreatureType.Mundane;
-                monsterEntity.Name = $"{name} 0x{monsterEntity.Id:x4}";
-            }
-        }
-
-        // Inject NPC IDs into the entity names
-        if (filterSettings.ShowNpcId)
-        {
-            foreach (var entity in message.Entities)
-            {
-                if (entity is not ServerCreatureEntity { CreatureType: CreatureType.Mundane } npcEntity)
-                {
-                    continue;
-                }
-
-                var name = npcEntity.Name ?? "Mundane";
-                if (!name.StartsWith("Monster") && !name.EndsWith(')'))
-                {
-                    npcEntity.Name = $"{name} 0x{npcEntity.Id:x4}";
-                }
-            }
-        }
-
-        // Build a new packet with the modified entity data
-        var builder = new NetworkPacketBuilder(ServerCommand.AddEntity);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
     }
 }
