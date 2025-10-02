@@ -8,7 +8,7 @@ namespace Arbiter.Net.Server.Messages;
 public class ServerMapInfoMessage : ServerMessage
 {
     public ushort MapId { get; set; }
-    public MapWeatherFlags Weather { get; set; }
+    public MapFlags Flags { get; set; }
     public ushort Width { get; set; }
     public ushort Height { get; set; }
     public ushort Checksum { get; set; }
@@ -23,19 +23,14 @@ public class ServerMapInfoMessage : ServerMessage
         var widthLo = reader.ReadByte();
         var heightLo = reader.ReadByte();
 
-        Weather = (MapWeatherFlags)reader.ReadByte();
+        Flags = (MapFlags)reader.ReadByte();
 
         var widthHi = reader.ReadByte();
         var heightHi = reader.ReadByte();
 
         Width = (ushort)(widthHi << 8 | widthLo);
         Height = (ushort)(heightHi << 8 | heightLo);
-
-        // These are swapped with the normal "big endian" order
-        var checksumLo = reader.ReadByte();
-        var checksumHi = reader.ReadByte();
-        Checksum = (ushort)(checksumHi << 8 | checksumLo);
-
+        Checksum = reader.ReadUInt16();
         Name = reader.ReadString8();
     }
 

@@ -86,6 +86,48 @@ public class ServerShowDialogMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        builder.AppendByte((byte)DialogType);
+
+        if (DialogType == DialogType.CloseDialog)
+        {
+            builder.AppendByte(0);
+            return;
+        }
+
+        builder.AppendByte((byte)EntityType);
+        builder.AppendUInt32(EntityId!.Value);
+        builder.AppendByte(Unknown1 ?? 0x1);
+
+        builder.AppendUInt16(Sprite ?? 0);
+        builder.AppendByte(Color ?? 0);
+        builder.AppendByte(Unknown2 ?? 0x1);
+
+        builder.AppendUInt16(Sprite ?? 0); // spriteSecondary
+        builder.AppendByte(Color ?? 0); // colorSecondary
+
+        builder.AppendUInt16(PursuitId!.Value);
+        builder.AppendUInt16(StepId ?? 0);
+
+        builder.AppendBoolean(HasPreviousButton);
+        builder.AppendBoolean(HasNextButton);
+        builder.AppendBoolean(!ShowGraphic); // inverted for some reason
+
+        builder.AppendString8(Name ?? string.Empty);
+        builder.AppendString16(Content ?? string.Empty);
+
+        if (DialogType is DialogType.Menu or DialogType.CreatureMenu)
+        {
+            builder.AppendByte((byte)MenuChoices.Count);
+            foreach (var choice in MenuChoices)
+            {
+                builder.AppendString8(choice);
+            }
+        }
+        else if (DialogType == DialogType.TextInput)
+        {
+            builder.AppendString8(InputPrompt ?? string.Empty);
+            builder.AppendByte(InputMaxLength ?? 0xFF);
+            builder.AppendString8(InputDescription ?? string.Empty);
+        }
     }
 }

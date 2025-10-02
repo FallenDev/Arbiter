@@ -7,6 +7,7 @@ using Arbiter.App.ViewModels.Client;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Tracing;
+using Arbiter.App.Views;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -97,7 +98,12 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             Proxy.Start(Settings.LocalPort, remoteIpAddress[0], Settings.RemoteServerPort);
-            _logger.LogInformation("Proxy started on 127.0.0.1:{Port}", Settings.LocalPort);
+            
+            // Apply debug filters, if enabled
+            if (Settings.Debug.CheckEnabled())
+            {
+                Proxy.ApplyDebugFilters(Settings.Debug);    
+            }
         }
         catch (Exception ex)
         {
@@ -124,5 +130,31 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedRawHex.ClearSelection();
 
         Inspector.SelectedPacket = viewModel.DecryptedPacket;
+    }
+
+    [RelayCommand]
+    private async Task ShowSettings()
+    {
+        var newSettings =
+            await _dialogService.ShowDialogAsync<SettingsWindow, SettingsViewModel, ArbiterSettings>();
+
+        if (newSettings is null)
+        {
+            return;
+        }
+
+        Settings = newSettings;
+        await _settingsService.SaveToFileAsync(Settings);
+        LaunchClientCommand.NotifyCanExecuteChanged();
+
+        // Re-apply debug filters or remove them, if disabled
+        if (Settings.Debug.CheckEnabled())
+        {
+            Proxy.ApplyDebugFilters(Settings.Debug);
+        }
+        else
+        {
+            Proxy.RemoveDebugFilters();
+        }
     }
 }

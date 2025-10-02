@@ -373,8 +373,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
             b.Section("Dimensions")
                 .Property(m => m.Width, p => p.ToolTip("Width of the map, in tiles."))
                 .Property(m => m.Height, p => p.ToolTip("Height of the map, in tiles."));
-            b.Section("Weather")
-                .Property(m => m.Weather, p => p.ToolTip("Current weather effect for the map."));
+            b.Section("Flags")
+                .Property(m => m.Flags, p => p.ToolTip("Current flags for the map."));
         });
     }
 

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Arbiter.App.Models;
-using Arbiter.App.Views;
+﻿using Arbiter.App.Models;
 using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -156,22 +154,6 @@ public partial class MainWindowViewModel
         BottomPanelHeight = new GridLength(CollapsedHeight);
         BottomPanelMinHeight = CollapsedHeight;
         BottomPanelMaxHeight = CollapsedHeight;
-    }
-
-    [RelayCommand]
-    private async Task ShowSettings()
-    {
-        var newSettings =
-            await _dialogService.ShowDialogAsync<SettingsWindow, SettingsViewModel, ArbiterSettings>();
-
-        if (newSettings is null)
-        {
-            return;
-        }
-
-        Settings = newSettings;
-        await _settingsService.SaveToFileAsync(Settings);
-        LaunchClientCommand.NotifyCanExecuteChanged();
     }
 
     private void SaveWindowPosition()

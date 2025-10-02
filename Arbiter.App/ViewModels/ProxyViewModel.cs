@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Net;
 using Arbiter.Net.Proxy;
+using Arbiter.Net.Server.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
 
-public class ProxyViewModel : ViewModelBase
+public partial class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
-
+    private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
+    
     public bool IsRunning => _proxyServer.IsRunning;
 
     public ProxyViewModel(ILogger<ProxyViewModel> logger, ProxyServer proxyServer)
@@ -38,30 +40,32 @@ public class ProxyViewModel : ViewModelBase
 
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
         OnPropertyChanged(nameof(IsRunning));
+
+        _logger.LogInformation("Proxy started on 127.0.0.1:{Port}", localPort);
     }
 
     private void OnClientConnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client connected: {Endpoint}", name, e.Connection.LocalEndpoint);
+        _logger.LogInformation("[{Name}] Client connected -> {Endpoint}", name, e.Connection.LocalEndpoint);
     }
 
     private void OnServerConnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Server connected: {Endpoint}", name, e.Connection.RemoteEndpoint);
+        _logger.LogInformation("[{Name}] Server connected <- {Endpoint}", name, e.Connection.RemoteEndpoint);
     }
 
     private void OnClientDisconnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client disconnected: {Endpoint}", name, e.Connection.LocalEndpoint);
+        _logger.LogInformation("[{Name}] Client disconnected -> {Endpoint}", name, e.Connection.LocalEndpoint);
     }
 
     private void OnServerDisconnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Server disconnected: {Endpoint}", name, e.Connection.RemoteEndpoint);
+        _logger.LogInformation("[{Name}] Server disconnected <- {Endpoint}", name, e.Connection.RemoteEndpoint);
     }
 
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)
@@ -69,13 +73,13 @@ public class ProxyViewModel : ViewModelBase
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client authenticated", name);
     }
-    
+
     private void OnClientLoggedIn(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client logged in", name);
     }
-    
+
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
@@ -85,7 +89,7 @@ public class ProxyViewModel : ViewModelBase
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client redirected to {Endpoint}", name, e.RemoteEndpoint);
+        _logger.LogInformation("[{Name}] Client redirected -> {Endpoint}", name, e.RemoteEndpoint);
     }
 
     private void OnClientException(object? sender, ProxyConnectionExceptionEventArgs e)
@@ -95,5 +99,4 @@ public class ProxyViewModel : ViewModelBase
         var packetString = string.Join(' ', e.Packet.Data.Select(b => b.ToString("X2")));
         _logger.LogWarning("[{Name}] Bad packet: {Packet}", name, packetString);
     }
-
 }

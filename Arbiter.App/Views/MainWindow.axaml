@@ -111,6 +111,18 @@
                     </Button>
                 </WrapPanel>
             </LayoutTransformControl>
+            <!-- Expand Button -->
+            <Button Command="{Binding ToggleLeftPanelCommand}"
+                    Classes="toolbar"
+                    ToolTip.Tip="Expands the left panel."
+                    CornerRadius="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Padding="4"
+                    Margin="2">
+                <Path Stroke="{Binding $parent[Button].Foreground}"
+                      Data="{StaticResource Talgonite.Icon.RightChevron}"/>
+            </Button>
         </Panel>
         
         <GridSplitter Grid.Column="1" ResizeDirection="Columns"
@@ -174,6 +186,18 @@
                             Classes="tab"
                             ToolTip.Tip="Shows the Console view."/>
                 </WrapPanel>
+                <!-- Expand Button -->
+                <Button Command="{Binding ToggleBottomPanelCommand}"
+                        Classes="toolbar"
+                        ToolTip.Tip="Expands the bottom panel."
+                        CornerRadius="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Padding="4"
+                        Margin="2">
+                    <Path Stroke="{Binding $parent[Button].Foreground}"
+                          Data="{StaticResource Talgonite.Icon.UpChevron}"/>
+                </Button>
             </Panel>
         </Grid>
         
@@ -226,6 +250,18 @@
                             ToolTip.Tip="Shows the CRC calculator view."/>
                 </WrapPanel>
             </LayoutTransformControl>
+            <!-- Expand Button -->
+            <Button Command="{Binding ToggleRightPanelCommand}"
+                    Classes="toolbar"
+                    ToolTip.Tip="Expands the right panel."
+                    CornerRadius="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Padding="4"
+                    Margin="2">
+                <Path Stroke="{Binding $parent[Button].Foreground}"
+                      Data="{StaticResource Talgonite.Icon.LeftChevron}"/>
+            </Button>
         </Panel>
     </Grid>
     
