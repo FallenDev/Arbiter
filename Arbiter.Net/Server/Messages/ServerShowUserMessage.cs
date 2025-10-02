@@ -62,7 +62,7 @@ public class ServerShowUserMessage : ServerMessage
         // Displaying as a monster instead
         if (headSprite == 0xFFFF)
         {
-            MonsterSprite = reader.ReadUInt16();
+            MonsterSprite = SpriteFlags.ClearFlags(reader.ReadUInt16());
             HairColor = (DyeColor)reader.ReadByte();
             BootsColor = (DyeColor)reader.ReadByte();
 
@@ -131,8 +131,8 @@ public class ServerShowUserMessage : ServerMessage
 
         if (MonsterSprite.HasValue)
         {
-            builder.AppendUInt16(0xFFFF);
-            builder.AppendUInt16(MonsterSprite.Value);
+            builder.AppendUInt16(0xFFFF);   // head sprite
+            builder.AppendUInt16(SpriteFlags.SetCreature(MonsterSprite.Value));
             builder.AppendByte((byte)(HairColor ?? DyeColor.Default));
             builder.AppendByte((byte)(BootsColor ?? DyeColor.Default));
             foreach (var b in MonsterUnknown ?? DefaultMonsterUnknown)

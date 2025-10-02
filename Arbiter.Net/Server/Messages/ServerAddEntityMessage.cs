@@ -23,9 +23,7 @@ public class ServerAddEntityMessage : ServerMessage
             var id = reader.ReadUInt32();
             var sprite = reader.ReadUInt16();
 
-            var isCreature = (sprite & SpriteFlags.Creature) > 0;
-
-            if (isCreature)
+            if (SpriteFlags.IsCreature(sprite))
             {
                 var unknown = reader.ReadUInt32();
                 var direction = (WorldDirection)reader.ReadByte();
@@ -40,14 +38,14 @@ public class ServerAddEntityMessage : ServerMessage
                     Id = id,
                     X = x,
                     Y = y,
-                    Sprite = sprite,
+                    Sprite = SpriteFlags.ClearFlags(sprite),
                     Direction = direction,
                     CreatureType = creatureType,
                     Name = creatureName,
                     Unknown = unknown,
                 });
             }
-            else
+            else if (SpriteFlags.IsItem(sprite))
             {
                 var color = (DyeColor)reader.ReadByte();
                 var unknown = reader.ReadUInt16();
@@ -57,10 +55,14 @@ public class ServerAddEntityMessage : ServerMessage
                     Id = id,
                     X = x,
                     Y = y,
-                    Sprite = sprite,
+                    Sprite = SpriteFlags.ClearFlags(sprite),
                     Color = color,
                     Unknown = unknown,
                 });
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid entity type");
             }
         }
     }
@@ -79,7 +81,15 @@ public class ServerAddEntityMessage : ServerMessage
             builder.AppendUInt16(entity.X);
             builder.AppendUInt16(entity.Y);
             builder.AppendUInt32(entity.Id);
-            builder.AppendUInt16(entity.Sprite);
+
+            var spriteWithFlags = entity switch
+            {
+                ServerCreatureEntity creature => SpriteFlags.SetCreature(creature.Sprite),
+                ServerItemEntity item => SpriteFlags.SetItem(item.Sprite),
+                _ => entity.Sprite
+            };
+            
+            builder.AppendUInt16(spriteWithFlags);
 
             switch (entity)
             {

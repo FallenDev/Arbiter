@@ -12,4 +12,18 @@ public static class SpriteFlags
     public static ushort SetItem(ushort sprite) => (ushort)(sprite | Item);
 
     public static ushort ClearFlags(ushort sprite) => (ushort)(sprite & ~Creature & ~Item);
+
+    public static SpriteType GetSpriteType(ushort sprite)
+    {
+        if (IsCreature(sprite))
+        {
+            return SpriteType.Monster;
+        }
+
+        if (IsItem(sprite))
+        {
+            return SpriteType.Item;
+        }
+        return SpriteType.None;
+    }
 }

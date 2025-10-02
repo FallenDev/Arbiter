@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `ProxyConnection` to filter handler callback
 - Remove `0x4000` (monster) and `0x8000` (item) bitflags from `Sprite` field values
 - Show decimal by default for `Sprite` fields
+- Better disconnect handling for client crashes
 
 ## [0.9.10] - 2025-10-02
 

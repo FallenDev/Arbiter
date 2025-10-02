@@ -623,6 +623,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Content")
                 .Property(m => m.Sprite, p => p.ToolTip("Sprite displayed in the dialog."))
+                .Property(m => m.SpriteType, p => p.ToolTip("Type of sprite displayed in the dialog."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog."))
                 .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."))

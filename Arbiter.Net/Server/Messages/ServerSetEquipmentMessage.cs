@@ -19,7 +19,7 @@ public class ServerSetEquipmentMessage : ServerMessage
         base.Deserialize(reader);
         
         Slot = (EquipmentSlot)reader.ReadByte();
-        Sprite = reader.ReadUInt16();
+        Sprite = SpriteFlags.ClearFlags(reader.ReadUInt16());
         Color = (DyeColor)reader.ReadByte();
         Name = reader.ReadString8();
 
@@ -34,7 +34,7 @@ public class ServerSetEquipmentMessage : ServerMessage
         base.Serialize(builder);
         
         builder.AppendByte((byte)Slot);
-        builder.AppendUInt16(Sprite);
+        builder.AppendUInt16(SpriteFlags.SetItem(Sprite));
         builder.AppendByte((byte)Color);
         builder.AppendString8(Name);
         
