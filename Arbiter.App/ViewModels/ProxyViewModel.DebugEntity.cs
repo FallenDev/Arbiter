@@ -44,7 +44,7 @@ public partial class ProxyViewModel
                 
                 // Need to set the creature type to Mundane to display hover name
                 monsterEntity.CreatureType = CreatureType.Mundane;
-                monsterEntity.Name = $"{name} 0x{monsterEntity.Id:x4}";
+                monsterEntity.Name = $"{name} 0x{monsterEntity.Id:X4}";
             }
         }
 
@@ -61,7 +61,7 @@ public partial class ProxyViewModel
                 var name = npcEntity.Name ?? "Mundane";
                 if (!name.StartsWith("Monster"))
                 {
-                    npcEntity.Name = $"{name} 0x{npcEntity.Id:x4}";
+                    npcEntity.Name = $"{name} 0x{npcEntity.Id:X4}";
                 }
             }
         }

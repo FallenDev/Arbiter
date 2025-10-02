@@ -145,6 +145,98 @@ public class ServerShowDialogMenuMessage : ServerMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        builder.AppendByte((byte)MenuType);
+        
+        builder.AppendByte((byte)EntityType);
+        builder.AppendUInt32(EntityId ?? 0);
+        builder.AppendByte(Unknown1 ?? 0x1);
+        
+        builder.AppendUInt16(Sprite ?? 0);
+        builder.AppendByte(Color ?? 0);
+        builder.AppendByte(Unknown2 ?? 0x1);
+        
+        builder.AppendUInt16(Sprite ?? 0);
+        builder.AppendByte(Color ?? 0);
+        builder.AppendBoolean(!ShowGraphic);
+        
+        builder.AppendString8(Name ?? string.Empty);
+        builder.AppendString16(Content ?? string.Empty);
+        
+        if (MenuType is DialogMenuType.Menu or DialogMenuType.MenuWithArgs)
+        {
+            if (MenuType == DialogMenuType.MenuWithArgs)
+            {
+                builder.AppendString8(Prompt ?? string.Empty);
+            }
+            
+            builder.AppendByte((byte)MenuChoices.Count);
+            foreach (var choice in MenuChoices)
+            {
+                builder.AppendString8(choice.Text);
+                builder.AppendUInt16(choice.PursuitId);
+            }
+        }
+        else if (MenuType is DialogMenuType.TextInput or DialogMenuType.TextInputWithArgs)
+        {
+            if (MenuType == DialogMenuType.TextInputWithArgs)
+            {
+                builder.AppendString8(Prompt ?? string.Empty);
+            }
+            builder.AppendUInt16(PursuitId ?? 0);
+        }
+        else if (MenuType is DialogMenuType.ItemChoices)
+        {
+            builder.AppendUInt16(PursuitId ?? 0);
+            builder.AppendUInt16((ushort)ItemChoices.Count);
+            
+            foreach (var item in ItemChoices)
+            {
+                builder.AppendUInt16(item.Sprite);
+                builder.AppendByte((byte)item.Color);
+                builder.AppendUInt32(item.Price);
+                builder.AppendString8(item.Name);
+                builder.AppendString8(item.Description);
+            }
+        }
+        else if (MenuType is DialogMenuType.UserInventory)
+        {
+            builder.AppendUInt16(PursuitId ?? 0);
+            builder.AppendByte((byte)InventorySlots.Count);
+            
+            foreach (var slot in InventorySlots)
+            {
+                builder.AppendByte(slot);
+            }
+        }
+        else if (MenuType is DialogMenuType.SpellChoices)
+        {
+            builder.AppendUInt16(PursuitId ?? 0);
+            builder.AppendUInt16((ushort)SpellChoices.Count);
+            
+            foreach (var spell in SpellChoices)
+            {
+                builder.AppendByte(0); // sprite type
+                builder.AppendUInt16(spell.Sprite);
+                builder.AppendByte((byte)spell.Color);
+                builder.AppendString8(spell.Name);
+            }
+        }
+        else if (MenuType is DialogMenuType.SkillChoices)
+        {
+            builder.AppendUInt16(PursuitId ?? 0);
+            builder.AppendUInt16((ushort)SkillChoices.Count);
+            
+            foreach (var skill in SkillChoices)
+            {
+                builder.AppendByte(0); // sprite type
+                builder.AppendUInt16(skill.Sprite);
+                builder.AppendByte((byte)skill.Color);
+                builder.AppendString8(skill.Name);
+            }
+        }
+        else if (MenuType is DialogMenuType.UserSkills or DialogMenuType.UserSpells)
+        {
+            builder.AppendUInt16(PursuitId ?? 0);
+        }
     }
 }
