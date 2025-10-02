@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using Arbiter.Net.Client;
 using Arbiter.Net.Security;
 using Arbiter.Net.Server;
@@ -62,18 +63,22 @@ public partial class ProxyConnection
                     encryptedPacket = decryptedPacket;
                 }
 
-                // Write the encrypted packet to the network stream
-                await encryptedPacket.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
-                    .ConfigureAwait(false);
+                try
+                {
+                    // Write the encrypted packet to the network stream
+                    await encryptedPacket.WriteToAsync(destinationStream, headerBuffer.AsMemory(), token)
+                        .ConfigureAwait(false);
+                }
+                catch (IOException)
+                {
+                    // Socket was disconnected, cancel the send operation
+                    continue;
+                }
 
                 // Notify that we have sent a packet
                 PacketSent?.Invoke(this,
                     new NetworkTransferEventArgs(NetworkDirection.Send, encryptedPacket, decryptedPacket));
             }
-        }
-        catch (SocketException)
-        {
-            // Ignore socket exceptions, they are handled in the receive loop
         }
         catch when (token.IsCancellationRequested)
         {
