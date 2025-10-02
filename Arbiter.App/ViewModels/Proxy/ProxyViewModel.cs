@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Proxy;
@@ -11,8 +11,7 @@ public partial class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
-    private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
-    
+
     public bool IsRunning => _proxyServer.IsRunning;
 
     public ProxyViewModel(ILogger<ProxyViewModel> logger, ProxyServer proxyServer)
@@ -49,6 +48,9 @@ public partial class ProxyViewModel : ViewModelBase
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client connected -> {Endpoint}", name, e.Connection.LocalEndpoint);
+
+        // Create the interact request queue on connection
+        _interactRequests.AddOrUpdate(e.Connection.Id, [], (_, _) => []);
     }
 
     private void OnServerConnected(object? sender, ProxyConnectionEventArgs e)
@@ -61,6 +63,9 @@ public partial class ProxyViewModel : ViewModelBase
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
         _logger.LogInformation("[{Name}] Client disconnected -> {Endpoint}", name, e.Connection.LocalEndpoint);
+
+        // Remove the interact request queue on connection
+        _interactRequests.TryRemove(e.Connection.Id, out _);
     }
 
     private void OnServerDisconnected(object? sender, ProxyConnectionEventArgs e)

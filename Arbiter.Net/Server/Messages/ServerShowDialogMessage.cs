@@ -11,6 +11,7 @@ public class ServerShowDialogMessage : ServerMessage
     public EntityTypeFlags EntityType { get; set; }
     public uint? EntityId { get; set; }
     public ushort? Sprite { get; set; }
+    public SpriteType SpriteType { get; set; }
     public byte? Color { get; set; }
     public ushort? PursuitId { get; set; }
     public ushort? StepId { get; set; }
@@ -41,7 +42,10 @@ public class ServerShowDialogMessage : ServerMessage
         EntityId = reader.ReadUInt32();
         Unknown1 = reader.ReadByte();
 
-        Sprite = reader.ReadUInt16();
+        var spritePrimary = reader.ReadUInt16();
+        SpriteType = SpriteFlags.GetSpriteType(spritePrimary);
+        
+        Sprite = SpriteFlags.ClearFlags(spritePrimary);
         Color = reader.ReadByte();
         Unknown2 = reader.ReadByte();
 
@@ -60,7 +64,8 @@ public class ServerShowDialogMessage : ServerMessage
 
         if (Sprite == 0)
         {
-            Sprite = spriteSecondary;
+            Sprite = SpriteFlags.ClearFlags(spriteSecondary);
+            SpriteType = SpriteFlags.GetSpriteType(spriteSecondary);
         }
 
         if (Color == 0)
@@ -100,11 +105,18 @@ public class ServerShowDialogMessage : ServerMessage
         builder.AppendUInt32(EntityId!.Value);
         builder.AppendByte(Unknown1 ?? 0x1);
 
-        builder.AppendUInt16(Sprite ?? 0);
+        var spriteWithFlags = SpriteType switch
+        {
+            SpriteType.Monster => SpriteFlags.SetCreature(Sprite ?? 0),
+            SpriteType.Item => SpriteFlags.SetItem(Sprite ?? 0),
+            _ => Sprite ?? 0
+        };
+            
+        builder.AppendUInt16(spriteWithFlags);
         builder.AppendByte(Color ?? 0);
         builder.AppendByte(Unknown2 ?? 0x1);
 
-        builder.AppendUInt16(Sprite ?? 0); // spriteSecondary
+        builder.AppendUInt16(spriteWithFlags); // spriteSecondary
         builder.AppendByte(Color ?? 0); // colorSecondary
 
         builder.AppendUInt16(PursuitId!.Value);

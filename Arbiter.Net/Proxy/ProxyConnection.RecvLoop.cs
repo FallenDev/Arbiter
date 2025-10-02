@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using Arbiter.Net.Client;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Security;
@@ -25,6 +26,11 @@ public partial class ProxyConnection
                 {
                     recvCount = await stream.ReadAsync(recvBuffer, token).ConfigureAwait(false);
                 }
+                catch (IOException)
+                {
+                    // Socket was disconnected, cancel the read operation
+                    recvCount = 0;
+                }
                 catch when (token.IsCancellationRequested)
                 {
                     recvCount = 0;
@@ -33,15 +39,6 @@ public partial class ProxyConnection
                 // Handle socket disconnect when read returns zero
                 if (recvCount == 0)
                 {
-                    if (direction == ProxyDirection.ServerToClient)
-                    {
-                        ServerDisconnected?.Invoke(this, EventArgs.Empty);
-                    }
-                    else
-                    {
-                        ClientDisconnected?.Invoke(this, EventArgs.Empty);
-                    }
-
                     // This will trigger the other send/recv tasks to also cancel
                     await tokenSource.CancelAsync();
                     break;
@@ -106,16 +103,14 @@ public partial class ProxyConnection
                     }
                 }
             }
-        }
-        catch (SocketException)
-        {
-            if (direction == ProxyDirection.ServerToClient)
+            
+            if (direction == ProxyDirection.ClientToServer)
             {
-                ServerDisconnected?.Invoke(this, EventArgs.Empty);
+                ClientDisconnected?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                ClientDisconnected?.Invoke(this, EventArgs.Empty);
+                ServerDisconnected?.Invoke(this, EventArgs.Empty);
             }
         }
         catch when (token.IsCancellationRequested)

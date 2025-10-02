@@ -1,6 +1,7 @@
 ﻿using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Proxy;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
@@ -12,12 +13,15 @@ public partial class ProxyViewModel
 
     private void AddDebugMessageFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.WorldMessage,
-            new NetworkPacketFilter(HandleEmptyWorldMessagePacket, settings)
-            {
-                Name = DebugEmptyWorldMessageFilterName,
-                Priority = int.MaxValue
-            });
+        if (settings.IgnoreEmptyMessages)
+        {
+            _proxyServer.AddFilter(ServerCommand.WorldMessage,
+                new NetworkPacketFilter(HandleEmptyWorldMessageMessage, settings)
+                {
+                    Name = DebugEmptyWorldMessageFilterName,
+                    Priority = int.MaxValue
+                });
+        }
     }
 
     private void RemoveDebugMessageFilters()
@@ -25,7 +29,7 @@ public partial class ProxyViewModel
         _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugEmptyWorldMessageFilterName);
     }
 
-    private NetworkPacket? HandleEmptyWorldMessagePacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket? HandleEmptyWorldMessageMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

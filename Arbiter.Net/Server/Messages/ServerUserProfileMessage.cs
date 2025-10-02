@@ -43,7 +43,7 @@ public class ServerUserProfileMessage : ServerMessage
             Equipment.Add(new ServerEquipmentInfo
             {
                 Slot = slot,
-                Sprite = reader.ReadUInt16(),
+                Sprite = SpriteFlags.ClearFlags(reader.ReadUInt16()),
                 Color = (DyeColor)reader.ReadByte(),
             });
         }
@@ -90,7 +90,7 @@ public class ServerUserProfileMessage : ServerMessage
 
         foreach (var equipment in Equipment.OrderBy(e => EquipmentSlotOrder.IndexOf(e.Slot)))
         {
-            builder.AppendUInt16(equipment.Sprite);
+            builder.AppendUInt16(SpriteFlags.SetItem(equipment.Sprite));
             builder.AppendByte((byte)equipment.Color);
         }
 

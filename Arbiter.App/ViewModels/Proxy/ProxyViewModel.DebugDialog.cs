@@ -1,6 +1,7 @@
 ﻿using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
@@ -11,16 +12,21 @@ public partial class ProxyViewModel
 {
     private const string DebugShowDialogFilterName = "Debug_ShowDialogFilter";
     private const string DebugShowDialogMenuFilterName = "Debug_ShowDialogMenuFilter";
-    
+
     private void AddDebugDialogFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.ShowDialog, new NetworkPacketFilter(HandleDialogPacket, settings)
+        if (!settings.ShowDialogId)
+        {
+            return;
+        }
+
+        _proxyServer.AddFilter(ServerCommand.ShowDialog, new NetworkPacketFilter(HandleDialogMessage, settings)
         {
             Name = DebugShowDialogFilterName,
             Priority = int.MaxValue
         });
 
-        _proxyServer.AddFilter(ServerCommand.ShowDialogMenu, new NetworkPacketFilter(HandleDialogMenuPacket, settings)
+        _proxyServer.AddFilter(ServerCommand.ShowDialogMenu, new NetworkPacketFilter(HandleDialogMenuMessage, settings)
         {
             Name = DebugShowDialogMenuFilterName,
             Priority = int.MaxValue
@@ -33,7 +39,7 @@ public partial class ProxyViewModel
         _proxyServer.RemoveFilter(ServerCommand.ShowDialogMenu, DebugShowDialogMenuFilterName);
     }
 
-    private NetworkPacket HandleDialogPacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleDialogMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
@@ -41,21 +47,15 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        // If no debug settings enabled, ignore the packet
-        if (filterSettings is { ShowDialogId: false })
-        {
-            return packet;
-        }
-
-        // Ignore if the packet could not be read as the expected message type
-        if (!_serverMessageFactory.TryCreate<ServerShowDialogMessage>(serverPacket, out var message))
+        if (filterSettings is { ShowDialogId: false } ||
+            !_serverMessageFactory.TryCreate<ServerShowDialogMessage>(serverPacket, out var message))
         {
             return packet;
         }
 
         var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
         message.Name = $"{name} [0x{message.EntityId:X4}]";
-        
+
         // Build a new packet with the modified dialog data
         var builder = new NetworkPacketBuilder(ServerCommand.ShowDialog);
         message.Serialize(builder);
@@ -63,7 +63,7 @@ public partial class ProxyViewModel
         return builder.ToPacket();
     }
 
-    private NetworkPacket HandleDialogMenuPacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleDialogMenuMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

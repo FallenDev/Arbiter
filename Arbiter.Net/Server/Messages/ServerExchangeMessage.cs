@@ -37,7 +37,7 @@ public class ServerExchangeMessage : ServerMessage
             case ExchangeServerEventType.ItemAdded:
                 Party = (ExchangeParty)reader.ReadByte();
                 ItemIndex = reader.ReadByte();
-                ItemSprite = reader.ReadUInt16();
+                ItemSprite = SpriteFlags.ClearFlags(reader.ReadUInt16());
                 ItemColor = (DyeColor)reader.ReadByte();
                 ItemName = reader.ReadString8();
                 break;
@@ -70,7 +70,7 @@ public class ServerExchangeMessage : ServerMessage
             case ExchangeServerEventType.ItemAdded:
                 builder.AppendByte((byte)Party!.Value);
                 builder.AppendByte(ItemIndex!.Value);
-                builder.AppendUInt16(ItemSprite!.Value);
+                builder.AppendUInt16(SpriteFlags.SetItem(ItemSprite!.Value));
                 builder.AppendByte((byte)(ItemColor ?? DyeColor.Default));
                 builder.AppendString8(ItemName!);
                 break;

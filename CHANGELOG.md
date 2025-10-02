@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Classic visual effect debug filter
+- Rogue "zoomed out" tab map debug filter
+- Monster-click entity ID debug filter
+
+### Changed
+
+- Add `ProxyConnection` to filter handler callback
+- Remove `0x4000` (monster) and `0x8000` (item) bitflags from `Sprite` field values
+- Show decimal by default for `Sprite` fields
+- Better disconnect handling for client crashes
+
 ## [0.9.10] - 2025-10-02
 
 ### Added

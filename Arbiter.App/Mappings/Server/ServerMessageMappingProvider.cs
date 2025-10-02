@@ -83,7 +83,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Item")
                 .Property(m => m.Slot, p => p.ToolTip("Inventory slot containing the item."))
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the item."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the item."))
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the item."));
             b.Section("Quantity")
@@ -134,7 +134,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Animation")
                 .Property(m => m.Animation, p => p.ToolTip("Animation to play."))
-                .Property(m => m.Speed, p => p.ToolTip("Speed of the animation (higher is faster)."));
+                .Property(m => m.Speed, p => p.ToolTip("Speed of the animation duration (lower is faster)."));
             b.Section("Sound")
                 .Property(m => m.Sound, p => p.ToolTip("Sound to play along with the animation."))
                 .IsExpanded(m => m.Sound != 0xFF);
@@ -223,7 +223,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.Event == ExchangeServerEventType.QuantityPrompt);
             b.Section("Item")
                 .Property(m => m.ItemIndex, p => p.ToolTip("Index of the item in the exchange window."))
-                .Property(m => m.ItemSprite, p => p.ShowHex().ToolTip("Sprite of the item in the exchange window."))
+                .Property(m => m.ItemSprite, p => p.ToolTip("Sprite of the item in the exchange window."))
                 .Property(m => m.ItemColor, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.ItemName,
                     p => p.ShowMultiline().ToolTip("Display name of the item in the exchange window."))
@@ -598,7 +598,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         {
             b.Section("Equipment")
                 .Property(m => m.Slot, p => p.ToolTip("Equipment slot to be set."))
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the equipment."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the equipment."))
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the equipment."));
             b.Section("Durability")
@@ -622,7 +622,8 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Name, p => p.ToolTip("Display name of the entity in the dialog."))
                 .IsExpanded(m => m.DialogType != DialogType.CloseDialog);
             b.Section("Content")
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite displayed in the dialog."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite displayed in the dialog."))
+                .Property(m => m.SpriteType, p => p.ToolTip("Type of sprite displayed in the dialog."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog."))
                 .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."))
@@ -660,7 +661,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                     p => p.ShowHex().ToolTip("ID of the entity responsible for the dialog menu."))
                 .Property(m => m.Name, p => p.ToolTip("Display name of the entity in the dialog menu."));
             b.Section("Content")
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite displayed in the dialog menu."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite displayed in the dialog menu."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Message displayed in the dialog menu."))
                 .Property(m => m.ShowGraphic, p => p.ToolTip("Whether to show the graphic."));
@@ -706,7 +707,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.TargetAnimation, p => p.ToolTip("Visual effect to be played on the target entity."))
                 .Property(m => m.SourceAnimation, p => p.ToolTip("Visual effect to be played on the source entity."))
                 .Property(m => m.AnimationSpeed,
-                    p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
+                    p => p.ToolTip("Speed of the visual effect animation duration (lower is faster)."));
         });
     }
 
@@ -740,7 +741,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the user."))
                 .Property(m => m.Direction, p => p.ToolTip("Direction the user is currently facing."));
             b.Section("Body")
-                .Property(m => m.HeadSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's head."))
+                .Property(m => m.HeadSprite, p => p.ToolTip("Sprite displayed for the user's head."))
                 .Property(m => m.FaceShape, p => p.ToolTip("Face shape of the user."))
                 .Property(m => m.HairColor, p => p.ToolTip("Hair color of the user."))
                 .Property(m => m.BodySprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's body."))
@@ -751,35 +752,35 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .IsExpanded(m => m.IsTranslucent || m.IsHidden);
             b.Section("Equipment")
                 .Property(m => m.Armor1Sprite,
-                    p => p.ShowHex().ToolTip("Sprite displayed for the user's primary armor."))
+                    p => p.ToolTip("Sprite displayed for the user's primary armor."))
                 .Property(m => m.Armor2Sprite,
-                    p => p.ShowHex().ToolTip("Sprite displayed for the user's secondary armor."))
+                    p => p.ToolTip("Sprite displayed for the user's secondary armor."))
                 .Property(m => m.PantsColor, p => p.ToolTip("Color applied to the user's pants."))
-                .Property(m => m.BootsSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's boots."))
+                .Property(m => m.BootsSprite, p => p.ToolTip("Sprite displayed for the user's boots."))
                 .Property(m => m.BootsColor, p => p.ToolTip("Color applied to the user's boots."))
-                .Property(m => m.WeaponSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's weapon."))
-                .Property(m => m.ShieldSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's shield."))
+                .Property(m => m.WeaponSprite, p => p.ToolTip("Sprite displayed for the user's weapon."))
+                .Property(m => m.ShieldSprite, p => p.ToolTip("Sprite displayed for the user's shield."))
                 .Property(m => m.Accessory1Sprite,
-                    p => p.ShowHex().ToolTip("Sprite displayed for the user's first accessory."))
+                    p => p.ToolTip("Sprite displayed for the user's first accessory."))
                 .Property(m => m.Accessory1Color,
                     p => p.ToolTip("Override (dye) color applied to the user's first accessory."))
                 .Property(m => m.Accessory2Sprite,
-                    p => p.ShowHex().ToolTip("Sprite displayed for the user's second accessory."))
+                    p => p.ToolTip("Sprite displayed for the user's second accessory."))
                 .Property(m => m.Accessory2Color,
                     p => p.ToolTip("Override (dye) color applied to the user's second accessory."))
                 .Property(m => m.Accessory3Sprite,
-                    p => p.ShowHex().ToolTip("Sprite displayed for the user's third accessory."))
+                    p => p.ToolTip("Sprite displayed for the user's third accessory."))
                 .Property(m => m.Accessory3Color,
                     p => p.ToolTip("Override (dye) color applied to the user's third accessory."))
                 .Property(m => m.OvercoatColor, p => p.ToolTip("Color applied to the user's overcoat."))
-                .Property(m => m.OvercoatSprite, p => p.ShowHex().ToolTip("Sprite displayed for the user's overcoat."))
+                .Property(m => m.OvercoatSprite, p => p.ToolTip("Sprite displayed for the user's overcoat."))
                 .Property(m => m.Lantern, p => p.ToolTip("Type of lantern equipped by the user."))
                 .IsExpanded(m => m.HeadSprite != 0xFFFF);
             b.Section("Resting")
                 .Property(m => m.RestPosition, p => p.ToolTip("Resting posture to be shown for the user."))
                 .IsExpanded(m => m.RestPosition != RestPosition.None);
             b.Section("Monster Form")
-                .Property(m => m.MonsterSprite, p => p.ShowHex().ToolTip("Sprite to display the user as a monster."))
+                .Property(m => m.MonsterSprite, p => p.ToolTip("Sprite to display the user as a monster."))
                 .Property(m => m.MonsterUnknown)
                 .IsExpanded(m => m.HeadSprite == 0xFFFF);
         });
@@ -790,7 +791,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         registry.Register<ServerStatusEffectMessage>(b =>
         {
             b.Section("Effect")
-                .Property(m => m.Icon, p => p.ShowHex().ToolTip("Icon displayed for the status effect."))
+                .Property(m => m.Icon, p => p.ToolTip("Icon displayed for the status effect."))
                 .Property(m => m.Duration, p => p.ToolTip("Remaining duration of the status effect."));
         });
     }
