@@ -15,7 +15,7 @@ public partial class ProxyViewModel
 
     private void AddDebugEntityFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityPacket, settings)
+        _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityMessage, settings)
         {
             Name = DebugAddEntityFilterName,
             Priority = int.MaxValue
@@ -25,7 +25,7 @@ public partial class ProxyViewModel
     private void RemoveDebugEntityFilters() =>
         _proxyServer.RemoveFilter(ServerCommand.AddEntity, DebugAddEntityFilterName);
     
-    private NetworkPacket HandleAddEntityPacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleAddEntityMessage(NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
@@ -49,7 +49,7 @@ public partial class ProxyViewModel
                     continue;
                 }
 
-                var name = npcEntity.Name ?? "Mundane";
+                var name = npcEntity.Name ?? npcEntity.CreatureType.ToString();
                 npcEntity.Name = $"{name} 0x{npcEntity.Id:X4}";
             }
         }
@@ -64,7 +64,7 @@ public partial class ProxyViewModel
                     continue;
                 }
 
-                var name = monsterEntity.Name ?? "Monster";
+                var name = monsterEntity.Name ?? monsterEntity.CreatureType.ToString();
                 
                 // Need to set the creature type to Mundane to display hover name
                 monsterEntity.CreatureType = CreatureType.Mundane;

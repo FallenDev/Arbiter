@@ -13,7 +13,7 @@ public partial class ProxyViewModel
     private void AddDebugMessageFilters(DebugSettings settings)
     {
         _proxyServer.AddFilter(ServerCommand.WorldMessage,
-            new NetworkPacketFilter(HandleEmptyWorldMessagePacket, settings)
+            new NetworkPacketFilter(HandleEmptyWorldMessageMessage, settings)
             {
                 Name = DebugEmptyWorldMessageFilterName,
                 Priority = int.MaxValue
@@ -25,7 +25,7 @@ public partial class ProxyViewModel
         _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugEmptyWorldMessageFilterName);
     }
 
-    private NetworkPacket? HandleEmptyWorldMessagePacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket? HandleEmptyWorldMessageMessage(NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

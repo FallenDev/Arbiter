@@ -36,8 +36,10 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterClickId))]
     [NotifyPropertyChangedFor(nameof(DebugShowHiddenPlayers))]
     [NotifyPropertyChangedFor(nameof(DebugShowPlayerNames))]
+    [NotifyPropertyChangedFor(nameof(DebugUseClassicEffects))]
     [NotifyPropertyChangedFor(nameof(DebugDisableBlind))]
     [NotifyPropertyChangedFor(nameof(DebugEnableTabMap))]
+    [NotifyPropertyChangedFor(nameof(DebugEnableZoomedOutMap))]
     [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
@@ -196,6 +198,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
+    public bool DebugUseClassicEffects
+    {
+        get => Settings.Debug.UseClassicEffects;
+        set
+        {
+            Settings.Debug.UseClassicEffects = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
     public bool DebugDisableBlind
     {
         get => Settings.Debug.DisableBlind;
@@ -218,6 +231,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
+    public bool DebugEnableZoomedOutMap
+    {
+        get => Settings.Debug.EnableZoomedOutMap;
+        set
+        {
+            Settings.Debug.EnableZoomedOutMap = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
     public bool DebugDisableWeatherEffects
     {
         get => Settings.Debug.DisableWeatherEffects;
@@ -228,7 +252,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             HasChanges = true;
         }
     }
-    
+
     public bool DebugDisableDarkness
     {
         get => Settings.Debug.DisableDarkness;

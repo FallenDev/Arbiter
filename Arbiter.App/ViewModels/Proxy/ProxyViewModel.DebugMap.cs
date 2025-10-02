@@ -10,21 +10,57 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
+    private const string DebugUserIdFilterName = "Debug_UserIdFilter";
     private const string DebugMapInfoFilterName = "Debug_MapInfoFilter";
 
     private void AddDebugMapFilters(DebugSettings settings)
     {
+        _proxyServer.AddFilter(ServerCommand.UserId,
+            new NetworkPacketFilter(HandleUserIdMessage, settings)
+            {
+                Name = DebugUserIdFilterName,
+                Priority = int.MaxValue
+            });
+        
         _proxyServer.AddFilter(ServerCommand.MapInfo,
-            new NetworkPacketFilter(HandleMapInfoMessagePacket, settings)
+            new NetworkPacketFilter(HandleMapInfoMessage, settings)
             {
                 Name = DebugMapInfoFilterName,
                 Priority = int.MaxValue
             });
     }
 
-    private void RemoveDebugMapFilters() => _proxyServer.RemoveFilter(ServerCommand.MapInfo, DebugMapInfoFilterName);
+    private void RemoveDebugMapFilters()
+    {
+        _proxyServer.RemoveFilter(ServerCommand.UserId, DebugUserIdFilterName);
+        _proxyServer.RemoveFilter(ServerCommand.MapInfo, DebugMapInfoFilterName);
+    }
 
-    private NetworkPacket HandleMapInfoMessagePacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleUserIdMessage(NetworkPacket packet, object? parameter)
+    {
+        // Ensure the packet is the correct type and we have settings as a parameter
+        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        {
+            return packet;
+        }
+
+        if (filterSettings is { EnableZoomedOutMap: false } ||
+            !_serverMessageFactory.TryCreate<ServerUserIdMessage>(serverPacket, out var message) ||
+            !filterSettings.EnableZoomedOutMap)
+        {
+            return packet;
+        }
+
+        message.Class = CharacterClass.Rogue;
+
+        // Build a new packet with the modified user data
+        var builder = new NetworkPacketBuilder(ServerCommand.UserId);
+        message.Serialize(builder);
+
+        return builder.ToPacket();
+    }
+
+    private NetworkPacket HandleMapInfoMessage(NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

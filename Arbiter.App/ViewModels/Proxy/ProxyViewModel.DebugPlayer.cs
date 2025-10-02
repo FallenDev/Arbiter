@@ -14,7 +14,7 @@ public partial class ProxyViewModel
 
     private void AddDebugPlayerFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.ShowUser, new NetworkPacketFilter(HandleShowUserPacket, settings)
+        _proxyServer.AddFilter(ServerCommand.ShowUser, new NetworkPacketFilter(HandleShowUserMessage, settings)
         {
             Name = DebugShowUserFilterName,
             Priority = int.MaxValue
@@ -24,7 +24,7 @@ public partial class ProxyViewModel
     private void RemoveDebugPlayerFilters() =>
         _proxyServer.RemoveFilter(ServerCommand.ShowUser, DebugShowUserFilterName);
 
-    private NetworkPacket HandleShowUserPacket(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleShowUserMessage(NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
