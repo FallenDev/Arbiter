@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="5">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -176,6 +176,20 @@
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowPlayerNames}"/>
                         
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Effects Settings Tab -->
+            <TabItem Header="Effects">
+                <StackPanel Spacing="4">
+                    <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                        <!-- Disable Blind -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Disable Blind"
+                               ToolTip.Tip="Prevents the screen turning black when blind (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugDisableBlind}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

@@ -36,6 +36,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterClickId))]
     [NotifyPropertyChangedFor(nameof(DebugShowHiddenPlayers))]
     [NotifyPropertyChangedFor(nameof(DebugShowPlayerNames))]
+    [NotifyPropertyChangedFor(nameof(DebugDisableBlind))]
     [NotifyPropertyChangedFor(nameof(DebugEnableTabMap))]
     [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
@@ -190,6 +191,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.ShowPlayerNames = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugDisableBlind
+    {
+        get => Settings.Debug.DisableBlind;
+        set
+        {
+            Settings.Debug.DisableBlind = value;
             OnPropertyChanged();
             HasChanges = true;
         }

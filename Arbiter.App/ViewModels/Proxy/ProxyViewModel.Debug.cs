@@ -9,7 +9,7 @@ public partial class ProxyViewModel
     {
         RemoveDebugFilters();
 
-        if (settings.ShowMonsterId || settings.ShowNpcId)
+        if (settings.ShowNpcId || settings.ShowMonsterId || settings.ShowMonsterClickId)
         {
             AddDebugEntityFilters(settings);
         }
@@ -24,7 +24,12 @@ public partial class ProxyViewModel
             AddDebugPlayerFilters(settings);
         }
 
-        if (settings.EnableTabMap || settings.DisableWeatherEffects)
+        if (settings.DisableBlind)
+        {
+            AddDebugEffectsFilters(settings);
+        }
+
+        if (settings.EnableTabMap || settings.DisableWeatherEffects || settings.DisableDarkness)
         {
             AddDebugMapFilters(settings);
         }
@@ -45,6 +50,7 @@ public partial class ProxyViewModel
         RemoveDebugEntityFilters();
         RemoveDebugDialogFilters();
         RemoveDebugPlayerFilters();
+        RemoveDebugEffectsFilters();
         RemoveDebugMapFilters();
         RemoveDebugMessageFilters();
 

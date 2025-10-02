@@ -10,14 +10,15 @@ public class DebugSettings : ICloneable
     public bool ShowMonsterClickId { get; set; }
     public bool ShowHiddenPlayers { get; set; }
     public bool ShowPlayerNames { get; set; }
+    public bool DisableBlind { get; set; }
     public bool DisableWeatherEffects { get; set; }
     public bool DisableDarkness { get; set; }
     public bool EnableTabMap { get; set; }
     public bool IgnoreEmptyMessages { get; set; }
 
     public bool CheckEnabled() => ShowDialogId || ShowNpcId || ShowMonsterId || ShowMonsterClickId ||
-                                  ShowHiddenPlayers || ShowPlayerNames || EnableTabMap || DisableWeatherEffects ||
-                                  DisableDarkness || IgnoreEmptyMessages;
+                                  ShowHiddenPlayers || ShowPlayerNames || DisableBlind || EnableTabMap ||
+                                  DisableWeatherEffects || DisableDarkness || IgnoreEmptyMessages;
 
     public object Clone() => new DebugSettings
     {
@@ -27,9 +28,10 @@ public class DebugSettings : ICloneable
         ShowMonsterClickId = ShowMonsterClickId,
         ShowHiddenPlayers = ShowHiddenPlayers,
         ShowPlayerNames = ShowPlayerNames,
+        DisableBlind = DisableBlind,
         EnableTabMap = EnableTabMap,
         DisableWeatherEffects = DisableWeatherEffects,
         DisableDarkness = DisableDarkness,
-        IgnoreEmptyMessages = IgnoreEmptyMessages
+        IgnoreEmptyMessages = IgnoreEmptyMessages,
     };
 }
