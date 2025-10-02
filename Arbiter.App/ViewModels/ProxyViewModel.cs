@@ -153,13 +153,32 @@ public class ProxyViewModel : ViewModelBase
         {
             return packet;
         }
-        
+
         // Ignore if the packet could not be read as the expected message type
         if (!_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
         {
             return packet;
         }
 
+        // Inject monster IDs into the entity names
+        if (filterSettings.ShowMonsterId)
+        {
+            foreach (var entity in message.Entities)
+            {
+                if (entity is not ServerCreatureEntity { CreatureType: CreatureType.Monster } monsterEntity)
+                {
+                    continue;
+                }
+
+                var name = monsterEntity.Name ?? "Monster";
+                
+                // Need to set the creature type to Mundane to display hover name
+                monsterEntity.CreatureType = CreatureType.Mundane;
+                monsterEntity.Name = $"{name} 0x{monsterEntity.Id:x4}";
+            }
+        }
+
+        // Inject NPC IDs into the entity names
         if (filterSettings.ShowNpcId)
         {
             foreach (var entity in message.Entities)
@@ -169,14 +188,18 @@ public class ProxyViewModel : ViewModelBase
                     continue;
                 }
 
-                npcEntity.Name = $"{npcEntity.Name} (0x{npcEntity.Id:X2})";
+                var name = npcEntity.Name ?? "Mundane";
+                if (!name.StartsWith("Monster") && !name.EndsWith(')'))
+                {
+                    npcEntity.Name = $"{name} 0x{npcEntity.Id:x4}";
+                }
             }
         }
 
         // Build a new packet with the modified entity data
         var builder = new NetworkPacketBuilder(ServerCommand.AddEntity);
         message.Serialize(builder);
-        
+
         return builder.ToPacket();
     }
 }

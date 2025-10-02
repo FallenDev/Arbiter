@@ -100,7 +100,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Proxy.Start(Settings.LocalPort, remoteIpAddress[0], Settings.RemoteServerPort);
             
             // Apply debug filters, if enabled
-            if (Settings.Debug.ShowMonsterId || Settings.Debug.ShowNpcId)
+            if (Settings.Debug.CheckEnabled())
             {
                 Proxy.ApplyDebugFilters(Settings.Debug);    
             }
@@ -148,7 +148,7 @@ public partial class MainWindowViewModel : ViewModelBase
         LaunchClientCommand.NotifyCanExecuteChanged();
 
         // Re-apply debug filters or remove them, if disabled
-        if (Settings.Debug.ShowMonsterId || Settings.Debug.ShowNpcId)
+        if (Settings.Debug.CheckEnabled())
         {
             Proxy.ApplyDebugFilters(Settings.Debug);
         }
