@@ -44,7 +44,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerCreatureEntity>(b =>
         {
             b.Property(m => m.Id, p => p.ShowHex().ToolTip("ID of the creature entity."))
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the creature."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the creature."))
                 .Property(m => m.X, p => p.ToolTip("X-coordinate of the creature."))
                 .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the creature."))
                 .Property(m => m.CreatureType, p => p.ToolTip("Type of creature entity."))
@@ -66,7 +66,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerEquipmentInfo>(b =>
         {
             b.Property(m => m.Slot, p => p.ToolTip("Equipment slot the item belongs to."))
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the equipment item."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the equipment item."))
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .DisplayName(m => m.Slot.ToString().ToNaturalWording())
                 .IsExpanded(_ => false);
@@ -94,7 +94,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
         registry.RegisterOverrides<ServerItemEntity>(b =>
         {
             b.Property(m => m.Id, p => p.ShowHex().ToolTip("ID of the item entity."))
-                .Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the item."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the item."))
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.X, p => p.ToolTip("X-coordinate of the ground item."))
                 .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the ground item."))
@@ -105,7 +105,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
 
         registry.RegisterOverrides<ServerItemMenuChoice>(b =>
         {
-            b.Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the item."))
+            b.Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the item."))
                 .Property(m => m.Color, p => p.ToolTip("Override (dye) color applied to the sprite."))
                 .Property(m => m.Price, p => p.ToolTip("Price of the item."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the item."))
@@ -133,7 +133,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
 
         registry.RegisterOverrides<ServerSpellMenuChoice>(b =>
         {
-            b.Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the spell icon."))
+            b.Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the spell icon."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the spell."))
                 .DisplayName(m => m.Name)
@@ -142,7 +142,7 @@ public class ServerTypeOverridesProvider : IInspectorMappingProvider
 
         registry.RegisterOverrides<ServerSkillMenuChoice>(b =>
         {
-            b.Property(m => m.Sprite, p => p.ShowHex().ToolTip("Sprite used to display the skill icon."))
+            b.Property(m => m.Sprite, p => p.ToolTip("Sprite used to display the skill icon."))
                 .Property(m => m.Color, p => p.ToolTip("Override color applied to the sprite."))
                 .Property(m => m.Name, p => p.ShowMultiline().ToolTip("Display name of the skill."))
                 .DisplayName(m => m.Name)
