@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rename `Weather` to `Flags` for `MapInfo` packet 
 - CRC calculator styling and spacing
+- Better handling of client sudden disconnect (crash)
 
 ## [0.9.8] - 2025-09-29
 

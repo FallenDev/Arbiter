@@ -79,23 +79,37 @@ public partial class ProxyConnection
                             HandleClientAuthRequest(decrypted);
                             break;
                     }
-                    
+
                     // Process any filters for the packet
                     var filterResult = FilterPacket(decrypted);
-                    
+
                     // Notify that we have received a packet
                     PacketReceived?.Invoke(this,
                         new NetworkTransferEventArgs(NetworkDirection.Receive, encryptedPacket, decrypted));
-                    
+
                     // If the packet was blocked, do not send it to the other end
                     if (filterResult.Action == NetworkFilterAction.Block)
                     {
                         continue;
                     }
-                    
-                    // Send the decrypted packet to the other end of the connection (it will be re-encrypted)
-                    await _sendQueue.Writer.WriteAsync(decrypted, token).ConfigureAwait(false);
+
+                    if (filterResult.Output is not null)
+                    {
+                        // Send the decrypted packet to the other end of the connection (it will be re-encrypted)
+                        await _sendQueue.Writer.WriteAsync(filterResult.Output, token).ConfigureAwait(false);
+                    }
                 }
+            }
+        }
+        catch (SocketException)
+        {
+            if (direction == ProxyDirection.ServerToClient)
+            {
+                ServerDisconnected?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                ClientDisconnected?.Invoke(this, EventArgs.Empty);
             }
         }
         catch when (token.IsCancellationRequested)

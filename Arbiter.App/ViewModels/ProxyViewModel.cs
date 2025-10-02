@@ -8,6 +8,8 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
+using Arbiter.Net.Server.Types;
+using Arbiter.Net.Types;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels;
@@ -85,25 +87,25 @@ public class ProxyViewModel : ViewModelBase
     private void OnClientConnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client connected: {Endpoint}", name, e.Connection.LocalEndpoint);
+        _logger.LogInformation("[{Name}] Client connected -> {Endpoint}", name, e.Connection.LocalEndpoint);
     }
 
     private void OnServerConnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Server connected: {Endpoint}", name, e.Connection.RemoteEndpoint);
+        _logger.LogInformation("[{Name}] Server connected <- {Endpoint}", name, e.Connection.RemoteEndpoint);
     }
 
     private void OnClientDisconnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client disconnected: {Endpoint}", name, e.Connection.LocalEndpoint);
+        _logger.LogInformation("[{Name}] Client disconnected -> {Endpoint}", name, e.Connection.LocalEndpoint);
     }
 
     private void OnServerDisconnected(object? sender, ProxyConnectionEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Server disconnected: {Endpoint}", name, e.Connection.RemoteEndpoint);
+        _logger.LogInformation("[{Name}] Server disconnected <- {Endpoint}", name, e.Connection.RemoteEndpoint);
     }
 
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)
@@ -127,7 +129,7 @@ public class ProxyViewModel : ViewModelBase
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
     {
         var name = e.Connection.Name ?? e.Connection.Id.ToString();
-        _logger.LogInformation("[{Name}] Client redirected to {Endpoint}", name, e.RemoteEndpoint);
+        _logger.LogInformation("[{Name}] Client redirected -> {Endpoint}", name, e.RemoteEndpoint);
     }
 
     private void OnClientException(object? sender, ProxyConnectionExceptionEventArgs e)
@@ -141,13 +143,13 @@ public class ProxyViewModel : ViewModelBase
     private NetworkPacket? HandleAddEntityPacket(NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings settings)
+        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
         {
             return packet;
         }
 
         // If no debug settings enabled, ignore the packet
-        if (settings is { ShowMonsterId: false, ShowNpcId: false })
+        if (filterSettings is { ShowMonsterId: false, ShowNpcId: false })
         {
             return packet;
         }
@@ -156,6 +158,19 @@ public class ProxyViewModel : ViewModelBase
         if (!_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
         {
             return packet;
+        }
+
+        if (filterSettings.ShowNpcId)
+        {
+            foreach (var entity in message.Entities)
+            {
+                if (entity is not ServerCreatureEntity { CreatureType: CreatureType.Mundane } npcEntity)
+                {
+                    continue;
+                }
+
+                npcEntity.Name = $"{npcEntity.Name} (0x{npcEntity.Id:X2})";
+            }
         }
 
         // Build a new packet with the modified entity data

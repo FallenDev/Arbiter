@@ -9,40 +9,44 @@
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
              x:Class="Arbiter.App.Views.CrcCalculatorView"
              x:DataType="vm:CrcCalculatorViewModel">
-    <UserControl.DataTemplates>
-        <DataTemplate x:DataType="{x:Type sys:String}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="DropdownDataTemplate" x:DataType="{x:Type sys:String}">
             <TextBlock Text="{Binding .}"
                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                        VerticalAlignment="Center"
                        Margin="8,4"/>
         </DataTemplate>
-    </UserControl.DataTemplates>
+    </UserControl.Resources>
     
     <Grid Background="{StaticResource Talgonite.Control.Background}"
           RowDefinitions="Auto,Auto,*">
         <!-- Parameters -->
-        <StackPanel Grid.Row="0" Spacing="8" Margin="0,8">
+        <StackPanel Grid.Row="0" Spacing="8" Margin="4,8">
             <UniformGrid Columns="2">
                 <!-- Algorithm Selection -->
                 <Label Content="Algorithm"
                        ToolTip.Tip="The CRC algorithm to use for calculation."/>
                 <ComboBox ItemsSource="{Binding AvailableAlgorithms}"
                           SelectedValue="{Binding SelectedAlgorithm}"
-                          IsEnabled="{Binding !IsCalculating}"/>
+                          IsEnabled="{Binding !IsCalculating}"
+                          ItemTemplate="{StaticResource DropdownDataTemplate}"/>
                 
                 <!-- Compression Selection -->
                 <Label Content="Compression"
                        ToolTip.Tip="The data compression used prior to calculating."/>
                 <ComboBox ItemsSource="{Binding AvailableCompression}"
                           SelectedValue="{Binding SelectedCompression}"
-                          IsEnabled="{Binding !IsCalculating}"/>
+                          IsEnabled="{Binding !IsCalculating}"
+                          ItemTemplate="{StaticResource DropdownDataTemplate}"/>
                 
                 <!-- Input Type Selection -->
                 <Label Content="Input"
                        ToolTip.Tip="The input data type."/>
                 <ComboBox ItemsSource="{Binding AvailableInputTypes}"
                           SelectedValue="{Binding SelectedInputType}"
-                          IsEnabled="{Binding !IsCalculating}"/>
+                          IsEnabled="{Binding !IsCalculating}"
+                          ItemTemplate="{StaticResource DropdownDataTemplate}">
+                </ComboBox>
                 
             </UniformGrid>
             <v:InspectorValueView DataContext="{Binding ChecksumValue}"/>

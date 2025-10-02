@@ -30,6 +30,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(RemoteServerPort))]
     [NotifyPropertyChangedFor(nameof(TraceOnStartup))]
     [NotifyPropertyChangedFor(nameof(TraceAutosave))]
+    [NotifyPropertyChangedFor(nameof(DebugShowDialogId))]
     [NotifyPropertyChangedFor(nameof(DebugShowNpcId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterId))]
     private ArbiterSettings _settings = new();
@@ -116,6 +117,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.TraceAutosave = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugShowDialogId
+    {
+        get => Settings.Debug.ShowDialogId;
+        set
+        {
+            Settings.Debug.ShowDialogId = value;
             OnPropertyChanged();
             HasChanges = true;
         }

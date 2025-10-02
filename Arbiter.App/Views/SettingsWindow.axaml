@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="3">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -124,19 +124,26 @@
             <!-- Debug Settings Tab -->
             <TabItem Header="Debug">
                 <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
-                        <!-- Show Entity ID for NPCs -->
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                        <!-- Show Entity ID for Dialogs -->
                         <Label Grid.Row="0" Grid.Column="0"
+                               Content="Show Entity ID in Dialogs"
+                               ToolTip.Tip="Shows the entity ID within dialogs (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowDialogId}"/>
+                        
+                        <!-- Show Entity ID for NPCs -->
+                        <Label Grid.Row="1" Grid.Column="0"
                                Content="Show Entity ID on NPCs"
                                ToolTip.Tip="Shows the entity ID next to NPC names (in-game)."/>
-                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowNpcId}"/>
                         
                         <!-- Show Entity ID for Monsters -->
-                        <Label Grid.Row="1" Grid.Column="0"
+                        <Label Grid.Row="2" Grid.Column="0"
                                Content="Show Entity ID on Monsters"
                                ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterId}"/>
                     </Grid>
                 </StackPanel>

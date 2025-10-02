@@ -74,14 +74,16 @@ public class NetworkPacketBuilder : INetworkPacketBuilder
 
     public void AppendString8(string value)
     {
-        var bytes = _encoding.GetBytes(value[..byte.MaxValue]);
+        var length = Math.Min(value.Length, byte.MaxValue);
+        var bytes = _encoding.GetBytes(value[..length]);
         AppendByte((byte)bytes.Length);
         _buffer.AddRange(bytes);
     }
 
     public void AppendString16(string value)
     {
-        var bytes = _encoding.GetBytes(value[..ushort.MaxValue]);
+        var length = Math.Min(value.Length, ushort.MaxValue);
+        var bytes = _encoding.GetBytes(value[..length]);
         AppendUInt16((ushort)bytes.Length);
         _buffer.AddRange(bytes);
     }

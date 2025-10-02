@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Net.Sockets;
 using Arbiter.Net.Client;
 using Arbiter.Net.Security;
 using Arbiter.Net.Server;
@@ -22,7 +23,7 @@ public partial class ProxyConnection
                     PacketException?.Invoke(this, new NetworkPacketEventArgs(decryptedPacket));
                     continue;
                 }
-                
+
                 // Determine which stream we need to send to
                 var destinationStream = decryptedPacket switch
                 {
@@ -40,7 +41,7 @@ public partial class ProxyConnection
                 };
 
                 NetworkPacket encryptedPacket;
-                
+
                 // Encrypt the packet if necessary
                 if (encryptor.ShouldEncrypt(decryptedPacket.Command))
                 {
@@ -51,7 +52,7 @@ public partial class ProxyConnection
                         ServerPacket => (byte)(Interlocked.Increment(ref _serverSequence) % 256 - 1),
                         _ => throw new InvalidOperationException("Invalid packet type")
                     };
-                    
+
                     // Encrypt the packet with the next sequence number
                     encryptedPacket = encryptor.Encrypt(decryptedPacket, nextSequence);
                 }
@@ -69,6 +70,10 @@ public partial class ProxyConnection
                 PacketSent?.Invoke(this,
                     new NetworkTransferEventArgs(NetworkDirection.Send, encryptedPacket, decryptedPacket));
             }
+        }
+        catch (SocketException)
+        {
+            // Ignore socket exceptions, they are handled in the receive loop
         }
         catch when (token.IsCancellationRequested)
         {
