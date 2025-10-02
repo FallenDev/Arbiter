@@ -33,7 +33,7 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        if (filterSettings is { IgnoreEmptyMessages: true } ||
+        if (filterSettings is { IgnoreEmptyMessages: false } ||
             !_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message))
         {
             return packet;
