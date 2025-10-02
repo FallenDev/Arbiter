@@ -148,12 +148,14 @@
                         <ToggleSwitch Grid.Row="3" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterId}"/>
                         
-                        <!-- Show Entity ID for Monster Click -->
+                        <!-- Show Entity ID for Monster Click (not implemented yet) -->
                         <Label Grid.Row="4" Grid.Column="0"
                                Content="Show Entity ID on Monster Click"
+                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                                ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
                         <ToggleSwitch Grid.Row="4" Grid.Column="1"
-                                      IsChecked="{Binding DebugShowMonsterClickId}"/>
+                                      IsChecked="{Binding DebugShowMonsterClickId}"
+                                      IsEnabled="False"/>
                         
                     </Grid>
                 </StackPanel>
