@@ -110,7 +110,7 @@ public class ServerShowDialogMenuMessage : ServerMessage
             
             for (var i = 0; i < spellCount; i++)
             {
-                reader.Skip(1); // sprite type
+                var spriteType = (SpriteType)reader.ReadByte();
                 
                 SpellChoices.Add(new ServerSpellMenuChoice
                 {
@@ -127,7 +127,7 @@ public class ServerShowDialogMenuMessage : ServerMessage
 
             for (var i = 0; i < skillCount; i++)
             {
-                reader.Skip(1); // sprite type
+                var spriteType = (SpriteType)reader.ReadByte();
 
                 SkillChoices.Add(new ServerSkillMenuChoice
                 {
@@ -215,7 +215,7 @@ public class ServerShowDialogMenuMessage : ServerMessage
             
             foreach (var spell in SpellChoices)
             {
-                builder.AppendByte(0); // sprite type
+                builder.AppendByte((byte)SpriteType.Spell);
                 builder.AppendUInt16(spell.Sprite);
                 builder.AppendByte((byte)spell.Color);
                 builder.AppendString8(spell.Name);
@@ -228,7 +228,7 @@ public class ServerShowDialogMenuMessage : ServerMessage
             
             foreach (var skill in SkillChoices)
             {
-                builder.AppendByte(0); // sprite type
+                builder.AppendByte((byte)SpriteType.Skill);
                 builder.AppendUInt16(skill.Sprite);
                 builder.AppendByte((byte)skill.Color);
                 builder.AppendString8(skill.Name);
