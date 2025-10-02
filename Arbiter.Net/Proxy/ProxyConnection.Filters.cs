@@ -56,7 +56,7 @@ public partial class ProxyConnection
         {
             Input = packet
         };
-        
+
         try
         {
             var output = packet;
@@ -69,7 +69,7 @@ public partial class ProxyConnection
                 }
 
                 var param = filter.Parameter;
-                output = filter.Filter(output, param);
+                output = filter.Handler(this, output, param);
 
                 // Process the next filter using the output from the previous one
                 if (output is not null)

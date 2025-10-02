@@ -1,6 +1,7 @@
 ﻿using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
@@ -14,6 +15,11 @@ public partial class ProxyViewModel
 
     private void AddDebugDialogFilters(DebugSettings settings)
     {
+        if (!settings.ShowDialogId)
+        {
+            return;
+        }
+
         _proxyServer.AddFilter(ServerCommand.ShowDialog, new NetworkPacketFilter(HandleDialogMessage, settings)
         {
             Name = DebugShowDialogFilterName,
@@ -33,7 +39,7 @@ public partial class ProxyViewModel
         _proxyServer.RemoveFilter(ServerCommand.ShowDialogMenu, DebugShowDialogMenuFilterName);
     }
 
-    private NetworkPacket HandleDialogMessage(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleDialogMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
@@ -57,7 +63,7 @@ public partial class ProxyViewModel
         return builder.ToPacket();
     }
 
-    private NetworkPacket HandleDialogMenuMessage(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleDialogMenuMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

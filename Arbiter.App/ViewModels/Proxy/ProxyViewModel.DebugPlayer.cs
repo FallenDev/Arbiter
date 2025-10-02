@@ -1,6 +1,7 @@
 ﻿using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
@@ -14,17 +15,20 @@ public partial class ProxyViewModel
 
     private void AddDebugPlayerFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.ShowUser, new NetworkPacketFilter(HandleShowUserMessage, settings)
+        if (settings.ShowHiddenPlayers || settings.ShowPlayerNames)
         {
-            Name = DebugShowUserFilterName,
-            Priority = int.MaxValue
-        });
+            _proxyServer.AddFilter(ServerCommand.ShowUser, new NetworkPacketFilter(HandleShowUserMessage, settings)
+            {
+                Name = DebugShowUserFilterName,
+                Priority = int.MaxValue
+            });
+        }
     }
 
     private void RemoveDebugPlayerFilters() =>
         _proxyServer.RemoveFilter(ServerCommand.ShowUser, DebugShowUserFilterName);
 
-    private NetworkPacket HandleShowUserMessage(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleShowUserMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

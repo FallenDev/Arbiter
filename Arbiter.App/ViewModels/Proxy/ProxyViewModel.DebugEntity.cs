@@ -1,6 +1,9 @@
 ﻿using Arbiter.App.Models;
 using Arbiter.Net;
+using Arbiter.Net.Client;
+using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
@@ -12,20 +15,44 @@ namespace Arbiter.App.ViewModels.Proxy;
 public partial class ProxyViewModel
 {
     private const string DebugAddEntityFilterName = "Debug_AddEntityFilter";
-
+    private const string DebugInteractFilterName = "Debug_InteractFilter";
+    private const string DebugInteractMessageFilterName = "Debug_InteractMessageFilter";
+    
     private void AddDebugEntityFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityMessage, settings)
+        if (settings.ShowNpcId || settings.ShowMonsterId)
         {
-            Name = DebugAddEntityFilterName,
-            Priority = int.MaxValue
-        });
+            _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityMessage, settings)
+            {
+                Name = DebugAddEntityFilterName,
+                Priority = int.MaxValue
+            });
+        }
+
+        if (settings.ShowMonsterClickId)
+        {
+            _proxyServer.AddFilter(ClientCommand.Interact, new NetworkPacketFilter(HandleInteractMessage, settings)
+            {
+                Name = DebugInteractFilterName,
+                Priority = int.MaxValue
+            });
+            
+            _proxyServer.AddFilter(ServerCommand.WorldMessage, new NetworkPacketFilter(HandleInteractResponseMessage, settings)
+            {
+                Name = DebugInteractMessageFilterName,
+                Priority = int.MaxValue
+            });
+        }
     }
 
-    private void RemoveDebugEntityFilters() =>
+    private void RemoveDebugEntityFilters()
+    {
         _proxyServer.RemoveFilter(ServerCommand.AddEntity, DebugAddEntityFilterName);
-    
-    private NetworkPacket HandleAddEntityMessage(NetworkPacket packet, object? parameter)
+        _proxyServer.RemoveFilter(ClientCommand.Interact, DebugInteractFilterName);
+        _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugInteractMessageFilterName);
+    }
+
+    private NetworkPacket HandleAddEntityMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
@@ -77,5 +104,44 @@ public partial class ProxyViewModel
         message.Serialize(builder);
 
         return builder.ToPacket();
+    }
+
+    private NetworkPacket HandleInteractMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    {
+        // Ensure the packet is the correct type and we have settings as a parameter
+        if (packet is not ClientPacket clientPacket || parameter is not DebugSettings filterSettings)
+        {
+            return packet;
+        }
+
+        if (filterSettings is { ShowMonsterClickId: false } ||
+            !_clientMessageFactory.TryCreate<ClientInteractMessage>(clientPacket, out var message))
+        {
+            return packet;
+        }
+
+        if (message is { InteractionType: InteractionType.Entity, TargetId: not null })
+        {
+            
+        }
+
+        return packet;
+    }
+    
+    private NetworkPacket HandleInteractResponseMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    {
+        // Ensure the packet is the correct type and we have settings as a parameter
+        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        {
+            return packet;
+        }
+
+        if (filterSettings is { ShowMonsterClickId: false } ||
+            !_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message))
+        {
+            return packet;
+        }
+
+        return packet;
     }
 }

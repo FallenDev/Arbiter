@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Proxy;
@@ -11,7 +10,6 @@ public partial class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
-    private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
     
     public bool IsRunning => _proxyServer.IsRunning;
 

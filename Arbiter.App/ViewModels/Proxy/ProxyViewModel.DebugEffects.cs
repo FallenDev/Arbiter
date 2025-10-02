@@ -2,6 +2,7 @@
 using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Proxy;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
@@ -52,19 +53,25 @@ public partial class ProxyViewModel
 
     private void AddDebugEffectsFilters(DebugSettings settings)
     {
-        _proxyServer.AddFilter(ServerCommand.ShowEffect,
-            new NetworkPacketFilter(HandleShowEffectMessage, settings)
-            {
-                Name = DebugShowEffectFilterName,
-                Priority = int.MaxValue
-            });
+        if (settings.UseClassicEffects)
+        {
+            _proxyServer.AddFilter(ServerCommand.ShowEffect,
+                new NetworkPacketFilter(HandleShowEffectMessage, settings)
+                {
+                    Name = DebugShowEffectFilterName,
+                    Priority = int.MaxValue
+                });
+        }
 
-        _proxyServer.AddFilter(ServerCommand.UpdateStats,
-            new NetworkPacketFilter(HandleUpdateStatsMessage, settings)
-            {
-                Name = DebugUpdateStatsFilterName,
-                Priority = int.MaxValue
-            });
+        if (settings.DisableBlind)
+        {
+            _proxyServer.AddFilter(ServerCommand.UpdateStats,
+                new NetworkPacketFilter(HandleUpdateStatsMessage, settings)
+                {
+                    Name = DebugUpdateStatsFilterName,
+                    Priority = int.MaxValue
+                });
+        }
     }
 
     private void RemoveDebugEffectsFilters()
@@ -73,7 +80,7 @@ public partial class ProxyViewModel
         _proxyServer.RemoveFilter(ServerCommand.UpdateStats, DebugUpdateStatsFilterName);
     }
 
-    private NetworkPacket HandleShowEffectMessage(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleShowEffectMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
@@ -122,7 +129,7 @@ public partial class ProxyViewModel
         return builder.ToPacket();
     }
 
-    private NetworkPacket HandleUpdateStatsMessage(NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleUpdateStatsMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Add `ProxyConnection` to filter handler callback
 
 ## [0.9.10] - 2025-10-02
 
