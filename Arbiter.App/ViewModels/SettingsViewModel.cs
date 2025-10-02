@@ -38,6 +38,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowPlayerNames))]
     [NotifyPropertyChangedFor(nameof(DebugEnableTabMap))]
     [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
+    [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
     private ArbiterSettings _settings = new();
 
@@ -211,6 +212,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.DisableWeatherEffects = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+    
+    public bool DebugDisableDarkness
+    {
+        get => Settings.Debug.DisableDarkness;
+        set
+        {
+            Settings.Debug.DisableDarkness = value;
             OnPropertyChanged();
             HasChanges = true;
         }

@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="4">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="5">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -183,7 +183,7 @@
             <!-- Map Settings Tab -->
             <TabItem Header="Maps">
                 <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
                         <!-- Force Tab Map -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Force Enable Tab Map"
@@ -196,6 +196,12 @@
                                ToolTip.Tip="Disables weather effects on maps (in-game)."/>
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugDisableWeatherEffects}"/>
+                        <!-- Disable Darkness -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Content="Disable Darkness"
+                               ToolTip.Tip="Disables the darkness/lantern light radius effect (in-game)."/>
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1"
+                                      IsChecked="{Binding DebugDisableDarkness}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

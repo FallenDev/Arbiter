@@ -32,7 +32,7 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        if (filterSettings is { EnableTabMap: false, DisableWeatherEffects: false } ||
+        if (filterSettings is { EnableTabMap: false, DisableWeatherEffects: false, DisableDarkness: false } ||
             !_serverMessageFactory.TryCreate<ServerMapInfoMessage>(serverPacket, out var message))
         {
             return packet;
@@ -46,6 +46,11 @@ public partial class ProxyViewModel
         if (filterSettings.DisableWeatherEffects)
         {
             message.Flags &= ~(MapFlags.Rain | MapFlags.Snow | MapFlags.Winter);
+        }
+
+        if (filterSettings.DisableDarkness)
+        {
+            message.Flags &= ~MapFlags.Darkness;
         }
 
         // Build a new packet with the modified map info data

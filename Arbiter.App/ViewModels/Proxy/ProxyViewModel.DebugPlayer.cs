@@ -33,7 +33,7 @@ public partial class ProxyViewModel
         }
 
         if (filterSettings is { ShowHiddenPlayers: false, ShowPlayerNames: false } ||
-            !_serverMessageFactory.TryCreate<ServerShowUserMessage>(serverPacket, out var message) || !message.IsHidden)
+            !_serverMessageFactory.TryCreate<ServerShowUserMessage>(serverPacket, out var message))
         {
             return packet;
         }

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Many more debug options for entities, players, maps, and messages
 - `Serialize` implementations for most client/server packets
+- `FilterException` event for logging 
 
 ### Changed
 
