@@ -134,7 +134,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.EntityId, p => p.ShowHex().ToolTip("ID of the target entity."));
             b.Section("Animation")
                 .Property(m => m.Animation, p => p.ToolTip("Animation to play."))
-                .Property(m => m.Speed, p => p.ToolTip("Speed of the animation (higher is faster)."));
+                .Property(m => m.Speed, p => p.ToolTip("Speed of the animation duration (lower is faster)."));
             b.Section("Sound")
                 .Property(m => m.Sound, p => p.ToolTip("Sound to play along with the animation."))
                 .IsExpanded(m => m.Sound != 0xFF);
@@ -706,7 +706,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.TargetAnimation, p => p.ToolTip("Visual effect to be played on the target entity."))
                 .Property(m => m.SourceAnimation, p => p.ToolTip("Visual effect to be played on the source entity."))
                 .Property(m => m.AnimationSpeed,
-                    p => p.ToolTip("Speed of the visual effect animation (higher is faster)."));
+                    p => p.ToolTip("Speed of the visual effect animation duration (lower is faster)."));
         });
     }
 

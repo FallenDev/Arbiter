@@ -8,6 +8,9 @@ public partial class ProxyViewModel
     public void ApplyDebugFilters(DebugSettings settings)
     {
         RemoveDebugFilters();
+        
+        // Ideally, these would all be moved to Lua scripts
+        // For now they are done in code for simplicity
 
         if (settings.ShowNpcId || settings.ShowMonsterId || settings.ShowMonsterClickId)
         {
@@ -24,12 +27,13 @@ public partial class ProxyViewModel
             AddDebugPlayerFilters(settings);
         }
 
-        if (settings.DisableBlind)
+        if (settings.UseClassicEffects || settings.DisableBlind)
         {
             AddDebugEffectsFilters(settings);
         }
 
-        if (settings.EnableTabMap || settings.DisableWeatherEffects || settings.DisableDarkness)
+        if (settings.EnableTabMap || settings.EnableZoomedOutMap || settings.DisableWeatherEffects ||
+            settings.DisableDarkness)
         {
             AddDebugMapFilters(settings);
         }
@@ -37,11 +41,6 @@ public partial class ProxyViewModel
         if (settings.IgnoreEmptyMessages)
         {
             AddDebugMessageFilters(settings);
-        }
-
-        if (settings.CheckEnabled())
-        {
-            _logger.LogInformation("Debug packet filters enabled");
         }
     }
 
@@ -53,7 +52,5 @@ public partial class ProxyViewModel
         RemoveDebugEffectsFilters();
         RemoveDebugMapFilters();
         RemoveDebugMessageFilters();
-
-        _logger.LogInformation("Debug packet filters disabled");
     }
 }
