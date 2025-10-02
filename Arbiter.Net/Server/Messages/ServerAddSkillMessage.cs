@@ -13,7 +13,7 @@ public class ServerAddSkillMessage : ServerMessage
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
+
         Slot = reader.ReadByte();
         Icon = reader.ReadUInt16();
         Name = reader.ReadString8();
@@ -21,6 +21,10 @@ public class ServerAddSkillMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte(Slot);
+        builder.AppendUInt16(Icon);
+        builder.AppendString8(Name);
     }
 }

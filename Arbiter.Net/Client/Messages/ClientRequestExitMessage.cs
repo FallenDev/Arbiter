@@ -21,6 +21,11 @@ public class ClientRequestExitMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        if (Reason.HasValue)
+        {
+            builder.AppendByte((byte)Reason.Value);
+        }
     }
 }

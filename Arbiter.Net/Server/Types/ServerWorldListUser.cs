@@ -1,6 +1,6 @@
 ﻿using Arbiter.Net.Types;
 
-namespace Arbiter.Net.Server.Messages;
+namespace Arbiter.Net.Server.Types;
 
 public class ServerWorldListUser
 {

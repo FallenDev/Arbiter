@@ -33,6 +33,20 @@ public class ServerRedirectMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendIPv4Address(Address);
+        builder.AppendUInt16(Port);
+
+        // The seven extra bytes are for the seed, key length, name length, and connection ID (u32)
+        var remainingCount = Name.Length + PrivateKey.Count + 7;
+        builder.AppendByte((byte)remainingCount);
+
+        builder.AppendByte(Seed);
+        builder.AppendByte((byte)PrivateKey.Count);
+        builder.AppendBytes(PrivateKey);
+
+        builder.AppendString8(Name);
+        builder.AppendUInt32(ConnectionId);
     }
 }

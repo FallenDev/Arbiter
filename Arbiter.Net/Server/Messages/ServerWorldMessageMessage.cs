@@ -20,6 +20,9 @@ public class ServerWorldMessageMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)MessageType);
+        builder.AppendString16(Message);
     }
 }

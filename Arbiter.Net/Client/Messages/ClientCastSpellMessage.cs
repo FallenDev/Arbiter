@@ -42,6 +42,25 @@ public class ClientCastSpellMessage : ClientMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Slot);
+        
+        if (TargetId.HasValue && TargetX.HasValue && TargetY.HasValue)
+        {
+            builder.AppendByte(0x00);
+            builder.AppendUInt32(TargetId.Value);
+            builder.AppendUInt16(TargetX.Value);
+            builder.AppendByte((byte)TargetY.Value);
+        }
+        else if (!string.IsNullOrEmpty(TextInput))
+        {
+            builder.AppendByte((byte)TextInput.Length);
+            builder.AppendString8(TextInput);
+        }
+        else
+        {
+            builder.AppendByte(0x00);
+        }
     }
 }

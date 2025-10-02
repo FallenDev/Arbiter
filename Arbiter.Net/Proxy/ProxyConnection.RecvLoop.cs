@@ -98,6 +98,12 @@ public partial class ProxyConnection
                         // Send the decrypted packet to the other end of the connection (it will be re-encrypted)
                         await _sendQueue.Writer.WriteAsync(filterResult.Output, token).ConfigureAwait(false);
                     }
+
+                    // Notify when a filter throws an exception
+                    if (filterResult.Exception is not null)
+                    {
+                        FilterException?.Invoke(this, new NetworkFilterEventArgs(filterResult));
+                    }
                 }
             }
         }

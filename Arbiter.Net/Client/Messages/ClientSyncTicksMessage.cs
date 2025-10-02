@@ -19,6 +19,9 @@ public class ClientSyncTicksMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendUInt32(ServerTickCount);
+        builder.AppendUInt32(ClientTickCount);
     }
 }

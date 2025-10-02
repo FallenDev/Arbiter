@@ -22,6 +22,10 @@ public class ClientCreateCharacterAppearanceMessage : ClientMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(HairStyle);
+        builder.AppendByte((byte)Gender);
+        builder.AppendByte((byte)HairColor);
     }
 }

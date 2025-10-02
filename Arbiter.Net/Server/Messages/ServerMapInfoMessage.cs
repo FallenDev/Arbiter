@@ -36,6 +36,15 @@ public class ServerMapInfoMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt16(MapId);
+        builder.AppendByte((byte)Width);
+        builder.AppendByte((byte)Height);
+        builder.AppendByte((byte)Flags);
+        builder.AppendByte((byte)(Width >> 8));
+        builder.AppendByte((byte)(Height >> 8));
+        builder.AppendUInt16(Checksum);
+        builder.AppendString8(Name);
     }
 }

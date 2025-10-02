@@ -32,6 +32,15 @@ public class ServerAddItemMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Slot);
+        builder.AppendUInt16(Sprite);
+        builder.AppendByte((byte)Color);
+        builder.AppendString8(Name);
+        builder.AppendUInt32(Quantity);
+        builder.AppendBoolean(IsStackable);
+        builder.AppendUInt32(MaxDurability);
+        builder.AppendUInt32(Durability);
     }
 }

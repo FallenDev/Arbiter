@@ -33,18 +33,47 @@ public class ClientDialogChoiceMessage : ClientMessage
 
         ArgsType = (DialogArgsType)reader.ReadByte();
 
-        if (ArgsType == DialogArgsType.MenuChoice)
+        switch (ArgsType)
         {
-            MenuChoice = reader.ReadByte();
-        }
-        else if (ArgsType == DialogArgsType.TextInput)
-        {
-            TextInputs = reader.ReadStringArgs8().ToList();
+            case DialogArgsType.MenuChoice:
+                MenuChoice = reader.ReadByte();
+                break;
+            case DialogArgsType.TextInput:
+                TextInputs = reader.ReadStringArgs8().ToList();
+                break;
         }
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)EntityType);
+        builder.AppendUInt32(EntityId);
+        builder.AppendUInt16(PursuitId);
+        builder.AppendUInt16(StepId);
+        
+        if (ArgsType == DialogArgsType.None)
+        {
+            return;
+        }
+        
+        builder.AppendByte((byte)ArgsType);
+        
+        switch (ArgsType)
+        {
+            case DialogArgsType.MenuChoice:
+                builder.AppendByte(MenuChoice ?? 0);
+                break;
+            case DialogArgsType.TextInput:
+            {
+                foreach (var text in TextInputs)
+                {
+                    builder.AppendString8(text);
+                }
+
+                break;
+            }
+        }
     }
 }

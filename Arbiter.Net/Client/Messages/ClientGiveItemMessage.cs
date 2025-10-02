@@ -21,6 +21,10 @@ public class ClientGiveItemMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Slot);
+        builder.AppendUInt32(EntityId);
+        builder.AppendByte(Quantity);
     }
 }

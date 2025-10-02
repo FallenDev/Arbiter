@@ -18,6 +18,9 @@ public class ServerHelloMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(0x00);
+        builder.AppendLine(Message);
     }
 }

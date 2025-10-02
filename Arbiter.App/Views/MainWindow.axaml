@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         x:Class="Arbiter.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/aiseirigh.ico"
+        Icon="/Assets/arbiter.ico"
         Title="{Binding Title}"
         Width="1280" Height="720"
         MinWidth="1280" MinHeight="640"

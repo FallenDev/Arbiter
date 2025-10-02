@@ -23,6 +23,11 @@ public class ServerMapLocationMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt16(X);
+        builder.AppendUInt16(Y);
+        builder.AppendUInt16(UnknownX);
+        builder.AppendUInt16(UnknownY);
     }
 }

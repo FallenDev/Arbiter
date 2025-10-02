@@ -20,6 +20,9 @@ public class ServerServerInfoMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)DataType);
+        builder.AppendString8(Value ?? string.Empty);
     }
 }

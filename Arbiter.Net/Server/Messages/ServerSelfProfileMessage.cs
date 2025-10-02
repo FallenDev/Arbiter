@@ -77,6 +77,47 @@ public class ServerSelfProfileMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)Nation);
+        builder.AppendString8(GuildRank);
+        builder.AppendString8(Title);
+        builder.AppendString8(GroupMembers);
+        builder.AppendBoolean(IsGroupOpen);
+        builder.AppendBoolean(IsRecruiting);
+
+        if (IsRecruiting && GroupBox is not null)
+        {
+            builder.AppendString8(GroupBox.Leader);
+            builder.AppendString8(GroupBox.Name); 
+            builder.AppendString8(GroupBox.Note);
+            builder.AppendByte(GroupBox.MinLevel);
+            builder.AppendByte(GroupBox.MaxLevel);
+            builder.AppendByte(GroupBox.MaxWarriors);
+            builder.AppendByte(GroupBox.CurrentWarriors);
+            builder.AppendByte(GroupBox.MaxWizards);
+            builder.AppendByte(GroupBox.CurrentWizards);
+            builder.AppendByte(GroupBox.MaxMonks);
+            builder.AppendByte(GroupBox.CurrentRogues);
+            builder.AppendByte(GroupBox.MaxPriests);
+            builder.AppendByte(GroupBox.CurrentPriests);
+            builder.AppendByte(GroupBox.MaxRogues);
+            builder.AppendByte(GroupBox.CurrentMonks);
+        }
+
+        builder.AppendByte((byte)Class);
+        builder.AppendBoolean(ShowAbilityMetadata);
+        builder.AppendBoolean(ShowMasterMetadata);
+        builder.AppendString8(DisplayClass);
+        builder.AppendString8(Guild);
+
+        builder.AppendByte((byte)LegendMarks.Count);
+        foreach (var mark in LegendMarks)
+        {
+            builder.AppendByte((byte)mark.Icon);
+            builder.AppendByte((byte)mark.Color);
+            builder.AppendString8(mark.Key);
+            builder.AppendString8(mark.Text);
+        }
     }
 }

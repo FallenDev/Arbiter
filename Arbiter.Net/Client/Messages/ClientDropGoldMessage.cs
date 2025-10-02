@@ -21,6 +21,10 @@ public class ClientDropGoldMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendUInt32(Amount);
+        builder.AppendUInt16(X);
+        builder.AppendUInt16(Y);
     }
 }

@@ -21,6 +21,10 @@ public class ClientPickupItemMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Slot);
+        builder.AppendUInt16(X);
+        builder.AppendUInt16(Y);
     }
 }

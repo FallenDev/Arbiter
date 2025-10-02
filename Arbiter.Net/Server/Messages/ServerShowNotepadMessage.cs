@@ -26,6 +26,12 @@ public class ServerShowNotepadMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte(Slot);
+        builder.AppendByte((byte)Style);
+        builder.AppendByte(Height);
+        builder.AppendByte(Width);
+        builder.AppendString16(Content);
     }
 }

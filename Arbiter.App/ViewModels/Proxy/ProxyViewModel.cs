@@ -5,7 +5,7 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Microsoft.Extensions.Logging;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel : ViewModelBase
 {
@@ -37,6 +37,7 @@ public partial class ProxyViewModel : ViewModelBase
         _proxyServer.ClientLoggedOut += OnClientLoggedOut;
         _proxyServer.ClientRedirected += OnClientRedirected;
         _proxyServer.PacketException += OnClientException;
+        _proxyServer.FilterException += OnFilterException;
 
         _proxyServer.Start(localPort, remoteIpAddress, remotePort);
         OnPropertyChanged(nameof(IsRunning));
@@ -98,5 +99,19 @@ public partial class ProxyViewModel : ViewModelBase
 
         var packetString = string.Join(' ', e.Packet.Data.Select(b => b.ToString("X2")));
         _logger.LogWarning("[{Name}] Bad packet: {Packet}", name, packetString);
+    }
+
+    private void OnFilterException(object? sender, ProxyConnectionFilterEventArgs e)
+    {
+        if (e.Result.Exception is not null)
+        {
+            return;
+        }
+
+        var name = e.Connection.Name ?? e.Connection.Id.ToString();
+        var lastFilter = e.Result.FilterChain.LastOrDefault();
+
+        _logger.LogError(e.Result.Exception, "[{Name}] Filter ({FilterName}) exception: {Message}", name, lastFilter,
+            e.Result.Exception!.Message);
     }
 }

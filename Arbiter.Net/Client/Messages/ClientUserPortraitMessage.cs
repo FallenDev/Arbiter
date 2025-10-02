@@ -27,6 +27,11 @@ public class ClientUserPortraitMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendUInt16((ushort)(Portrait.Count + Bio.Length + 4));
+        builder.AppendUInt16((ushort)Portrait.Count);
+        builder.AppendBytes(Portrait);
+        builder.AppendString16(Bio);
     }
 }

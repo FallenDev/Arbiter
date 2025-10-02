@@ -28,6 +28,13 @@ public class ServerAddSpellMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte(Slot);
+        builder.AppendUInt16(Icon);
+        builder.AppendByte((byte)TargetType);
+        builder.AppendString8(Name);
+        builder.AppendString8(Prompt);
+        builder.AppendByte(CastLines);
     }
 }

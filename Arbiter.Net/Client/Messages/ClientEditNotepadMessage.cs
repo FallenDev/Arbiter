@@ -19,6 +19,9 @@ public class ClientEditNotepadMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Slot);
+        builder.AppendString16(Content);
     }
 }

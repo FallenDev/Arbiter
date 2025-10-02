@@ -15,6 +15,8 @@ public class ServerRequestUserPortraitMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        // Nothing to write
     }
 }

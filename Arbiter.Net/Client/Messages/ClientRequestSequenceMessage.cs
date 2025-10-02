@@ -18,6 +18,8 @@ public class ClientRequestSequenceMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        // Nothing to write
+        base.Serialize(builder);
+        
+        builder.AppendUInt32(Unknown);
     }
 }

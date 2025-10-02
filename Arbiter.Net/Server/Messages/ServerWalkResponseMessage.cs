@@ -30,6 +30,13 @@ public class ServerWalkResponseMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)Direction);
+        builder.AppendUInt16(PreviousX);
+        builder.AppendUInt16(PreviousY);
+        builder.AppendUInt16(UnknownX);
+        builder.AppendUInt16(UnknownY);
+        builder.AppendByte(Unknown);
     }
 }

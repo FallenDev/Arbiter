@@ -18,6 +18,8 @@ public class ClientSetStatusMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Status);
     }
 }

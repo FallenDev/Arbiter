@@ -26,6 +26,12 @@ public class ServerEntityWalkMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendUInt32(EntityId);
+        builder.AppendUInt16(OriginX);
+        builder.AppendUInt16(OriginY);
+        builder.AppendByte((byte)Direction);
+        builder.AppendByte(Unknown);
     }
 }

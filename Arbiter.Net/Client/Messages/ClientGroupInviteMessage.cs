@@ -39,6 +39,24 @@ public class ClientGroupInviteMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Action);
+        builder.AppendString8(TargetName);
+
+        if (Action != ClientGroupAction.RecruitStart || GroupBox == null)
+        {
+            return;
+        }
+        
+        builder.AppendString8(GroupBox.Name);
+        builder.AppendString8(GroupBox.Note);
+        builder.AppendByte(GroupBox.MinLevel);
+        builder.AppendByte(GroupBox.MaxLevel);
+        builder.AppendByte(GroupBox.MaxWarriors);
+        builder.AppendByte(GroupBox.MaxWizards);
+        builder.AppendByte(GroupBox.MaxRogues);
+        builder.AppendByte(GroupBox.MaxPriests);
+        builder.AppendByte(GroupBox.MaxMonks);
     }
 }

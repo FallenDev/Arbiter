@@ -56,12 +56,18 @@ public partial class ProxyConnection
         {
             Input = packet
         };
-
+        
         try
         {
             var output = packet;
             foreach (var filter in filters.GetFilters(command))
             {
+                // Add the filter name for back-tracing
+                if (filter.Name is not null)
+                {
+                    result.AddFilterName(filter.Name);
+                }
+
                 var param = filter.Parameter;
                 output = filter.Filter(output, param);
 

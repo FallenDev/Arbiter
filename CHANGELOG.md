@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.10] - 2025-10-02
+
+### Added
+
+- Many more debug options for entities, players, maps, and messages
+- `Serialize` implementations for most client/server packets
+- `FilterException` event for logging 
+
+### Changed
+
+- Fix missing sprite in `Learn Spell`/`Learn Skill` dialogs when debug mode is enabled
+- Fix blank entity names when debug mode is enabled
+- Re-organize debug options in `Settings` by category
+
 ## [0.9.9] - 2025-10-01
 
 ### Added

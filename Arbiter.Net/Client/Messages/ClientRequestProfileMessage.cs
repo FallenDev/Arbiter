@@ -17,6 +17,8 @@ public class ClientRequestProfileMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
+        base.Serialize(builder);
+        
         // Nothing to write
     }
 }

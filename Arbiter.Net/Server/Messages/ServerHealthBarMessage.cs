@@ -23,6 +23,11 @@ public class ServerHealthBarMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt32(EntityId);
+        builder.AppendByte(Unknown);
+        builder.AppendByte(Percent);
+        builder.AppendByte(Sound);
     }
 }

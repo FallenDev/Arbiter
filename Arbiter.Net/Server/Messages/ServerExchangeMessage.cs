@@ -25,42 +25,63 @@ public class ServerExchangeMessage : ServerMessage
         
         Event = (ExchangeServerEventType)reader.ReadByte();
 
-        if (Event == ExchangeServerEventType.Started)
+        switch (Event)
         {
-            TargetId = reader.ReadUInt32();
-            TargetName = reader.ReadString8();
-        }
-        else if (Event == ExchangeServerEventType.QuantityPrompt)
-        {
-            Slot = reader.ReadByte();
-        }
-        else if (Event == ExchangeServerEventType.ItemAdded)
-        {
-            Party = (ExchangeParty)reader.ReadByte();
-            ItemIndex = reader.ReadByte();
-            ItemSprite = reader.ReadUInt16();
-            ItemColor = (DyeColor)reader.ReadByte();
-            ItemName = reader.ReadString8();
-        }
-        else if (Event == ExchangeServerEventType.GoldAdded)
-        {
-            Party = (ExchangeParty)reader.ReadByte();
-            GoldAmount = reader.ReadUInt32();
-        }
-        else if (Event == ExchangeServerEventType.Cancelled)
-        {
-            Party = (ExchangeParty)reader.ReadByte();
-            Message = reader.ReadString8();
-        }
-        else if (Event == ExchangeServerEventType.Accepted)
-        {
-            Party = (ExchangeParty)reader.ReadByte();
-            Message = reader.ReadString8();
+            case ExchangeServerEventType.Started:
+                TargetId = reader.ReadUInt32();
+                TargetName = reader.ReadString8();
+                break;
+            case ExchangeServerEventType.QuantityPrompt:
+                Slot = reader.ReadByte();
+                break;
+            case ExchangeServerEventType.ItemAdded:
+                Party = (ExchangeParty)reader.ReadByte();
+                ItemIndex = reader.ReadByte();
+                ItemSprite = reader.ReadUInt16();
+                ItemColor = (DyeColor)reader.ReadByte();
+                ItemName = reader.ReadString8();
+                break;
+            case ExchangeServerEventType.GoldAdded:
+                Party = (ExchangeParty)reader.ReadByte();
+                GoldAmount = reader.ReadUInt32();
+                break;
+            case ExchangeServerEventType.Accepted or ExchangeServerEventType.Cancelled:
+                Party = (ExchangeParty)reader.ReadByte();
+                Message = reader.ReadString8();
+                break;
         }
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Event);
+
+        switch (Event)
+        {
+            case ExchangeServerEventType.Started:
+                builder.AppendUInt32(TargetId!.Value);
+                builder.AppendString8(TargetName!);
+                break;
+            case ExchangeServerEventType.QuantityPrompt:
+                builder.AppendByte(Slot!.Value);
+                break;
+            case ExchangeServerEventType.ItemAdded:
+                builder.AppendByte((byte)Party!.Value);
+                builder.AppendByte(ItemIndex!.Value);
+                builder.AppendUInt16(ItemSprite!.Value);
+                builder.AppendByte((byte)(ItemColor ?? DyeColor.Default));
+                builder.AppendString8(ItemName!);
+                break;
+            case ExchangeServerEventType.GoldAdded:
+                builder.AppendByte((byte)Party!.Value);
+                builder.AppendUInt32(GoldAmount!.Value);
+                break;
+            case ExchangeServerEventType.Accepted or ExchangeServerEventType.Cancelled:
+                builder.AppendByte((byte)Party!.Value);
+                builder.AppendString8(Message ?? string.Empty);
+                break;
+        }
     }
 }
