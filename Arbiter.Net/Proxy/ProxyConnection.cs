@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Threading.Channels;
 using Arbiter.Net.Client;
+using Arbiter.Net.Filters;
 using Arbiter.Net.Server;
 
 namespace Arbiter.Net.Proxy;
@@ -52,9 +53,10 @@ public partial class ProxyConnection : IDisposable
     public event EventHandler<NetworkRedirectEventArgs>? ClientRedirected;
     public event EventHandler<NetworkTransferEventArgs>? PacketReceived;
     public event EventHandler<NetworkTransferEventArgs>? PacketSent;
-    public event EventHandler<NetworkPacketEventArgs>? PacketException;
     public event EventHandler<NetworkPacketEventArgs>? PacketQueued;
-
+    public event EventHandler<NetworkPacketEventArgs>? PacketException;
+    public event EventHandler<NetworkFilterEventArgs>? FilterException;
+    
     public ProxyConnection(int id, TcpClient client)
     {
         Id = id;

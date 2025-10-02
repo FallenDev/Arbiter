@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using Arbiter.Net.Client;
+using Arbiter.Net.Filters;
 
 namespace Arbiter.Net.Proxy;
 
@@ -11,12 +12,12 @@ public partial class ProxyServer : IDisposable
     private IPEndPoint? _remoteEndpoint;
     private TcpListener? _listener;
     private CancellationTokenSource? _cancelTokenSource;
-    
+
     private readonly Lock _connectionsLock = new();
     private readonly List<ProxyConnection> _connections = [];
     private int _nextConnectionId;
     private readonly ConcurrentQueue<IPEndPoint> _pendingRedirects = new();
-    
+
     public bool IsRunning => _listener is not null;
     public IPEndPoint? LocalEndpoint => _listener?.LocalEndpoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _remoteEndpoint;
@@ -35,6 +36,7 @@ public partial class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketSent;
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketQueued;
     public event EventHandler<ProxyConnectionExceptionEventArgs>? PacketException;
+    public event EventHandler<ProxyConnectionFilterEventArgs>? FilterException;
 
     public void Start(int listenPort, IPAddress remoteAddress, int remotePort) =>
         Start(listenPort, new IPEndPoint(remoteAddress, remotePort));
@@ -95,10 +97,10 @@ public partial class ProxyServer : IDisposable
                 using var _ = _connectionsLock.EnterScope();
                 _connections.Add(connection);
             }
-            
+
             // Inherit proxy-wide filters for newly connected client
             InheritFilters(connection);
-            
+
             ClientConnected?.Invoke(this, new ProxyConnectionEventArgs(connection));
 
             _ = HandleConnectionAsync(connection, token);
@@ -118,6 +120,7 @@ public partial class ProxyServer : IDisposable
         connection.PacketSent += OnSend;
         connection.PacketQueued += OnQueued;
         connection.PacketException += OnExceptionPacket;
+        connection.FilterException += OnFilterException;
 
         // Check for any pending redirects, use that first
         var remoteEndpoint = _pendingRedirects.TryDequeue(out var endpoint) ? endpoint : RemoteEndpoint!;
@@ -140,6 +143,7 @@ public partial class ProxyServer : IDisposable
             connection.PacketSent -= OnSend;
             connection.PacketQueued -= OnQueued;
             connection.PacketException -= OnExceptionPacket;
+            connection.FilterException -= OnFilterException;
 
             using var _ = _connectionsLock.EnterScope();
             _connections.Remove(connection);
@@ -181,6 +185,9 @@ public partial class ProxyServer : IDisposable
     private void OnExceptionPacket(object? sender, NetworkPacketEventArgs e) =>
         PacketException?.Invoke(this,
             new ProxyConnectionExceptionEventArgs((sender as ProxyConnection)!, e.Packet));
+
+    private void OnFilterException(object? sender, NetworkFilterEventArgs e) =>
+        FilterException?.Invoke(this, new ProxyConnectionFilterEventArgs((sender as ProxyConnection)!, e.Result));
 
     private void OnClientRedirected(object? sender, NetworkRedirectEventArgs e)
     {
