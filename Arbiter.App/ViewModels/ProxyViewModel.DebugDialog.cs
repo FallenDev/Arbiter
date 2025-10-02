@@ -28,7 +28,7 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        var name = $"{message.Name ?? "Entity"} {message.EntityId:x4}";
+        var name = $"{message.Name ?? "Entity"} (0x{message.EntityId:x4})";
         message.Name = name;
 
         // Build a new packet with the modified dialog data
@@ -58,7 +58,7 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        var name = $"{message.Name ?? "Entity"} {message.EntityId:x4}";
+        var name = $"{message.Name ?? "Entity"} 0x{message.EntityId:x4}";
         message.Name = name;
 
         // Build a new packet with the modified dialog data
