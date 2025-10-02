@@ -30,6 +30,21 @@ public partial class ProxyViewModel
             return packet;
         }
 
+        // Inject NPC IDs into the entity names
+        if (filterSettings.ShowNpcId)
+        {
+            foreach (var entity in message.Entities)
+            {
+                if (entity is not ServerCreatureEntity { CreatureType: CreatureType.Mundane } npcEntity)
+                {
+                    continue;
+                }
+
+                var name = npcEntity.Name ?? "Mundane";
+                npcEntity.Name = $"{name} 0x{npcEntity.Id:X4}";
+            }
+        }
+
         // Inject monster IDs into the entity names
         if (filterSettings.ShowMonsterId)
         {
@@ -45,24 +60,6 @@ public partial class ProxyViewModel
                 // Need to set the creature type to Mundane to display hover name
                 monsterEntity.CreatureType = CreatureType.Mundane;
                 monsterEntity.Name = $"{name} 0x{monsterEntity.Id:X4}";
-            }
-        }
-
-        // Inject NPC IDs into the entity names
-        if (filterSettings.ShowNpcId)
-        {
-            foreach (var entity in message.Entities)
-            {
-                if (entity is not ServerCreatureEntity { CreatureType: CreatureType.Mundane } npcEntity)
-                {
-                    continue;
-                }
-
-                var name = npcEntity.Name ?? "Mundane";
-                if (!name.StartsWith("Monster"))
-                {
-                    npcEntity.Name = $"{name} 0x{npcEntity.Id:X4}";
-                }
             }
         }
 
