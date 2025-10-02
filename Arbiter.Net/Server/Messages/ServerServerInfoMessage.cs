@@ -21,6 +21,7 @@ public class ServerServerInfoMessage : ServerMessage
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendByte((byte)DataType);
         builder.AppendString8(Value ?? string.Empty);
     }

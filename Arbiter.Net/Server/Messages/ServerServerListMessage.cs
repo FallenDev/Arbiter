@@ -26,6 +26,13 @@ public class ServerServerListMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(0);  // not sure what this byte is for
+        
+        builder.AppendUInt32(Checksum);
+        builder.AppendByte(Seed);
+        builder.AppendByte((byte)PrivateKey.Count);
+        builder.AppendBytes(PrivateKey);
     }
 }

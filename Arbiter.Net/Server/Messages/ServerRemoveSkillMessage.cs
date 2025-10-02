@@ -17,6 +17,8 @@ public class ServerRemoveSkillMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Slot);
     }
 }

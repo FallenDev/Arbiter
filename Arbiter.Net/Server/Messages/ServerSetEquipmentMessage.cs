@@ -31,6 +31,16 @@ public class ServerSetEquipmentMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Slot);
+        builder.AppendUInt16(Sprite);
+        builder.AppendByte((byte)Color);
+        builder.AppendString8(Name);
+        
+        builder.AppendByte(0);  // always zero, not sure what it is
+        
+        builder.AppendUInt32(MaxDurability);
+        builder.AppendUInt32(Durability);
     }
 }

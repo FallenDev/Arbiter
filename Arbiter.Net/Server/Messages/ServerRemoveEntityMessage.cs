@@ -17,6 +17,8 @@ public class ServerRemoveEntityMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt32(EntityId);
     }
 }

@@ -22,6 +22,10 @@ public class ServerPublicMessageMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)MessageType);
+        builder.AppendUInt32(SenderId);
+        builder.AppendString8(Message);
     }
 }

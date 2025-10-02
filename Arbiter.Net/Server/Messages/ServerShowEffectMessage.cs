@@ -41,6 +41,23 @@ public class ServerShowEffectMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt32(TargetId);
+
+        if (TargetId == 0)
+        {
+            builder.AppendUInt16(TargetAnimation);
+            builder.AppendUInt16(AnimationSpeed);
+            builder.AppendUInt16(TargetX ?? 0);
+            builder.AppendUInt16(TargetY ?? 0);
+        }
+        else
+        {
+            builder.AppendUInt32(SourceId ?? 0);
+            builder.AppendUInt16(TargetAnimation);
+            builder.AppendUInt16(SourceAnimation ?? 0);
+            builder.AppendUInt16(AnimationSpeed);
+        }
     }
 }

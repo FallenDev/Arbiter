@@ -86,6 +86,8 @@ public class ServerShowDialogMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
+        base.Serialize(builder);
+        
         builder.AppendByte((byte)DialogType);
 
         if (DialogType == DialogType.CloseDialog)

@@ -51,6 +51,8 @@ public class ServerUpdateStatsMessage : ServerMessage
 
     public bool? HasUnreadMail { get; set; }
     public bool? HasParcelsAvailable { get; set; }
+    
+    public uint? Unknown { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
@@ -79,8 +81,8 @@ public class ServerUpdateStatsMessage : ServerMessage
             MaxWeight = reader.ReadUInt16();
             Weight = reader.ReadUInt16();
 
-            // unknown bytes always 0x42 0x00 0x88 0x2E
-            reader.Skip(4);
+            // unknown bytes
+            Unknown = reader.ReadUInt32();
         }
 
         if (Fields.HasFlag(StatsFieldFlags.Vitals))
@@ -121,6 +123,67 @@ public class ServerUpdateStatsMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Fields);
+
+        if (Fields.HasFlag(StatsFieldFlags.Stats))
+        {
+            builder.AppendByte(0x01); // unknown bytes
+            builder.AppendByte(0x00);
+            builder.AppendByte(0x00);
+            builder.AppendByte(Level ?? 0);
+            builder.AppendByte(AbilityLevel ?? 0);
+            builder.AppendUInt32(MaxHealth ?? 0);
+            builder.AppendUInt32(MaxMana ?? 0);
+            builder.AppendByte(Strength ?? 0);
+            builder.AppendByte(Intelligence ?? 0);
+            builder.AppendByte(Wisdom ?? 0);
+            builder.AppendByte(Constitution ?? 0);
+            builder.AppendByte(Dexterity ?? 0);
+            builder.AppendBoolean(HasStatPoints ?? false);
+            builder.AppendByte(StatPoints ?? 0);
+            builder.AppendUInt16(MaxWeight ?? 0);
+            builder.AppendUInt16(Weight ?? 0);
+            builder.AppendUInt32(Unknown ?? 0);
+        }
+
+        if (Fields.HasFlag(StatsFieldFlags.Vitals))
+        {
+            builder.AppendUInt32(Health ?? 0);
+            builder.AppendUInt32(Mana ?? 0);
+        }
+
+        if (Fields.HasFlag(StatsFieldFlags.ExperienceGold))
+        {
+            builder.AppendUInt32(TotalExperience ?? 0);
+            builder.AppendUInt32(ToNextLevel ?? 0);
+            builder.AppendUInt32(TotalAbility ?? 0);
+            builder.AppendUInt32(ToNextAbility ?? 0);
+            builder.AppendUInt32(GamePoints ?? 0);
+            builder.AppendUInt32(Gold ?? 0);
+        }
+
+        if (Fields.HasFlag(StatsFieldFlags.Modifiers))
+        {
+            builder.AppendByte(0x00); // unknown byte
+            builder.AppendByte(IsBlinded == true ? (byte)0x08 : (byte)0x00);
+            builder.AppendByte(0x00); // unknown bytes
+            builder.AppendByte(0x00);
+            builder.AppendByte(0x00);
+            
+            var mailFlags = MailFlags.None;
+            if (HasUnreadMail == true) mailFlags |= MailFlags.Mail;
+            if (HasParcelsAvailable == true) mailFlags |= MailFlags.Parcel;
+            builder.AppendByte((byte)mailFlags);
+
+            builder.AppendByte((byte)(AttackElement ?? ElementModifier.None));
+            builder.AppendByte((byte)(DefenseElement ?? ElementModifier.None));
+            builder.AppendByte(MagicResist ?? 0);
+            builder.AppendBoolean(CanMove ?? false);
+            builder.AppendSByte(ArmorClass ?? 0);
+            builder.AppendByte(DamageModifier ?? 0);
+            builder.AppendByte(HitModifier ?? 0);
+        }
     }
 }

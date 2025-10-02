@@ -18,6 +18,7 @@ public class ServerSyncTicksMessage : ServerMessage
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendUInt32(TickCount);
     }
 }

@@ -874,6 +874,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.HasParcelsAvailable,
                     p => p.ToolTip("Whether the user has available parcels to pickup."))
                 .IsExpanded(m => m.Fields.HasFlag(StatsFieldFlags.Modifiers));
+            b.Section("Unknown")
+                .Property(m => m.Unknown, p => p.ShowHex().ToolTip("Unknown data."))
+                .IsExpanded(_ => false);
         });
     }
 

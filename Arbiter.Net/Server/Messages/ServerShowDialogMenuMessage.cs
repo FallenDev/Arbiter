@@ -145,6 +145,8 @@ public class ServerShowDialogMenuMessage : ServerMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
+        base.Serialize(builder);
+        
         builder.AppendByte((byte)MenuType);
         
         builder.AppendByte((byte)EntityType);

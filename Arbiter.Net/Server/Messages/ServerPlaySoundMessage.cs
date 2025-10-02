@@ -25,6 +25,16 @@ public class ServerPlaySoundMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte(Sound);
+
+        if (Sound != 0xFF)
+        {
+            return;
+        }
+
+        builder.AppendByte(Track ?? 0);
+        builder.AppendUInt16(Unknown ?? 0);
     }
 }

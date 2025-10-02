@@ -12,9 +12,11 @@ public class ServerRefreshCompleteMessage : ServerMessage
         
         // Nothing to read
     }
-    
+
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        // Nothing to write
     }
 }

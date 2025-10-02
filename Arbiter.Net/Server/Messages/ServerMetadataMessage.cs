@@ -46,6 +46,31 @@ public class ServerMetadataMessage : ServerMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)ResponseType);
+
+        if (ResponseType == MetadataResponseType.Metadata)
+        {
+            builder.AppendString8(Name ?? string.Empty);
+            builder.AppendUInt32(Checksum ?? 0);
+
+            var length = Math.Min(Data?.Count ?? 0, ushort.MaxValue);
+            var data = Data?.Take(length) ?? [];
+
+            builder.AppendUInt16((ushort)length);
+            builder.AppendBytes(data);
+        }
+        else if (ResponseType == MetadataResponseType.Listing)
+        {
+            var files = MetadataFiles ?? [];
+            builder.AppendUInt16((ushort)files.Count);
+            
+            foreach (var file in files)
+            {
+                builder.AppendString8(file.Name);
+                builder.AppendUInt32(file.Checksum);
+            }
+        }
     }
 }

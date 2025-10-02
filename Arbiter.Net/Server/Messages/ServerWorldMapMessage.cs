@@ -41,6 +41,21 @@ public class ServerWorldMapMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendString8(FieldName);
+        builder.AppendByte((byte)Locations.Count);
+        builder.AppendByte(FieldIndex);
+
+        foreach (var node in Locations)
+        {
+            builder.AppendUInt16(node.ScreenX);
+            builder.AppendUInt16(node.ScreenY);
+            builder.AppendString8(node.Name);
+            builder.AppendUInt16(node.Checksum);
+            builder.AppendUInt16(node.MapId);
+            builder.AppendUInt16(node.MapX);
+            builder.AppendUInt16(node.MapY);
+        }
     }
 }

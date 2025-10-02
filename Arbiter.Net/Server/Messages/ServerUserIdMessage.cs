@@ -28,6 +28,14 @@ public class ServerUserIdMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt32(UserId);
+        builder.AppendByte((byte)Direction);
+
+        builder.AppendBoolean(HasGuild);
+
+        builder.AppendByte((byte)Class);
+        builder.AppendByte((byte)(CanMove ? 0 : 1));
     }
 }

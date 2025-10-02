@@ -122,6 +122,8 @@ public class ServerShowUserMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
+        base.Serialize(builder);
+        
         builder.AppendUInt16(X);
         builder.AppendUInt16(Y);
         builder.AppendByte((byte)Direction);

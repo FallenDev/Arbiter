@@ -84,6 +84,55 @@ public class ServerUserProfileMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt32(EntityId);
+
+        foreach (var equipment in Equipment.OrderBy(e => EquipmentSlotOrder.IndexOf(e.Slot)))
+        {
+            builder.AppendUInt16(equipment.Sprite);
+            builder.AppendByte((byte)equipment.Color);
+        }
+
+        builder.AppendByte((byte)Status);
+        builder.AppendString8(Name);
+        builder.AppendByte((byte)Nation);
+        builder.AppendString8(Title);
+        builder.AppendBoolean(IsGroupOpen);
+        builder.AppendString8(GuildRank);
+        builder.AppendString8(DisplayClass);
+        builder.AppendString8(Guild);
+
+        builder.AppendByte((byte)LegendMarks.Count);
+        foreach (var mark in LegendMarks)
+        {
+            builder.AppendByte((byte)mark.Icon);
+            builder.AppendByte((byte)mark.Color);
+            builder.AppendString8(mark.Key);
+            builder.AppendString8(mark.Text);
+        }
+
+        var portraitLength = Portrait?.Count ?? 0;
+        var bioLength = Bio?.Length ?? 0;
+
+        if (portraitLength > 0 || bioLength > 0)
+        {
+            builder.AppendUInt16((ushort)(portraitLength + bioLength + 4));
+            builder.AppendUInt16((ushort)portraitLength);
+
+            if (portraitLength > 0)
+            {
+                builder.AppendBytes(Portrait!);
+            }
+
+            if (bioLength > 0)
+            {
+                builder.AppendString16(Bio!);
+            }
+        }
+        else
+        {
+            builder.AppendUInt16(0);
+        }
     }
 }
