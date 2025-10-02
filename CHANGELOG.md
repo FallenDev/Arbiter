@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Debug option for showing entity ID on monster click
+- Debug option for showing hidden players
+- Debug option for ignoring empty world messages
 - `Serialize` implementations for most client/server packets
 
 ### Changed

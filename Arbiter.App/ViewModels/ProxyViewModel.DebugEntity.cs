@@ -1,5 +1,6 @@
 ﻿using Arbiter.App.Models;
 using Arbiter.Net;
+using Arbiter.Net.Filters;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
@@ -10,6 +11,20 @@ namespace Arbiter.App.ViewModels;
 
 public partial class ProxyViewModel
 {
+    private const string DebugAddEntityFilterName = "Debug_AddEntityFilter";
+
+    private void AddDebugEntityFilters(DebugSettings settings)
+    {
+        _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityPacket, settings)
+        {
+            Name = DebugAddEntityFilterName,
+            Priority = int.MaxValue
+        });
+    }
+
+    private void RemoveDebugEntityFilters() =>
+        _proxyServer.RemoveFilter(ServerCommand.AddEntity, DebugAddEntityFilterName);
+    
     private NetworkPacket HandleAddEntityPacket(NetworkPacket packet, object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
@@ -18,14 +33,8 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        // If no debug settings enabled, ignore the packet
-        if (filterSettings is { ShowMonsterId: false, ShowNpcId: false })
-        {
-            return packet;
-        }
-
-        // Ignore if the packet could not be read as the expected message type
-        if (!_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
+        if (filterSettings is { ShowMonsterId: false, ShowNpcId: false } ||
+            !_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
         {
             return packet;
         }
