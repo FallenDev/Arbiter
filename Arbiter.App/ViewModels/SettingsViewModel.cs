@@ -33,6 +33,9 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowDialogId))]
     [NotifyPropertyChangedFor(nameof(DebugShowNpcId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterId))]
+    [NotifyPropertyChangedFor(nameof(DebugShowMonsterClickId))]
+    [NotifyPropertyChangedFor(nameof(DebugShowHiddenPlayers))]
+    [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
     private ArbiterSettings _settings = new();
     
     [ObservableProperty] private bool _hasChanges;
@@ -150,6 +153,39 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.ShowMonsterId = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugShowMonsterClickId
+    {
+        get => Settings.Debug.ShowMonsterClickId;
+        set
+        {
+            Settings.Debug.ShowMonsterClickId = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugShowHiddenPlayers
+    {
+        get => Settings.Debug.ShowHiddenPlayers;
+        set
+        {
+            Settings.Debug.ShowHiddenPlayers = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugIgnoreEmptyMessages
+    {
+        get => Settings.Debug.IgnoreEmptyMessages;
+        set
+        {
+            Settings.Debug.IgnoreEmptyMessages = value;
             OnPropertyChanged();
             HasChanges = true;
         }

@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="3">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -124,7 +124,7 @@
             <!-- Debug Settings Tab -->
             <TabItem Header="Debug">
                 <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
                         <!-- Show Entity ID for Dialogs -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Entity ID in Dialogs"
@@ -145,6 +145,32 @@
                                ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
                         <ToggleSwitch Grid.Row="2" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterId}"/>
+                        
+                        <!-- Show Entity ID for Monster Click -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Content="Show Entity ID on Monster Click"
+                               ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
+                        <ToggleSwitch Grid.Row="3" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowMonsterClickId}"/>
+                        
+                        <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
+                        
+                        <!-- Show Hidden Players -->
+                        <Label Grid.Row="5" Grid.Column="0"
+                               Content="Show Hidden Players"
+                               ToolTip.Tip="Shows hidden players as translucent (in-game)."/>
+                        <ToggleSwitch Grid.Row="5" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowHiddenPlayers}"/>
+                        
+                        <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
+                        
+                        <!-- Ignore Empty World Messages -->
+                        <Label Grid.Row="7" Grid.Column="0"
+                               Content="Ignore Empty World Messages"
+                               ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
+                        <ToggleSwitch Grid.Row="7" Grid.Column="1"
+                                      IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
+                        
                     </Grid>
                 </StackPanel>
             </TabItem>
