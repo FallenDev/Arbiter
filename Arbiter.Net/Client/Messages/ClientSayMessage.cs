@@ -17,9 +17,12 @@ public class ClientSayMessage : ClientMessage
         MessageType = (PublicMessageType)reader.ReadByte();
         Content = reader.ReadString8();
     }
-    
+
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)MessageType);
+        builder.AppendString8(Content);
     }
 }

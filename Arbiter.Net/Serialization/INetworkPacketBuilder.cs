@@ -27,7 +27,6 @@ public interface INetworkPacketBuilder
     void AppendBytes(byte[] bytes, int start, int count);
     void AppendBytes(IEnumerable<byte> bytes);
     public void AppendBytes(ReadOnlySpan<byte> bytes);
-    void AppendZero(int count = 1);
 
     NetworkPacket ToPacket();
 }

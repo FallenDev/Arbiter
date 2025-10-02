@@ -19,6 +19,9 @@ public class ClientWhisperMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendString8(Target);
+        builder.AppendString8(Content);
     }
 }

@@ -18,19 +18,33 @@ public class ClientInteractMessage : ClientMessage
 
         InteractionType = (InteractionType)reader.ReadByte();
 
-        if (InteractionType == InteractionType.Entity)
+        switch (InteractionType)
         {
-            TargetId = reader.ReadUInt32();
-        }
-        else if (InteractionType == InteractionType.Tile)
-        {
-            TargetX = reader.ReadUInt16();
-            TargetY = reader.ReadUInt16();
+            case InteractionType.Entity:
+                TargetId = reader.ReadUInt32();
+                break;
+            case InteractionType.Tile:
+                TargetX = reader.ReadUInt16();
+                TargetY = reader.ReadUInt16();
+                break;
         }
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)InteractionType);
+
+        switch (InteractionType)
+        {
+            case InteractionType.Entity:
+                builder.AppendUInt32(TargetId ?? 0);
+                break;
+            case InteractionType.Tile:
+                builder.AppendUInt16(TargetX ?? 0);
+                builder.AppendUInt16(TargetY ?? 0);
+                break;
+        }
     }
 }

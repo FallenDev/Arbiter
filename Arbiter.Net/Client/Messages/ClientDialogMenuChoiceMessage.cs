@@ -34,9 +34,11 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendByte((byte)EntityType);
         builder.AppendUInt32(EntityId);
         builder.AppendUInt16(PursuitId);
+        
         if (Slot.HasValue)
         {
             builder.AppendByte(Slot.Value);

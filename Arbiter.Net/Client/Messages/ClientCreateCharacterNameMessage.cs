@@ -22,6 +22,7 @@ public class ClientCreateCharacterNameMessage : ClientMessage
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendString8(Name);
         builder.AppendString8(Password);
         builder.AppendString8(Email);

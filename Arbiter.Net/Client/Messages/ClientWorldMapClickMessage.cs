@@ -23,6 +23,11 @@ public class ClientWorldMapClickMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendUInt16(Checksum);
+        builder.AppendUInt16(MapId);
+        builder.AppendUInt16(X);
+        builder.AppendUInt16(Y);
     }
 }

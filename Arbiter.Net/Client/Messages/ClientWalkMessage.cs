@@ -20,6 +20,9 @@ public class ClientWalkMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Direction);
+        builder.AppendByte(StepCount);
     }
 }

@@ -23,6 +23,7 @@ public class ClientCreateCharacterAppearanceMessage : ClientMessage
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendByte(HairStyle);
         builder.AppendByte((byte)Gender);
         builder.AppendByte((byte)HairColor);

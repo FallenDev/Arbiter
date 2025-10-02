@@ -18,6 +18,7 @@ public class ClientBeginSpellCastMessage : ClientMessage
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendByte(LineCount);
     }
 }

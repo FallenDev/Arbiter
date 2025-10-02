@@ -17,6 +17,8 @@ public class ClientRequestServerTableMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendBoolean(NeedsServerTable);
     }
 }

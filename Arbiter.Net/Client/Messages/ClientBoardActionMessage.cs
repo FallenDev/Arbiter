@@ -25,81 +25,77 @@ public class ClientBoardActionMessage : ClientMessage
         
         Action = (MessageBoardAction)reader.ReadByte();
 
-        if (Action == MessageBoardAction.ViewBoard)
+        switch (Action)
         {
-            BoardId = reader.ReadUInt16();
-            StartPostId = reader.ReadInt16();
-            Unknown = reader.ReadByte();
-        }
-        else if (Action == MessageBoardAction.ViewPost)
-        {
-            BoardId = reader.ReadUInt16();
-            PostId = reader.ReadInt16();
-            Navigation = (MessageBoardNavigation)reader.ReadSByte();
-        }
-        else if (Action == MessageBoardAction.CreatePost)
-        {
-            BoardId = reader.ReadUInt16();
-            Subject = reader.ReadString8();
-            Body = reader.ReadString16();
-        }
-        else if (Action == MessageBoardAction.DeletePost)
-        {
-            BoardId = reader.ReadUInt16();
-            PostId = reader.ReadInt16();
-        }
-        else if (Action == MessageBoardAction.SendMail)
-        {
-            BoardId = reader.ReadUInt16();
-            Recipient = reader.ReadString8();
-            MailSubject = reader.ReadString8();
-            MailBody = reader.ReadString16();
-        }
-        else if (Action == MessageBoardAction.HighlightPost)
-        {
-            BoardId = reader.ReadUInt16();
-            PostId = reader.ReadInt16();
+            case MessageBoardAction.ViewBoard:
+                BoardId = reader.ReadUInt16();
+                StartPostId = reader.ReadInt16();
+                Unknown = reader.ReadByte();
+                break;
+            case MessageBoardAction.ViewPost:
+                BoardId = reader.ReadUInt16();
+                PostId = reader.ReadInt16();
+                Navigation = (MessageBoardNavigation)reader.ReadSByte();
+                break;
+            case MessageBoardAction.CreatePost:
+                BoardId = reader.ReadUInt16();
+                Subject = reader.ReadString8();
+                Body = reader.ReadString16();
+                break;
+            case MessageBoardAction.DeletePost:
+                BoardId = reader.ReadUInt16();
+                PostId = reader.ReadInt16();
+                break;
+            case MessageBoardAction.SendMail:
+                BoardId = reader.ReadUInt16();
+                Recipient = reader.ReadString8();
+                MailSubject = reader.ReadString8();
+                MailBody = reader.ReadString16();
+                break;
+            case MessageBoardAction.HighlightPost:
+                BoardId = reader.ReadUInt16();
+                PostId = reader.ReadInt16();
+                break;
         }
     }
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
+        
         builder.AppendByte((byte)Action);
-        if (Action == MessageBoardAction.ViewBoard)
+        
+        switch (Action)
         {
-            builder.AppendUInt16(BoardId ?? 0);
-            builder.AppendInt16(StartPostId ?? 0);
-            builder.AppendByte(Unknown ?? 0);
-        }
-        else if (Action == MessageBoardAction.ViewPost)
-        {
-            builder.AppendUInt16(BoardId ?? 0);
-            builder.AppendInt16(PostId ?? 0);
-            builder.AppendSByte((sbyte)(Navigation ?? 0));
-        }
-        else if (Action == MessageBoardAction.CreatePost)
-        {
-            builder.AppendUInt16(BoardId ?? 0);
-            builder.AppendString8(Subject ?? string.Empty);
-            builder.AppendString16(Body ?? string.Empty);
-        }
-        else if (Action == MessageBoardAction.DeletePost)
-        {
-            builder.AppendUInt16(BoardId ?? 0);
-            builder.AppendInt16(PostId ?? 0);
-        }
-        else if (Action == MessageBoardAction.SendMail)
-        {
-            builder.AppendUInt16(BoardId ?? 0);
-            builder.AppendString8(Recipient ?? string.Empty);
-            builder.AppendString8(MailSubject ?? string.Empty);
-            builder.AppendString16(MailBody ?? string.Empty);
-        }
-        else if (Action == MessageBoardAction.HighlightPost)
-        {
-            builder.AppendUInt16(BoardId ?? 0);
-            builder.AppendInt16(PostId ?? 0);
+            case MessageBoardAction.ViewBoard:
+                builder.AppendUInt16(BoardId ?? 0);
+                builder.AppendInt16(StartPostId ?? 0);
+                builder.AppendByte(Unknown ?? 0);
+                break;
+            case MessageBoardAction.ViewPost:
+                builder.AppendUInt16(BoardId ?? 0);
+                builder.AppendInt16(PostId ?? 0);
+                builder.AppendSByte((sbyte)(Navigation ?? 0));
+                break;
+            case MessageBoardAction.CreatePost:
+                builder.AppendUInt16(BoardId ?? 0);
+                builder.AppendString8(Subject ?? string.Empty);
+                builder.AppendString16(Body ?? string.Empty);
+                break;
+            case MessageBoardAction.DeletePost:
+                builder.AppendUInt16(BoardId ?? 0);
+                builder.AppendInt16(PostId ?? 0);
+                break;
+            case MessageBoardAction.SendMail:
+                builder.AppendUInt16(BoardId ?? 0);
+                builder.AppendString8(Recipient ?? string.Empty);
+                builder.AppendString8(MailSubject ?? string.Empty);
+                builder.AppendString16(MailBody ?? string.Empty);
+                break;
+            case MessageBoardAction.HighlightPost:
+                builder.AppendUInt16(BoardId ?? 0);
+                builder.AppendInt16(PostId ?? 0);
+                break;
         }
     }
 }

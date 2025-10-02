@@ -121,14 +121,6 @@ public class NetworkPacketBuilder : INetworkPacketBuilder
     
     public void AppendBytes(IEnumerable<byte> bytes) => _buffer.AddRange(bytes);
 
-    public void AppendZero(int count = 1)
-    {
-        for (var i = 0; i < count; i++)
-        {
-            _buffer.Add(0);
-        }
-    }
-
     public NetworkPacket ToPacket() =>
         IsClient ? new ClientPacket(Command, _buffer) : new ServerPacket(Command, _buffer);
 

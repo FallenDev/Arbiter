@@ -17,6 +17,8 @@ public class ClientHeartbeatMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendUInt16(Reply);
     }
 }

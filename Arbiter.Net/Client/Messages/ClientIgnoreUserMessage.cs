@@ -25,6 +25,13 @@ public class ClientIgnoreUserMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)Action);
+
+        if (Action is IgnoreUserAction.AddUser or IgnoreUserAction.RemoveUser)
+        {
+            builder.AppendString8(Name!);
+        }
     }
 }

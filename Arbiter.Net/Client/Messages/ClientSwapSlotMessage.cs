@@ -22,6 +22,10 @@ public class ClientSwapSlotMessage : ClientMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Pane);
+        builder.AppendByte(SourceSlot);
+        builder.AppendByte(TargetSlot);
     }
 }

@@ -24,6 +24,13 @@ public class ClientRequestMetadataMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)RequestType);
+        
+        if (RequestType == MetadataRequestType.GetMetadata)
+        {
+            builder.AppendString8(Name!);
+        }
     }
 }

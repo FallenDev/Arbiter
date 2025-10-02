@@ -20,7 +20,7 @@ public class ServerHelloMessage : ServerMessage
     {
         base.Serialize(builder);
         
-        builder.AppendZero();
+        builder.AppendByte(0x00);
         builder.AppendLine(Message);
     }
 }

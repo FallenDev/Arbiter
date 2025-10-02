@@ -16,9 +16,12 @@ public class ClientExceptionMessage : ClientMessage
         var bytes = reader.ReadToEnd();
         Message = Encoding.ASCII.GetString(bytes);
     }
-    
+
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        var textBytes = Encoding.ASCII.GetBytes(Message);
+        builder.AppendBytes(textBytes);
     }
 }
