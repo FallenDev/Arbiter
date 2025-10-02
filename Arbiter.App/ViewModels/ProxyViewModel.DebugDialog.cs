@@ -28,8 +28,8 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        var name = $"{message.Name ?? "Entity"} (0x{message.EntityId:X4})";
-        message.Name = name;
+        var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
+        message.Name = $"{name} (0x{message.EntityId:X4})";
 
         // Build a new packet with the modified dialog data
         var builder = new NetworkPacketBuilder(ServerCommand.ShowDialog);
@@ -58,8 +58,8 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        var name = $"{message.Name ?? "Entity"} (0x{message.EntityId:X4})";
-        message.Name = name;
+        var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
+        message.Name = $"{name} (0x{message.EntityId:X4})";
 
         // Build a new packet with the modified dialog data
         var builder = new NetworkPacketBuilder(ServerCommand.ShowDialogMenu);

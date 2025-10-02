@@ -22,7 +22,7 @@ public class ServerBoardResultMessage : ServerMessage
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
+
         ResultType = (MessageBoardResult)reader.ReadByte();
 
         if (ResultType == MessageBoardResult.BoardList)
@@ -60,7 +60,7 @@ public class ServerBoardResultMessage : ServerMessage
         else if (ResultType is MessageBoardResult.Post or MessageBoardResult.MailLetter)
         {
             CanNavigatePrev = reader.ReadBoolean();
-            
+
             Post = new ServerMessageBoardPost
             {
                 IsHighlighted = reader.ReadBoolean(),
@@ -79,9 +79,56 @@ public class ServerBoardResultMessage : ServerMessage
             ResultMessage = reader.ReadString8();
         }
     }
-    
+
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)ResultType);
+
+        if (ResultType == MessageBoardResult.BoardList)
+        {
+            builder.AppendUInt16((ushort)Boards.Count);
+            foreach (var board in Boards)
+            {
+                builder.AppendUInt16(board.Id);
+                builder.AppendString8(board.Name);
+            }
+        }
+        else if (ResultType is MessageBoardResult.Board or MessageBoardResult.Mailbox)
+        {
+            builder.AppendByte((byte)Source!);
+            builder.AppendUInt16(BoardId!.Value);
+            builder.AppendString8(BoardName ?? string.Empty);
+
+            builder.AppendByte((byte)Posts.Count);
+            foreach (var post in Posts)
+            {
+                builder.AppendBoolean(post.IsHighlighted);
+                builder.AppendInt16(post.Id);
+                builder.AppendString8(post.Author);
+                builder.AppendByte(post.Month);
+                builder.AppendByte(post.Day);
+                builder.AppendString8(post.Subject);
+            }
+        }
+        else if (ResultType is MessageBoardResult.Post or MessageBoardResult.MailLetter)
+        {
+            builder.AppendBoolean(CanNavigatePrev!.Value);
+
+            builder.AppendBoolean(Post!.IsHighlighted);
+            builder.AppendInt16(Post.Id);
+            builder.AppendString8(Post.Author);
+            builder.AppendByte(Post.Month);
+            builder.AppendByte(Post.Day);
+            builder.AppendString8(Post.Subject);
+            builder.AppendString16(Post.Body);
+        }
+        else if (ResultType is MessageBoardResult.PostSubmitted or MessageBoardResult.PostDeleted
+                 or MessageBoardResult.PostHighlighted)
+        {
+            builder.AppendBoolean(ResultSuccess!.Value);
+            builder.AppendString8(ResultMessage!);
+        }
     }
 }

@@ -45,6 +45,26 @@ public class ClientDialogChoiceMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        builder.AppendByte((byte)EntityType);
+        builder.AppendUInt32(EntityId);
+        builder.AppendUInt16(PursuitId);
+        builder.AppendUInt16(StepId);
+        if (ArgsType == DialogArgsType.None)
+        {
+            return;
+        }
+        builder.AppendByte((byte)ArgsType);
+        if (ArgsType == DialogArgsType.MenuChoice)
+        {
+            builder.AppendByte(MenuChoice ?? 0);
+        }
+        else if (ArgsType == DialogArgsType.TextInput)
+        {
+            foreach (var text in TextInputs)
+            {
+                builder.AppendString8(text);
+            }
+        }
     }
 }

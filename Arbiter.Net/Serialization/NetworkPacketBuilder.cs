@@ -118,6 +118,8 @@ public class NetworkPacketBuilder : INetworkPacketBuilder
     public void AppendBytes(byte[] bytes, int start, int count) => _buffer.AddRange(bytes[start..(start + count)]);
 
     public void AppendBytes(ReadOnlySpan<byte> bytes) => _buffer.AddRange(bytes);
+    
+    public void AppendBytes(IEnumerable<byte> bytes) => _buffer.AddRange(bytes);
 
     public void AppendZero(int count = 1)
     {

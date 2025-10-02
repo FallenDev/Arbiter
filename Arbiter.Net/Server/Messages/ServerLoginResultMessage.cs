@@ -20,6 +20,9 @@ public class ServerLoginResultMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        builder.AppendByte((byte)Result);
+        builder.AppendString8(Message ?? string.Empty);
     }
 }

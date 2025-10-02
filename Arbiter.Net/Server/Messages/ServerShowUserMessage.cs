@@ -7,6 +7,8 @@ namespace Arbiter.Net.Server.Messages;
 [NetworkCommand(ServerCommand.ShowUser)]
 public class ServerShowUserMessage : ServerMessage
 {
+    private static readonly byte[] DefaultMonsterUnknown = new byte[6];
+    
     public ushort X { get; set; }
     public ushort Y { get; set; }
     public WorldDirection Direction { get; set; }
@@ -49,7 +51,7 @@ public class ServerShowUserMessage : ServerMessage
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
+
         X = reader.ReadUInt16();
         Y = reader.ReadUInt16();
         Direction = (WorldDirection)reader.ReadByte();
@@ -115,15 +117,61 @@ public class ServerShowUserMessage : ServerMessage
         Name = reader.ReadString8();
         GroupBox = reader.ReadString8();
 
-        if (BodySprite == Arbiter.Net.Types.BodySprite.None && IsTranslucent)
-        {
-            IsHidden = true;
-            IsTranslucent = false;
-        }
+        IsHidden = BodySprite == Arbiter.Net.Types.BodySprite.None && !IsTranslucent;
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        builder.AppendUInt16(X);
+        builder.AppendUInt16(Y);
+        builder.AppendByte((byte)Direction);
+        builder.AppendUInt32(EntityId);
+
+        if (MonsterSprite.HasValue)
+        {
+            builder.AppendUInt16(0xFFFF);
+            builder.AppendUInt16(MonsterSprite.Value);
+            builder.AppendByte((byte)(HairColor ?? DyeColor.Default));
+            builder.AppendByte((byte)(BootsColor ?? DyeColor.Default));
+            foreach (var b in MonsterUnknown ?? DefaultMonsterUnknown)
+            {
+                builder.AppendByte(b);
+            }
+        }
+        else
+        {
+            builder.AppendUInt16(HeadSprite);
+            var bodySprite = (byte)(BodySprite ?? Arbiter.Net.Types.BodySprite.None);
+            if (PantsColor.HasValue)
+            {
+                bodySprite += (byte)PantsColor.Value;
+            }
+
+            builder.AppendByte(bodySprite);
+            builder.AppendUInt16(Armor1Sprite ?? 0);
+            builder.AppendByte(BootsSprite ?? 0);
+            builder.AppendUInt16(Armor2Sprite ?? 0);
+            builder.AppendByte(ShieldSprite ?? 0);
+            builder.AppendUInt16(WeaponSprite ?? 0);
+            builder.AppendByte((byte)(HairColor ?? DyeColor.Default));
+            builder.AppendByte((byte)(BootsColor ?? DyeColor.Default));
+            builder.AppendByte((byte)(Accessory1Color ?? DyeColor.Default));
+            builder.AppendUInt16(Accessory1Sprite ?? 0);
+            builder.AppendByte((byte)(Accessory2Color ?? DyeColor.Default));
+            builder.AppendUInt16(Accessory2Sprite ?? 0);
+            builder.AppendByte((byte)(Accessory3Color ?? DyeColor.Default));
+            builder.AppendUInt16(Accessory3Sprite ?? 0);
+            builder.AppendByte((byte)Lantern);
+            builder.AppendByte((byte)(RestPosition ?? Net.Types.RestPosition.None));
+            builder.AppendUInt16(OvercoatSprite ?? 0);
+            builder.AppendByte((byte)(OvercoatColor ?? DyeColor.Default));
+            builder.AppendByte((byte)(SkinColor ?? Net.Types.SkinColor.Default));
+            builder.AppendBoolean(IsTranslucent);
+            builder.AppendByte(FaceShape);
+        }
+
+        builder.AppendByte((byte)NameStyle);
+        builder.AppendString8(Name ?? string.Empty);
+        builder.AppendString8(GroupBox ?? string.Empty);
     }
 }

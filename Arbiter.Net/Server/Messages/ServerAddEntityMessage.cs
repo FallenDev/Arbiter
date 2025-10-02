@@ -67,6 +67,8 @@ public class ServerAddEntityMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
+        base.Serialize(builder);
+        
         var entityCount = Entities.Count;
         builder.AppendUInt16((ushort)entityCount);
 

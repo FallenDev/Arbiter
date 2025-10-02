@@ -24,6 +24,15 @@ public class ClientAuthenticateMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        builder.AppendByte(Seed);
+        var keyBytes = PrivateKey?.ToArray() ?? Array.Empty<byte>();
+        builder.AppendByte((byte)keyBytes.Length);
+        if (keyBytes.Length > 0)
+        {
+            builder.AppendBytes(keyBytes);
+        }
+        builder.AppendString8(Name);
+        builder.AppendUInt32(ConnectionId);
     }
 }

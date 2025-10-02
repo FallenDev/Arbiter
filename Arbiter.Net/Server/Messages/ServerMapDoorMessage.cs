@@ -32,6 +32,16 @@ public class ServerMapDoorMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte((byte)Doors.Count);
+        
+        foreach (var door in Doors)
+        {
+            builder.AppendByte(door.X);
+            builder.AppendByte(door.Y);
+            builder.AppendByte((byte)door.State);
+            builder.AppendByte((byte)door.Direction);
+        }
     }
 }

@@ -50,6 +50,36 @@ public class ServerGroupMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+    
+        builder.AppendByte((byte)Action);
+    
+        if (Action == ServerGroupAction.RecruitInfo)
+        {
+            if (GroupBox is null)
+            {
+                return;
+            }
+            
+            builder.AppendString8(GroupBox.Leader);
+            builder.AppendString8(GroupBox.Name);
+            builder.AppendString8(GroupBox.Note);
+            builder.AppendByte(GroupBox.MinLevel);
+            builder.AppendByte(GroupBox.MaxLevel);
+            builder.AppendByte(GroupBox.MaxWarriors);
+            builder.AppendByte(GroupBox.CurrentWarriors);
+            builder.AppendByte(GroupBox.MaxWizards);
+            builder.AppendByte(GroupBox.CurrentWizards);
+            builder.AppendByte(GroupBox.MaxMonks);
+            builder.AppendByte(GroupBox.CurrentRogues);
+            builder.AppendByte(GroupBox.MaxPriests);
+            builder.AppendByte(GroupBox.CurrentPriests);
+            builder.AppendByte(GroupBox.MaxRogues);
+            builder.AppendByte(GroupBox.CurrentMonks);
+        }
+        else
+        {
+            builder.AppendString8(Name);
+        }
     }
 }

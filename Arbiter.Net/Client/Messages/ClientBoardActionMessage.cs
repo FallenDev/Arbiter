@@ -64,6 +64,42 @@ public class ClientBoardActionMessage : ClientMessage
     
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        builder.AppendByte((byte)Action);
+        if (Action == MessageBoardAction.ViewBoard)
+        {
+            builder.AppendUInt16(BoardId ?? 0);
+            builder.AppendInt16(StartPostId ?? 0);
+            builder.AppendByte(Unknown ?? 0);
+        }
+        else if (Action == MessageBoardAction.ViewPost)
+        {
+            builder.AppendUInt16(BoardId ?? 0);
+            builder.AppendInt16(PostId ?? 0);
+            builder.AppendSByte((sbyte)(Navigation ?? 0));
+        }
+        else if (Action == MessageBoardAction.CreatePost)
+        {
+            builder.AppendUInt16(BoardId ?? 0);
+            builder.AppendString8(Subject ?? string.Empty);
+            builder.AppendString16(Body ?? string.Empty);
+        }
+        else if (Action == MessageBoardAction.DeletePost)
+        {
+            builder.AppendUInt16(BoardId ?? 0);
+            builder.AppendInt16(PostId ?? 0);
+        }
+        else if (Action == MessageBoardAction.SendMail)
+        {
+            builder.AppendUInt16(BoardId ?? 0);
+            builder.AppendString8(Recipient ?? string.Empty);
+            builder.AppendString8(MailSubject ?? string.Empty);
+            builder.AppendString16(MailBody ?? string.Empty);
+        }
+        else if (Action == MessageBoardAction.HighlightPost)
+        {
+            builder.AppendUInt16(BoardId ?? 0);
+            builder.AppendInt16(PostId ?? 0);
+        }
     }
 }

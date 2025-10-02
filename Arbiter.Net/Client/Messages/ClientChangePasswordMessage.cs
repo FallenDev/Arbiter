@@ -21,6 +21,9 @@ public class ClientChangePasswordMessage : ClientMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        builder.AppendString8(Name);
+        builder.AppendString8(CurrentPassword);
+        builder.AppendString8(NewPassword);
     }
 }

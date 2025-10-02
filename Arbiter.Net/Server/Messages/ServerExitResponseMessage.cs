@@ -19,6 +19,9 @@ public class ServerExitResponseMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+        
+        builder.AppendByte(Result);
+        builder.AppendUInt16(Unknown);
     }
 }

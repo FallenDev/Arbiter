@@ -15,12 +15,18 @@ public class ServerForcePacketMessage : ServerMessage
         base.Deserialize(reader);
 
         var length = reader.ReadUInt16();
-        ClientCommand = (ClientCommand) reader.ReadByte();
+        ClientCommand = (ClientCommand)reader.ReadByte();
         Data = reader.ReadBytes(length - 1);
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        var dataLength = Math.Min(Data.Count, ushort.MaxValue - 1);
+        
+        builder.AppendUInt16((ushort)(dataLength + 1));
+        builder.AppendByte((byte)Command);
+        builder.AppendBytes(Data.Take(dataLength));
     }
 }

@@ -2,7 +2,7 @@
 
 public enum SkinColor : byte
 {
-    White = 0,
+    Default = 0,
     Pale = 1,
     Brown = 2,
     Green = 3,
