@@ -8,8 +8,7 @@ public partial class ProxyViewModel
     public void ApplyDebugFilters(DebugSettings settings)
     {
         RemoveDebugFilters();
-        
-        // Add debug filters (named filters will be replaced, not duplicated)
+
         if (settings.ShowMonsterId || settings.ShowNpcId)
         {
             AddDebugEntityFilters(settings);
@@ -20,9 +19,14 @@ public partial class ProxyViewModel
             AddDebugDialogFilters(settings);
         }
 
-        if (settings.ShowHiddenPlayers)
+        if (settings.ShowHiddenPlayers || settings.ShowPlayerNames)
         {
             AddDebugPlayerFilters(settings);
+        }
+
+        if (settings.EnableTabMap || settings.DisableWeatherEffects)
+        {
+            AddDebugMapFilters(settings);
         }
 
         if (settings.IgnoreEmptyMessages)
@@ -41,6 +45,7 @@ public partial class ProxyViewModel
         RemoveDebugEntityFilters();
         RemoveDebugDialogFilters();
         RemoveDebugPlayerFilters();
+        RemoveDebugMapFilters();
         RemoveDebugMessageFilters();
 
         _logger.LogInformation("Debug packet filters disabled");

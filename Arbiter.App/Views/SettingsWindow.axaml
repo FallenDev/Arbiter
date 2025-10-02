@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="600" Height="460"
+                          Width="640" Height="480"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="3">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="4">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -121,10 +121,10 @@
                 </StackPanel>
             </TabItem>
             
-            <!-- Debug Settings Tab -->
-            <TabItem Header="Debug">
+            <!-- Entities Settings Tab -->
+            <TabItem Header="Entities">
                 <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
                         <!-- Show Entity ID for Dialogs -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Entity ID in Dialogs"
@@ -139,36 +139,76 @@
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowNpcId}"/>
                         
+                        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
+                        
                         <!-- Show Entity ID for Monsters -->
-                        <Label Grid.Row="2" Grid.Column="0"
+                        <Label Grid.Row="3" Grid.Column="0"
                                Content="Show Entity ID on Monsters"
                                ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
-                        <ToggleSwitch Grid.Row="2" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="3" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterId}"/>
                         
                         <!-- Show Entity ID for Monster Click -->
-                        <Label Grid.Row="3" Grid.Column="0"
+                        <Label Grid.Row="4" Grid.Column="0"
                                Content="Show Entity ID on Monster Click"
                                ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
-                        <ToggleSwitch Grid.Row="3" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="4" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterClickId}"/>
                         
-                        <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
-                        
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Players Settings Tab -->
+            <TabItem Header="Players">
+                <StackPanel Spacing="4">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
                         <!-- Show Hidden Players -->
-                        <Label Grid.Row="5" Grid.Column="0"
+                        <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Hidden Players"
                                ToolTip.Tip="Shows hidden players as translucent (in-game)."/>
-                        <ToggleSwitch Grid.Row="5" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding DebugShowHiddenPlayers}"/>
+                        <!-- Sticky Player Names -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Content="Always Show Player Names"
+                               ToolTip.Tip="Always show player names over their head (in-game)."/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowPlayerNames}"/>
                         
-                        <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
-                        
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Map Settings Tab -->
+            <TabItem Header="Maps">
+                <StackPanel Spacing="4">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                        <!-- Force Tab Map -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Force Enable Tab Map"
+                               ToolTip.Tip="Enables the tab map even if disallowed normally (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugEnableTabMap}"/>
+                        <!-- Disable Weather Effects -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Content="Disable Weather Effects"
+                               ToolTip.Tip="Disables weather effects on maps (in-game)."/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding DebugDisableWeatherEffects}"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Messages Settings Tab -->
+            <TabItem Header="Messages">
+                <StackPanel Spacing="4">
+                    <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto" Margin="8,4">
                         <!-- Ignore Empty World Messages -->
-                        <Label Grid.Row="7" Grid.Column="0"
+                        <Label Grid.Row="0" Grid.Column="0"
                                Content="Ignore Empty World Messages"
                                ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
-                        <ToggleSwitch Grid.Row="7" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
                         
                     </Grid>
@@ -221,11 +261,11 @@
                                      Converter="{x:Static BoolConverters.Not}"/>
                         </MultiBinding>
                     </Button.IsEnabled>
-                    <TextBlock Text="Apply"></TextBlock>
+                    <TextBlock Text="Apply"/>
                 </Button>
                 <!-- Cancel Button -->
                 <Button Command="{Binding HandleCancelCommand}" IsCancel="True">
-                    <TextBlock Text="Cancel"></TextBlock>
+                    <TextBlock Text="Cancel"/>
                 </Button>
             </UniformGrid>
         </Border>

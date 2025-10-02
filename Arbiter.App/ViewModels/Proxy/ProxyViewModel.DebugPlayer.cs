@@ -32,18 +32,26 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        if (!filterSettings.ShowHiddenPlayers ||
+        if (filterSettings is { ShowHiddenPlayers: false, ShowPlayerNames: false } ||
             !_serverMessageFactory.TryCreate<ServerShowUserMessage>(serverPacket, out var message) || !message.IsHidden)
         {
             return packet;
         }
 
-        message.Name = "[Hidden]";
-        message.NameStyle = NameTagStyle.Hostile;
-        message.BodySprite = BodySprite.MaleInvisible;
-        message.IsTranslucent = true;
-        message.IsHidden = false;
-        
+        if (message.IsHidden)
+        {
+            message.Name = "[Hidden]";
+            message.NameStyle = NameTagStyle.Hostile;
+            message.BodySprite = BodySprite.MaleInvisible;
+            message.IsTranslucent = true;
+            message.IsHidden = false;
+        }
+        else if (filterSettings.ShowPlayerNames)
+        {
+            // Always show names instead of mouse over
+            message.NameStyle = NameTagStyle.Neutral;
+        }
+
         // Build a new packet with the modified user data
         var builder = new NetworkPacketBuilder(ServerCommand.ShowUser);
         message.Serialize(builder);

@@ -19,7 +19,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         Patterns = ["*.exe"],
         MimeTypes = ["application/octet-stream"],
     };
-    
+
     private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
 
@@ -35,9 +35,12 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterClickId))]
     [NotifyPropertyChangedFor(nameof(DebugShowHiddenPlayers))]
+    [NotifyPropertyChangedFor(nameof(DebugShowPlayerNames))]
+    [NotifyPropertyChangedFor(nameof(DebugEnableTabMap))]
+    [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
     private ArbiterSettings _settings = new();
-    
+
     [ObservableProperty] private bool _hasChanges;
 
     public string VersionString
@@ -48,7 +51,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             return $"v{version.Major}.{version.Minor}.{version.Build}";
         }
     }
-    
+
     public string ClientExecutablePath
     {
         get => Settings.ClientExecutablePath;
@@ -175,6 +178,39 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.ShowHiddenPlayers = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugShowPlayerNames
+    {
+        get => Settings.Debug.ShowPlayerNames;
+        set
+        {
+            Settings.Debug.ShowPlayerNames = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugEnableTabMap
+    {
+        get => Settings.Debug.EnableTabMap;
+        set
+        {
+            Settings.Debug.EnableTabMap = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugDisableWeatherEffects
+    {
+        get => Settings.Debug.DisableWeatherEffects;
+        set
+        {
+            Settings.Debug.DisableWeatherEffects = value;
             OnPropertyChanged();
             HasChanges = true;
         }

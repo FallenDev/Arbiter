@@ -9,15 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Debug option for showing entity ID on monster click
-- Debug option for showing hidden players
-- Debug option for ignoring empty world messages
+- Many more debug options for entities, players, maps, and messages
 - `Serialize` implementations for most client/server packets
 
 ### Changed
 
 - Fix missing sprite in `Learn Spell`/`Learn Skill` dialogs when debug mode is enabled
 - Fix blank entity names when debug mode is enabled
+- Re-organize debug options in `Settings` by category
 
 ## [0.9.9] - 2025-10-01
 
