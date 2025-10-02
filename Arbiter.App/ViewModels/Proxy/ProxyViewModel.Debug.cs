@@ -1,9 +1,7 @@
 ﻿using Arbiter.App.Models;
-using Arbiter.Net.Filters;
-using Arbiter.Net.Server;
 using Microsoft.Extensions.Logging;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
@@ -27,6 +25,11 @@ public partial class ProxyViewModel
             AddDebugPlayerFilters(settings);
         }
 
+        if (settings.IgnoreEmptyMessages)
+        {
+            AddDebugMessageFilters(settings);
+        }
+
         if (settings.CheckEnabled())
         {
             _logger.LogInformation("Debug packet filters enabled");
@@ -38,6 +41,7 @@ public partial class ProxyViewModel
         RemoveDebugEntityFilters();
         RemoveDebugDialogFilters();
         RemoveDebugPlayerFilters();
+        RemoveDebugMessageFilters();
 
         _logger.LogInformation("Debug packet filters disabled");
     }

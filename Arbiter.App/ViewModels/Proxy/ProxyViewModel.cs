@@ -5,7 +5,7 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Microsoft.Extensions.Logging;
 
-namespace Arbiter.App.ViewModels;
+namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel : ViewModelBase
 {
