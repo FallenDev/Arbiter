@@ -14,7 +14,7 @@ public partial class ProxyViewModel
     private const string DebugShowEffectFilterName = "Debug_ShowEffectFilter";
     private const string DebugUpdateStatsFilterName = "Debug_UpdateStatsFilter";
 
-    private static readonly Dictionary<int, (ushort Effect, ushort? AnimationSpeed)> ClassicEffectReplacements = new()
+    private static readonly Dictionary<int, (ushort Effect, ushort? DurationOverride)> ClassicEffectReplacements = new()
     {
         [279] = (2, null), // modern ao puin => classic ao puin
         [232] = (2, null), // modern ao dall/suain => classic ao dall/suain
@@ -99,9 +99,9 @@ public partial class ProxyViewModel
         // Replace the target animation if it exists
         if (ClassicEffectReplacements.TryGetValue(message.TargetAnimation, out var targetReplacement))
         {
-            var (newEffect, newAnimationSpeed) = targetReplacement;
+            var (newEffect, animationDurationOverride) = targetReplacement;
             message.TargetAnimation = newEffect;
-            message.AnimationSpeed = newAnimationSpeed ?? message.AnimationSpeed;
+            message.AnimationDuration = animationDurationOverride ?? message.AnimationDuration;
 
             hasReplacement = true;
         }
@@ -110,9 +110,9 @@ public partial class ProxyViewModel
         if (message.SourceAnimation.HasValue &&
             ClassicEffectReplacements.TryGetValue(message.SourceAnimation.Value, out var sourceReplacement))
         {
-            var (newEffect, newAnimationSpeed) = sourceReplacement;
+            var (newEffect, animationDurationOverride) = sourceReplacement;
             message.SourceAnimation = newEffect;
-            message.AnimationSpeed = newAnimationSpeed ?? message.AnimationSpeed;
+            message.AnimationDuration = animationDurationOverride ?? message.AnimationDuration;
 
             hasReplacement = true;
         }

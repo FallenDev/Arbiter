@@ -9,7 +9,7 @@ public class ServerAnimateEntityMessage : ServerMessage
 {
     public uint EntityId { get; set; }
     public BodyAnimation Animation { get; set; }
-    public ushort Speed { get; set; }
+    public ushort Duration { get; set; }
     public byte Sound { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
@@ -18,7 +18,7 @@ public class ServerAnimateEntityMessage : ServerMessage
 
         EntityId = reader.ReadUInt32();
         Animation = (BodyAnimation)reader.ReadByte();
-        Speed = reader.ReadUInt16();
+        Duration = reader.ReadUInt16();
         Sound = reader.ReadByte();
     }
 
@@ -28,7 +28,7 @@ public class ServerAnimateEntityMessage : ServerMessage
         
         builder.AppendUInt32(EntityId);
         builder.AppendByte((byte)Animation);
-        builder.AppendUInt16(Speed);
+        builder.AppendUInt16(Duration);
         builder.AppendByte(Sound);
     }
 }

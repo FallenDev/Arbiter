@@ -15,7 +15,7 @@ public class ServerShowEffectMessage : ServerMessage
     public uint? SourceId { get; set; }
     public ushort? SourceAnimation { get; set; }
     
-    public ushort AnimationSpeed { get; set; }
+    public ushort AnimationDuration { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
@@ -26,7 +26,7 @@ public class ServerShowEffectMessage : ServerMessage
         if (TargetId == 0)
         {
             TargetAnimation = reader.ReadUInt16();
-            AnimationSpeed = reader.ReadUInt16();
+            AnimationDuration = reader.ReadUInt16();
             TargetX = reader.ReadUInt16();
             TargetY = reader.ReadUInt16();
         }
@@ -35,7 +35,7 @@ public class ServerShowEffectMessage : ServerMessage
             SourceId = reader.ReadUInt32();
             TargetAnimation = reader.ReadUInt16();
             SourceAnimation = reader.ReadUInt16();
-            AnimationSpeed = reader.ReadUInt16();
+            AnimationDuration = reader.ReadUInt16();
         }
     }
 
@@ -48,7 +48,7 @@ public class ServerShowEffectMessage : ServerMessage
         if (TargetId == 0)
         {
             builder.AppendUInt16(TargetAnimation);
-            builder.AppendUInt16(AnimationSpeed);
+            builder.AppendUInt16(AnimationDuration);
             builder.AppendUInt16(TargetX ?? 0);
             builder.AppendUInt16(TargetY ?? 0);
         }
@@ -57,7 +57,7 @@ public class ServerShowEffectMessage : ServerMessage
             builder.AppendUInt32(SourceId ?? 0);
             builder.AppendUInt16(TargetAnimation);
             builder.AppendUInt16(SourceAnimation ?? 0);
-            builder.AppendUInt16(AnimationSpeed);
+            builder.AppendUInt16(AnimationDuration);
         }
     }
 }

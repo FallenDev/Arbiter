@@ -179,7 +179,7 @@ public partial class ProxyViewModel
         // We can safely ingore any message that contains any of the following characters
         foreach (var c in trimmedMessage)
         {
-            if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?')
+            if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?' or '"')
             {
                 return packet;
             }

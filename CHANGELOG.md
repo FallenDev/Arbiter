@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `0x4000` (monster) and `0x8000` (item) bitflags from `Sprite` field values
 - Show decimal by default for `Sprite` fields
 - Better disconnect handling for client crashes
+- Rename `Animation Speed` to `Animation Duration` for consistency
 
 ## [0.9.10] - 2025-10-02
 
