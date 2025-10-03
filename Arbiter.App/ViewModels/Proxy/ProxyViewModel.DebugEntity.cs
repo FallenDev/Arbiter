@@ -23,7 +23,7 @@ public partial class ProxyViewModel
     private static readonly TimeSpan InteractRequestTimeout = TimeSpan.FromSeconds(2);
 
     // Used to track interaction queries for a client to map back to the correct entity
-    private readonly ConcurrentDictionary<uint, ServerEntityObject> _worldEntities = [];
+    private readonly ConcurrentDictionary<uint, WorldEntity> _worldEntities = [];
     private readonly ConcurrentDictionary<int, ConcurrentQueue<(uint, DateTime)>> _interactRequests = [];
 
     private void AddDebugEntityFilters(DebugSettings settings)
@@ -78,7 +78,19 @@ public partial class ProxyViewModel
         // Update all entities in the world list
         foreach (var entity in message.Entities)
         {
-            _worldEntities.AddOrUpdate(entity.Id, entity, (_, _) => entity);
+            var entityType = entity switch
+            {
+                ServerCreatureEntity creatureEntity => creatureEntity.CreatureType == CreatureType.Mundane
+                    ? WorldEntityType.Mundane
+                    : WorldEntityType.Monster,
+                _ => WorldEntityType.Item,
+            };
+
+            // Make a copy of the entity so we can store its original form
+            var worldEntity = new WorldEntity(entityType, entity.Id, entity.X, entity.Y, entity.Sprite,
+                entity is ServerCreatureEntity { Name: not null } nameEntity ? nameEntity.Name : null);
+
+            _worldEntities.AddOrUpdate(entity.Id, worldEntity, (_, _) => worldEntity);
         }
 
         // Inject NPC IDs into the entity names
@@ -138,7 +150,14 @@ public partial class ProxyViewModel
         // If the interaction type is Entity, queue the entity ID for later lookup when receiving the response
         if (message is { InteractionType: InteractionType.Entity, TargetId: not null })
         {
-            if (_interactRequests.TryGetValue(connection.Id, out var queue))
+            // The entity in question should be a monster for us to queue it
+            var isMonster = false;
+            if (_worldEntities.TryGetValue(message.TargetId.Value, out var entity))
+            {
+                isMonster = entity.Type == WorldEntityType.Monster;
+            }
+
+            if (isMonster && _interactRequests.TryGetValue(connection.Id, out var queue))
             {
                 queue.Enqueue((message.TargetId.Value, DateTime.Now));
             }
@@ -179,7 +198,7 @@ public partial class ProxyViewModel
         // We can safely ingore any message that contains any of the following characters
         foreach (var c in trimmedMessage)
         {
-            if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?' or '"')
+            if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?' or '"' or ',')
             {
                 return packet;
             }
