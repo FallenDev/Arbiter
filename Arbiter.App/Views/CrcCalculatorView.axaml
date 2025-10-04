@@ -55,7 +55,7 @@
         <!-- Calculate Button -->
         <Button Grid.Row="1"
                 Command="{Binding CalculateCommand}"
-                Classes="outline"
+                Classes="outline play"
                 IsVisible="{Binding !IsCalculating}"
                 Margin="4">
             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -80,7 +80,7 @@
                          Value="{Binding ProgressPercentage, FallbackValue=50}" Margin="8,0,8,8"/>
             <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                     Command="{Binding CancelCalculationCommand}"
-                    Classes="destructive">
+                    Classes="outline stop">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Path Width="16" Height="16"
                           Stroke="{Binding $parent[Button].Foreground}"

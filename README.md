@@ -3,11 +3,7 @@
 Network Analyzer Tool for Dark Ages
 
 Written in .NET + [Avalonia](https://docs.avaloniaui.net/docs/welcome), using [MVVM](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) patterns.
-Custom UI styling based on [Godot's](https://godotengine.org/) UI look and feel.
-
-> [!WARNING]
-> This project is in early development!  
-> Some features may not work as expected or are subject to change.
+Custom UI styling based on [Godot's](https://godotengine.org/) look and feel.
 
 ---
 
@@ -40,7 +36,8 @@ It will automatically be redirected to Arbiter running locally on your machine.
 ### Starting a Trace
 
 Click on the ▶️ button within the `Trace` tab to begin capturing packets.
-All packets from all clients will be captured and displayed in the `Trace` tab.
+By default, all packets from all clients will be captured and displayed in the `Trace` tab.
+You can change this by selecting the desired client from the dropdown menu.
 
 You can filter the packets by clicking on the `Filter` button in the trace window.
 
@@ -66,8 +63,10 @@ By default, all packets will be assumed to be client packets (meaning they are s
 You can override this by prefixing the packet with `<` to indicate a server packet or `>` to indicate a client packet:
 
 ```
-> 43 03 00 0A 00 08 01      // this is a client packet
-< 32 00                     // this is a server packet
+# this is a client packet
+> 43 03 00 0A 00 08 01
+# this is a server packet
+< 32 00
 ```
 
 Each packet should be placed on its own line in the text box area and in the following format:
@@ -79,13 +78,15 @@ Each packet should be placed on its own line in the text box area and in the fol
 For example:
 
 ```
-43 03 00 0A 00 08 01        // click on tile 10, 8
+# click on tile 10, 8
+43 03 00 0A 00 08 01        
 ```
 
 Packets that you copy from traces using the right-click menu will be in the correct format already.
 **However**, you should ensure it is prefixed with the right direction (client or server) before sending it.
 
 You can also select the initial delay before sending begins, as well as the delay (rate) between each packet.
+Repeat can be done a certain number of times, or `-1` for infinite repeats.
 
 ### Inspecting Packets
 
@@ -99,6 +100,13 @@ If you wish to copy the entire structured object as JSON, you can click on the `
 
 You can view the decrypted packet payload in the `Hex` tab on the right-side panel.
 By selecting a range of bytes you can visualize various values in different formats.
+
+### CRC Calccator
+
+You can calculate the CRC-16 or CRC-32 checksum of text, binary, or file contents.
+Optionally, you can specify a compression algorithm to use for the input.
+
+This can be useful for verifying against the checksum of metadata files (which are compressed).
 
 ## Documentation 📚
 

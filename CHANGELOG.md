@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-10-03
+
+### Added
+
+- Dropdown for selecting a single character when tracing
+
+### Changed
+
+- Improved monster-click entity ID debug filtering
+- Colorize the `Start`/`Stop` trace buttons for better visibility
+- Colorize the `Send` button
+- Hide the `Start/Stop` trace buttons depending on the trace state
+
 ## [0.9.11] - 2025-10-02
 
 ### Added
