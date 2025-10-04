@@ -45,6 +45,30 @@
                                   Data="{StaticResource Talgonite.Icon.StopPlay}" />
                         </StackPanel>
                     </Button>
+                    <!-- Trace Client Dropdown -->
+                    <ComboBox ItemsSource="{Binding TraceClients}"
+                              SelectedItem="{Binding SelectedTraceClient}"
+                              IsEnabled="{Binding !IsRunning}"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              PlaceholderText="{Binding TraceClientName, FallbackValue=&lt;none&gt;}"
+                              Width="160">
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate DataType="vm:TraceClientViewModel">
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"
+                                           Padding="4"/>
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="vm:TraceClientViewModel">
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"
+                                           Padding="8,4"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </WrapPanel>
 
                 <!-- Center Buttons -->

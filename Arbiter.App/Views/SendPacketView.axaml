@@ -12,7 +12,9 @@
         <SolidColorBrush x:Key="Talgonite.Send.ValidationErrorForeground" Color="#ed6a5e"/>
     </UserControl.Resources>
     
-    <Panel Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Panel Background="{StaticResource Talgonite.Control.Background}"
+           HorizontalAlignment="Stretch"
+           VerticalAlignment="Stretch">
         <Grid RowDefinitions="Auto,*,Auto">
             <!-- Top Toolbar -->
             <Grid Row="0" ColumnDefinitions="Auto,*,Auto,Auto">
