@@ -36,6 +36,8 @@
             <SolidColorBrush x:Key="Talgonite.Button.HoverForeground" Color="#ffffff"/>
             <SolidColorBrush x:Key="Talgonite.Button.PressedForeground" Color="#82baf7"/>
             <SolidColorBrush x:Key="Talgonite.Button.DisabledForeground" Color="#4d535d"/>
+            <SolidColorBrush x:Key="Talgonite.Button.PlayForeground" Color="#83e67a"/>
+            <SolidColorBrush x:Key="Talgonite.Button.StopForeground" Color="#ed6a5e"/>
             <SolidColorBrush x:Key="Talgonite.Button.FocusBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.Button.PressedBorderBrush" Color="#81b8f5"/>
             

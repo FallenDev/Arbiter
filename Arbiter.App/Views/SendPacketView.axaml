@@ -159,7 +159,7 @@
                             ToolTip.Tip="Starts sending the packets provided in the text box."
                             IsVisible="{Binding !IsSending}"
                             HotKey="Shift+Enter"
-                            Classes="toolbar"
+                            Classes="toolbar play"
                             MinWidth="120" Height="40"
                             Padding="16,4"
                             Margin="2,0">
@@ -176,7 +176,7 @@
                     <!-- Cancel Button -->
                     <Button Command="{Binding CancelSendCommand}"
                             ToolTip.Tip="Stops sending any pending packets from the text box."
-                            Classes="toolbar destructive"
+                            Classes="toolbar stop"
                             IsVisible="{Binding IsSending, FallbackValue={x:False}}"
                             MinWidth="120" Height="40"
                             Padding="16,4"

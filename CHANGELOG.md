@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Improved monster-click entity ID debug filtering
+- Colorize the `Start`/`Stop` trace buttons for better visibility
+- Colorize the `Send` button
+- Hide the `Start/Stop` trace buttons depending on the trace state
 
 ## [0.9.11] - 2025-10-02
 
