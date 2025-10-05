@@ -29,7 +29,8 @@ public partial class ProxyViewModel
         _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugEmptyWorldMessageFilterName);
     }
 
-    private NetworkPacket? HandleEmptyWorldMessageMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private NetworkPacket? HandleEmptyWorldMessageMessage(ProxyConnection connection, NetworkPacket packet,
+        object? parameter)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
         if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)

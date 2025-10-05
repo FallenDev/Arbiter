@@ -25,11 +25,11 @@ public class GameClientService : IGameClientService
     private const IntPtr ServerFallbackIpPatchAddress = 0x4333C3;
     private const IntPtr ServerPortPatchAddress = 0x4333E3;
 
-    public async Task<int> LaunchLoopbackClient(string clientExecutablePath, int port = 2610)
+    public async Task<int> LaunchLoopbackClient(string clientExecutablePath, LaunchClientOptions options)
     {
-        if (port is < 1 or > ushort.MaxValue)
+        if (options.LocalPort is < 1 or > ushort.MaxValue)
         {
-            throw new ArgumentOutOfRangeException(nameof(port), "Port must be between 1 and 65535");
+            throw new ArgumentOutOfRangeException(nameof(options), "Port must be between 1 and 65535");
         }
 
         using var process = SuspendedProcess.Start(clientExecutablePath);
@@ -41,8 +41,18 @@ public class GameClientService : IGameClientService
         var hostnamePointer = allocator.AllocMemory(mem => { mem.WriteNullTerminated("localhost"); });
 
         ApplyMultipleInstancePatch(writer);
-        ApplySkipIntroVideoPatch(writer);
-        ApplyServerEndpointPatch(writer, hostnamePointer, port);
+
+        if (options.SkipIntroVideo)
+        {
+            ApplySkipIntroVideoPatch(writer);
+        }
+
+        if (options.SuppressLoginNotice)
+        {
+            ApplySuppressLoginNoticePatch(writer);
+        }
+
+        ApplyServerEndpointPatch(writer, hostnamePointer, options.LocalPort);
 
         return process.ProcessId;
     }
@@ -103,6 +113,11 @@ public class GameClientService : IGameClientService
         writer.Write((byte)0x90); // NOP
         writer.Write((byte)0x90); // NOP
         writer.Write((byte)0x90); // NOP
+    }
+
+    private static void ApplySuppressLoginNoticePatch(BinaryWriter writer)
+    {
+        // TODO: find out where this is and patch it
     }
 
     private static void ApplyServerEndpointPatch(BinaryWriter writer, IntPtr hostnamePointer, int port)

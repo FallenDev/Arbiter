@@ -33,6 +33,19 @@ public class ServerLoginNoticeMessage : ServerMessage
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
-        throw new NotImplementedException();
+        base.Serialize(builder);
+
+        if (string.IsNullOrEmpty(Content))
+        {
+            builder.AppendBoolean(false);
+            builder.AppendUInt32(Checksum ?? 0);
+            return;
+        }
+
+        builder.AppendBoolean(true);
+        var bytes = Encoding.UTF8.GetBytes(Content);
+        var compressed = Zlib.Compress(bytes);
+        builder.AppendUInt16((ushort)compressed.Length);
+        builder.AppendBytes(compressed);
     }
 }

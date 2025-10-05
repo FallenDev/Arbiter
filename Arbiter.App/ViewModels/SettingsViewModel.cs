@@ -25,6 +25,8 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ClientExecutablePath))]
+    [NotifyPropertyChangedFor(nameof(SkipIntroVideo))]
+    [NotifyPropertyChangedFor(nameof(SuppressLoginNotice))]
     [NotifyPropertyChangedFor(nameof(LocalPort))]
     [NotifyPropertyChangedFor(nameof(RemoteServerAddress))]
     [NotifyPropertyChangedFor(nameof(RemoteServerPort))]
@@ -67,6 +69,28 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             }
 
             Settings.ClientExecutablePath = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool SkipIntroVideo
+    {
+        get => Settings.SkipIntroVideo;
+        set
+        {
+            Settings.SkipIntroVideo = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+    
+    public bool SuppressLoginNotice
+    {
+        get => Settings.SuppressLoginNotice;
+        set
+        {
+            Settings.SuppressLoginNotice = value;
             OnPropertyChanged();
             HasChanges = true;
         }

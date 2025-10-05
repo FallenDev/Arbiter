@@ -125,6 +125,7 @@ public partial class TraceViewModel : ViewModelBase
 
         Dispatcher.UIThread.Post(() =>
         {
+            // Remove the client from the list
             var client = TraceClients.FirstOrDefault(c =>
                 string.Equals(c.Name, e.Connection.Name, StringComparison.OrdinalIgnoreCase));
 
@@ -133,7 +134,11 @@ public partial class TraceViewModel : ViewModelBase
                 TraceClients.Remove(client);
             }
 
-            // SelectedTraceClient = TraceClients.FirstOrDefault();
+            // If not running, select "all clients"
+            if (!IsRunning)
+            {
+                SelectedTraceClient = TraceClients.FirstOrDefault();
+            }
         }, DispatcherPriority.Background);
     }
 

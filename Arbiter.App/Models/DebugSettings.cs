@@ -18,9 +18,10 @@ public class DebugSettings : ICloneable
     public bool EnableZoomedOutMap { get; set; }
     public bool IgnoreEmptyMessages { get; set; }
 
-    public bool CheckEnabled() => ShowDialogId || ShowNpcId || ShowMonsterId || ShowMonsterClickId ||
-                                  ShowHiddenPlayers || ShowPlayerNames || UseClassicEffects || DisableBlind ||
-                                  EnableTabMap || EnableZoomedOutMap || DisableWeatherEffects || DisableDarkness || IgnoreEmptyMessages;
+    public bool CheckEnabled() => ShowDialogId || ShowNpcId || ShowMonsterId ||
+                                  ShowMonsterClickId || ShowHiddenPlayers || ShowPlayerNames || UseClassicEffects ||
+                                  DisableBlind || EnableTabMap || EnableZoomedOutMap || DisableWeatherEffects ||
+                                  DisableDarkness || IgnoreEmptyMessages;
 
     public object Clone() => new DebugSettings
     {

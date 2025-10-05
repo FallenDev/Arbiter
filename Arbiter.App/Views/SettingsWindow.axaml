@@ -50,6 +50,22 @@
                             </Button>
                         </TextBox.InnerRightContent>
                     </TextBox>
+                    
+                    <!-- Options -->
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="4">
+                        <!-- Skip Intro Video  -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Skip Intro Video"
+                               ToolTip.Tip="Bypasses the intro video when starting the client."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding SkipIntroVideo}"/>
+                        <!-- Suppress Login Notice -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Content="Suppress Login Notice"
+                               ToolTip.Tip="Prevents the login notification from being displayed."/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding SuppressLoginNotice}"/>
+                    </Grid>
                 </StackPanel>
             </TabItem>
             

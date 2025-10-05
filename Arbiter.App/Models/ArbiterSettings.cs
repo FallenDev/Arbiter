@@ -8,6 +8,9 @@ public class ArbiterSettings : ICloneable
         Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "KRU", "Dark Ages", "Darkages.exe");
 
     public string ClientExecutablePath { get; set; } = DefaultPath;
+    public bool SkipIntroVideo { get; set; } = true;
+    public bool SuppressLoginNotice { get; set; } = true;
+    
     public int LocalPort { get; set; } = 2610;
 
     public string RemoteServerAddress { get; set; } = "da0.kru.com";
@@ -27,6 +30,8 @@ public class ArbiterSettings : ICloneable
     public object Clone() => new ArbiterSettings
     {
         ClientExecutablePath = ClientExecutablePath,
+        SkipIntroVideo = SkipIntroVideo,
+        SuppressLoginNotice = SuppressLoginNotice,
         LocalPort = LocalPort,
         RemoteServerAddress = RemoteServerAddress,
         RemoteServerPort = RemoteServerPort,
