@@ -125,14 +125,8 @@ public partial class MainWindowViewModel : ViewModelBase
             Inspector.SelectedPacket = null;
             return;
         }
-
-        var packet = viewModel.FilterAction switch
-        {
-            NetworkFilterAction.Replace => viewModel.FilteredPacket ?? viewModel.DecryptedPacket,
-            _ => viewModel.DecryptedPacket
-        };
-
-        SelectedRawHex = new RawHexViewModel(packet);
+        
+        SelectedRawHex = new RawHexViewModel(viewModel);
         SelectedRawHex.ClearSelection();
 
         Inspector.SelectedPacket = viewModel;

@@ -136,19 +136,41 @@
         <Border Grid.Row="2" Classes="divider-h" Margin="0,4"
                 IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"/>
         
-        <!-- Sections -->
-        <ScrollViewer Grid.Row="3"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto"
-                      IsVisible="{Binding !HasError}">
-            <ItemsControl ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
-                <ItemsControl.DataTemplates>
-                    <DataTemplate DataType="vm:InspectorSectionViewModel">
-                        <v:InspectorSectionView/>
-                    </DataTemplate>
-                </ItemsControl.DataTemplates>
-            </ItemsControl>
-        </ScrollViewer>
+        <Grid Grid.Row="3" RowDefinitions="Auto,*"
+              IsVisible="{Binding !HasError}">
+            <!-- Filtered / Original Toggle -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="8,4"
+                        IsVisible="{Binding SelectedPacket.WasReplaced, FallbackValue={x:False}}">
+                <RadioButton Classes="segment segment-left"
+                             IsChecked="{Binding UseFiltered}">
+                    <TextBlock Text="Filtered"
+                               FontSize="16"
+                               VerticalAlignment="Center"/>
+                </RadioButton>
+                <RadioButton Classes="segment segment-right"
+                             IsChecked="{Binding !UseFiltered}">
+                    <TextBlock Text="Original"
+                               FontSize="16"
+                               VerticalAlignment="Center"/>
+                </RadioButton>
+            </StackPanel>
+            
+            <!-- Sections -->
+            <ScrollViewer Grid.Row="1"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="vm:InspectorSectionViewModel">
+                            <v:InspectorSectionView/>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
         
         <!-- Exception -->
         <ScrollViewer Grid.Row="3"
