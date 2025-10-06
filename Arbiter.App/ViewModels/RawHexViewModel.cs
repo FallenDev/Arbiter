@@ -148,7 +148,7 @@ public partial class RawHexViewModel : ViewModelBase
         DecodedText = GetAsciiText();
 
         Command = packet.Command;
-        Sequence = packet switch
+        Sequence = _viewModel.EncryptedPacket switch
         {
             ClientPacket clientPacket => clientPacket.Sequence,
             ServerPacket serverPacket => serverPacket.Sequence,
