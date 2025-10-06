@@ -171,11 +171,13 @@ public partial class ProxyServer : IDisposable
 
     private void OnRecv(object? sender, NetworkTransferEventArgs e) =>
         PacketReceived?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Encrypted, e.Decrypted));
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Encrypted, e.Decrypted,
+                e.FilterResult));
 
     private void OnSend(object? sender, NetworkTransferEventArgs e) =>
         PacketSent?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Decrypted, e.Decrypted));
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Decrypted, e.Decrypted,
+                e.FilterResult));
 
     private void OnQueued(object? sender, NetworkPacketEventArgs e) =>
         PacketQueued?.Invoke(this, new ProxyConnectionDataEventArgs((sender as ProxyConnection)!,

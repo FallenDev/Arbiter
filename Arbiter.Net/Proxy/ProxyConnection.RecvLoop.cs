@@ -82,7 +82,8 @@ public partial class ProxyConnection
 
                     // Notify that we have received a packet
                     PacketReceived?.Invoke(this,
-                        new NetworkTransferEventArgs(NetworkDirection.Receive, encryptedPacket, decrypted));
+                        new NetworkTransferEventArgs(NetworkDirection.Receive, encryptedPacket, decrypted,
+                            filterResult));
 
                     // If the packet was blocked, do not send it to the other end
                     if (filterResult.Action == NetworkFilterAction.Block)

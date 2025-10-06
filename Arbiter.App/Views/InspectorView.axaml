@@ -8,16 +8,19 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
              x:Class="Arbiter.App.Views.InspectorView"
              x:DataType="vm:InspectorViewModel">
-    
     <Design.DataContext>
         <vm:DesignInspectorViewModel/>
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,Auto,*"
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.Inspector.ReplaceInfoBrush" Color="#82baf7"/>
+    </UserControl.Resources>
+    
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
           Background="{StaticResource Talgonite.Control.Background}">
         
         <!-- No Selection Placeholder -->
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    Text="No packet selected"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -26,7 +29,7 @@
                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}"/>
         
         <!-- Empty Placeholder -->
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    Text="No properties to show"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -82,25 +85,95 @@
             </WrapPanel>
         </Grid>
         
-        <Border Grid.Row="1" Classes="divider-h" Margin="0,4"
+        <!-- Blocked Packet Indicator -->
+        <Border Grid.Row="1" Background="{StaticResource Talgonite.CheckBox.Background}"
+                BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                BorderThickness="2"
+                CornerRadius="4"
+                Margin="8,4"
+                Padding="16,8"
+                IsVisible="{Binding SelectedPacket.WasBlocked, FallbackValue={x:False}}">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Path Grid.Column="0" Width="16" Height="16"
+                      VerticalAlignment="Center"
+                      Stroke="{Binding #BlockedInfoTextBlock.Foreground}"
+                      Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                <TextBlock Grid.Column="1" Name="BlockedInfoTextBlock"
+                           Text="This packet was blocked by a filter."
+                           TextWrapping="Wrap"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="16"
+                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+        
+        <!-- Replaced Packet Indicator -->
+        <Border Grid.Row="1" Background="{StaticResource Talgonite.CheckBox.Background}"
+                BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                BorderThickness="2"
+                CornerRadius="4"
+                Margin="8,4"
+                Padding="16,8"
+                IsVisible="{Binding SelectedPacket.WasReplaced, FallbackValue={x:False}}">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                <Path Grid.Column="0" Width="16" Height="16"
+                      VerticalAlignment="Center"
+                      Stroke="{Binding #ReplacedInfoTextBlock.Foreground}"
+                      Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
+                <TextBlock Grid.Column="1" Name="ReplacedInfoTextBlock"
+                           Text="This packet was replaced by a filter."
+                           TextWrapping="Wrap"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="16"
+                           Foreground="{StaticResource Talgonite.Inspector.ReplaceInfoBrush}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+        
+        <Border Grid.Row="2" Classes="divider-h" Margin="0,4"
                 IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"/>
         
-        <!-- Sections -->
-        <ScrollViewer Grid.Row="2"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto"
-                      IsVisible="{Binding !HasError}">
-            <ItemsControl ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
-                <ItemsControl.DataTemplates>
-                    <DataTemplate DataType="vm:InspectorSectionViewModel">
-                        <v:InspectorSectionView/>
-                    </DataTemplate>
-                </ItemsControl.DataTemplates>
-            </ItemsControl>
-        </ScrollViewer>
+        <Grid Grid.Row="3" RowDefinitions="Auto,*"
+              IsVisible="{Binding !HasError}">
+            <!-- Filtered / Original Toggle -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="8,4"
+                        IsVisible="{Binding SelectedPacket.WasReplaced, FallbackValue={x:False}}">
+                <RadioButton Classes="segment segment-left"
+                             IsChecked="{Binding UseFiltered}">
+                    <TextBlock Text="Filtered"
+                               FontSize="16"
+                               VerticalAlignment="Center"/>
+                </RadioButton>
+                <RadioButton Classes="segment segment-right"
+                             IsChecked="{Binding !UseFiltered}">
+                    <TextBlock Text="Original"
+                               FontSize="16"
+                               VerticalAlignment="Center"/>
+                </RadioButton>
+            </StackPanel>
+            
+            <!-- Sections -->
+            <ScrollViewer Grid.Row="1"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding InspectedPacket.Sections, FallbackValue={x:Null}}">
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate DataType="vm:InspectorSectionViewModel">
+                            <v:InspectorSectionView/>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
         
         <!-- Exception -->
-        <ScrollViewer Grid.Row="2"
+        <ScrollViewer Grid.Row="3"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       IsVisible="{Binding HasError}">

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
-using Arbiter.Net;
+using Arbiter.App.ViewModels.Tracing;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia;
@@ -15,8 +15,11 @@ namespace Arbiter.App.ViewModels;
 
 public partial class RawHexViewModel : ViewModelBase
 {
-    private readonly byte[] _payload;
-    
+    private readonly TracePacketViewModel _viewModel;
+    private readonly byte[] _decryptedPayload;
+    private readonly byte[] _filteredPayload;
+
+    private byte[] _payload;
     private bool _showValuesAsHex;
     private int _startIndex;
     private int _endIndex;
@@ -44,7 +47,15 @@ public partial class RawHexViewModel : ViewModelBase
     [ObservableProperty] private string? _formattedUnsignedLong;
     [ObservableProperty] private string? _formattedIpAddress;
     [ObservableProperty] private string? _formattedBitFlags;
-    
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(ShowFilterToggle))]
+    private bool _useFiltered = true;
+
+    public bool ShowFilterToggle => _viewModel is { WasReplaced: true, FilteredPacket: not null };
+
+    public bool WasReplaced => _viewModel.WasReplaced;
+    public bool WasBlocked => _viewModel.WasBlocked;
+
     public bool ShowValuesAsHex
     {
         get => _showValuesAsHex;
@@ -87,7 +98,7 @@ public partial class RawHexViewModel : ViewModelBase
             }
         }
     }
-    
+
     public int SelectedByteCount => Math.Abs(_endIndex - _startIndex);
 
     public int TextSelectionStart
@@ -114,12 +125,28 @@ public partial class RawHexViewModel : ViewModelBase
         }
     }
 
-    public RawHexViewModel(NetworkPacket packet)
+    partial void OnUseFilteredChanged(bool value) => RebuildHexView();
+
+    public RawHexViewModel(TracePacketViewModel viewModel)
     {
-        _payload = packet.Data.ToArray();
+        _viewModel = viewModel;
+        _decryptedPayload = viewModel.DecryptedPacket.Data.ToArray();
+        _filteredPayload = viewModel.FilteredPacket?.Data.ToArray() ?? [];
+
+        RebuildHexView();
+    }
+
+    private void RebuildHexView()
+    {
+        var packet = WasReplaced && UseFiltered && _viewModel.FilteredPacket is not null
+            ? _viewModel.FilteredPacket
+            : _viewModel.DecryptedPacket;
+
+        _payload = WasReplaced && UseFiltered ? _filteredPayload : _decryptedPayload;
+
         RawHex = string.Join(" ", _payload.Select(b => b.ToString("X2")));
         DecodedText = GetAsciiText();
-        
+
         Command = packet.Command;
         Sequence = packet switch
         {
@@ -127,7 +154,7 @@ public partial class RawHexViewModel : ViewModelBase
             ServerPacket serverPacket => serverPacket.Sequence,
             _ => null
         };
-        
+
         RefreshValues();
     }
 
@@ -139,7 +166,7 @@ public partial class RawHexViewModel : ViewModelBase
         }
 
         _isSyncing = true;
-        
+
         try
         {
             var textStart = TextSelectionStart;
@@ -248,7 +275,7 @@ public partial class RawHexViewModel : ViewModelBase
             {
                 return string.Empty;
             }
-            
+
             for (var i = 0; i < decodedLength; i++)
             {
                 buffer[i] = buffer[i] switch
@@ -281,7 +308,7 @@ public partial class RawHexViewModel : ViewModelBase
         HexSelectionStart = 0;
         HexSelectionEnd = 0;
     }
-    
+
     private bool CanCopyToClipboard(string fieldName)
     {
         return fieldName switch
@@ -301,7 +328,7 @@ public partial class RawHexViewModel : ViewModelBase
             _ => false
         };
     }
-    
+
     [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
     private async Task CopyToClipboard(string fieldName)
     {
@@ -338,7 +365,8 @@ public partial class RawHexViewModel : ViewModelBase
         }
     }
 
-    private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ', int maxBytes = 4)
+    private static string? FormatBits(ReadOnlySpan<byte> buffer, int groupBits = 8, char groupSeparator = ' ',
+        int maxBytes = 4)
     {
         if (buffer.Length == 0)
         {
@@ -384,7 +412,7 @@ public partial class RawHexViewModel : ViewModelBase
         {
             return null;
         }
-        
+
         ulong value = 0;
         for (var i = 0; i < numberOfBytes; i++)
         {
@@ -400,7 +428,7 @@ public partial class RawHexViewModel : ViewModelBase
                 _ when t == typeof(short) || t == typeof(ushort) => $"0x{value:X4}",
                 _ when t == typeof(int) || t == typeof(uint) => $"0x{value:X8}",
                 _ when t == typeof(long) || t == typeof(ulong) => $"0x{value:X16}",
-                _ => $"0x{value:X}" 
+                _ => $"0x{value:X}"
             };
         }
 

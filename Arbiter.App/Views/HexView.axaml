@@ -17,7 +17,7 @@
         <SolidColorBrush x:Key="Talgonite.HexView.LabelBackground" Color="#262b33"/>
         <SolidColorBrush x:Key="Talgonite.HexView.LabelBorderBrush" Color="#373d49"/>
     </UserControl.Resources>
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,*,Auto,Auto">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,*,Auto,Auto">
         <Border Grid.Row="0" Grid.RowSpan="8"
                 Background="{StaticResource Talgonite.Control.Background}"
                 IsHitTestVisible="False"
@@ -69,8 +69,28 @@
         
         <Border Grid.Row="1" Classes="divider-h" Margin="0,2,0,4"/>
         
+        <!-- Filtered / Original Toggle -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="8,4,8,0"
+                    IsVisible="{Binding WasReplaced, FallbackValue={x:False}}">
+            <RadioButton Classes="segment segment-left"
+                         IsChecked="{Binding UseFiltered}">
+                <TextBlock Text="Filtered"
+                           FontSize="16"
+                           VerticalAlignment="Center"/>
+            </RadioButton>
+            <RadioButton Classes="segment segment-right"
+                         IsChecked="{Binding !UseFiltered}">
+                <TextBlock Text="Original"
+                           FontSize="16"
+                           VerticalAlignment="Center"/>
+            </RadioButton>
+        </StackPanel>
+        
         <!-- Payload View -->
-        <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+        <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
             <Label Grid.Column="0"
                    Content="Payload"
                    ToolTip.Tip="Decrypted payload bytes of the packet (as hex)."
@@ -86,7 +106,7 @@
         </Grid>
         
         <TextBox Name="HexTextBox"
-                 Grid.Row="3"
+                 Grid.Row="4"
                  Text="{Binding RawHex, Mode=OneWay}"
                  SelectionStart="{Binding HexSelectionStart, Mode=OneWay}"
                  SelectionEnd="{Binding HexSelectionEnd, Mode=OneWay}"
@@ -103,12 +123,12 @@
         </TextBox>
         
         <!-- ASCII Text View -->
-        <Label Grid.Row="4"
+        <Label Grid.Row="5"
                Content="Text"
                ToolTip.Tip="Decoded ASCII text of the selected bytes."
                Margin="2,4"/>
         <TextBox Name="AsciiTextBox"
-                 Grid.Row="5"
+                 Grid.Row="6"
                  Text="{Binding DecodedText, Mode=OneWay}"
                  SelectionStart="{Binding TextSelectionStart, Mode=TwoWay}"
                  SelectionEnd="{Binding TextSelectionEnd, Mode=TwoWay}"
@@ -125,7 +145,7 @@
         </TextBox>
         
         <!-- Integer Values View -->
-        <UniformGrid Grid.Row="6" Rows="6" Columns="2">
+        <UniformGrid Grid.Row="7" Rows="6" Columns="2">
             <Label Content="Values"
                    ToolTip.Tip="Scalar values of the selected bytes, as big endian."
                    Margin="2,4"/>

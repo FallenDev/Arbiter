@@ -60,6 +60,17 @@ You can also hold down `Shift` while clicking `Load` to append the trace to the 
 You can send both client and server packets by using the `Send` window.
 By default, all packets will be assumed to be client packets (meaning they are sent to the server as if the client sent them).
 
+Each packet should be placed on its own line in the text box area and in the following format:
+
+#### Syntax
+
+```
+[DIRECTION] <COMMAND> <DATA...>
+```
+
+Packets that you copy from traces using the right-click menu will be in the correct format already.
+**However**, you should ensure it is prefixed with the right direction (client or server) before sending it.
+
 You can override this by prefixing the packet with `<` to indicate a server packet or `>` to indicate a client packet:
 
 ```
@@ -69,12 +80,6 @@ You can override this by prefixing the packet with `<` to indicate a server pack
 < 32 00
 ```
 
-Each packet should be placed on its own line in the text box area and in the following format:
-
-```
-[COMMAND] [DATA...]
-```
-
 For example:
 
 ```
@@ -82,11 +87,35 @@ For example:
 43 03 00 0A 00 08 01        
 ```
 
-Packets that you copy from traces using the right-click menu will be in the correct format already.
-**However**, you should ensure it is prefixed with the right direction (client or server) before sending it.
+#### Wait Delays
 
-You can also select the initial delay before sending begins, as well as the delay (rate) between each packet.
-Repeat can be done a certain number of times, or `-1` for infinite repeats.
+You can specify `@wait <milliseconds>` between certain packets if you want to introduce a variable delay.
+This can be useful for certain dialog interactions or other timing-sensitive packet flows.
+
+For example:
+
+```
+# click on entity 0xBEEF
+43 01 00 00 BE EF
+@wait 2000   
+// next packets...
+```
+
+This will wait 2 seconds before sending the next packets. This is independent of the `Delay` and `Interval` settings.
+
+#### Comments
+
+You can use the `#` or `//` prefix to add a comment to the start of the packet line. These will not be sent!
+
+#### Initial Delay, Interval, and Repeat
+
+The initial `Delay` can be set, which determines how much time to wait before sending the first packet.
+This is only done **once** when sending is started, regardless of repeat behavior. Think of it like a countdown timer.
+
+The `Interval` determines the time between sending each packet. You can think of it like the tempo or send rate.
+
+The `Repeat` determines how many times to send the packets. All packets in the send window will be sent again, in order.
+You can use a specific number of times to repeat, or `-1` for infinite repeats.
 
 ### Inspecting Packets
 

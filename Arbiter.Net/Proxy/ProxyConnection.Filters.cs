@@ -85,8 +85,9 @@ public partial class ProxyConnection
 
             result.Output = output;
 
-            // If the input does not match the output, then mark as replaced
-            if (result.Output is not null && !ReferenceEquals(result.Input, result.Output))
+            // If the input does not match the output byte-for-byte, then mark as replaced
+            if (result.Output is not null && !ReferenceEquals(result.Input, result.Output) &&
+                (result.Input.Count() != result.Output.Count() || !result.Input.SequenceEqual(result.Output)))
             {
                 result.Action = NetworkFilterAction.Replace;
             }

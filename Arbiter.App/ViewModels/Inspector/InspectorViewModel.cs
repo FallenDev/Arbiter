@@ -3,8 +3,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
+using Arbiter.App.ViewModels.Tracing;
 using Arbiter.Json.Converters;
-using Arbiter.Net;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -24,7 +24,7 @@ public partial class InspectorViewModel : ViewModelBase
     
     private readonly ILogger<InspectorViewModel> _logger;
     private readonly InspectorViewModelFactory _factory;
-    private NetworkPacket? _selectedPacket;
+    private TracePacketViewModel? _selectedPacket;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
@@ -35,21 +35,32 @@ public partial class InspectorViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasError))]
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
     private InspectorExceptionViewModel? _inspectorException;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowFilterToggle))]
+    private bool _useFiltered = true;
+
+    public bool ShowFilterToggle => SelectedPacket is { WasReplaced: true, FilteredPacket: not null };
     
     public bool IsEmpty => InspectedPacket is not null && InspectedPacket.Sections.Count == 0 && !HasError;
     public bool HasError => InspectorException is not null;
     
-    public NetworkPacket? SelectedPacket
+    public TracePacketViewModel? SelectedPacket
     {
         get => _selectedPacket;
         set
         {
             if (SetProperty(ref _selectedPacket, value))
             {
+                // Reset to filtered when a new packet is selected
+                UseFiltered = value is { WasReplaced: true, FilteredPacket: not null };
                 OnPacketSelected(value);
+                OnPropertyChanged(nameof(ShowFilterToggle));
             }
         }
     }
+
+    partial void OnUseFilteredChanged(bool value) => RebuildInspectorView(SelectedPacket);
 
     public InspectorViewModel(ILogger<InspectorViewModel> logger, InspectorViewModelFactory factory)
     {
@@ -57,15 +68,21 @@ public partial class InspectorViewModel : ViewModelBase
         _factory = factory;
     }
 
-    private void OnPacketSelected(NetworkPacket? packet)
+    private void OnPacketSelected(TracePacketViewModel? viewModel) => RebuildInspectorView(viewModel);
+
+    private void RebuildInspectorView(TracePacketViewModel? viewModel)
     {
-        if (packet is null)
+        if (viewModel is null)
         {
             InspectedPacket = null;
             InspectorException = null;
             return;
         }
-
+        
+        var packet = UseFiltered && viewModel is { WasReplaced: true, FilteredPacket: not null }
+            ? viewModel.FilteredPacket
+            : viewModel.DecryptedPacket;
+        
         var (vm, exception) = _factory.Create(packet);
         InspectedPacket = vm;
         

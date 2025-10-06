@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Support for `@wait <milliseconds>` in `Send` packet syntax
+- Save filter action / result on trace packet JSON files
+- Inspector hint for packets blocked/replaced by filter rules
+- Inspector view toggle for original/filtered packets
+
+### Changed
+
+- Debounce `Send` input validation for performance
+- Pass `FilterResult` up through proxy layer events
+- Grey out blocked filtered packets in trace view
+- Inspector uses filtered packets as default payload (when applicable)
+- Raw hex view uses filtered packets as default payload
+
 ## [1.1.0] - 2025-10-06
 
 ### Added
