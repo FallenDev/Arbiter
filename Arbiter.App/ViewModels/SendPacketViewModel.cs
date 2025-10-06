@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
+using Arbiter.App.Threading;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net;
 using Arbiter.Net.Client;
@@ -24,17 +25,40 @@ namespace Arbiter.App.ViewModels;
 
 public partial class SendPacketViewModel : ViewModelBase
 {
+    private readonly struct SendItem
+    {
+        public SendItem(NetworkPacket packet)
+        {
+            Packet = packet;
+            Wait = null;
+        }
+
+        public SendItem(TimeSpan wait)
+        {
+            Wait = wait;
+            Packet = null;
+        }
+
+        public NetworkPacket? Packet { get; }
+        public TimeSpan? Wait { get; }
+        public bool IsWait => Wait.HasValue;
+    }
+
     private static readonly char[] NewLineCharacters = ['\r', '\n'];
 
     private static readonly Regex PacketLineRegex =
         new(@"^(<|>)?\s*([0-9a-f]{1,2})(?:\s+([0-9a-f]{1,2}))*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private static readonly Regex WaitLineRegex =
+        new(@"^@wait\s+(\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
     private readonly ILogger<SendPacketViewModel> _logger;
     private readonly ClientManagerViewModel _clientManager;
 
-    private readonly List<NetworkPacket> _parsedPackets = [];
+    private readonly List<SendItem> _parsedItems = [];
     private CancellationTokenSource? _cancellationTokenSource;
-    
+    private readonly Debouncer _validationDebouncer = new(TimeSpan.FromMilliseconds(300), Dispatcher.UIThread);
+
     private string _inputText = string.Empty;
 
     public string InputText
@@ -46,24 +70,19 @@ public partial class SendPacketViewModel : ViewModelBase
             {
                 return;
             }
+
             OnPropertyChanged(nameof(IsEmpty));
-            
-            var lines = value.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
-            ValidationError = !TryParsePackets(lines, out var validationError) ? validationError : null;
-            ValidationErrorOpacity = !string.IsNullOrWhiteSpace(ValidationError) ? 1 : 0;
-            
+
+            // Debounce validation when the input changes
+            _validationDebouncer.Execute(PerformValidation);
+
             StartSendCommand.NotifyCanExecuteChanged();
             ClearAllCommand.NotifyCanExecuteChanged();
-
-            if (validationError is not null)
-            {
-                throw new ValidationException(validationError);
-            }
         }
     }
-    
+
     public bool IsEmpty => string.IsNullOrWhiteSpace(InputText);
-    
+
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private bool _hasClients;
 
@@ -143,7 +162,31 @@ public partial class SendPacketViewModel : ViewModelBase
         }
     }
 
-    private bool CanSend() => !IsSending && HasPackets && SelectedClient is not null;
+
+    private void PerformValidation()
+    {
+        var lines = InputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
+        var success = TryParseSendItems(lines, out var items, out var validationError);
+        ValidationError = success ? null : validationError;
+        ValidationErrorOpacity = !string.IsNullOrWhiteSpace(ValidationError) ? 1 : 0;
+        HasPackets = success && items.Any(x => x.Packet is not null);
+
+        StartSendCommand.NotifyCanExecuteChanged();
+
+        if (validationError is not null)
+        {
+            throw new ValidationException(validationError);
+        }
+    }
+
+    private bool CanSend() => !IsSending && HasPackets && SelectedClient is not null && HasValidInput();
+
+    private bool HasValidInput()
+    {
+        // For immediate validation check (used by send command), parse without debouncing
+        var lines = InputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
+        return TryParseSendItems(lines, out _, out _);
+    }
 
     [RelayCommand(CanExecute = nameof(CanSend))]
     public void StartSend()
@@ -152,6 +195,22 @@ public partial class SendPacketViewModel : ViewModelBase
         {
             return;
         }
+
+        // Perform immediate validation before sending
+        var lines = InputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
+        if (!TryParseSendItems(lines, out var items, out var validationError))
+        {
+            // Update UI to show the validation error immediately
+            ValidationError = validationError;
+            ValidationErrorOpacity = 1;
+            StartSendCommand.NotifyCanExecuteChanged();
+            return;
+        }
+
+        // Commit parsed items for sending
+        _parsedItems.Clear();
+        _parsedItems.AddRange(items);
+        HasPackets = _parsedItems.Any(x => x.Packet is not null);
 
         IsSending = true;
 
@@ -188,18 +247,18 @@ public partial class SendPacketViewModel : ViewModelBase
     {
         // Add 1 since we are technically sending N+1 times
         int? repeatCount = RepeatEnabled
-            ? RepeatCount >= 0 ? RepeatCount+1 : null
+            ? RepeatCount >= 0 ? RepeatCount + 1 : null
             : 0;
-        
-        var packetsToSend = _parsedPackets.ToList();
+
+        var sendItems = _parsedItems.ToList();
 
         var initialDelay = SelectedDelay;
         var interval = SelectedRate;
-        
+
         try
         {
             var client = SelectedClient;
-            if (client is null || packetsToSend.Count == 0)
+            if (client is null || sendItems.Count == 0)
             {
                 return;
             }
@@ -211,11 +270,30 @@ public partial class SendPacketViewModel : ViewModelBase
 
             do
             {
-                for (var i = 0; i < packetsToSend.Count; i++)
+                for (var i = 0; i < sendItems.Count; i++)
                 {
                     token.ThrowIfCancellationRequested();
+                    var item = sendItems[i];
 
-                    var packet = packetsToSend[i];
+                    // Handle wait delays
+                    if (item.IsWait)
+                    {
+                        var wait = item.Wait!.Value;
+                        if (wait > TimeSpan.Zero)
+                        {
+                            await Task.Delay(wait, token).ConfigureAwait(false);
+                        }
+
+                        // Do not apply interval after explicit wait line
+                        continue;
+                    }
+
+                    if (item.Packet is not { } packet)
+                    {
+                        continue;
+                    }
+
+                    // Handle the packet and send to the client
                     var queued = client.EnqueuePacket(packet);
                     if (!queued)
                     {
@@ -223,7 +301,7 @@ public partial class SendPacketViewModel : ViewModelBase
                             client.Name ?? client.Id.ToString(), i + 1);
                     }
 
-                    var hasMore = i < packetsToSend.Count - 1;
+                    var hasMore = i < sendItems.Count - 1;
                     if (interval > TimeSpan.Zero && (hasMore || repeatCount is not 0))
                     {
                         await Task.Delay(interval, token).ConfigureAwait(false);
@@ -238,8 +316,7 @@ public partial class SendPacketViewModel : ViewModelBase
 
                 // Add a small delay between iterations to prevent busy loop
                 await Task.Delay(1, token).ConfigureAwait(false);
-            }
-            while (!token.IsCancellationRequested && repeatCount is not 0);
+            } while (!token.IsCancellationRequested && repeatCount is not 0);
         }
         catch (OperationCanceledException)
         {
@@ -259,12 +336,11 @@ public partial class SendPacketViewModel : ViewModelBase
         }
     }
 
-    private bool TryParsePackets(IReadOnlyList<string> lines, out string? validationError)
+    // Pure parsing routine: parse lines to send items without mutating state
+    private bool TryParseSendItems(IReadOnlyList<string> lines, out List<SendItem> items, out string? validationError)
     {
         validationError = null;
-
-        _parsedPackets.Clear();
-        HasPackets = false;
+        items = new List<SendItem>();
 
         for (var i = 0; i < lines.Count; i++)
         {
@@ -274,16 +350,53 @@ public partial class SendPacketViewModel : ViewModelBase
                 continue;
             }
 
+            var trimmed = line.Trim();
+
             // Allow comments
-            if (line.StartsWith('#') || line.StartsWith("//"))
+            if (trimmed.StartsWith('#') || trimmed.StartsWith("//"))
             {
                 continue;
             }
 
-            var match = PacketLineRegex.Match(line.Trim());
+            // Empty command
+            if (trimmed == "@")
+            {
+                continue;
+            }
+
+            var waitMatch = WaitLineRegex.Match(trimmed);
+            if (waitMatch.Success)
+            {
+                if (!int.TryParse(waitMatch.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ms))
+                {
+                    validationError = $"Invalid wait value on line {i + 1}";
+                    items = [];
+                    return false;
+                }
+
+                if (ms <= 0)
+                {
+                    validationError = $"Wait value must be a positive, non-zero integer on line {i + 1}";
+                    items = [];
+                    return false;
+                }
+
+                items.Add(new SendItem(TimeSpan.FromMilliseconds(ms)));
+                continue;
+            }
+
+            if (trimmed.StartsWith('@'))
+            {
+                validationError = $"Invalid command syntax on line {i + 1}";
+                items = [];
+                return false;
+            }
+
+            var match = PacketLineRegex.Match(trimmed);
             if (!match.Success)
             {
                 validationError = $"Invalid packet format on line {i + 1}";
+                items = [];
                 return false;
             }
 
@@ -291,8 +404,7 @@ public partial class SendPacketViewModel : ViewModelBase
             {
                 var caret = match.Groups[1].Value;
                 var command = byte.Parse(match.Groups[2].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                var data = match.Groups[3].Captures.Select(x =>
-                    byte.Parse(x.Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture));
+                var data = match.Groups[3].Captures.Select(x => byte.Parse(x.Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture));
 
                 NetworkPacket packet = caret switch
                 {
@@ -300,17 +412,17 @@ public partial class SendPacketViewModel : ViewModelBase
                     _ => new ClientPacket(command, data)
                 };
 
-                _parsedPackets.Add(packet);
+                items.Add(new SendItem(packet));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error parsing packet on line {Line}", i + 1);
                 validationError = $"Invalid packet on line {i + 1}";
+                items = [];
                 return false;
             }
         }
 
-        HasPackets = _parsedPackets.Count > 0;
         return true;
     }
 

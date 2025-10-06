@@ -196,30 +196,41 @@
             </Grid>
             
             <!-- Input Area -->
-            <TextBox Grid.Row="1"
-                     Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
-                     SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
-                     FontSize="16"
-                     Classes="editor"
-                     AcceptsTab="False"
-                     IsEnabled="{Binding !IsSending}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <TextBox.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Copy Selection" Command="{Binding CopyToClipboardCommand}" CommandParameter="selection"/>
-                        <MenuItem Header="Copy All" Command="{Binding CopyToClipboardCommand}" CommandParameter="all"/>
-                        <Separator/>
-                        <MenuItem Header="Paste" Command="{Binding PasteFromClipboardCommand}"/>
-                        <Separator/>
-                        <MenuItem Header="Clear All" Command="{Binding ClearAllCommand}"/>
-                    </ContextMenu>
-                </TextBox.ContextMenu>
-            </TextBox>
+            <Grid Grid.Row="1">
+                <TextBox
+                        Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                        SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
+                        FontSize="16"
+                        Classes="editor no-focus-outline"
+                        AcceptsTab="False"
+                        IsEnabled="{Binding !IsSending}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy Selection" Command="{Binding CopyToClipboardCommand}" CommandParameter="selection"/>
+                            <MenuItem Header="Copy All" Command="{Binding CopyToClipboardCommand}" CommandParameter="all"/>
+                            <Separator/>
+                            <MenuItem Header="Paste" Command="{Binding PasteFromClipboardCommand}"/>
+                            <Separator/>
+                            <MenuItem Header="Clear All" Command="{Binding ClearAllCommand}"/>
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
+
+                <!-- Red error outline overlay (non-interactive) -->
+                <Border
+                        IsHitTestVisible="False"
+                        IsVisible="{Binding ValidationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
+                        BorderBrush="{StaticResource Talgonite.Send.ValidationErrorForeground}"
+                        BorderThickness="2"
+                        CornerRadius="4"
+                        Margin="1"/>
+            </Grid>
             
             <!-- Error Info -->
             <Border Grid.Row="1"
-                        IsVisible="{Binding ValidationError, ConverterParameter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        IsVisible="{Binding ValidationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue=False}"
                         VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                         Background="{StaticResource Talgonite.Send.ValidationErrorBackground}"
                         BorderThickness="0,1,0,0"
