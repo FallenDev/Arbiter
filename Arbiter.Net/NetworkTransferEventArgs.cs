@@ -1,9 +1,16 @@
-﻿namespace Arbiter.Net;
+﻿using Arbiter.Net.Filters;
 
-public class NetworkTransferEventArgs(NetworkDirection direction, NetworkPacket encrypted, NetworkPacket decrypted)
+namespace Arbiter.Net;
+
+public class NetworkTransferEventArgs(
+    NetworkDirection direction,
+    NetworkPacket encrypted,
+    NetworkPacket decrypted,
+    NetworkFilterResult? filterResult = null)
     : EventArgs
 {
     public NetworkDirection Direction { get; } = direction;
     public NetworkPacket Encrypted { get; } = encrypted;
     public NetworkPacket Decrypted { get; } = decrypted;
+    public NetworkFilterResult? FilterResult { get; } = filterResult;
 }
