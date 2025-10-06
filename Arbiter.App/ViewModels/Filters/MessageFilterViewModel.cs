@@ -4,5 +4,6 @@ namespace Arbiter.App.ViewModels.Filters;
 
 public partial class MessageFilterViewModel : ViewModelBase
 {
-    [ObservableProperty] private bool _isEnabled = true;
+    [ObservableProperty] private string _displayName = string.Empty;
+    [ObservableProperty] private string _pattern = string.Empty;
 }

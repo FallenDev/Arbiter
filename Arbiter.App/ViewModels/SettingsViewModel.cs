@@ -312,9 +312,18 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         _settingsService = settingsService;
         _storageProvider = storageProvider;
 
+        MessageFilters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(MessageFilterCount));
+
         _ = LoadSettingsAsync();
 
-        MessageFilters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(MessageFilterCount));
+        foreach (var filterPattern in Settings.MessageFilters)
+        {
+            MessageFilters.Add(new MessageFilterViewModel
+            {
+                DisplayName = filterPattern.Name,
+                Pattern = filterPattern.Pattern
+            });
+        }
     }
 
     public event Action<ArbiterSettings?>? RequestClose;
@@ -323,7 +332,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     {
         Settings = await _settingsService.LoadFromFileAsync();
     }
-
+    
     [RelayCommand]
     private async Task OnLocateClient()
     {
@@ -368,6 +377,12 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     {
         Settings = new ArbiterSettings();
         HasChanges = true;
+    }
+
+    [RelayCommand]
+    private void EditMessageFilters()
+    {
+        
     }
 
     [RelayCommand]

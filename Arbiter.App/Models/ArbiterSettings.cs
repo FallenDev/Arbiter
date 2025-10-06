@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Arbiter.App.Models;
 
@@ -10,22 +12,24 @@ public class ArbiterSettings : ICloneable
     public string ClientExecutablePath { get; set; } = DefaultPath;
     public bool SkipIntroVideo { get; set; } = true;
     public bool SuppressLoginNotice { get; set; } = true;
-    
+
     public int LocalPort { get; set; } = 2610;
 
     public string RemoteServerAddress { get; set; } = "da0.kru.com";
     public int RemoteServerPort { get; set; } = 2610;
-    
+
     public bool TraceOnStartup { get; set; }
     public bool TraceAutosave { get; set; }
 
     public DebugSettings Debug { get; set; } = new();
-    
+
     public WindowRect? StartupLocation { get; set; }
 
     public InterfacePanelState? LeftPanel { get; set; }
     public InterfacePanelState? RightPanel { get; set; }
     public InterfacePanelState? BottomPanel { get; set; }
+
+    public List<MessageFilter> MessageFilters { get; set; } = [];
 
     public object Clone() => new ArbiterSettings
     {
@@ -42,6 +46,6 @@ public class ArbiterSettings : ICloneable
         LeftPanel = LeftPanel?.Clone() as InterfacePanelState,
         RightPanel = RightPanel?.Clone() as InterfacePanelState,
         BottomPanel = BottomPanel?.Clone() as InterfacePanelState,
+        MessageFilters = MessageFilters.Select(x => new MessageFilter { Name = x.Name, Pattern = x.Pattern }).ToList()
     };
-
 }

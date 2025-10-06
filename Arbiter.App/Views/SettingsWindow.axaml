@@ -282,6 +282,7 @@
                                  Padding="16,0"
                                  VerticalAlignment="Center"/>
                         <Button Grid.Column="2"
+                                Command="{Binding EditMessageFiltersCommand}"
                                 Content="Edit.."
                                 FontSize="16"
                                 Height="40"
