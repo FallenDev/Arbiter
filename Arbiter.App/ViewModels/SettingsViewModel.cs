@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
+using Arbiter.App.ViewModels.Filters;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -49,6 +51,12 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     [ObservableProperty] private bool _hasChanges;
 
+    public ObservableCollection<MessageFilterViewModel> MessageFilters { get; } = [];
+
+    public string MessageFilterCount => MessageFilters.Count > 0
+        ? MessageFilters.Count == 1 ? $"{MessageFilters.Count} Filter" : $"{MessageFilters.Count} Filters"
+        : "None";
+    
     public string VersionString
     {
         get
@@ -305,6 +313,8 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         _storageProvider = storageProvider;
 
         _ = LoadSettingsAsync();
+
+        MessageFilters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(MessageFilterCount));
     }
 
     public event Action<ArbiterSettings?>? RequestClose;

@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="7">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -256,17 +256,40 @@
             
             <!-- Messages Settings Tab -->
             <TabItem Header="Messages">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                    <Grid Grid.Row="0" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Margin="8,0">
                         <!-- Ignore Empty World Messages -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Ignore Empty World Messages"
                                ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
                         <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
-                        
                     </Grid>
-                </StackPanel>
+                    
+                    <!-- Filter Rules -->
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,0">
+                        <Label Grid.Column="0" Content="World Message Filters"
+                               ToolTip.Tip="Filter patterns to match, which will be not displayed (in-game)."/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding MessageFilterCount}"
+                                 TextAlignment="Center"
+                                 Classes="read-only"
+                                 FontFamily="{StaticResource  Talgonite.Font.Monospace}"
+                                 FontSize="16"
+                                 Height="40"
+                                 MinWidth="120"
+                                 Margin="8,0"
+                                 Padding="16,0"
+                                 VerticalAlignment="Center"/>
+                        <Button Grid.Column="2"
+                                Content="Edit.."
+                                FontSize="16"
+                                Height="40"
+                                Padding="8,4"
+                                Classes="outline">
+                        </Button>
+                    </Grid>
+                </Grid>
             </TabItem>
             
             <!-- About Tab -->
