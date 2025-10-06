@@ -59,7 +59,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     public string MessageFilterCount => MessageFilters.Count > 0
         ? MessageFilters.Count == 1 ? $"{MessageFilters.Count} Filter" : $"{MessageFilters.Count} Filters"
         : "None";
-    
+
     public string VersionString
     {
         get
@@ -95,7 +95,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             HasChanges = true;
         }
     }
-    
+
     public bool SuppressLoginNotice
     {
         get => Settings.SuppressLoginNotice;
@@ -325,7 +325,6 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         {
             MessageFilters.Add(new MessageFilterViewModel
             {
-                DisplayName = filterPattern.Name,
                 Pattern = filterPattern.Pattern
             });
         }
@@ -337,7 +336,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     {
         Settings = await _settingsService.LoadFromFileAsync();
     }
-    
+
     [RelayCommand]
     private async Task OnLocateClient()
     {
@@ -387,13 +386,21 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [RelayCommand]
     private async Task EditMessageFilters()
     {
+        var vm = new MessageFilterListViewModel();
+        foreach (var filter in MessageFilters)
+        {
+            vm.Filters.Add(filter);
+        }
+
         var newFilters =
-            await _dialogService.ShowDialogAsync<MessageFiltersView, MessageFilterListViewModel, List<MessageFilter>>();
+            await _dialogService
+                .ShowDialogAsync<MessageFiltersView, MessageFilterListViewModel, List<MessageFilter>>(vm);
 
         if (newFilters is null)
         {
             return;
         }
+        
     }
 
     [RelayCommand]

@@ -46,6 +46,6 @@ public class ArbiterSettings : ICloneable
         LeftPanel = LeftPanel?.Clone() as InterfacePanelState,
         RightPanel = RightPanel?.Clone() as InterfacePanelState,
         BottomPanel = BottomPanel?.Clone() as InterfacePanelState,
-        MessageFilters = MessageFilters.Select(x => new MessageFilter { Name = x.Name, Pattern = x.Pattern }).ToList()
+        MessageFilters = MessageFilters.Select(x => new MessageFilter { Pattern = x.Pattern }).ToList()
     };
 }

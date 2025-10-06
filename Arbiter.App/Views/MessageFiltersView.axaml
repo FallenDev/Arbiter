@@ -13,4 +13,86 @@
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
 
+    <Panel Background="{StaticResource Talgonite.Control.Background}">
+        <Grid RowDefinitions="Auto,*,Auto,Auto,Auto,Auto" RowSpacing="8">
+            <Label Grid.Row="0"
+                   Content="Filter Patterns"
+                   ToolTip.Tip="Regular expression patterns to use for filtering out world messages."
+                   Margin="8,4,0,0"/>
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding Filters}"
+                     SelectedItems="{Binding SelectedFilters}"
+                     SelectionMode="Multiple"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Margin="16,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Pattern}"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                   FontSize="16"
+                                   VerticalAlignment="Center"
+                                   Margin="8,2"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="4">
+                <TextBox Grid.Column="0"
+                         Text="{Binding InputText}"
+                         Watermark="Enter filter pattern.."
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                         FontSize="16"
+                         Height="40"
+                         Margin="16,0,0,0"/>
+                
+                <Button Grid.Column="1"
+                        Command="{Binding AddFilterCommand}"
+                        Classes="outline"
+                        ToolTip.Tip="Adds the filter pattern to the list."
+                        Height="40"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.NewPlus}"/>
+                        <TextBlock Text="Add"
+                                   Foreground="{Binding $parent[Button].Foreground}"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            
+            <Border Grid.Row="3" Classes="divider-h"/>
+            
+            <!-- Test Patterns -->
+            <Grid Row="4" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Margin="8,0">
+                <Label Grid.Column="0" Content="Message"
+                       ToolTip.Tip="Test"
+                       VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1"
+                         Text="{Binding TestInput}"
+                         Watermark="Input a message to test filters.."
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                         Height="40"/>
+            </Grid>
+            
+            <!-- Accept/Cancel Button Area -->
+            <Border Grid.Row="5"
+                    Background="{StaticResource Talgonite.Window.Background}"
+                    BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                    BorderThickness="0,2,0,0"
+                    Padding="16,8,16,12">
+                <UniformGrid Columns="2" ColumnSpacing="8" Margin="0,0,0,0">
+                    <!-- OK button -->
+                    <Button Command="{Binding HandleOkCommand}" IsDefault="True">
+                        <TextBlock Text="Save"/>
+                    </Button>
+                    <!-- Cancel Button -->
+                    <Button Command="{Binding HandleCancelCommand}" IsCancel="True">
+                        <TextBlock Text="Cancel"/>
+                    </Button>
+                </UniformGrid>
+            </Border>
+        </Grid>
+    </Panel>
 </controls:TalgoniteWindow>
