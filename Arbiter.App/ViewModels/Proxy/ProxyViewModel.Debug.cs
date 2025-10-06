@@ -1,4 +1,5 @@
-﻿using Arbiter.App.Models;
+﻿using System.Collections.Generic;
+using Arbiter.App.Models;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Server.Messages;
 
@@ -9,7 +10,7 @@ public partial class ProxyViewModel
     private readonly IClientMessageFactory _clientMessageFactory = new ClientMessageFactory();
     private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
 
-    public void ApplyDebugFilters(DebugSettings settings)
+    public void ApplyDebugFilters(DebugSettings settings, List<MessageFilter> filters)
     {
         RemoveDebugFilters();
 
@@ -21,7 +22,7 @@ public partial class ProxyViewModel
         AddDebugPlayerFilters(settings);
         AddDebugEffectsFilters(settings);
         AddDebugMapFilters(settings);
-        AddDebugMessageFilters(settings);
+        AddDebugMessageFilters(settings, filters);
     }
 
     public void RemoveDebugFilters()

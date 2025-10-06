@@ -6,7 +6,7 @@ namespace Arbiter.App.Services;
 
 public interface IGameClientService
 {
-    Task<int> LaunchLoopbackClient(string clientExecutablePath, int port = 2610);
+    Task<int> LaunchLoopbackClient(string clientExecutablePath, LaunchClientOptions options);
 
     IEnumerable<GameClientWindow> GetGameClients();
 }

@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="640" Height="480"
+                          Width="720" Height="520"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -50,6 +50,24 @@
                             </Button>
                         </TextBox.InnerRightContent>
                     </TextBox>
+                    
+                    <!-- Options -->
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="4">
+                        <!-- Skip Intro Video  -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Skip Intro Video"
+                               ToolTip.Tip="Bypasses the intro video when starting the client."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding SkipIntroVideo}"/>
+                        <!-- Suppress Login Notice -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Content="Suppress Login Notice"
+                               ToolTip.Tip="Prevents the login notification from being displayed."
+                               IsEnabled="False"/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding SuppressLoginNotice}"
+                                      IsEnabled="False"/>
+                    </Grid>
                 </StackPanel>
             </TabItem>
             
@@ -240,17 +258,41 @@
             
             <!-- Messages Settings Tab -->
             <TabItem Header="Messages">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto" Margin="8,4">
-                        <!-- Ignore Empty World Messages -->
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                    <!-- Filter Rules -->
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,4">
+                        <Label Grid.Column="0" Content="Notification Filters"
+                               ToolTip.Tip="Filter patterns for notifications that will be not displayed (in-game).&#x0a;These will only apply to system messages and world shouts."/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding MessageFilterCount}"
+                                 TextAlignment="Center"
+                                 Classes="read-only"
+                                 FontFamily="{StaticResource  Talgonite.Font.Monospace}"
+                                 FontSize="16"
+                                 Height="40"
+                                 MinWidth="240"
+                                 Margin="8,0"
+                                 Padding="16,0"
+                                 VerticalAlignment="Center"/>
+                        <Button Grid.Column="2"
+                                Command="{Binding EditMessageFiltersCommand}"
+                                Content="Edit.."
+                                FontSize="16"
+                                Height="40"
+                                Padding="8,4"
+                                Classes="outline">
+                        </Button>
+                    </Grid>
+                    
+                    <Grid Grid.Row="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Margin="8,0">
+                        <!-- Ignore Empty Notifications -->
                         <Label Grid.Row="0" Grid.Column="0"
-                               Content="Ignore Empty World Messages"
-                               ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
+                               Content="Ignore Empty Notifications"
+                               ToolTip.Tip="Prevents empty notifications from scrolling the bar (in-game)."/>
                         <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
-                        
                     </Grid>
-                </StackPanel>
+                </Grid>
             </TabItem>
             
             <!-- About Tab -->
@@ -288,10 +330,10 @@
         <Border Grid.Row="1"
                 BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
                 BorderThickness="0,2,0,0"
-                Padding="16,8">
+                Padding="16,8,16,12">
             <UniformGrid Columns="2" ColumnSpacing="8" Margin="0,0,0,0">
                 <!-- OK button -->
-                <Button Command="{Binding HandleOkCommand}" IsDefault="True">
+                <Button Command="{Binding HandleOkCommand}">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{x:Static BoolConverters.And}">
                             <Binding Path="HasChanges"/>

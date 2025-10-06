@@ -6,6 +6,10 @@
         </Border>
     </Design.PreviewWith>
 
+    <Style Selector="TextBlock:disabled">
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.TextBlock.DimForeground}"/>    
+    </Style>
+    
     <Style Selector="TextBlock.link:pointerover">
         <Setter Property="TextDecorations" Value="Underline"/>
     </Style>

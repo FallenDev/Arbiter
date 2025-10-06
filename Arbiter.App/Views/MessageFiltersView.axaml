@@ -1,0 +1,173 @@
+﻿<controls:TalgoniteWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:controls="using:Arbiter.App.Controls"
+        xmlns:vm="using:Arbiter.App.ViewModels.Filters"
+        x:Class="Arbiter.App.Views.MessageFiltersView"
+        x:DataType="vm:MessageFilterListViewModel"
+        Title="{Binding Title}"
+        Width="640" Height="480"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+
+    <Panel Background="{StaticResource Talgonite.Control.Background}">
+        <Grid RowDefinitions="Auto,*,Auto,Auto,Auto,Auto" RowSpacing="8">
+            <Label Grid.Row="0"
+                   Content="Filter Patterns"
+                   ToolTip.Tip="Regular expression patterns to use for filtering out notifications.&#x0a;These are case-insensitive."
+                   Margin="8,8,4,0"/>
+            <HyperlinkButton Grid.Row="0" Command="{Binding VisitRegex101Command}"
+                             FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                             Margin="16,8,16,4"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Center">
+                <TextBlock TextAlignment="Center" Classes="link">
+                    Regular Expressions?
+                </TextBlock>
+            </HyperlinkButton>
+            
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding Filters}"
+                     SelectedItems="{Binding SelectedFilters}"
+                     SelectionMode="Multiple"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Margin="16,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4" Margin="4,2">
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsEnabled}"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Pattern}"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="16"
+                                       IsEnabled="{Binding IsEnabled}"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Move Up"
+                                  Command="{Binding MoveSelectedUpCommand}"/>
+                        <MenuItem Header="Move Down"
+                                  Command="{Binding MoveSelectedDownCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="Enable Selected"
+                                  Command="{Binding EnableSelectedCommand}"/>
+                        <MenuItem Header="Disable Selected"
+                                  Command="{Binding DisableSelectedCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="Edit Selected"
+                                  Command="{Binding EditSelectedCommand}"/>
+                        <MenuItem Header="Delete Selected"
+                                  Command="{Binding DeleteSelectedCommand}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="4">
+                <TextBox Grid.Column="0"
+                         Text="{Binding InputText}"
+                         Watermark="Enter filter pattern.."
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                         FontSize="16"
+                         AcceptsReturn="False"
+                         AcceptsTab="False"
+                         Height="40"
+                         Margin="16,0,0,0"/>
+                
+                <!-- Add Button -->
+                <Button Grid.Column="1"
+                        Command="{Binding AddFilterCommand}"
+                        Classes="outline"
+                        HotKey="Enter"
+                        ToolTip.Tip="Adds the filter pattern to the list."
+                        IsVisible="{Binding !IsEditing}"
+                        IsEnabled="{Binding !IsEditing}"
+                        Height="40"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.NewPlus}"/>
+                        <TextBlock Text="Add"
+                                   Foreground="{Binding $parent[Button].Foreground}"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+                
+                <!-- Edit Button -->
+                <Button Grid.Column="1"
+                        Command="{Binding ApplyEditCommand}"
+                        Classes="outline"
+                        HotKey="Enter"
+                        ToolTip.Tip="Edits the selected pattern in the list."
+                        IsVisible="{Binding IsEditing, FallbackValue={x:False}}"
+                        IsEnabled="{Binding IsEditing}"
+                        Height="40"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
+                        <TextBlock Text="Edit"
+                                   Foreground="{Binding $parent[Button].Foreground}"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            
+            <Border Grid.Row="3" Classes="divider-h"/>
+            
+            <!-- Test Patterns -->
+            <Grid Row="4" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Margin="8,0">
+                <Label Grid.Column="0" Content="Message"
+                       VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1"
+                         Text="{Binding TestInput}"
+                         Watermark="Input a message to test filters.."
+                         FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                         AcceptsReturn="False"
+                         AcceptsTab="False"
+                         Height="40"/>
+                <TextBlock Grid.Column="2"
+                           Text="Allowed"
+                           TextAlignment="Center"
+                           Foreground="#83e67a"
+                           IsVisible="{Binding IsTestInputAllowed, FallbackValue={x:True}}"
+                           FontWeight="SemiBold"
+                           Width="60"
+                           VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2"
+                           Text="Filtered"
+                           TextAlignment="Center"
+                           Foreground="#ed6a5e"
+                           IsVisible="{Binding IsTestInputFiltered, FallbackValue={x:False}}"
+                           FontWeight="SemiBold"
+                           Width="60"
+                           VerticalAlignment="Center"/>
+            </Grid>
+            
+            <!-- Accept/Cancel Button Area -->
+            <Border Grid.Row="5"
+                    Background="{StaticResource Talgonite.Window.Background}"
+                    BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                    BorderThickness="0,2,0,0"
+                    Padding="16,8,16,12">
+                <UniformGrid Columns="2" ColumnSpacing="8" Margin="0,0,0,0">
+                    <!-- OK button -->
+                    <Button Command="{Binding HandleOkCommand}">
+                        <TextBlock Text="Save"/>
+                    </Button>
+                    <!-- Cancel Button -->
+                    <Button Command="{Binding HandleCancelCommand}" IsCancel="True">
+                        <TextBlock Text="Cancel"/>
+                    </Button>
+                </UniformGrid>
+            </Border>
+        </Grid>
+    </Panel>
+</controls:TalgoniteWindow>

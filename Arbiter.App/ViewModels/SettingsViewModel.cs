@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
+using Arbiter.App.ViewModels.Filters;
+using Arbiter.App.Views;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,11 +24,14 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         MimeTypes = ["application/octet-stream"],
     };
 
+    private readonly IDialogService _dialogService;
     private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ClientExecutablePath))]
+    [NotifyPropertyChangedFor(nameof(SkipIntroVideo))]
+    [NotifyPropertyChangedFor(nameof(SuppressLoginNotice))]
     [NotifyPropertyChangedFor(nameof(LocalPort))]
     [NotifyPropertyChangedFor(nameof(RemoteServerAddress))]
     [NotifyPropertyChangedFor(nameof(RemoteServerPort))]
@@ -43,9 +50,12 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
+    [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
     [ObservableProperty] private bool _hasChanges;
+
+    public string MessageFilterCount => GetHumanizedFilterCount();
 
     public string VersionString
     {
@@ -67,6 +77,28 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
             }
 
             Settings.ClientExecutablePath = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool SkipIntroVideo
+    {
+        get => Settings.SkipIntroVideo;
+        set
+        {
+            Settings.SkipIntroVideo = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool SuppressLoginNotice
+    {
+        get => Settings.SuppressLoginNotice;
+        set
+        {
+            Settings.SuppressLoginNotice = value;
             OnPropertyChanged();
             HasChanges = true;
         }
@@ -275,8 +307,10 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
-    public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
+    public SettingsViewModel(IDialogService dialogService, ISettingsService settingsService,
+        IStorageProvider storageProvider)
     {
+        _dialogService = dialogService;
         _settingsService = settingsService;
         _storageProvider = storageProvider;
 
@@ -288,6 +322,27 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     private async Task LoadSettingsAsync()
     {
         Settings = await _settingsService.LoadFromFileAsync();
+    }
+
+    private string GetHumanizedFilterCount()
+    {
+        var totalCount = Settings.MessageFilters.Count;
+
+        if (totalCount == 0)
+        {
+            return "No Filters";
+        }
+
+        var disabledCount = Settings.MessageFilters.Count(x => !x.IsEnabled);
+
+        if (disabledCount == 0)
+        {
+            return totalCount == 1 ? "1 Filter" : $"{totalCount} Filters";
+        }
+
+        return disabledCount == totalCount
+            ? $"{disabledCount} Disabled"
+            : $"{totalCount} Filters ({disabledCount} Disabled)";
     }
 
     [RelayCommand]
@@ -337,7 +392,36 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     }
 
     [RelayCommand]
-    private void VisitProjectWebsite()
+    private async Task EditMessageFilters()
+    {
+        // Load the filters into the list
+        var vm = new MessageFilterListViewModel();
+        foreach (var filter in Settings.MessageFilters)
+        {
+            vm.Filters.Add(new MessageFilterViewModel
+            {
+                IsEnabled = filter.IsEnabled,
+                Pattern = filter.Pattern
+            });
+        }
+
+        var newFilters =
+            await _dialogService
+                .ShowDialogAsync<MessageFiltersView, MessageFilterListViewModel, List<MessageFilter>>(vm);
+
+        if (newFilters is null)
+        {
+            return;
+        }
+
+        Settings.MessageFilters = newFilters;
+        HasChanges = true;
+        
+        OnPropertyChanged(nameof(MessageFilterCount));
+    }
+
+    [RelayCommand]
+    private static void VisitProjectWebsite()
     {
         Process.Start(new ProcessStartInfo("https://github.com/ewrogers/Arbiter") { UseShellExecute = true });
     }

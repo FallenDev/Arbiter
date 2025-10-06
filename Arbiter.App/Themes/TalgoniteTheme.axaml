@@ -119,6 +119,7 @@
             
             <!-- Label Resources -->
             <SolidColorBrush x:Key="Talgonite.Label.Foreground" Color="#a6a7a9"/>
+            <SolidColorBrush x:Key="Talgonite.Label.DisabledForeground" Color="#6d6f73"/>
             
             <!-- ListBox Resources -->
             <SolidColorBrush x:Key="Talgonite.ListBox.Background" Color="#1e2228"/>
