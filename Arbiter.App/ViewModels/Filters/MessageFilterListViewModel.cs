@@ -32,7 +32,7 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
     
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddFilterCommand))]
-    
+    [NotifyCanExecuteChangedFor(nameof(ApplyEditCommand))]
     private string _inputText = string.Empty;
 
     public ObservableCollection<MessageFilterViewModel> SelectedFilters { get; } = [];
