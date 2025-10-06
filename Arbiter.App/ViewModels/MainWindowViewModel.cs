@@ -31,7 +31,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _title = "Arbiter";
     [ObservableProperty] private ClientViewModel? _selectedClient;
     [ObservableProperty] private RawHexViewModel? _selectedRawHex;
-    
+
     public ClientManagerViewModel ClientManager { get; }
     public SendPacketViewModel SendPacket { get; }
     public ConsoleViewModel Console { get; }
@@ -65,7 +65,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         Trace.SelectedPacketChanged += OnPacketSelected;
     }
-    
+
     private bool CanLaunchClient() =>
         !string.IsNullOrWhiteSpace(Settings.ClientExecutablePath) && OperatingSystem.IsWindows();
 
@@ -103,7 +103,6 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             Proxy.Start(Settings.LocalPort, remoteIpAddress[0], Settings.RemoteServerPort);
-            Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
         }
         catch (Exception ex)
         {
@@ -125,7 +124,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Inspector.SelectedPacket = null;
             return;
         }
-        
+
         SelectedRawHex = new RawHexViewModel(viewModel);
         SelectedRawHex.ClearSelection();
 
@@ -147,6 +146,12 @@ public partial class MainWindowViewModel : ViewModelBase
         await _settingsService.SaveToFileAsync(Settings);
         LaunchClientCommand.NotifyCanExecuteChanged();
 
+        ApplySettings();
+    }
+
+    private void ApplySettings()
+    {
         Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
+        Trace.MaxTraceHistory = Settings.TraceMaxHistory;
     }
 }

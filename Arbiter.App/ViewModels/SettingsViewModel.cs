@@ -10,6 +10,7 @@ using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Filters;
 using Arbiter.App.Views;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -37,6 +38,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(RemoteServerPort))]
     [NotifyPropertyChangedFor(nameof(TraceOnStartup))]
     [NotifyPropertyChangedFor(nameof(TraceAutosave))]
+    [NotifyPropertyChangedFor(nameof(TraceMaxHistory))]
     [NotifyPropertyChangedFor(nameof(DebugShowDialogId))]
     [NotifyPropertyChangedFor(nameof(DebugShowNpcId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterId))]
@@ -159,6 +161,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.TraceAutosave = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public int TraceMaxHistory
+    {
+        get => Settings.TraceMaxHistory;
+        set
+        {
+            Settings.TraceMaxHistory = value;
             OnPropertyChanged();
             HasChanges = true;
         }
@@ -416,7 +429,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
         Settings.MessageFilters = newFilters;
         HasChanges = true;
-        
+
         OnPropertyChanged(nameof(MessageFilterCount));
     }
 

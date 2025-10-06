@@ -37,6 +37,7 @@ public partial class TraceViewModel : ViewModelBase
     private bool _isEmpty = true;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
 
+    [ObservableProperty] private int _maxTraceHistory;
     [ObservableProperty] private DateTime _startTime;
     [ObservableProperty] private bool _scrollToEndRequested;
     [ObservableProperty] private int? _scrollToIndexRequested;
@@ -49,7 +50,7 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private string? _traceClientName;
 
     public ObservableCollection<TraceClientViewModel> TraceClients { get; } = [new("All Clients")];
-
+    
     public bool IsEmpty => _isEmpty;
 
     public bool ShowRawPackets
@@ -189,7 +190,7 @@ public partial class TraceViewModel : ViewModelBase
         AddPacketToTrace(packetViewModel);
     }
 
-    private void AddPacketToTrace(TracePacketViewModel vm)
+    private void AddPacketToTrace(TracePacketViewModel vm, bool pruneHistory = true)
     {
         var matchesSearch = MatchesSearch(vm);
         if (matchesSearch)
@@ -202,6 +203,11 @@ public partial class TraceViewModel : ViewModelBase
         _allPackets.Add(vm);
         FilterParameters.TryAddClient(vm.ClientName ?? string.Empty);
         IsDirty = true;
+
+        while (pruneHistory && _allPackets.Count > MaxTraceHistory)
+        {
+            _allPackets.RemoveAt(0);
+        }
     }
 
     private void ClearPackets()

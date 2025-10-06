@@ -20,6 +20,7 @@ public class ArbiterSettings : ICloneable
 
     public bool TraceOnStartup { get; set; }
     public bool TraceAutosave { get; set; }
+    public int TraceMaxHistory { get; set; } = 1000;
 
     public DebugSettings Debug { get; set; } = new();
 
@@ -41,6 +42,7 @@ public class ArbiterSettings : ICloneable
         RemoteServerPort = RemoteServerPort,
         TraceOnStartup = TraceOnStartup,
         TraceAutosave = TraceAutosave,
+        TraceMaxHistory = Math.Clamp(TraceMaxHistory, 10, 1_000_000),
         Debug = Debug.Clone() as DebugSettings ?? new DebugSettings(),
         StartupLocation = StartupLocation?.Clone() as WindowRect,
         LeftPanel = LeftPanel?.Clone() as InterfacePanelState,

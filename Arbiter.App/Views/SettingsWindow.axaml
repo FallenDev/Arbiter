@@ -29,7 +29,7 @@
         <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
-                <StackPanel Spacing="4">
+                <StackPanel Spacing="4" Margin="4">
                     <Label Content="Game Client Path"
                            ToolTip.Tip="Path to the game executable."/>
                     <TextBox Name="ClientPathTextBox"
@@ -73,7 +73,7 @@
             
             <!-- Network Settings Tab -->
             <TabItem Header="Network">
-                <StackPanel Spacing="4">
+                <StackPanel Spacing="4" Margin="4">
                     <!-- Remote Server -->
                     <Label Content="Remote Server Host"
                            ToolTip.Tip="Hostname of the remote game server."/>
@@ -120,20 +120,34 @@
             
             <!-- Tracing Settings Tab -->
             <TabItem Header="Tracing">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
-                        <!-- Start Tracing on Startup -->
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
+                        <!-- Autosave traces -->
                         <Label Grid.Row="0" Grid.Column="0"
+                               Content="Max Trace History"
+                               ToolTip.Tip="The maximum number of trace packets to store in memory.&#x0a;Beyond this limit, the oldest packets will be discarded."/>
+                        <NumericUpDown Grid.Row="0" Grid.Column="1"
+                                       Value="{Binding TraceMaxHistory}"
+                                       Watermark="10-1000000"
+                                       TextAlignment="Center"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="16"
+                                       Width="120" Height="40"
+                                       Minimum="10"
+                                       Maximum="1000000"/>
+                        
+                        <!-- Start Tracing on Startup -->
+                        <Label Grid.Row="1" Grid.Column="0"
                                Content="Start Trace on Startup"
                                ToolTip.Tip="Begins a trace automatically when the application starts up."/>
-                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding TraceOnStartup}"/>
                         
                         <!-- Autosave traces -->
-                        <Label Grid.Row="1" Grid.Column="0"
+                        <Label Grid.Row="2" Grid.Column="0"
                                Content="Autosave Traces on Quit"
                                ToolTip.Tip="Automatically saves live trace packets when the application exits."/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1"
                                       IsChecked="{Binding TraceAutosave}"/>
                     </Grid>
                 </StackPanel>
@@ -141,8 +155,8 @@
             
             <!-- Entities Settings Tab -->
             <TabItem Header="Entities">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Entity ID for Dialogs -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Entity ID in Dialogs"
@@ -179,8 +193,8 @@
             
             <!-- Players Settings Tab -->
             <TabItem Header="Players">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Hidden Players -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Hidden Players"
@@ -200,8 +214,8 @@
             
             <!-- Effects Settings Tab -->
             <TabItem Header="Effects">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Classic Visual Effects -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Classic Visual Effects"
@@ -223,8 +237,8 @@
             
             <!-- Map Settings Tab -->
             <TabItem Header="Maps">
-                <StackPanel Spacing="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="8,4">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Force Tab Map -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Force Enable Tab Map"
@@ -258,9 +272,9 @@
             
             <!-- Messages Settings Tab -->
             <TabItem Header="Messages">
-                <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="4" Margin="4">
                     <!-- Filter Rules -->
-                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,4">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="4">
                         <Label Grid.Column="0" Content="Notification Filters"
                                ToolTip.Tip="Filter patterns for notifications that will be not displayed (in-game).&#x0a;These will only apply to system messages and world shouts."/>
                         <TextBox Grid.Column="1"

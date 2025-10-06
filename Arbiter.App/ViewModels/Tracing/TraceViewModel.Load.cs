@@ -26,7 +26,7 @@ public partial class TraceViewModel
         foreach (var packet in packets)
         {
             var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
-            AddPacketToTrace(vm);
+            AddPacketToTrace(vm, false);
         }
         
         RefreshSearchResults();
