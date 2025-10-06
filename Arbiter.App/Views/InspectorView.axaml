@@ -13,11 +13,11 @@
         <vm:DesignInspectorViewModel/>
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,Auto,*"
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
           Background="{StaticResource Talgonite.Control.Background}">
         
         <!-- No Selection Placeholder -->
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    Text="No packet selected"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -26,7 +26,7 @@
                    IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}"/>
         
         <!-- Empty Placeholder -->
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    Text="No properties to show"
                    TextAlignment="Center"
                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -82,11 +82,33 @@
             </WrapPanel>
         </Grid>
         
-        <Border Grid.Row="1" Classes="divider-h" Margin="0,4"
+        <Grid Grid.Row="1">
+            <Border Background="{StaticResource Talgonite.CheckBox.Background}"
+                    BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                    BorderThickness="2"
+                    CornerRadius="4"
+                    Margin="8,4"
+                    Padding="16,8"
+                    IsVisible="{Binding SelectedPacket.WasBlocked, FallbackValue={x:False}}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Path Width="16" Height="16"
+                          Stroke="{Binding #BlockedInfoTextBlock.Foreground}"
+                          Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                    <TextBlock Name="BlockedInfoTextBlock"
+                               Text="This packet was blocked by a filter."
+                               TextWrapping="Wrap"
+                               FontSize="16"
+                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
+        <Border Grid.Row="2" Classes="divider-h" Margin="0,4"
                 IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"/>
         
         <!-- Sections -->
-        <ScrollViewer Grid.Row="2"
+        <ScrollViewer Grid.Row="3"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       IsVisible="{Binding !HasError}">
@@ -100,7 +122,7 @@
         </ScrollViewer>
         
         <!-- Exception -->
-        <ScrollViewer Grid.Row="2"
+        <ScrollViewer Grid.Row="3"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       IsVisible="{Binding HasError}">

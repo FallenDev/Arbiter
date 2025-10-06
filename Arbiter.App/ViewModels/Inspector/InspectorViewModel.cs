@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
+using Arbiter.App.ViewModels.Tracing;
 using Arbiter.Json.Converters;
 using Arbiter.Net;
 using Avalonia;
@@ -24,7 +25,7 @@ public partial class InspectorViewModel : ViewModelBase
     
     private readonly ILogger<InspectorViewModel> _logger;
     private readonly InspectorViewModelFactory _factory;
-    private NetworkPacket? _selectedPacket;
+    private TracePacketViewModel? _selectedPacket;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEmpty))]
@@ -39,7 +40,7 @@ public partial class InspectorViewModel : ViewModelBase
     public bool IsEmpty => InspectedPacket is not null && InspectedPacket.Sections.Count == 0 && !HasError;
     public bool HasError => InspectorException is not null;
     
-    public NetworkPacket? SelectedPacket
+    public TracePacketViewModel? SelectedPacket
     {
         get => _selectedPacket;
         set
@@ -57,15 +58,16 @@ public partial class InspectorViewModel : ViewModelBase
         _factory = factory;
     }
 
-    private void OnPacketSelected(NetworkPacket? packet)
+    private void OnPacketSelected(TracePacketViewModel? viewModel)
     {
-        if (packet is null)
+        if (viewModel is null)
         {
             InspectedPacket = null;
             InspectorException = null;
             return;
         }
 
+        var packet = viewModel.DecryptedPacket;
         var (vm, exception) = _factory.Create(packet);
         InspectedPacket = vm;
         
