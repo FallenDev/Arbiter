@@ -90,19 +90,21 @@
                 Margin="8,4"
                 Padding="16,8"
                 IsVisible="{Binding SelectedPacket.WasBlocked, FallbackValue={x:False}}">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <Path Width="16" Height="16"
+            <Grid ColumnDefinitions="Auto,*">
+                <Path Grid.Column="0" Width="16" Height="16"
+                      VerticalAlignment="Center"
                       Stroke="{Binding #BlockedInfoTextBlock.Foreground}"
                       Data="{StaticResource Talgonite.Icon.CrossX}"/>
-                <TextBlock Name="BlockedInfoTextBlock"
+                <TextBlock Grid.Column="1" Name="BlockedInfoTextBlock"
                            Text="This packet was blocked by a filter."
-                           TextWrapping="NoWrap"
+                           Margin="8,0,0,0"
+                           TextWrapping="Wrap"
                            TextTrimming="CharacterEllipsis"
                            FontSize="16"
                            Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Center"/>
-            </StackPanel>
+            </Grid>
         </Border>
         
         <Border Grid.Row="2" Classes="divider-h" Margin="0,4"
