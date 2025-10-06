@@ -5,7 +5,6 @@
              xmlns:sys="using:System"
              xmlns:v="using:Arbiter.App.Views"
              xmlns:vm="using:Arbiter.App.ViewModels"
-             xmlns:converters="using:Arbiter.App.Converters"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
              x:Class="Arbiter.App.Views.CrcCalculatorView"
              x:DataType="vm:CrcCalculatorViewModel">

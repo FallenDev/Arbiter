@@ -17,7 +17,7 @@
         <Grid RowDefinitions="Auto,*,Auto,Auto,Auto,Auto" RowSpacing="8">
             <Label Grid.Row="0"
                    Content="Filter Patterns"
-                   ToolTip.Tip="Regular expression patterns to use for filtering out world messages."
+                   ToolTip.Tip="Regular expression patterns to use for filtering out notifications."
                    Margin="8,4,0,0"/>
             <ListBox Grid.Row="1"
                      ItemsSource="{Binding Filters}"
@@ -35,6 +35,17 @@
                                    Margin="8,2"/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Move Up"
+                                  Command="{Binding MoveSelectedUpCommand}"/>
+                        <MenuItem Header="Move Down"
+                                  Command="{Binding MoveSelectedDownCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="Delete Selected"
+                                  Command="{Binding DeleteSelectedCommand}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
             </ListBox>
             <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="4">
                 <TextBox Grid.Column="0"
@@ -42,12 +53,15 @@
                          Watermark="Enter filter pattern.."
                          FontFamily="{StaticResource Talgonite.Font.Monospace}"
                          FontSize="16"
+                         AcceptsReturn="False"
+                         AcceptsTab="False"
                          Height="40"
                          Margin="16,0,0,0"/>
                 
                 <Button Grid.Column="1"
                         Command="{Binding AddFilterCommand}"
                         Classes="outline"
+                        HotKey="Enter"
                         ToolTip.Tip="Adds the filter pattern to the list."
                         Height="40"
                         Margin="0,0,8,0">
@@ -73,7 +87,25 @@
                          Text="{Binding TestInput}"
                          Watermark="Input a message to test filters.."
                          FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                         AcceptsReturn="False"
+                         AcceptsTab="False"
                          Height="40"/>
+                <TextBlock Grid.Column="2"
+                           Text="Allowed"
+                           TextAlignment="Center"
+                           Foreground="#83e67a"
+                           IsVisible="{Binding IsTestInputAllowed, FallbackValue={x:True}}"
+                           FontWeight="SemiBold"
+                           Width="60"
+                           VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2"
+                           Text="Filtered"
+                           TextAlignment="Center"
+                           Foreground="#ed6a5e"
+                           IsVisible="{Binding IsTestInputFiltered, FallbackValue={x:False}}"
+                           FontWeight="SemiBold"
+                           Width="60"
+                           VerticalAlignment="Center"/>
             </Grid>
             
             <!-- Accept/Cancel Button Area -->

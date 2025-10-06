@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
@@ -54,11 +53,11 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     [ObservableProperty] private bool _hasChanges;
 
-    public ObservableCollection<MessageFilterViewModel> MessageFilters { get; } = [];
-
-    public string MessageFilterCount => MessageFilters.Count > 0
-        ? MessageFilters.Count == 1 ? $"{MessageFilters.Count} Filter" : $"{MessageFilters.Count} Filters"
-        : "None";
+    public string MessageFilterCount => Settings.MessageFilters.Count > 0
+        ? Settings.MessageFilters.Count == 1
+            ? $"{Settings.MessageFilters.Count} Filter"
+            : $"{Settings.MessageFilters.Count} Filters"
+        : "No Filters";
 
     public string VersionString
     {
@@ -317,17 +316,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         _settingsService = settingsService;
         _storageProvider = storageProvider;
 
-        MessageFilters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(MessageFilterCount));
-
         _ = LoadSettingsAsync();
-
-        foreach (var filterPattern in Settings.MessageFilters)
-        {
-            MessageFilters.Add(new MessageFilterViewModel
-            {
-                Pattern = filterPattern.Pattern
-            });
-        }
     }
 
     public event Action<ArbiterSettings?>? RequestClose;
@@ -386,10 +375,11 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [RelayCommand]
     private async Task EditMessageFilters()
     {
+        // Load the filters into the list
         var vm = new MessageFilterListViewModel();
-        foreach (var filter in MessageFilters)
+        foreach (var filter in Settings.MessageFilters)
         {
-            vm.Filters.Add(filter);
+            vm.Filters.Add(new MessageFilterViewModel { Pattern = filter.Pattern });
         }
 
         var newFilters =
@@ -400,7 +390,9 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         {
             return;
         }
-        
+
+        Settings.MessageFilters = newFilters;
+        OnPropertyChanged(nameof(MessageFilterCount));
     }
 
     [RelayCommand]

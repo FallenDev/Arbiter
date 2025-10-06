@@ -258,8 +258,8 @@
             <TabItem Header="Messages">
                 <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
                     <!-- Filter Rules -->
-                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,0">
-                        <Label Grid.Column="0" Content="World Message Filters"
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,4">
+                        <Label Grid.Column="0" Content="Notification Filters"
                                ToolTip.Tip="Filter patterns to match, which will be not displayed (in-game)."/>
                         <TextBox Grid.Column="1"
                                  Text="{Binding MessageFilterCount}"
@@ -283,10 +283,10 @@
                     </Grid>
                     
                     <Grid Grid.Row="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Margin="8,0">
-                        <!-- Ignore Empty World Messages -->
+                        <!-- Ignore Empty Notifications -->
                         <Label Grid.Row="0" Grid.Column="0"
-                               Content="Ignore Empty World Messages"
-                               ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
+                               Content="Ignore Empty Notifications"
+                               ToolTip.Tip="Prevents empty notifications from scrolling the bar (in-game)."/>
                         <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
                     </Grid>
