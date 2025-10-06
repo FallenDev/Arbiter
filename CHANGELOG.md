@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for `@wait <milliseconds>` in `Send` packet syntax
+- Save filter action / result on trace packet JSON files
 
 ### Changed
 
 - Debounce `Send` input validation for performance
+- Pass `FilterResult` up through proxy layer events
 
 ## [1.1.0] - 2025-10-06
 

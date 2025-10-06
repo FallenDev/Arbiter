@@ -62,7 +62,7 @@
                     <TextBlock Name="CommandNameText"
                                Text="{Binding CommandName}"
                                TextAlignment="Left"
-                               Foreground="{Binding Direction, Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
+                               Foreground="{Binding ., Converter={x:Static converters:PacketDirectionColorConverter.Converter}}"
                                FontWeight="SemiBold"/>
                 </StackPanel>
                 
@@ -70,12 +70,15 @@
                 <Grid Grid.Column="2" ColumnDefinitions="Auto,*" ColumnSpacing="4">
                     <TextBlock Grid.Column="0" Name="CommandText"
                                Text="{Binding Command, StringFormat={}{0:X2}}"
+                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                Foreground="{Binding #CommandNameText.Foreground}"/>
                     
                     <TextBlock Grid.Column="1" Name="PayloadText"
                                Text="{Binding DisplayValue}"
                                TextWrapping="NoWrap"
-                               TextTrimming="CharacterEllipsis"/>
+                               TextTrimming="CharacterEllipsis"
+                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                               Foreground="{Binding FilterAction, Converter={x:Static converters:PacketFilterColorConverter.Converter}}"/>
                 </Grid>
             </Grid>
         </Border>
