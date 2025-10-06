@@ -50,6 +50,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
+    [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
     [ObservableProperty] private bool _hasChanges;
@@ -414,6 +415,8 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
 
         Settings.MessageFilters = newFilters;
+        HasChanges = true;
+        
         OnPropertyChanged(nameof(MessageFilterCount));
     }
 

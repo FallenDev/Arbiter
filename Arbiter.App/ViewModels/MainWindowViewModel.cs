@@ -102,12 +102,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             Proxy.Start(Settings.LocalPort, remoteIpAddress[0], Settings.RemoteServerPort);
-            
-            // Apply debug filters, if enabled
-            if (Settings.Debug.CheckEnabled())
-            {
-                Proxy.ApplyDebugFilters(Settings.Debug);    
-            }
+            Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
         }
         catch (Exception ex)
         {
@@ -151,14 +146,6 @@ public partial class MainWindowViewModel : ViewModelBase
         await _settingsService.SaveToFileAsync(Settings);
         LaunchClientCommand.NotifyCanExecuteChanged();
 
-        // Re-apply debug filters or remove them, if disabled
-        if (Settings.Debug.CheckEnabled())
-        {
-            Proxy.ApplyDebugFilters(Settings.Debug);
-        }
-        else
-        {
-            Proxy.RemoveDebugFilters();
-        }
+        Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
     }
 }

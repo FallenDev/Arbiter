@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Explicit option for `SkipClientVideo` in Setting (default: true)
 - Explicit option for `SuppressLoginNotification` in Settings (default: true)
+- Message filter system using Regular Expressions
 
 ### Changed
 
