@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -50,6 +52,7 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
     {
         var newFilters = Filters.Select(x => new MessageFilter
         {
+            IsEnabled = x.IsEnabled,
             Pattern = x.Pattern,
         }).ToList();
 
@@ -74,7 +77,10 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
             return;
         }
 
-        Filters.Add(new MessageFilterViewModel { Pattern = regex.ToString() });
+        var filter = new MessageFilterViewModel { Pattern = regex.ToString() };
+        filter.PropertyChanged += HandleItemChanged;
+
+        Filters.Add(filter);
         _testRecheckDebouncer.Execute(RecheckTestInput);
     }
 
@@ -87,8 +93,9 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
             return;
         }
 
-        // If any filter pattern matches the test input mark it as filtered
+        // If any enabled filter pattern matches the test input mark it as filtered
         var isFiltered = Filters.Any(f =>
+            f.IsEnabled &&
             TryParseRegex(f.Pattern, RegexOptions.IgnoreCase, out var rx) && rx.IsMatch(TestInput));
 
         IsTestInputFiltered = isFiltered;
@@ -120,6 +127,38 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
     private bool HasSelection() => SelectedFilters.Count > 0;
 
     [RelayCommand(CanExecute = nameof(HasSelection))]
+    private void EnableSelected()
+    {
+        if (SelectedFilters.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var filter in SelectedFilters)
+        {
+            filter.IsEnabled = true;
+        }
+
+        _testRecheckDebouncer.Execute(RecheckTestInput);
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelection))]
+    private void DisableSelected()
+    {
+        if (SelectedFilters.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var filter in SelectedFilters)
+        {
+            filter.IsEnabled = false;
+        }
+
+        _testRecheckDebouncer.Execute(RecheckTestInput);
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelection))]
     private void DeleteSelected()
     {
         if (SelectedFilters.Count == 0)
@@ -128,9 +167,10 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         }
 
         var selectedFilters = SelectedFilters.ToList();
-        foreach (var packet in selectedFilters)
+        foreach (var filter in selectedFilters)
         {
-            Filters.Remove(packet);
+            filter.PropertyChanged -= HandleItemChanged;
+            Filters.Remove(filter);
         }
 
         SelectedFilters.Clear();
@@ -201,5 +241,16 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         {
             SelectedFilters.Add(item);
         }
+    }
+
+    private void HandleItemChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        _testRecheckDebouncer.Execute(RecheckTestInput);
+    }
+
+    [RelayCommand]
+    private static void VisitRegex101()
+    {
+        Process.Start(new ProcessStartInfo("https://regex101.com/") { UseShellExecute = true });
     }
 }

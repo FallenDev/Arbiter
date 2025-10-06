@@ -396,7 +396,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     }
 
     [RelayCommand]
-    private void VisitProjectWebsite()
+    private static void VisitProjectWebsite()
     {
         Process.Start(new ProcessStartInfo("https://github.com/ewrogers/Arbiter") { UseShellExecute = true });
     }
