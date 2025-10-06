@@ -8,6 +8,7 @@ using Arbiter.App.Services;
 using Avalonia.Markup.Xaml;
 using Arbiter.App.ViewModels;
 using Arbiter.App.ViewModels.Client;
+using Arbiter.App.ViewModels.Filters;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.MessageBox;
@@ -111,6 +112,7 @@ public class App : Application
         
         // Transients
         services.AddTransient<MessageBoxViewModel>();
+        services.AddTransient<MessageFilterListViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<SettingsViewModel>();
         services.AddTransient<TraceViewModel>();

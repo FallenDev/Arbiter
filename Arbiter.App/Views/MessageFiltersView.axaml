@@ -1,0 +1,16 @@
+﻿<controls:TalgoniteWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:controls="using:Arbiter.App.Controls"
+        xmlns:vm="using:Arbiter.App.ViewModels.Filters"
+        x:Class="Arbiter.App.Views.MessageFiltersView"
+        x:DataType="vm:MessageFilterListViewModel"
+        Title="{Binding Title}"
+        Width="640" Height="480"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+
+</controls:TalgoniteWindow>

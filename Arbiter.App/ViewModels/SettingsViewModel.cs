@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Filters;
+using Arbiter.App.Views;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -22,6 +24,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         MimeTypes = ["application/octet-stream"],
     };
 
+    private readonly IDialogService _dialogService;
     private readonly ISettingsService _settingsService;
     private readonly IStorageProvider _storageProvider;
 
@@ -307,8 +310,10 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
-    public SettingsViewModel(ISettingsService settingsService, IStorageProvider storageProvider)
+    public SettingsViewModel(IDialogService dialogService, ISettingsService settingsService,
+        IStorageProvider storageProvider)
     {
+        _dialogService = dialogService;
         _settingsService = settingsService;
         _storageProvider = storageProvider;
 
@@ -380,9 +385,15 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     }
 
     [RelayCommand]
-    private void EditMessageFilters()
+    private async Task EditMessageFilters()
     {
-        
+        var newFilters =
+            await _dialogService.ShowDialogAsync<MessageFiltersView, MessageFilterListViewModel, List<MessageFilter>>();
+
+        if (newFilters is null)
+        {
+            return;
+        }
     }
 
     [RelayCommand]

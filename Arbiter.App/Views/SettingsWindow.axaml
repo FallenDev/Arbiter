@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="640" Height="480"
+                          Width="720" Height="520"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -257,17 +257,8 @@
             <!-- Messages Settings Tab -->
             <TabItem Header="Messages">
                 <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
-                    <Grid Grid.Row="0" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Margin="8,0">
-                        <!-- Ignore Empty World Messages -->
-                        <Label Grid.Row="0" Grid.Column="0"
-                               Content="Ignore Empty World Messages"
-                               ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
-                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
-                                      IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
-                    </Grid>
-                    
                     <!-- Filter Rules -->
-                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,0">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,0">
                         <Label Grid.Column="0" Content="World Message Filters"
                                ToolTip.Tip="Filter patterns to match, which will be not displayed (in-game)."/>
                         <TextBox Grid.Column="1"
@@ -277,7 +268,7 @@
                                  FontFamily="{StaticResource  Talgonite.Font.Monospace}"
                                  FontSize="16"
                                  Height="40"
-                                 MinWidth="120"
+                                 MinWidth="160"
                                  Margin="8,0"
                                  Padding="16,0"
                                  VerticalAlignment="Center"/>
@@ -289,6 +280,15 @@
                                 Padding="8,4"
                                 Classes="outline">
                         </Button>
+                    </Grid>
+                    
+                    <Grid Grid.Row="1" RowDefinitions="Auto,*" ColumnDefinitions="*,Auto" Margin="8,0">
+                        <!-- Ignore Empty World Messages -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Ignore Empty World Messages"
+                               ToolTip.Tip="Prevents empty world messages from scrolling the bar (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugIgnoreEmptyMessages}"/>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -328,7 +328,7 @@
         <Border Grid.Row="1"
                 BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
                 BorderThickness="0,2,0,0"
-                Padding="16,8">
+                Padding="16,8,16,12">
             <UniformGrid Columns="2" ColumnSpacing="8" Margin="0,0,0,0">
                 <!-- OK button -->
                 <Button Command="{Binding HandleOkCommand}" IsDefault="True">
