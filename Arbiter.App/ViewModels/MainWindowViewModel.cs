@@ -9,6 +9,7 @@ using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Proxy;
 using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
+using Arbiter.Net.Filters;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -115,7 +116,7 @@ public partial class MainWindowViewModel : ViewModelBase
             });
         }
     }
-    
+
     private void OnPacketSelected(TracePacketViewModel? viewModel)
     {
         if (viewModel is null)
@@ -125,7 +126,13 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        SelectedRawHex = new RawHexViewModel(viewModel.DecryptedPacket);
+        var packet = viewModel.FilterAction switch
+        {
+            NetworkFilterAction.Replace => viewModel.FilteredPacket ?? viewModel.DecryptedPacket,
+            _ => viewModel.DecryptedPacket
+        };
+
+        SelectedRawHex = new RawHexViewModel(packet);
         SelectedRawHex.ClearSelection();
 
         Inspector.SelectedPacket = viewModel;

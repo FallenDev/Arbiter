@@ -67,7 +67,10 @@ public partial class InspectorViewModel : ViewModelBase
             return;
         }
 
-        var packet = viewModel.DecryptedPacket;
+        var packet = viewModel is { WasReplaced: true, FilteredPacket: not null }
+            ? viewModel.FilteredPacket
+            : viewModel.DecryptedPacket;
+        
         var (vm, exception) = _factory.Create(packet);
         InspectedPacket = vm;
         

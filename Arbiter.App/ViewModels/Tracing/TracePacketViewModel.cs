@@ -61,7 +61,7 @@ public partial class TracePacketViewModel(
 
     public string DisplayValue => DisplayMode switch
     {
-        PacketDisplayMode.Decrypted => FormattedDecrypted,
+        PacketDisplayMode.Decrypted => WasReplaced && FormattedFiltered is not null ? FormattedFiltered : FormattedDecrypted,
         _ => FormattedEncrypted
     };
 
