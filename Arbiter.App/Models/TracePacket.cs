@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Arbiter.Json.Converters;
+using Arbiter.Net.Filters;
 
 namespace Arbiter.App.Models;
 
@@ -16,7 +17,7 @@ public class TracePacket
     [JsonPropertyName("command")]
     [JsonConverter(typeof(HexNumberConverterFactory))]
     public byte Command { get; set; }
-    
+
     [JsonPropertyName("sequence")]
     [JsonConverter(typeof(HexNumberConverterFactory))]
     public byte? Sequence { get; set; }
@@ -29,7 +30,13 @@ public class TracePacket
     [JsonConverter(typeof(HexByteEnumerableConverterFactory))]
     public IReadOnlyCollection<byte> Payload { get; set; } = [];
 
-    [JsonPropertyName("checksum")] 
+    [JsonPropertyName("action")] public NetworkFilterAction FilterAction { get; set; } = NetworkFilterAction.Allow;
+    
+    [JsonPropertyName("filtered")]
+    [JsonConverter(typeof(HexByteEnumerableConverterFactory))]
+    public IReadOnlyCollection<byte>? FilteredPayload { get; set; }
+
+    [JsonPropertyName("checksum")]
     [JsonConverter(typeof(HexNumberConverterFactory))]
     public uint? Checksum { get; set; }
 }

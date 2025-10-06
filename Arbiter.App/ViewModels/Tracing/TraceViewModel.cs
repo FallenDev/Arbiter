@@ -47,9 +47,9 @@ public partial class TraceViewModel : ViewModelBase
     [ObservableProperty] private TraceClientViewModel? _selectedTraceClient;
 
     [ObservableProperty] private string? _traceClientName;
-    
+
     public ObservableCollection<TraceClientViewModel> TraceClients { get; } = [new("All Clients")];
-    
+
     public bool IsEmpty => _isEmpty;
 
     public bool ShowRawPackets
@@ -84,7 +84,7 @@ public partial class TraceViewModel : ViewModelBase
 
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientDisconnected += OnClientDisconnected;
-        
+
         SelectedTraceClient = TraceClients.FirstOrDefault();
         FilteredPackets = new FilteredObservableCollection<TracePacketViewModel>(_allPackets, MatchesFilter);
 
@@ -101,7 +101,7 @@ public partial class TraceViewModel : ViewModelBase
         {
             return;
         }
-        
+
         Dispatcher.UIThread.Post(() =>
         {
             var client = new TraceClientViewModel(e.Connection.Name, e.Connection.Name);
@@ -112,10 +112,10 @@ public partial class TraceViewModel : ViewModelBase
             {
                 SelectedTraceClient = client;
             }
-            
+
         }, DispatcherPriority.Background);
     }
-    
+
     private void OnClientDisconnected(object? sender, ProxyConnectionEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(e.Connection.Name))
@@ -166,13 +166,13 @@ public partial class TraceViewModel : ViewModelBase
         {
             return;
         }
-        
-        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.Connection.Name)
+
+        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.FilterResult, e.Connection.Name)
             { DisplayMode = _packetDisplayMode };
 
         AddPacketToTrace(packetViewModel);
     }
-    
+
     private void OnPacketQueued(object? sender, ProxyConnectionDataEventArgs e)
     {
         // Ignore packets from other clients if a client is selected
@@ -182,8 +182,8 @@ public partial class TraceViewModel : ViewModelBase
         {
             return;
         }
-        
-        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.Connection.Name)
+
+        var packetViewModel = new TracePacketViewModel(e.Encrypted, e.Decrypted, e.FilterResult, e.Connection.Name)
             { DisplayMode = _packetDisplayMode };
 
         AddPacketToTrace(packetViewModel);
@@ -208,9 +208,9 @@ public partial class TraceViewModel : ViewModelBase
     {
         _allPackets.Clear();
         SelectedPackets.Clear();
-        
+
         FilterParameters.ClearClients();
-        
+
         IsDirty = false;
         OnPropertyChanged(nameof(FilteredPackets));
     }
@@ -224,14 +224,14 @@ public partial class TraceViewModel : ViewModelBase
         }
 
         TraceClientName = SelectedTraceClient?.Name;
-        
+
         _proxyServer.PacketReceived += OnPacketReceived;
         _proxyServer.PacketQueued += OnPacketQueued;
 
         StartTime = DateTime.Now;
         IsRunning = true;
         IsLive = true;
-        
+
         _logger.LogInformation("Trace started");
     }
 
@@ -245,11 +245,11 @@ public partial class TraceViewModel : ViewModelBase
 
         _proxyServer.PacketReceived -= OnPacketReceived;
         _proxyServer.PacketQueued -= OnPacketQueued;
-        
+
         IsRunning = false;
-        
+
         SelectedTraceClient ??= TraceClients.FirstOrDefault();
-        
+
         _logger.LogInformation("Trace stopped");
     }
 
@@ -268,7 +268,7 @@ public partial class TraceViewModel : ViewModelBase
         {
             return;
         }
-        
+
         ClearPackets();
         _logger.LogInformation("Trace cleared");
     }
