@@ -82,27 +82,28 @@
             </WrapPanel>
         </Grid>
         
-        <Grid Grid.Row="1">
-            <Border Background="{StaticResource Talgonite.CheckBox.Background}"
-                    BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
-                    BorderThickness="2"
-                    CornerRadius="4"
-                    Margin="8,4"
-                    Padding="16,8"
-                    IsVisible="{Binding SelectedPacket.WasBlocked, FallbackValue={x:False}}">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Path Width="16" Height="16"
-                          Stroke="{Binding #BlockedInfoTextBlock.Foreground}"
-                          Data="{StaticResource Talgonite.Icon.CrossX}"/>
-                    <TextBlock Name="BlockedInfoTextBlock"
-                               Text="This packet was blocked by a filter."
-                               TextWrapping="Wrap"
-                               FontSize="16"
-                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
-            </Border>
-        </Grid>
+        <!-- Blocked Packet Indicator -->
+        <Border Grid.Row="1" Background="{StaticResource Talgonite.CheckBox.Background}"
+                BorderBrush="{StaticResource Talgonite.Border.DividerBrush}"
+                BorderThickness="2"
+                CornerRadius="4"
+                Margin="8,4"
+                Padding="16,8"
+                IsVisible="{Binding SelectedPacket.WasBlocked, FallbackValue={x:False}}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Path Width="16" Height="16"
+                      Stroke="{Binding #BlockedInfoTextBlock.Foreground}"
+                      Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                <TextBlock Name="BlockedInfoTextBlock"
+                           Text="This packet was blocked by a filter."
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="16"
+                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
         
         <Border Grid.Row="2" Classes="divider-h" Margin="0,4"
                 IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNotNull}}"/>

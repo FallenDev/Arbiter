@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support for `@wait <milliseconds>` in `Send` packet syntax
 - Save filter action / result on trace packet JSON files
+- Inspector hint for packets blocked by filter rules
 
 ### Changed
 
 - Debounce `Send` input validation for performance
 - Pass `FilterResult` up through proxy layer events
+- Grey out blocked filtered packets in trace view
 
 ## [1.1.0] - 2025-10-06
 
