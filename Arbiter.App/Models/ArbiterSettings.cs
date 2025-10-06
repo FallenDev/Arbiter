@@ -11,7 +11,7 @@ public class ArbiterSettings : ICloneable
 
     public string ClientExecutablePath { get; set; } = DefaultPath;
     public bool SkipIntroVideo { get; set; } = true;
-    public bool SuppressLoginNotice { get; set; } = true;
+    public bool SuppressLoginNotice { get; set; }
 
     public int LocalPort { get; set; } = 2610;
 

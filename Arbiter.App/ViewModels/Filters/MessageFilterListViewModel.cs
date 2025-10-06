@@ -25,7 +25,14 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
 
     [ObservableProperty] private string _title = "Message Filters";
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(AddFilterCommand))]
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddFilterCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ApplyEditCommand))]
+    private bool _isEditing;
+    
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddFilterCommand))]
+    
     private string _inputText = string.Empty;
 
     public ObservableCollection<MessageFilterViewModel> SelectedFilters { get; } = [];
@@ -47,6 +54,19 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
 
     public event Action<List<MessageFilter>?>? RequestClose;
 
+    public MessageFilterListViewModel()
+    {
+        // Stop editing when selection changes
+        SelectedFilters.CollectionChanged += (_, _) =>
+        {
+            if (IsEditing)
+            {
+                InputText = string.Empty;
+                IsEditing = false;
+            }
+        };
+    }
+
     [RelayCommand]
     private void HandleOk()
     {
@@ -65,14 +85,14 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         RequestClose?.Invoke(null);
     }
 
-    private bool CanAddFilter() => !string.IsNullOrWhiteSpace(InputText) &&
-                                   TryParseRegex(InputText, RegexOptions.IgnoreCase, out _) &&
-                                   !HasPattern(InputText);
+    private bool IsValidFilter() => !string.IsNullOrWhiteSpace(InputText) &&
+                                    TryParseRegex(InputText, RegexOptions.IgnoreCase, out _);
 
-    [RelayCommand(CanExecute = nameof(CanAddFilter))]
+    [RelayCommand(CanExecute = nameof(IsValidFilter))]
     private void AddFilter()
     {
-        if (!TryParseRegex(InputText, RegexOptions.IgnoreCase, out var regex) || HasPattern(regex.ToString()))
+        if (IsEditing ||
+            !TryParseRegex(InputText, RegexOptions.IgnoreCase, out var regex))
         {
             return;
         }
@@ -84,6 +104,37 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         InputText = string.Empty;
         
         _testRecheckDebouncer.Execute(RecheckTestInput);
+    }
+
+    private bool CanEdit() => SelectedFilters.Count == 1;
+    
+    [RelayCommand(CanExecute = nameof(CanEdit))]
+    private void EditSelected()
+    {
+        if (SelectedFilters.Count != 1)
+        {
+            return;
+        }
+
+        InputText = SelectedFilters[0].Pattern;
+        IsEditing = true;
+    }
+
+    private bool CanApplyEdit() => SelectedFilters.Count == 1 && IsValidFilter();
+
+    [RelayCommand(CanExecute = nameof(CanApplyEdit))]
+    private void ApplyEdit()
+    {
+        if (!IsEditing || SelectedFilters.Count != 1 ||
+            !TryParseRegex(InputText, RegexOptions.IgnoreCase, out var regex))
+        {
+            return;
+        }
+
+        SelectedFilters[0].Pattern = regex.ToString();
+
+        InputText = string.Empty;
+        IsEditing = false;
     }
 
     private void RecheckTestInput()
@@ -103,8 +154,6 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         IsTestInputFiltered = isFiltered;
         IsTestInputAllowed = !isFiltered;
     }
-
-    private bool HasPattern(string pattern) => Filters.Any(x => x.Pattern == pattern);
 
     private static bool TryParseRegex(string pattern, RegexOptions options, [NotNullWhen(true)] out Regex? regex)
     {
@@ -140,8 +189,6 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         {
             filter.IsEnabled = true;
         }
-
-        _testRecheckDebouncer.Execute(RecheckTestInput);
     }
 
     [RelayCommand(CanExecute = nameof(HasSelection))]
@@ -156,8 +203,6 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         {
             filter.IsEnabled = false;
         }
-
-        _testRecheckDebouncer.Execute(RecheckTestInput);
     }
 
     [RelayCommand(CanExecute = nameof(HasSelection))]
@@ -177,6 +222,15 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
 
         SelectedFilters.Clear();
         _testRecheckDebouncer.Execute(RecheckTestInput);
+
+        AddFilterCommand.NotifyCanExecuteChanged();
+        EditSelectedCommand.NotifyCanExecuteChanged();
+
+        if (IsEditing)
+        {
+            InputText = string.Empty;
+            IsEditing = false;
+        }
     }
 
     [RelayCommand(CanExecute = nameof(CanMoveSelectedUp))]

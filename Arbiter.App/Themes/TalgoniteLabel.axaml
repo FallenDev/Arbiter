@@ -38,5 +38,9 @@
                                   RecognizesAccessKey="True"/>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Label.DisabledForeground}"/>
+        </Style>
     </Style>
 </Styles>

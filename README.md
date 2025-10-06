@@ -108,6 +108,19 @@ Optionally, you can specify a compression algorithm to use for the input.
 
 This can be useful for verifying against the checksum of metadata files (which are compressed).
 
+### Message Filtering
+
+You can filter out system messages and world shouts in the `Settings->Messages` tab.
+
+<img src="docs/src/screenshots/Arbiter-Message-Filters.png"/>
+
+These accept a case-insensitive [Regular Expression](https://regex101.com/) style syntax.
+You can use the bottom text area to test your filter against a sample message,
+which will show you if the message would be `Allowed` (shown) or `Filtered` (suppressed).
+
+Individual rules can be enabled/disabled by clicking on the checkbox next to the rule name.
+You can move rules up or down, edit them, or delete them using the right-click context menu.
+
 ## Documentation 📚
 
 TBD

@@ -61,6 +61,8 @@
                         <MenuItem Header="Disable Selected"
                                   Command="{Binding DisableSelectedCommand}"/>
                         <Separator/>
+                        <MenuItem Header="Edit Selected"
+                                  Command="{Binding EditSelectedCommand}"/>
                         <MenuItem Header="Delete Selected"
                                   Command="{Binding DeleteSelectedCommand}"/>
                     </ContextMenu>
@@ -77,11 +79,14 @@
                          Height="40"
                          Margin="16,0,0,0"/>
                 
+                <!-- Add Button -->
                 <Button Grid.Column="1"
                         Command="{Binding AddFilterCommand}"
                         Classes="outline"
                         HotKey="Enter"
                         ToolTip.Tip="Adds the filter pattern to the list."
+                        IsVisible="{Binding !IsEditing}"
+                        IsEnabled="{Binding !IsEditing}"
                         Height="40"
                         Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal" Spacing="8">
@@ -89,6 +94,26 @@
                               Stroke="{Binding $parent[Button].Foreground}"
                               Data="{StaticResource Talgonite.Icon.NewPlus}"/>
                         <TextBlock Text="Add"
+                                   Foreground="{Binding $parent[Button].Foreground}"
+                                   VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Button>
+                
+                <!-- Edit Button -->
+                <Button Grid.Column="1"
+                        Command="{Binding ApplyEditCommand}"
+                        Classes="outline"
+                        HotKey="Enter"
+                        ToolTip.Tip="Edits the selected pattern in the list."
+                        IsVisible="{Binding IsEditing, FallbackValue={x:False}}"
+                        IsEnabled="{Binding IsEditing}"
+                        Height="40"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.RefreshArrows}"/>
+                        <TextBlock Text="Edit"
                                    Foreground="{Binding $parent[Button].Foreground}"
                                    VerticalAlignment="Center"></TextBlock>
                     </StackPanel>
