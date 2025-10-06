@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Fix issue with client list dropdown for disconnected clients
+- Prioritize `ServerHeartbeat` message to avoid disconnect in heavy traffic
 
 ## [1.0.0] - 2025-10-03
 

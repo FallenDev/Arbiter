@@ -15,9 +15,42 @@ public partial class ProxyConnection
 
         try
         {
-            // Keep polling for any available outgoing packets
-            await foreach (var decryptedPacket in _sendQueue.Reader.ReadAllAsync(token))
+            while (!token.IsCancellationRequested)
             {
+                NetworkPacket decryptedPacket;
+
+                // Prefer priority queue packets first
+                if (_prioritySendQueue.Reader.TryRead(out var priorityPacket))
+                {
+                    decryptedPacket = priorityPacket;
+                }
+                else
+                {
+                    // Wait until any queue has data
+                    var priorityWait = _prioritySendQueue.Reader.WaitToReadAsync(token).AsTask();
+                    var normalWait = _sendQueue.Reader.WaitToReadAsync(token).AsTask();
+                    await Task.WhenAny(priorityWait, normalWait).ConfigureAwait(false);
+
+                    if (_prioritySendQueue.Reader.TryRead(out priorityPacket))
+                    {
+                        decryptedPacket = priorityPacket;
+                    }
+                    else if (_sendQueue.Reader.TryRead(out var normalPacket))
+                    {
+                        decryptedPacket = normalPacket;
+                    }
+                    else
+                    {
+                        // Both queues completed or canceled
+                        if ((priorityWait.IsCompleted && priorityWait.Result == false) &&
+                            (normalWait.IsCompleted && normalWait.Result == false))
+                        {
+                            break;
+                        }
+                        continue;
+                    }
+                }
+
                 // Do not send the 0x42 Client Exception packet to the server to avoid suspicion
                 if (decryptedPacket is ClientPacket { Command: ClientCommand.Exception })
                 {

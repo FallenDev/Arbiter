@@ -30,6 +30,7 @@ public partial class ProxyConnection : IDisposable
     private int _clientSequence;
     private int _serverSequence;
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
+    private readonly Channel<NetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<NetworkPacket>();
     
     public int Id { get; }
     public string? Name { get; set; }
@@ -67,7 +68,10 @@ public partial class ProxyConnection : IDisposable
 
     public bool EnqueuePacket(NetworkPacket packet)
     {
-        if (!_sendQueue.Writer.TryWrite(packet))
+        // Prioritize outgoing client heartbeat packets
+        var prioritized = packet is ClientPacket { Command: ClientCommand.Heartbeat };
+        var writer = prioritized ? _prioritySendQueue.Writer : _sendQueue.Writer;
+        if (!writer.TryWrite(packet))
         {
             return false;
         }
@@ -121,6 +125,7 @@ public partial class ProxyConnection : IDisposable
         if (isDisposing)
         {
             _sendQueue.Writer.TryComplete();
+            _prioritySendQueue.Writer.TryComplete();
 
             _clientStream?.Dispose();
             _client.Dispose();
