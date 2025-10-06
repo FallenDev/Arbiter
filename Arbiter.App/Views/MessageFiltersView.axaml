@@ -100,7 +100,6 @@
             <!-- Test Patterns -->
             <Grid Row="4" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Margin="8,0">
                 <Label Grid.Column="0" Content="Message"
-                       ToolTip.Tip="Test"
                        VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1"
                          Text="{Binding TestInput}"
@@ -135,7 +134,7 @@
                     Padding="16,8,16,12">
                 <UniformGrid Columns="2" ColumnSpacing="8" Margin="0,0,0,0">
                     <!-- OK button -->
-                    <Button Command="{Binding HandleOkCommand}" IsDefault="True">
+                    <Button Command="{Binding HandleOkCommand}">
                         <TextBlock Text="Save"/>
                     </Button>
                     <!-- Cancel Button -->

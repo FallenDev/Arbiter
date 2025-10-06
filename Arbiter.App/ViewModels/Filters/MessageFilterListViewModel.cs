@@ -81,6 +81,8 @@ public partial class MessageFilterListViewModel : ViewModelBase, IDialogResult<L
         filter.PropertyChanged += HandleItemChanged;
 
         Filters.Add(filter);
+        InputText = string.Empty;
+        
         _testRecheckDebouncer.Execute(RecheckTestInput);
     }
 

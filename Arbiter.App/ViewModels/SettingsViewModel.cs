@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
@@ -53,11 +54,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
 
     [ObservableProperty] private bool _hasChanges;
 
-    public string MessageFilterCount => Settings.MessageFilters.Count > 0
-        ? Settings.MessageFilters.Count == 1
-            ? $"{Settings.MessageFilters.Count} Filter"
-            : $"{Settings.MessageFilters.Count} Filters"
-        : "No Filters";
+    public string MessageFilterCount => GetHumanizedFilterCount();
 
     public string VersionString
     {
@@ -326,6 +323,27 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         Settings = await _settingsService.LoadFromFileAsync();
     }
 
+    private string GetHumanizedFilterCount()
+    {
+        var totalCount = Settings.MessageFilters.Count;
+
+        if (totalCount == 0)
+        {
+            return "No Filters";
+        }
+
+        var disabledCount = Settings.MessageFilters.Count(x => !x.IsEnabled);
+
+        if (disabledCount == 0)
+        {
+            return totalCount == 1 ? "1 Filter" : $"{totalCount} Filters";
+        }
+
+        return disabledCount == totalCount
+            ? $"{disabledCount} Disabled"
+            : $"{totalCount} Filters ({disabledCount} Disabled)";
+    }
+
     [RelayCommand]
     private async Task OnLocateClient()
     {
@@ -379,7 +397,11 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         var vm = new MessageFilterListViewModel();
         foreach (var filter in Settings.MessageFilters)
         {
-            vm.Filters.Add(new MessageFilterViewModel { Pattern = filter.Pattern });
+            vm.Filters.Add(new MessageFilterViewModel
+            {
+                IsEnabled = filter.IsEnabled,
+                Pattern = filter.Pattern
+            });
         }
 
         var newFilters =
