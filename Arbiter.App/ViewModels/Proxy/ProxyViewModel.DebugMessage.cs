@@ -7,6 +7,7 @@ using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
+using Arbiter.Net.Types;
 
 namespace Arbiter.App.ViewModels.Proxy;
 
@@ -56,7 +57,9 @@ public partial class ProxyViewModel
             return packet;
         }
 
-        if (!_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message))
+        // Only block messages that are bar messages or world shouts
+        if (!_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message) ||
+            message.MessageType != WorldMessageType.BarMessage && message.MessageType != WorldMessageType.WorldShout)
         {
             return packet;
         }
@@ -69,7 +72,7 @@ public partial class ProxyViewModel
                 _regexCache[filter.Pattern] = regex;
             }
 
-            if (regex.IsMatch(message.Message))
+            if (filter.IsEnabled && regex.IsMatch(message.Message))
             {
                 return null;
             }

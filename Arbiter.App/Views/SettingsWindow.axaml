@@ -26,7 +26,7 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8" SelectedIndex="7">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4">
@@ -260,7 +260,7 @@
                     <!-- Filter Rules -->
                     <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Margin="8,4">
                         <Label Grid.Column="0" Content="Notification Filters"
-                               ToolTip.Tip="Filter patterns for notifications that will be not displayed (in-game)."/>
+                               ToolTip.Tip="Filter patterns for notifications that will be not displayed (in-game).&#x0a;These will only apply to system messages and world shouts."/>
                         <TextBox Grid.Column="1"
                                  Text="{Binding MessageFilterCount}"
                                  TextAlignment="Center"
