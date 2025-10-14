@@ -7,6 +7,7 @@ using Arbiter.App.ViewModels.Client;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Proxy;
+using Arbiter.App.ViewModels.Send;
 using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
 using Arbiter.Net.Filters;
