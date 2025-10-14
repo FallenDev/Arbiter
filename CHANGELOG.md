@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for `@disconnect` / `@dc` in `Send` packet syntax
+- Client `DismissParcel` command (only found on older clients)
 
 ### Changed
 
