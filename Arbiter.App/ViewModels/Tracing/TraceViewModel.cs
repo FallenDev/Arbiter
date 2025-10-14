@@ -253,9 +253,8 @@ public partial class TraceViewModel : ViewModelBase
         _proxyServer.PacketQueued -= OnPacketQueued;
 
         IsRunning = false;
-
-        SelectedTraceClient ??= TraceClients.FirstOrDefault();
-
+        
+        PruneClients();
         _logger.LogInformation("Trace stopped");
     }
 
@@ -283,5 +282,25 @@ public partial class TraceViewModel : ViewModelBase
     private void ScrollToEnd()
     {
         ScrollToEndRequested = true;
+    }
+
+    private void PruneClients()
+    {
+        var liveClients = _proxyServer.Connections.Where(c => c.IsConnected).Select(c => c.Name).ToList();
+        var deadClients = TraceClients
+            .Where(c => !string.IsNullOrWhiteSpace(c.Name) && liveClients.All(n => !string.Equals(c.Name, n, StringComparison.OrdinalIgnoreCase))).ToList();
+
+        foreach (var client in deadClients)
+        {
+            TraceClients.Remove(client);
+
+            if (client == SelectedTraceClient)
+            {
+                TraceClientName = null;
+                SelectedTraceClient = TraceClients.FirstOrDefault();
+            }
+        }
+
+        SelectedTraceClient ??= TraceClients.FirstOrDefault();
     }
 }

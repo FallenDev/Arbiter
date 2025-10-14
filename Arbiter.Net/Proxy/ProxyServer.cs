@@ -38,6 +38,8 @@ public partial class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionExceptionEventArgs>? PacketException;
     public event EventHandler<ProxyConnectionFilterEventArgs>? FilterException;
 
+    public IEnumerable<ProxyConnection> Connections => _connections;
+    
     public void Start(int listenPort, IPAddress remoteAddress, int remotePort) =>
         Start(listenPort, new IPEndPoint(remoteAddress, remotePort));
 

@@ -496,7 +496,7 @@ public partial class SendPacketViewModel : ViewModelBase
             return;
         }
 
-        var newText = await clipboard.TryGetTextAsync();
+        var newText = await clipboard.GetTextAsync();
         if (!string.IsNullOrWhiteSpace(newText))
         {
             InputText = newText;
