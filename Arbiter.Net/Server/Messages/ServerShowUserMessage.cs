@@ -25,8 +25,8 @@ public class ServerShowUserMessage : ServerMessage
     public ushort? MonsterSprite { get; set; }
     public IReadOnlyList<byte>? MonsterUnknown { get; set; }
 
-    public ushort? Armor1Sprite { get; set; }
-    public ushort? Armor2Sprite { get; set; }
+    public ushort? ArmsSprite { get; set; }
+    public ushort? ArmorSprite { get; set; }
     public DyeColor? PantsColor { get; set; }
     public byte? BootsSprite { get; set; }
     public DyeColor? BootsColor { get; set; }
@@ -83,10 +83,10 @@ public class ServerShowUserMessage : ServerMessage
             }
 
             BodySprite = (BodySprite)bodySprite;
-            Armor1Sprite = reader.ReadUInt16();
+            ArmsSprite = reader.ReadUInt16();
 
             BootsSprite = reader.ReadByte();
-            Armor2Sprite = reader.ReadUInt16();
+            ArmorSprite = reader.ReadUInt16();
 
             ShieldSprite = reader.ReadByte();
             WeaponSprite = reader.ReadUInt16();
@@ -150,9 +150,9 @@ public class ServerShowUserMessage : ServerMessage
             }
 
             builder.AppendByte(bodySprite);
-            builder.AppendUInt16(Armor1Sprite ?? 0);
+            builder.AppendUInt16(ArmsSprite ?? 0);
             builder.AppendByte(BootsSprite ?? 0);
-            builder.AppendUInt16(Armor2Sprite ?? 0);
+            builder.AppendUInt16(ArmorSprite ?? 0);
             builder.AppendByte(ShieldSprite ?? 0);
             builder.AppendUInt16(WeaponSprite ?? 0);
             builder.AppendByte((byte)(HairColor ?? DyeColor.Default));

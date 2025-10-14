@@ -306,10 +306,12 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
     {
         registry.Register<ServerLightLevelMessage>(b =>
         {
-            b.Section("Light Level")
-                .Property(m => m.Brightness, p => p.ToolTip("Brightness of the current light level (time of day)."));
-            b.Section("Unknown")
-                .Property(m => m.Unknown, p => p.ShowHex());
+            b.Section("Time of Day")
+                .Property(m => m.TimeOfDay,
+                    p => p.ToolTip("Sundial position for time of day.\nThis is used on older client versions."));
+            b.Section("Lighting")
+                .Property(m => m.Lighting,
+                    p => p.ShowHex().ToolTip("Lighting used for lanterns on the map, determined from metadata."));
         });
     }
 
@@ -751,10 +753,10 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.IsHidden, p => p.ToolTip("Whether the user is hidden (invisible)."))
                 .IsExpanded(m => m.IsTranslucent || m.IsHidden);
             b.Section("Equipment")
-                .Property(m => m.Armor1Sprite,
-                    p => p.ToolTip("Sprite displayed for the user's primary armor."))
-                .Property(m => m.Armor2Sprite,
-                    p => p.ToolTip("Sprite displayed for the user's secondary armor."))
+                .Property(m => m.ArmsSprite,
+                    p => p.ToolTip("Sprite displayed for the user's arms, paired with their armor."))
+                .Property(m => m.ArmorSprite,
+                    p => p.ToolTip("Sprite displayed for the user's armor."))
                 .Property(m => m.PantsColor, p => p.ToolTip("Color applied to the user's pants."))
                 .Property(m => m.BootsSprite, p => p.ToolTip("Sprite displayed for the user's boots."))
                 .Property(m => m.BootsColor, p => p.ToolTip("Color applied to the user's boots."))

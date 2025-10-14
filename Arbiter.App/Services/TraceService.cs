@@ -23,7 +23,8 @@ public class TraceService : ITraceService
             new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, false),
             new HexNumberConverterFactory(),
             new HexByteEnumerableConverterFactory()
-        }
+        },
+        AllowTrailingCommas = true
     };
 
     private readonly IStorageProvider _storageProvider;
