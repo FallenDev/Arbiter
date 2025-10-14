@@ -19,7 +19,7 @@ public partial class RawHexViewModel : ViewModelBase
     private readonly byte[] _decryptedPayload;
     private readonly byte[] _filteredPayload;
 
-    private byte[] _payload;
+    private byte[]? _payload;
     private bool _showValuesAsHex;
     private int _startIndex;
     private int _endIndex;
@@ -35,8 +35,8 @@ public partial class RawHexViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(FormattedSequence))] [ObservableProperty]
     private byte? _sequence;
 
-    [ObservableProperty] private string _rawHex;
-    [ObservableProperty] private string _decodedText;
+    [ObservableProperty] private string? _rawHex;
+    [ObservableProperty] private string? _decodedText;
     [ObservableProperty] private string? _formattedSignedByte;
     [ObservableProperty] private string? _formattedUnsignedByte;
     [ObservableProperty] private string? _formattedSignedShort;
@@ -239,7 +239,7 @@ public partial class RawHexViewModel : ViewModelBase
         }
 
         _startIndex = Math.Max(0, startIndex);
-        _endIndex = Math.Min(endIndex, _payload.Length);
+        _endIndex = Math.Min(endIndex, _payload?.Length ?? 0);
 
         OnPropertyChanged(nameof(SelectedByteCount));
     }
@@ -261,11 +261,16 @@ public partial class RawHexViewModel : ViewModelBase
             ? $"{selectedSpan[3]}.{selectedSpan[2]}.{selectedSpan[1]}.{selectedSpan[0]}"
             : "--";
 
-        FormattedBitFlags = FormatBits(selectedSpan, 4, ' ') ?? "--";
+        FormattedBitFlags = FormatBits(selectedSpan, 4) ?? "--";
     }
 
     private string GetAsciiText()
     {
+        if (_payload is null)
+        {
+            return string.Empty;
+        }
+        
         var buffer = ArrayPool<char>.Shared.Rent(_payload.Length + 1);
 
         try
@@ -299,7 +304,7 @@ public partial class RawHexViewModel : ViewModelBase
     public void SelectAll()
     {
         HexSelectionStart = 0;
-        HexSelectionEnd = RawHex.Length;
+        HexSelectionEnd = RawHex?.Length ?? 0;
     }
 
     [RelayCommand]
@@ -316,9 +321,9 @@ public partial class RawHexViewModel : ViewModelBase
             "command" => true,
             "sequence" => Sequence.HasValue,
             "hex-selection" => SelectedByteCount > 0,
-            "hex-all" => RawHex.Length > 0,
+            "hex-all" => RawHex?.Length is > 0,
             "ascii-selection" => SelectedByteCount > 0,
-            "ascii-all" => DecodedText.Length > 0,
+            "ascii-all" => DecodedText?.Length is > 0,
             "i8" or "u8" => SelectedByteCount > 0,
             "i16" or "u16" => SelectedByteCount >= 2,
             "i32" or "u32" => SelectedByteCount >= 4,
@@ -352,9 +357,11 @@ public partial class RawHexViewModel : ViewModelBase
             "u64" => FormattedUnsignedLong,
             "ipv4" => FormattedIpAddress,
             "flags" => FormattedBitFlags,
-            "hex-selection" => RawHex.Substring(HexSelectionStart, HexSelectionEnd - HexSelectionStart),
+            "hex-selection" => RawHex?.Substring(HexSelectionStart, HexSelectionEnd - HexSelectionStart) ??
+                               string.Empty,
             "hex-all" => RawHex,
-            "ascii-selection" => DecodedText.Substring(TextSelectionStart, TextSelectionEnd - TextSelectionStart),
+            "ascii-selection" => DecodedText?.Substring(TextSelectionStart, TextSelectionEnd - TextSelectionStart) ??
+                                 string.Empty,
             "ascii-all" => DecodedText,
             _ => null
         };

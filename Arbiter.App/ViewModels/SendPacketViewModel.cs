@@ -15,6 +15,7 @@ using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia;
+using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -495,7 +496,7 @@ public partial class SendPacketViewModel : ViewModelBase
             return;
         }
 
-        var newText = await clipboard.GetTextAsync();
+        var newText = await clipboard.TryGetTextAsync();
         if (!string.IsNullOrWhiteSpace(newText))
         {
             InputText = newText;
