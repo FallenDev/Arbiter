@@ -42,7 +42,7 @@ public partial class HexView : UserControl
             return;
         }
 
-        var totalLength = viewModel.RawHex.Length;
+        var totalLength = viewModel.RawHex?.Length ?? 0;
         if (totalLength == 0)
         {
             HexTextBox.ClearSelection();
