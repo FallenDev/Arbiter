@@ -47,7 +47,7 @@ public partial class TracePacketViewModel(
     private string _formattedDecrypted = string.Join(' ', decrypted.Data.Select(x => x.ToString("X2")));
 
     [ObservableProperty] private string? _formattedFiltered = filterResult?.Output is not null
-        ? string.Join(' ', filterResult.Output.Select(x => x.ToString("X2")))
+        ? string.Join(' ', filterResult.Output.Data.Select(x => x.ToString("X2")))
         : null;
 
     public DateTime Timestamp { get; private init; } = DateTime.Now;
