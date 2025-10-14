@@ -221,4 +221,13 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
     {
         BringToFrontRequested?.Invoke(this, EventArgs.Empty);
     }
+
+    private bool CanDisconnect() => connection.IsConnected;
+
+    [RelayCommand(CanExecute = nameof(CanDisconnect))]
+    public void Disconnect()
+    {
+        connection.Disconnect();
+        DisconnectCommand.NotifyCanExecuteChanged();
+    }
 }

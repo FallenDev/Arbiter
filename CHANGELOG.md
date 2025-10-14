@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Support for `@disconnect` / `@dc` in `Send` packet syntax
+
+### Changed
+
+- Allow trailing commas when loading trace JSON files
+- More accurate information for the `LightLevel` (time of day) packet
+- Fixed filtered packets showing incorrectly in the trace view
+- Renamed redundant `ArmorSprite` to better reflect its purpose
+
 ## [1.2.0] - 2025-10-06
 
 ### Added

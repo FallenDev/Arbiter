@@ -27,6 +27,8 @@ public partial class SendPacketViewModel : ViewModelBase
 {
     private readonly struct SendItem
     {
+        public static SendItem Disconnect => new() { IsDisconnect = true };
+        
         public SendItem(NetworkPacket packet)
         {
             Packet = packet;
@@ -39,6 +41,7 @@ public partial class SendPacketViewModel : ViewModelBase
             Packet = null;
         }
 
+        public bool IsDisconnect { get; init; }
         public NetworkPacket? Packet { get; }
         public TimeSpan? Wait { get; }
         public bool IsWait => Wait.HasValue;
@@ -52,6 +55,9 @@ public partial class SendPacketViewModel : ViewModelBase
     private static readonly Regex WaitLineRegex =
         new(@"^@wait\s+(\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private static readonly Regex DisconnectLineRegex =
+        new(@"^@(disconnect|dc)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    
     private readonly ILogger<SendPacketViewModel> _logger;
     private readonly ClientManagerViewModel _clientManager;
 
@@ -88,6 +94,9 @@ public partial class SendPacketViewModel : ViewModelBase
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private bool _hasPackets;
+    
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
+    private bool _hasDisconnects;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand))]
     private string? _validationError;
@@ -169,8 +178,10 @@ public partial class SendPacketViewModel : ViewModelBase
         var success = TryParseSendItems(lines, out var items, out var validationError);
         ValidationError = success ? null : validationError;
         ValidationErrorOpacity = !string.IsNullOrWhiteSpace(ValidationError) ? 1 : 0;
+        
         HasPackets = success && items.Any(x => x.Packet is not null);
-
+        HasDisconnects = success && items.Any(x => x.IsDisconnect);
+        
         StartSendCommand.NotifyCanExecuteChanged();
 
         if (validationError is not null)
@@ -179,7 +190,7 @@ public partial class SendPacketViewModel : ViewModelBase
         }
     }
 
-    private bool CanSend() => !IsSending && HasPackets && SelectedClient is not null && HasValidInput();
+    private bool CanSend() => !IsSending && (HasPackets || HasDisconnects )&& SelectedClient is not null && HasValidInput();
 
     private bool HasValidInput()
     {
@@ -210,8 +221,10 @@ public partial class SendPacketViewModel : ViewModelBase
         // Commit parsed items for sending
         _parsedItems.Clear();
         _parsedItems.AddRange(items);
+        
         HasPackets = _parsedItems.Any(x => x.Packet is not null);
-
+        HasDisconnects = _parsedItems.Any(x => x.IsDisconnect);
+        
         IsSending = true;
 
         // Create a fresh CTS for each run
@@ -275,6 +288,13 @@ public partial class SendPacketViewModel : ViewModelBase
                     token.ThrowIfCancellationRequested();
                     var item = sendItems[i];
 
+                    // Handle disconnects
+                    if (item.IsDisconnect)
+                    {
+                        client.Disconnect();
+                        continue;
+                    }
+                    
                     // Handle wait delays
                     if (item.IsWait)
                     {
@@ -364,6 +384,15 @@ public partial class SendPacketViewModel : ViewModelBase
                 continue;
             }
 
+            // Disconnect command
+            var disconnectMatch = DisconnectLineRegex.Match(trimmed);
+            if (disconnectMatch.Success)
+            {
+                items.Add(SendItem.Disconnect);
+                continue;           
+            }
+            
+            // Wait command
             var waitMatch = WaitLineRegex.Match(trimmed);
             if (waitMatch.Success)
             {

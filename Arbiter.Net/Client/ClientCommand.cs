@@ -38,6 +38,7 @@ public enum ClientCommand : byte
     BoardAction = 0x3B,
     UseSkill = 0x3E,
     WorldMapClick = 0x3F,
+    DismissParcel = 0x41,
     Exception = 0x42,
     Interact = 0x43,
     UnequipItem = 0x44,

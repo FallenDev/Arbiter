@@ -6,22 +6,22 @@ namespace Arbiter.Net.Server.Messages;
 [NetworkCommand(ServerCommand.LightLevel)]
 public class ServerLightLevelMessage : ServerMessage
 {
-    public byte Brightness { get; set; }
-    public byte Unknown { get; set; }
+    public byte TimeOfDay { get; set; }
+    public byte Lighting { get; set; }
 
     public override void Deserialize(INetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
-        Brightness = reader.ReadByte();
-        Unknown = reader.ReadByte();
+        TimeOfDay = reader.ReadByte();
+        Lighting = reader.ReadByte();
     }
 
     public override void Serialize(INetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         
-        builder.AppendByte(Brightness);
-        builder.AppendByte(Unknown);
+        builder.AppendByte(TimeOfDay);
+        builder.AppendByte(Lighting);
     }
 }
