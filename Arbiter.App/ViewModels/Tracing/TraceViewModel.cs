@@ -197,7 +197,7 @@ public partial class TraceViewModel : ViewModelBase
         // Set the index before adding to the collection so that the index is correct when the collection is sorted
         var nextIndex = Interlocked.Increment(ref _indexCounter);
         vm.Index = nextIndex;
-        
+
         var matchesSearch = MatchesSearch(vm);
         if (matchesSearch)
         {
@@ -266,7 +266,9 @@ public partial class TraceViewModel : ViewModelBase
         _logger.LogInformation("Trace stopped");
     }
 
-    [RelayCommand]
+    private bool CanClearTrace() => !IsSavingTrace && !IsLoadingTrace;
+
+    [RelayCommand(CanExecute = nameof(CanClearTrace))]
     private async Task ClearTrace()
     {
         var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
@@ -296,7 +298,8 @@ public partial class TraceViewModel : ViewModelBase
     {
         var liveClients = _proxyServer.Connections.Where(c => c.IsConnected).Select(c => c.Name).ToList();
         var deadClients = TraceClients
-            .Where(c => !string.IsNullOrWhiteSpace(c.Name) && liveClients.All(n => !string.Equals(c.Name, n, StringComparison.OrdinalIgnoreCase))).ToList();
+            .Where(c => !string.IsNullOrWhiteSpace(c.Name) &&
+                        liveClients.All(n => !string.Equals(c.Name, n, StringComparison.OrdinalIgnoreCase))).ToList();
 
         foreach (var client in deadClients)
         {

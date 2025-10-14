@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
@@ -10,29 +11,49 @@ namespace Arbiter.App.ViewModels.Tracing;
 
 public partial class TraceViewModel
 {
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoadTraceCommand), nameof(SaveAllCommand), nameof(SaveSelectedCommand),
+        nameof(DeleteSelectedCommand), nameof(ClearTraceCommand))]
+    private bool _isLoadingTrace;
+    
     public async Task LoadFromFileAsync(string inputPath, bool append = false)
     {
         var traceFile = await _traceService.LoadTraceFileAsync(inputPath);
         var packets = traceFile.Packets;
 
         StopTracing();
-
-        if (!append)
-        {
-            ClearPackets();
-            IsLive = false;
-        }
-
-        foreach (var packet in packets)
-        {
-            var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
-            AddPacketToTrace(vm, false);
-        }
         
+        IsLoadingTrace = true;
+        try
+        {
+
+            if (!append)
+            {
+                ClearPackets();
+                IsLive = false;
+            }
+
+            // There may be a lot of packets, so defer updates until the end
+            _allPackets.DeferUpdates(() =>
+            {
+                foreach (var packet in packets)
+                {
+                    var vm = TracePacketViewModel.FromTracePacket(packet, _packetDisplayMode);
+                    AddPacketToTrace(vm, false);
+                }
+            });
+        }
+        finally
+        {
+            IsLoadingTrace = false;
+        }
+
         RefreshSearchResults();
     }
-    
-    [RelayCommand]
+
+    private bool CanLoadTrace() => !IsSavingTrace && !IsLoadingTrace;
+
+    [RelayCommand(CanExecute = nameof(CanLoadTrace))]
     private async Task LoadTrace()
     {
         var append = _keyboardService.IsModifierPressed(KeyModifiers.Shift);

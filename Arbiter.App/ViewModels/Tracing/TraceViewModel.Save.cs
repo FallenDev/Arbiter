@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +14,11 @@ namespace Arbiter.App.ViewModels.Tracing;
 public partial class TraceViewModel
 {
     private static readonly string AutosaveDirectory = AppHelper.GetRelativePath("autosave");
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoadTraceCommand), nameof(SaveAllCommand), nameof(SaveSelectedCommand),
+        nameof(DeleteSelectedCommand), nameof(ClearTraceCommand))]
+    private bool _isSavingTrace;
     
     public Task SaveAllToFileAsync(string outputPath) => SaveToFileAsync(_allPackets, outputPath);
     
@@ -29,17 +35,10 @@ public partial class TraceViewModel
         await SaveAllToFileAsync(outputPath);
         _logger.LogInformation("Autosaved trace to {Filename}", outputPath);
     }
-    
-    private async Task SaveToFileAsync(IEnumerable<TracePacketViewModel> viewModels, string outputPath)
-    {
-        var snapshot = viewModels.ToList();
-        var packets = snapshot.Select(vm => vm.ToTracePacket());
 
-        var traceFile = new TraceFile { Packets = packets.ToList() };
-        await _traceService.SaveTraceFileAsync(traceFile, outputPath);
-    }
+    private bool CanSaveAll() => !IsSavingTrace && !IsLoadingTrace;
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanSaveAll))]
     private async Task SaveAll()
     {
         var outputPath = await ShowSaveDialog("Save Trace");
@@ -93,5 +92,23 @@ public partial class TraceViewModel
 
         var outputPath = result?.Path.AbsolutePath;
         return outputPath;
+    }
+
+    private async Task SaveToFileAsync(IEnumerable<TracePacketViewModel> viewModels, string outputPath)
+    {
+        IsSavingTrace = true;
+
+        try
+        {
+            var snapshot = viewModels.ToList();
+            var packets = snapshot.Select(vm => vm.ToTracePacket());
+
+            var traceFile = new TraceFile { Packets = packets.ToList() };
+            await _traceService.SaveTraceFileAsync(traceFile, outputPath);
+        }
+        finally
+        {
+            IsSavingTrace = false;
+        }
     }
 }

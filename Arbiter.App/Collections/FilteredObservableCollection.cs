@@ -36,7 +36,7 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
 
     public void Refresh()
     {
-        using var _ = _lock.EnterScope();
+        using var _ = Lock.EnterScope();
         Clear();
 
         foreach (var item in _sourceCollection.Where(Predicate))
