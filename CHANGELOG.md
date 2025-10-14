@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - More fixes for disconnected clients appearing in Trace dropdown
+- Retain order when copying multiple packets in Trace view
 
 ## [1.2.1] - 2025-10-13
 

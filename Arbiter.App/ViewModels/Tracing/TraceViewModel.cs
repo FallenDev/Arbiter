@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -34,6 +35,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
 
+    private long _indexCounter = 1;
     private bool _isEmpty = true;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
 
@@ -192,6 +194,10 @@ public partial class TraceViewModel : ViewModelBase
 
     private void AddPacketToTrace(TracePacketViewModel vm, bool pruneHistory = true)
     {
+        // Set the index before adding to the collection so that the index is correct when the collection is sorted
+        var nextIndex = Interlocked.Increment(ref _indexCounter);
+        vm.Index = nextIndex;
+        
         var matchesSearch = MatchesSearch(vm);
         if (matchesSearch)
         {
@@ -217,6 +223,8 @@ public partial class TraceViewModel : ViewModelBase
 
         FilterParameters.ClearClients();
 
+        Interlocked.Exchange(ref _indexCounter, 1);
+        
         IsDirty = false;
         OnPropertyChanged(nameof(FilteredPackets));
     }
