@@ -109,6 +109,16 @@ public partial class ProxyConnection : IDisposable
         return Task.WhenAll(clientRecvTask, serverRecvTask, senderTask);
     }
 
+    public void Disconnect()
+    {
+        if (!IsConnected)
+        {
+            return;
+        }
+        
+        _client.Close();
+    }
+
     public void Dispose()
     {
         Dispose(true);
