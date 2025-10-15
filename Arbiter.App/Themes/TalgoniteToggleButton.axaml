@@ -126,6 +126,42 @@
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Button.DisabledForeground}"/>
         </Style>
         
+        <!-- Entity Styles -->
+        <Style Selector="^.entity-user:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Color.LightBlue}"/>
+        </Style>
+        <Style Selector="^.entity-user:checked /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Color.LightBlue}"/>
+        </Style>
+        
+        <Style Selector="^.entity-npc:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Color.LightGreen}"/>
+        </Style>
+        <Style Selector="^.entity-npc:checked /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Color.LightGreen}"/>
+        </Style>
+        
+        <Style Selector="^.entity-monster:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Color.LightRed}"/>
+        </Style>
+        <Style Selector="^.entity-monster:checked /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Color.LightRed}"/>
+        </Style>
+        
+        <Style Selector="^.entity-item:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Color.LightYellow}"/>
+        </Style>
+        <Style Selector="^.entity-item:checked /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Color.LightYellow}"/>
+        </Style>
+        
+        <Style Selector="^.entity-reactor:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource Talgonite.Color.DimWhite}"/>
+        </Style>
+        <Style Selector="^.entity-reactor:checked /template/ Border#SelectionBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource Talgonite.Color.DimWhite}"/>
+        </Style>
+        
         <!-- Outline Button Focus Style -->
         <Style Selector="^.outline:focus /template/ Border#SelectionBorder">
             <Setter Property="BorderBrush" Value="{StaticResource Talgonite.ToggleButton.CheckedBorderBrush}"/>

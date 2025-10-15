@@ -14,6 +14,19 @@
             <sys:Double x:Key="Talgonite.FontSize.Console">14</sys:Double>
             <sys:Double x:Key="Talgonite.FontSize.Trace">14</sys:Double>
             
+            <!-- Colors -->
+            <SolidColorBrush x:Key="Talgonite.Color.White" Color="#e0e0e0"/>
+            <SolidColorBrush x:Key="Talgonite.Color.DimWhite" Color="#cdcfd2"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightGray" Color="#93959a"/>
+            <SolidColorBrush x:Key="Talgonite.Color.Gray" Color="#717479"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightRed" Color="#ed6a5e"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightOrange" Color="#ed8c53"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightYellow" Color="#fadf79"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightGreen" Color="#83e67a"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightBlue" Color="#82baf7"/>
+            <SolidColorBrush x:Key="Talgonite.Color.LightPurple" Color="#b48cff"/>
+            
+            
             <!-- Global Transition Durations -->
             <x:TimeSpan x:Key="Talgonite.Transition.Duration">0:0:0.250</x:TimeSpan>
             
@@ -216,7 +229,7 @@
             <SolidColorBrush x:Key="Talgonite.TextBox.Background" Color="#262b33"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.Foreground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.BorderBrush" Color="#373d49"/>
-            <SolidColorBrush x:Key="Talgonite.TextBox.WatermarkForeground" Color="#93959a"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.WatermarkForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.CaretForeground" Color="#cdcfd2"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionBackground" Color="#404a6380"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#81b8f5"/>

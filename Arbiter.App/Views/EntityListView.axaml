@@ -3,13 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels.Entity"
+             xmlns:converters="using:Arbiter.App.Converters"
              mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="800"
              x:Class="Arbiter.App.Views.EntityListView"
              x:DataType="vm:EntityListViewModel">
     
     <UserControl.Resources>
         <SolidColorBrush x:Key="Talgonite.Entity.TypeBackground" Color="#292d34"/>
-        <SolidColorBrush x:Key="Talgonite.Entity.TypeForeground" Color="#82baf7"/>
     </UserControl.Resources>
     
     <Grid Background="{StaticResource Talgonite.Control.Background}">
@@ -27,23 +27,23 @@
                 </TextBox.InnerLeftContent>
             </TextBox>
             <WrapPanel Grid.Row="1" ItemSpacing="2">
-                <ToggleButton Classes="glow" Content="USER"
+                <ToggleButton Classes="glow entity-user" Content="USER"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                              ToolTip.Tip="Whether to include player entities."
+                              ToolTip.Tip="Whether to include player (user) entities."
                               IsChecked="{Binding IncludePlayers}"/>
-                <ToggleButton Classes="glow" Content="NPC"
+                <ToggleButton Classes="glow entity-npc" Content="NPC"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
                               ToolTip.Tip="Whether to include mundane (NPC) entities."
                               IsChecked="{Binding IncludeNpcs}"/>
-                <ToggleButton Classes="glow" Content="MOB"
+                <ToggleButton Classes="glow entity-monster" Content="MOB"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
                               ToolTip.Tip="Whether to include monster entities."
                               IsChecked="{Binding IncludeMonsters}"/>
-                <ToggleButton Classes="glow" Content="ITEM"
+                <ToggleButton Classes="glow entity-item" Content="ITEM"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
                               ToolTip.Tip="Whether to include item entities (on ground)."
                               IsChecked="{Binding IncludeItems}"/>
-                <ToggleButton Classes="glow" Content="REACT"
+                <ToggleButton Classes="glow entity-reactor" Content="REACT"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
                               ToolTip.Tip="Whether to include encountered reactor entities."
                               IsChecked="{Binding IncludeReactors}"/>
@@ -70,7 +70,7 @@
                                         CornerRadius="2"
                                         Padding="6,2">
                                     <TextBlock Text="{Binding TypeShorthand}"
-                                               Foreground="{StaticResource Talgonite.Entity.TypeForeground}"
+                                               Foreground="{Binding Flags, Converter={x:Static converters:EntityColorConverter.Converter}}"
                                                FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                                FontWeight="SemiBold"
                                                VerticalAlignment="Center"/>

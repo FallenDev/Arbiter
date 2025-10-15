@@ -35,6 +35,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True"/>
+        <Setter Property="ClipToBounds" Value="True"/>
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="ListBoxBorder"
