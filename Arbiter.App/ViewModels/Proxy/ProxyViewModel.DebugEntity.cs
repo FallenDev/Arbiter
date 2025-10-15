@@ -2,11 +2,9 @@
 using System.Collections.Concurrent;
 using Arbiter.App.Models;
 using Arbiter.Net;
-using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
 using Arbiter.Net.Types;

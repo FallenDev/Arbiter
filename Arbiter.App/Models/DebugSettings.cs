@@ -5,6 +5,7 @@ namespace Arbiter.App.Models;
 public class DebugSettings : ICloneable
 {
     public bool ShowDialogId { get; set; }
+    public bool ShowPursuitId { get; set; }
     public bool ShowNpcId { get; set; }
     public bool ShowMonsterId { get; set; }
     public bool ShowMonsterClickId { get; set; }
@@ -18,14 +19,10 @@ public class DebugSettings : ICloneable
     public bool EnableZoomedOutMap { get; set; }
     public bool IgnoreEmptyMessages { get; set; }
 
-    public bool CheckEnabled() => ShowDialogId || ShowNpcId || ShowMonsterId ||
-                                  ShowMonsterClickId || ShowHiddenPlayers || ShowPlayerNames || UseClassicEffects ||
-                                  DisableBlind || EnableTabMap || EnableZoomedOutMap || DisableWeatherEffects ||
-                                  DisableDarkness || IgnoreEmptyMessages;
-
     public object Clone() => new DebugSettings
     {
         ShowDialogId = ShowDialogId,
+        ShowPursuitId = ShowPursuitId,
         ShowNpcId = ShowNpcId,
         ShowMonsterId = ShowMonsterId,
         ShowMonsterClickId = ShowMonsterClickId,
