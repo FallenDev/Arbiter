@@ -6,6 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="800"
              x:Class="Arbiter.App.Views.EntityListView"
              x:DataType="vm:EntityListViewModel">
+    
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="Talgonite.Entity.TypeBackground" Color="#292d34"/>
+        <SolidColorBrush x:Key="Talgonite.Entity.TypeForeground" Color="#82baf7"/>
+    </UserControl.Resources>
+    
     <Grid Background="{StaticResource Talgonite.Control.Background}">
         <Grid RowDefinitions="Auto,Auto,*" RowSpacing="4" Margin="8">
             <!-- Search Text -->
@@ -50,24 +56,44 @@
                      SelectionMode="Multiple">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="8,2">
-                            <Grid ColumnDefinitions="*,Auto">
+                        <Border Padding="4,2,8,2"
+                                Opacity="{Binding Opacity}">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
+                                </Transitions>
+                            </Border.Transitions>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
+                                <!-- Type Symbol -->
+                                <Border Grid.Column="0"
+                                        Background="{StaticResource Talgonite.Entity.TypeBackground}"
+                                        CornerRadius="2"
+                                        Padding="6,2">
+                                    <TextBlock Text="{Binding TypeShorthand}"
+                                               Foreground="{StaticResource Talgonite.Entity.TypeForeground}"
+                                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                
                                 <!-- Name -->
-                                <TextBlock Grid.Column="0"
+                                <TextBlock Grid.Column="1"
                                            Text="{Binding Name}"
                                            TextAlignment="Left"
                                            Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            VerticalAlignment="Center"
                                            IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                                <TextBlock Grid.Column="0"
+                                <!-- Placeholder -->
+                                <TextBlock Grid.Column="1"
                                            Text="{Binding TypeName}"
                                            TextAlignment="Left"
                                            Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            VerticalAlignment="Center"
                                            IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                                <TextBlock Grid.Column="1"
+                                <!-- ID -->
+                                <TextBlock Grid.Column="2"
                                            Text="{Binding Id, StringFormat={}0x{0:X}}"
                                            TextAlignment="Right"
                                            Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"

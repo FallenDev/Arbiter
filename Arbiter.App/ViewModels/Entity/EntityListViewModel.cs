@@ -45,9 +45,20 @@ public partial class EntityListViewModel : ViewModelBase
     private bool MatchesFilter(EntityViewModel entity)
     {
         // Search match can ALWAYS appear even if it does not match toggles
-        if (_searchEntityId is not null && entity.Id == _searchEntityId)
+        if (_searchEntityId is not null)
         {
-            return true;
+            // If the value matches exactly, return true
+            if (entity.Id == _searchEntityId)
+            {
+                return true;
+            }
+
+            // If the value is a substring of the search value, return true
+            var entityIdHex = entity.Id.ToString("X");
+            if (entityIdHex.Contains(_searchEntityId.Value.ToString("X"), StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
         }
 
         var hasSearchTerm = !string.IsNullOrWhiteSpace(SearchText);

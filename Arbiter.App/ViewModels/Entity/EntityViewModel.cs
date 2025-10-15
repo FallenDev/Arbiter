@@ -6,11 +6,14 @@ namespace Arbiter.App.ViewModels.Entity;
 public partial class EntityViewModel : ViewModelBase
 {
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Flags), nameof(Id), nameof(Name), nameof(Sprite), nameof(X), nameof(Y))]
+    [NotifyPropertyChangedFor(nameof(Flags), nameof(Id), nameof(Name), nameof(TypeName), nameof(TypeShorthand), nameof(Sprite), nameof(X), nameof(Y))]
     [NotifyPropertyChangedFor(nameof(IsPlayer), nameof(IsMonster), nameof(IsMundane), nameof(IsItem),
         nameof(IsReactor))]
     private GameEntity _entity;
 
+    [ObservableProperty]
+    private double _opacity = 1;
+    
     public EntityFlags Flags => Entity.Flags;
     public long Id => Entity.Id;
     public string? Name => Entity.Name;
@@ -23,6 +26,16 @@ public partial class EntityViewModel : ViewModelBase
         EntityFlags.Item => "Item",
         EntityFlags.Reactor => "Reactor",
         _ => "Unknown"
+    };
+    
+    public string TypeShorthand => Flags switch
+    {
+        EntityFlags.Player => "P",
+        EntityFlags.Monster => "M",
+        EntityFlags.Mundane => "N",
+        EntityFlags.Item => "I",
+        EntityFlags.Reactor => "R",
+        _ => "?"
     };
 
     public ushort Sprite => Entity.Sprite;
