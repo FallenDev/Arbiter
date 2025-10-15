@@ -1,4 +1,5 @@
-﻿using Arbiter.App.Models;
+﻿using System;
+using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
@@ -23,7 +24,25 @@ public partial class EntityListViewModel
             Name = "EntityView_ShowUserFilter",
             Priority = int.MaxValue
         });
-        
+
+        proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
+        {
+            Name = "EntityView_ShowDialogFilter",
+            Priority = int.MaxValue
+        });
+
+        proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage)
+        {
+            Name = "EntityView_ShowDialogMenuFilter",
+            Priority = int.MaxValue
+        });
+
+        proxyServer.AddFilter(new ServerMessageFilter<ServerEntityWalkMessage>(OnEntityWalkMessage)
+        {
+            Name = "EntityView_EntityWalkFilter",
+            Priority = int.MaxValue
+        });
+
         proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
         {
             Name = "EntityView_RemoveEntityFilter",
@@ -75,6 +94,111 @@ public partial class EntityListViewModel
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket OnShowDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
+    {
+        // Skip on invalid entity ID
+        if (message.EntityId is null or 0)
+        {
+            return result.Passthrough();
+        }
+
+        var wasFound = _entityStore.TryGetEntity(message.EntityId.Value, out _);
+        if (wasFound)
+        {
+            return result.Passthrough();
+        }
+
+        var flags = message.EntityType switch
+        {
+            EntityTypeFlags.Creature => EntityFlags.Mundane,
+            EntityTypeFlags.Item => EntityFlags.Item,
+            EntityTypeFlags.Reactor => EntityFlags.Reactor,
+            _ => EntityFlags.Monster
+        };
+
+        var entity = new GameEntity
+        {
+            Flags = flags,
+            Id = message.EntityId.Value,
+            Name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString(),
+            Sprite = message.Sprite ?? 0,
+        };
+
+        _entityStore.AddOrUpdateEntity(entity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket OnShowDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
+    {
+        // Skip on invalid entity ID
+        if (message.EntityId is null or 0)
+        {
+            return result.Passthrough();
+        }
+
+        var wasFound = _entityStore.TryGetEntity(message.EntityId.Value, out _);
+        if (wasFound)
+        {
+            return result.Passthrough();
+        }
+
+        var flags = message.EntityType switch
+        {
+            EntityTypeFlags.Creature => EntityFlags.Mundane,
+            EntityTypeFlags.Item => EntityFlags.Item,
+            EntityTypeFlags.Reactor => EntityFlags.Reactor,
+            _ => EntityFlags.Monster
+        };
+
+        var entity = new GameEntity
+        {
+            Flags = flags,
+            Id = message.EntityId.Value,
+            Name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString(),
+            Sprite = message.Sprite ?? 0,
+        };
+
+        _entityStore.AddOrUpdateEntity(entity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket OnEntityWalkMessage(ProxyConnection connection, ServerEntityWalkMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerEntityWalkMessage> result)
+    {
+        var existing = _entityStore.TryGetEntity(message.EntityId, out var entity);
+        if (!existing)
+        {
+            return result.Passthrough();
+        }
+
+        var newEntity = entity with
+        {
+            X = message.Direction switch
+            {
+                WorldDirection.Left => Math.Max(0, message.OriginX - 1),
+                WorldDirection.Right => message.OriginX + 1,
+                _ => message.OriginX
+            },
+            Y = message.Direction switch
+            {
+                WorldDirection.Up => Math.Max(0, message.OriginY - 1),
+                WorldDirection.Down => message.OriginY + 1,
+                _ => message.OriginY
+            }
+        };
+
+        _entityStore.AddOrUpdateEntity(newEntity, out _);
 
         // Do not alter the packet
         return result.Passthrough();

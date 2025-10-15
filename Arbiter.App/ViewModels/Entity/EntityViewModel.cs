@@ -1,15 +1,31 @@
 ﻿using Arbiter.App.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Entity;
 
 public partial class EntityViewModel : ViewModelBase
 {
-    private readonly GameEntity _entity;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Flags), nameof(Id), nameof(Name), nameof(Sprite), nameof(X), nameof(Y))]
+    [NotifyPropertyChangedFor(nameof(IsPlayer), nameof(IsMonster), nameof(IsMundane), nameof(IsItem),
+        nameof(IsReactor))]
+    private GameEntity _entity;
 
-    public long Id => _entity.Id;
-    
+    public EntityFlags Flags => Entity.Flags;
+    public long Id => Entity.Id;
+    public string? Name => Entity.Name;
+    public ushort Sprite => Entity.Sprite;
+    public int X => Entity.X;
+    public int Y => Entity.Y;
+
+    public bool IsPlayer => Flags.HasFlag(EntityFlags.Player);
+    public bool IsMonster => Flags.HasFlag(EntityFlags.Monster);
+    public bool IsMundane => Flags.HasFlag(EntityFlags.Mundane);
+    public bool IsItem => Flags.HasFlag(EntityFlags.Item);
+    public bool IsReactor => Flags.HasFlag(EntityFlags.Reactor);
+
     public EntityViewModel(GameEntity entity)
     {
-        _entity = entity;
+        Entity = entity;
     }
 }

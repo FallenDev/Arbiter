@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -21,6 +22,7 @@ public partial class EntityListViewModel : ViewModelBase
     [ObservableProperty] private string _searchText = string.Empty;
 
     public FilteredObservableCollection<EntityViewModel> FilteredEntities { get; }
+    public ObservableCollection<EntityViewModel> SelectedEntities { get; } = [];
 
     public EntityListViewModel(ProxyServer proxyServer, IEntityStore entityStore)
     {
@@ -43,12 +45,35 @@ public partial class EntityListViewModel : ViewModelBase
 
     private void OnEntityAdded(GameEntity entity)
     {
-
+        var vm = new EntityViewModel(entity);
+        _allEntities.Add(vm);
     }
 
     private void OnEntityUpdated(GameEntity entity)
     {
+        var vm = _allEntities.FirstOrDefault(vm => vm.Id == entity.Id);
+        if (vm is null)
+        {
+            OnEntityAdded(entity);
+            return;
+        }
 
+        var nameChanged = !string.Equals(vm.Name, entity.Name, StringComparison.OrdinalIgnoreCase);
+        vm.Entity = entity;
+
+        if (!nameChanged)
+        {
+            return;
+        }
+
+        if (!MatchesFilter(vm))
+        {
+            FilteredEntities.Remove(vm);
+        }
+        else if (MatchesFilter(vm) && !FilteredEntities.Contains(vm))
+        {
+            FilteredEntities.Add(vm);
+        }
     }
 
     private void OnEntityRemoved(GameEntity entity)
