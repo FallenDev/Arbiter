@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Arbiter.App.Models;
@@ -13,11 +12,13 @@ public sealed class EntityStore : IEntityStore
     public event Action<GameEntity>? EntityAdded;
     public event Action<GameEntity>? EntityUpdated;
     public event Action<GameEntity>? EntityRemoved;
-    
+
     public IEnumerable<GameEntity> Entities => _entities.Values;
-    
+
     public bool IsEmpty => _entities.IsEmpty;
     public int Count => _entities.Count;
+
+    public bool TryGetEntity(long id, out GameEntity entity) => _entities.TryGetValue(id, out entity);
 
     public void AddOrUpdateEntity(GameEntity entity, out bool wasUpdated)
     {
@@ -34,9 +35,9 @@ public sealed class EntityStore : IEntityStore
         wasUpdated = true;
     }
 
-    public bool RemoveEntity(long id)
+    public bool RemoveEntity(long id, out GameEntity entity)
     {
-        var wasRemoved = _entities.TryRemove(id, out var entity);
+        var wasRemoved = _entities.TryRemove(id, out entity);
         if (wasRemoved)
         {
             OnEntityRemoved(entity);
@@ -52,9 +53,9 @@ public sealed class EntityStore : IEntityStore
 
     private void OnEntityUpdated(GameEntity entity)
     {
-        EntityUpdated?.Invoke(entity);   
+        EntityUpdated?.Invoke(entity);
     }
-    
+
     private void OnEntityRemoved(GameEntity entity)
     {
         EntityRemoved?.Invoke(entity);

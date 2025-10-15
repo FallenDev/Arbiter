@@ -31,7 +31,7 @@ public partial class EntityListViewModel : ViewModelBase
 
         FilteredEntities = new FilteredObservableCollection<EntityViewModel>(_allEntities, MatchesFilter);
 
-        
+        AddPacketFilters(proxyServer);
     }
 
     partial void OnSearchTextChanged(string? oldValue, string newValue)
