@@ -213,6 +213,9 @@
                 <TabItem Header="Hex">
                     <v:HexView DataContext="{Binding SelectedRawHex}"/>
                 </TabItem>
+                <TabItem Header="Entities">
+                    <v:EntityListView DataContext="{Binding Entities}"/>
+                </TabItem>
                 <TabItem Header="CRC">
                     <v:CrcCalculatorView DataContext="{Binding CrcCalculator}"/>
                 </TabItem>
@@ -244,6 +247,10 @@
                             Content="Hex"
                             Classes="tab"
                             ToolTip.Tip="Shows the Hex view."/>
+                    <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="entities"
+                            Content="Entities"
+                            Classes="tab"
+                            ToolTip.Tip="Shows the known entities view."/>
                     <Button Command="{Binding ToggleRightPanelCommand}" CommandParameter="crc"
                             Content="CRC"
                             Classes="tab"

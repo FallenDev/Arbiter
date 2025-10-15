@@ -191,6 +191,20 @@
                 </StackPanel>
             </TabItem>
             
+            <!-- Dialogs Settings Tab -->
+            <TabItem Header="Dialogs">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
+                        <!-- Show Pursuit ID for Dialogs -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Show Pursuit ID in Menus"
+                               ToolTip.Tip="Shows the pursuit ID within dialog menus (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowPursuitId}"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
             <!-- Players Settings Tab -->
             <TabItem Header="Players">
                 <StackPanel Spacing="4" Margin="4">

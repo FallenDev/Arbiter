@@ -17,6 +17,8 @@ public partial class TracePacketViewModel(
     : ViewModelBase
 {
 
+    [ObservableProperty] private long _index;
+
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(DisplayValue))]
     private PacketDisplayMode _displayMode = PacketDisplayMode.Decrypted;
 

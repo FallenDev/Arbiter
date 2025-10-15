@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Send Selected button in `Send` view
+- Dialog settings section with new option to show pursuit ID in dialog menus
+- Strongly-typed network message filtering wrappers (backend)
+
+### Changed
+
+- More fixes for disconnected clients appearing in Trace dropdown
+- Retain order when copying multiple packets in Trace view
+- Improve performance when loading thousands of trace packets from a large file
+- Change `Repeat` to `Loop` to avoid the mental `-1` logic
+- Text selection brush to be more blue
+- Show minimized client windows when bringing to foreground
+- Renamed `Decrypted`/`Encrypted` toggle to `Data`/`Raw` for clarity (and UI space)
+
 ## [1.2.1] - 2025-10-13
 
 ### Added

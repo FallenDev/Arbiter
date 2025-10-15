@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
 
@@ -6,15 +7,15 @@ namespace Arbiter.Net.Server.Messages;
 
 public class ServerMessageFactory : IServerMessageFactory
 {
-    public static IServerMessageFactory Default { get; } = new ServerMessageFactory();
-    
+    public static ServerMessageFactory Default { get; } = new();
+
     private readonly Dictionary<ServerCommand, Type> _typeMappings = new();
 
     public ServerMessageFactory()
     {
         RegisterAnnotatedMessages();
     }
-    
+
     private void RegisterAnnotatedMessages()
     {
         var assembly = Assembly.GetExecutingAssembly();
@@ -33,7 +34,7 @@ public class ServerMessageFactory : IServerMessageFactory
             _typeMappings.Add(command, type);
         }
     }
-    
+
     public Type? GetMessageType(ServerCommand command) => _typeMappings.GetValueOrDefault(command);
 
     public ServerCommand? GetMessageCommand(Type messageType)
@@ -62,5 +63,37 @@ public class ServerMessageFactory : IServerMessageFactory
         instance.Deserialize(reader);
 
         return instance;
+    }
+
+    public bool TryCreate(ServerPacket packet, [NotNullWhen(true)] out IServerMessage? message)
+    {
+        try
+        {
+            message = Create(packet);
+            return message is not null;
+        }
+        catch
+        {
+            message = null;
+            return false;
+        }
+    }
+
+    public bool TryCreate<T>(ServerPacket packet, [NotNullWhen(true)] out T? message) where T : IServerMessage
+    {
+        message = default;
+
+        if (!TryCreate(packet, out var serverMessage))
+        {
+            return false;
+        }
+
+        if (serverMessage is not T expectedMessage)
+        {
+            return false;
+        }
+
+        message = expectedMessage;
+        return true;
     }
 }

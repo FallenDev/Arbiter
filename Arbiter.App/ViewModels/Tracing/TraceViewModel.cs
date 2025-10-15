@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -34,6 +35,7 @@ public partial class TraceViewModel : ViewModelBase
 
     private readonly ConcurrentObservableCollection<TracePacketViewModel> _allPackets = [];
 
+    private long _indexCounter = 1;
     private bool _isEmpty = true;
     private PacketDisplayMode _packetDisplayMode = PacketDisplayMode.Decrypted;
 
@@ -192,6 +194,10 @@ public partial class TraceViewModel : ViewModelBase
 
     private void AddPacketToTrace(TracePacketViewModel vm, bool pruneHistory = true)
     {
+        // Set the index before adding to the collection so that the index is correct when the collection is sorted
+        var nextIndex = Interlocked.Increment(ref _indexCounter);
+        vm.Index = nextIndex;
+
         var matchesSearch = MatchesSearch(vm);
         if (matchesSearch)
         {
@@ -217,6 +223,8 @@ public partial class TraceViewModel : ViewModelBase
 
         FilterParameters.ClearClients();
 
+        Interlocked.Exchange(ref _indexCounter, 1);
+        
         IsDirty = false;
         OnPropertyChanged(nameof(FilteredPackets));
     }
@@ -253,13 +261,14 @@ public partial class TraceViewModel : ViewModelBase
         _proxyServer.PacketQueued -= OnPacketQueued;
 
         IsRunning = false;
-
-        SelectedTraceClient ??= TraceClients.FirstOrDefault();
-
+        
+        PruneClients();
         _logger.LogInformation("Trace stopped");
     }
 
-    [RelayCommand]
+    private bool CanClearTrace() => !IsSavingTrace && !IsLoadingTrace;
+
+    [RelayCommand(CanExecute = nameof(CanClearTrace))]
     private async Task ClearTrace()
     {
         var confirm = await _dialogService.ShowMessageBoxAsync(new MessageBoxDetails
@@ -283,5 +292,26 @@ public partial class TraceViewModel : ViewModelBase
     private void ScrollToEnd()
     {
         ScrollToEndRequested = true;
+    }
+
+    private void PruneClients()
+    {
+        var liveClients = _proxyServer.Connections.Where(c => c.IsConnected).Select(c => c.Name).ToList();
+        var deadClients = TraceClients
+            .Where(c => !string.IsNullOrWhiteSpace(c.Name) &&
+                        liveClients.All(n => !string.Equals(c.Name, n, StringComparison.OrdinalIgnoreCase))).ToList();
+
+        foreach (var client in deadClients)
+        {
+            TraceClients.Remove(client);
+
+            if (client == SelectedTraceClient)
+            {
+                TraceClientName = null;
+                SelectedTraceClient = TraceClients.FirstOrDefault();
+            }
+        }
+
+        SelectedTraceClient ??= TraceClients.FirstOrDefault();
     }
 }

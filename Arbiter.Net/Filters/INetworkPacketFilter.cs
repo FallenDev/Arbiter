@@ -7,8 +7,9 @@ public delegate NetworkPacket? NetworkFilterHandler(ProxyConnection connection, 
 
 public interface INetworkPacketFilter
 {
-    string? Name { get; set; }
-    int Priority { get; set; }
+    string? Name { get; }
+    int Priority { get;  }
     object? Parameter { get; }
+    bool IsEnabled { get; set; }
     NetworkFilterHandler Handler { get; }
 }

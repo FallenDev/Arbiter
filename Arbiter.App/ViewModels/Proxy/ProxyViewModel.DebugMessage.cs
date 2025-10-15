@@ -5,7 +5,6 @@ using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -13,55 +12,67 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
-    private const string DebugWorldMessageFilterName = "Debug_WorldMessageFilter";
-    private const string DebugEmptyWorldMessageFilterName = "Debug_EmptyWorldMessageFilter";
+    private readonly Dictionary<string, Regex> _regexCache = [];
 
-    private readonly Dictionary<string, Regex> _regexCache = new();
-    
+    private NetworkFilterRef? _emptyWorldMessageFilter;
+    private NetworkFilterRef? _worldMessageFilter;
+
     private void AddDebugMessageFilters(DebugSettings settings, IReadOnlyList<MessageFilter> filters)
     {
         if (settings.IgnoreEmptyMessages)
         {
-            _proxyServer.AddFilter(ServerCommand.WorldMessage,
-                new NetworkPacketFilter(HandleEmptyWorldMessageMessage, settings)
+            _emptyWorldMessageFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerWorldMessageMessage>(HandleEmptyWorldMessageMessage, settings)
                 {
-                    Name = DebugEmptyWorldMessageFilterName,
-                    Priority = int.MaxValue
+                    Name = "Debug_WorldMessageFilter",
+                    Priority = DebugFilterPriority
                 });
         }
-        
+
         if (filters.Count > 0)
         {
-            _proxyServer.AddFilter(ServerCommand.WorldMessage,
-                new NetworkPacketFilter(HandleWorldMessage, filters.ToList())
+            _worldMessageFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerWorldMessageMessage>(HandleWorldMessage, filters.ToList())
                 {
-                    Name = DebugWorldMessageFilterName,
-                    Priority = int.MaxValue - 1
+                    Name = "Debug_EmptyWorldMessageFilter",
+                    Priority = DebugFilterPriority - 10
                 });
         }
     }
 
     private void RemoveDebugMessageFilters()
     {
-        _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugEmptyWorldMessageFilterName);
-        _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugWorldMessageFilterName);
-        
+        _emptyWorldMessageFilter?.Unregister();
+        _worldMessageFilter?.Unregister();
+
         _regexCache.Clear();
     }
 
-    private NetworkPacket? HandleWorldMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket? HandleEmptyWorldMessageMessage(ProxyConnection connection,
+        ServerWorldMessageMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerWorldMessageMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not IReadOnlyList<MessageFilter> filters)
+        if (parameter is not DebugSettings filterSettings || filterSettings is { IgnoreEmptyMessages: false })
         {
-            return packet;
+            return result.Passthrough();
         }
 
-        // Only block messages that are bar messages or world shouts
-        if (!_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message) ||
-            message.MessageType != WorldMessageType.BarMessage && message.MessageType != WorldMessageType.WorldShout)
+        // Block the packet if the message is empty
+        return string.IsNullOrWhiteSpace(message.Message.Trim()) ? result.Block() : result.Passthrough();
+    }
+
+    private NetworkPacket? HandleWorldMessage(ProxyConnection connection, ServerWorldMessageMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerWorldMessageMessage> result)
+    {
+        if (parameter is not IReadOnlyList<MessageFilter> filters)
         {
-            return packet;
+            return result.Passthrough();
+        }
+
+        // Pass through non-bar or world messages
+        if (message.MessageType != WorldMessageType.BarMessage && message.MessageType != WorldMessageType.WorldShout)
+        {
+            return result.Passthrough();
         }
 
         foreach (var filter in filters)
@@ -74,29 +85,10 @@ public partial class ProxyViewModel
 
             if (filter.IsEnabled && regex.IsMatch(message.Message))
             {
-                return null;
+                return result.Block();
             }
         }
 
-        return packet;
-    }
-
-    private NetworkPacket? HandleEmptyWorldMessageMessage(ProxyConnection connection, NetworkPacket packet,
-        object? parameter)
-    {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
-        {
-            return packet;
-        }
-
-        if (filterSettings is { IgnoreEmptyMessages: false } ||
-            !_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message))
-        {
-            return packet;
-        }
-
-        // Block the packet if the message is empty
-        return !string.IsNullOrWhiteSpace(message.Message.Trim()) ? packet : null;
+        return result.Passthrough();
     }
 }

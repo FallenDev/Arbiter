@@ -15,7 +15,7 @@ public class NetworkPacketBuilder : INetworkPacketBuilder
     public bool IsServer { get; }
 
     public int Length => _buffer.Count;
-
+    
     public NetworkPacketBuilder(ClientCommand command, Encoding? encoding = null)
     {
         Command = (byte)command;

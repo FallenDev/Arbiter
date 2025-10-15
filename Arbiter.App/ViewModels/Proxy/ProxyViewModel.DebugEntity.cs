@@ -2,12 +2,9 @@
 using System.Collections.Concurrent;
 using Arbiter.App.Models;
 using Arbiter.Net;
-using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Serialization;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
 using Arbiter.Net.Types;
@@ -16,63 +13,60 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
-    private const string DebugAddEntityFilterName = "Debug_AddEntityFilter";
-    private const string DebugInteractFilterName = "Debug_InteractFilter";
-    private const string DebugInteractMessageFilterName = "Debug_InteractMessageFilter";
-
     private static readonly TimeSpan InteractRequestTimeout = TimeSpan.FromSeconds(2);
 
     // Used to track interaction queries for a client to map back to the correct entity
     private readonly ConcurrentDictionary<uint, WorldEntity> _worldEntities = [];
     private readonly ConcurrentDictionary<int, ConcurrentQueue<(uint, DateTime)>> _interactRequests = [];
 
+    private NetworkFilterRef? _debugAddEntityFilter;
+    private NetworkFilterRef? _debugInteractFilter;
+    private NetworkFilterRef? _debugInteractMessageFilter;
+
     private void AddDebugEntityFilters(DebugSettings settings)
     {
         if (settings.ShowNpcId || settings.ShowMonsterId || settings.ShowMonsterClickId)
         {
-            _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityMessage, settings)
-            {
-                Name = DebugAddEntityFilterName,
-                Priority = int.MaxValue
-            });
+            _debugAddEntityFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerAddEntityMessage>(HandleAddEntityMessage, settings)
+                {
+                    Name = "Debug_AddEntityFilter",
+                    Priority = DebugFilterPriority
+                });
         }
 
         if (settings.ShowMonsterClickId)
         {
-            _proxyServer.AddFilter(ClientCommand.Interact, new NetworkPacketFilter(HandleInteractMessage, settings)
-            {
-                Name = DebugInteractFilterName,
-                Priority = int.MaxValue
-            });
-
-            _proxyServer.AddFilter(ServerCommand.WorldMessage,
-                new NetworkPacketFilter(HandleInteractResponseMessage, settings)
+            _debugInteractFilter = _proxyServer.AddFilter(
+                new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage, settings)
                 {
-                    Name = DebugInteractMessageFilterName,
-                    Priority = int.MaxValue
+                    Name = "Debug_InteractFilter",
+                    Priority = DebugFilterPriority
+                });
+
+            _debugInteractMessageFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage, settings)
+                {
+                    Name = "Debug_InteractMessageFilter",
+                    Priority = DebugFilterPriority + 10
                 });
         }
     }
 
     private void RemoveDebugEntityFilters()
     {
-        _proxyServer.RemoveFilter(ServerCommand.AddEntity, DebugAddEntityFilterName);
-        _proxyServer.RemoveFilter(ClientCommand.Interact, DebugInteractFilterName);
-        _proxyServer.RemoveFilter(ServerCommand.WorldMessage, DebugInteractMessageFilterName);
+        _debugAddEntityFilter?.Unregister();
+        _debugInteractFilter?.Unregister();
+        _debugInteractMessageFilter?.Unregister();
     }
 
-    private NetworkPacket HandleAddEntityMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerAddEntityMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings filterSettings ||
+            filterSettings is { ShowMonsterId: false, ShowNpcId: false })
         {
-            return packet;
-        }
-
-        if (filterSettings is { ShowMonsterId: false, ShowNpcId: false } ||
-            !_serverMessageFactory.TryCreate<ServerAddEntityMessage>(serverPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         // Update all entities in the world list
@@ -93,6 +87,8 @@ public partial class ProxyViewModel
             _worldEntities.AddOrUpdate(entity.Id, worldEntity, (_, _) => worldEntity);
         }
 
+        var hasChanges = false;
+
         // Inject NPC IDs into the entity names
         if (filterSettings.ShowNpcId)
         {
@@ -105,6 +101,7 @@ public partial class ProxyViewModel
 
                 var name = npcEntity.Name ?? npcEntity.CreatureType.ToString();
                 npcEntity.Name = $"{name} 0x{npcEntity.Id:X4}";
+                hasChanges = true;
             }
         }
 
@@ -123,28 +120,19 @@ public partial class ProxyViewModel
                 // Need to set the creature type to Mundane to display hover name
                 monsterEntity.CreatureType = CreatureType.Mundane;
                 monsterEntity.Name = $"{name} 0x{monsterEntity.Id:X4}";
+                hasChanges = true;
             }
         }
 
-        // Build a new packet with the modified entity data
-        var builder = new NetworkPacketBuilder(ServerCommand.AddEntity);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return hasChanges ? result.Replace(message) : result.Passthrough();
     }
 
-    private NetworkPacket HandleInteractMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private NetworkPacket HandleInteractMessage(ProxyConnection connection, ClientInteractMessage message,
+        object? parameter, NetworkMessageFilterResult<ClientInteractMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ClientPacket clientPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings filterSettings || filterSettings is { ShowMonsterClickId: false })
         {
-            return packet;
-        }
-
-        if (filterSettings is { ShowMonsterClickId: false } ||
-            !_clientMessageFactory.TryCreate<ClientInteractMessage>(clientPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         // If the interaction type is Entity, queue the entity ID for later lookup when receiving the response
@@ -163,22 +151,15 @@ public partial class ProxyViewModel
             }
         }
 
-        return packet;
+        return result.Passthrough();
     }
 
-    private NetworkPacket HandleInteractResponseMessage(ProxyConnection connection, NetworkPacket packet,
-        object? parameter)
+    private NetworkPacket HandleInteractResponseMessage(ProxyConnection connection, ServerWorldMessageMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerWorldMessageMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings filterSettings || filterSettings is { ShowMonsterClickId: false })
         {
-            return packet;
-        }
-
-        if (filterSettings is { ShowMonsterClickId: false } ||
-            !_serverMessageFactory.TryCreate<ServerWorldMessageMessage>(serverPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         var trimmedMessage = message.Message.Trim();
@@ -186,28 +167,28 @@ public partial class ProxyViewModel
         // If the message is empty it's not a monster name
         if (string.IsNullOrWhiteSpace(trimmedMessage))
         {
-            return packet;
+            return result.Passthrough();
         }
 
         // If the message ends with a period, question mark, or exclamation mark then it's not a monster name
         if (trimmedMessage.EndsWith('.') || trimmedMessage.EndsWith('!') || trimmedMessage.EndsWith('?'))
         {
-            return packet;
+            return result.Passthrough();
         }
 
-        // We can safely ingore any message that contains any of the following characters
+        // We can safely ignore any message that contains any of the following characters
         foreach (var c in trimmedMessage)
         {
             if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?' or '"' or ',')
             {
-                return packet;
+                return result.Passthrough();
             }
         }
 
         // If there is no queue or it is empty then not pending interactions
         if (!_interactRequests.TryGetValue(connection.Id, out var queue) || queue.IsEmpty)
         {
-            return packet;
+            return result.Passthrough();
         }
 
         // Look for a request that has not timed out
@@ -233,15 +214,6 @@ public partial class ProxyViewModel
             foundRequest = true;
         }
 
-        if (!foundRequest)
-        {
-            return packet;
-        }
-
-        // Build a new packet with the modified world message data
-        var builder = new NetworkPacketBuilder(ServerCommand.WorldMessage);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return foundRequest ? result.Replace(message) : result.Passthrough();
     }
 }

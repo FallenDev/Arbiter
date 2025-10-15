@@ -60,7 +60,7 @@ public partial class ProxyConnection
         try
         {
             var output = packet;
-            foreach (var filter in filters.GetFilters(command))
+            foreach (var filter in filters.GetFilters(command).Where(f => f.IsEnabled))
             {
                 // Add the filter name for back-tracing
                 if (filter.Name is not null)

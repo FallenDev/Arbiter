@@ -2,7 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using Arbiter.Net.Client;
+using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.Net.Proxy;
 
@@ -37,6 +39,8 @@ public partial class ProxyServer : IDisposable
     public event EventHandler<ProxyConnectionDataEventArgs>? PacketQueued;
     public event EventHandler<ProxyConnectionExceptionEventArgs>? PacketException;
     public event EventHandler<ProxyConnectionFilterEventArgs>? FilterException;
+
+    public IEnumerable<ProxyConnection> Connections => _connections;
 
     public void Start(int listenPort, IPAddress remoteAddress, int remotePort) =>
         Start(listenPort, new IPEndPoint(remoteAddress, remotePort));

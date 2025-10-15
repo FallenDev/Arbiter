@@ -15,6 +15,11 @@ public static class NativeWindowHelper
 
     public static void BringToFront(IntPtr windowHandle)
     {
+        if (!NativeMethods.ShowWindow(windowHandle, Win32ShowWindowCommand.Restore))
+        {
+            throw new Win32Exception();
+        }
+
         if (!NativeMethods.SetForegroundWindow(windowHandle))
         {
             throw new Win32Exception();

@@ -24,7 +24,8 @@ public partial class TraceViewModel
             return;
         }
 
-        var packetStrings = SelectedPackets.Select(vm => vm.DisplayMode switch
+        var sortedSelection = SelectedPackets.OrderBy(p => p.Index);
+        var packetStrings = sortedSelection.Select(vm => vm.DisplayMode switch
         {
             PacketDisplayMode.Decrypted =>
                 $"{(vm.DecryptedPacket is ClientPacket ? ">" : "<")} {vm.Command:X2} {vm.FormattedDecrypted}",
@@ -34,7 +35,7 @@ public partial class TraceViewModel
         var lines = string.Join(Environment.NewLine, packetStrings);
         await clipboard.SetTextAsync(lines);
     }
-    
+
     [RelayCommand(CanExecute = nameof(HasSelection))]
     private void DeleteSelected()
     {

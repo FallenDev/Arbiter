@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
 
@@ -6,7 +7,7 @@ namespace Arbiter.Net.Client.Messages;
 
 public class ClientMessageFactory : IClientMessageFactory
 {
-    public static IClientMessageFactory Default { get; } = new ClientMessageFactory();
+    public static ClientMessageFactory Default { get; } = new();
 
     private readonly Dictionary<ClientCommand, Type> _typeMappings = new();
 
@@ -62,5 +63,37 @@ public class ClientMessageFactory : IClientMessageFactory
         instance.Deserialize(reader);
 
         return instance;
+    }
+    
+    public bool TryCreate(ClientPacket packet, [NotNullWhen(true)] out IClientMessage? message)
+    {
+        try
+        {
+            message = Create(packet);
+            return message is not null;
+        }
+        catch
+        {
+            message = null;
+            return false;
+        }
+    }
+
+    public bool TryCreate<T>(ClientPacket packet, [NotNullWhen(true)] out T? message) where T : IClientMessage
+    {
+        message = default;
+
+        if (!TryCreate(packet, out var clientMessage))
+        {
+            return false;
+        }
+
+        if (clientMessage is not T expectedMessage)
+        {
+            return false;
+        }
+
+        message = expectedMessage;
+        return true;
     }
 }

@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Client;
+using Arbiter.App.ViewModels.Entity;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Proxy;
+using Arbiter.App.ViewModels.Send;
 using Arbiter.App.ViewModels.Tracing;
 using Arbiter.App.Views;
-using Arbiter.Net.Filters;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -36,6 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public SendPacketViewModel SendPacket { get; }
     public ConsoleViewModel Console { get; }
     public InspectorViewModel Inspector { get; }
+    public EntityListViewModel Entities { get; }
     public CrcCalculatorViewModel CrcCalculator { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
@@ -59,6 +61,7 @@ public partial class MainWindowViewModel : ViewModelBase
         SendPacket = serviceProvider.GetRequiredService<SendPacketViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
         Inspector = serviceProvider.GetRequiredService<InspectorViewModel>();
+        Entities = serviceProvider.GetRequiredService<EntityListViewModel>();
         CrcCalculator = serviceProvider.GetRequiredService<CrcCalculatorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
