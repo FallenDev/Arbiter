@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Send Selected button in `Send` view
+
 ### Changed
 
 - More fixes for disconnected clients appearing in Trace dropdown
 - Retain order when copying multiple packets in Trace view
 - Improve performance when loading thousands of trace packets from a large file
 - Change `Repeat` to `Loop` to avoid the mental `-1` logic
+- Text selection brush to be more blue
+- Show minimized client windows when bringing to foreground
 
 ## [1.2.1] - 2025-10-13
 

@@ -67,11 +67,15 @@ public partial class SendPacketViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(StopSendCommand))]
     private bool _isSending;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand), nameof(CopyToClipboardCommand))]
+    [NotifyPropertyChangedFor(nameof(HasSelection))]
     private int _selectionStart;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand), nameof(CopyToClipboardCommand))]
+    [NotifyPropertyChangedFor(nameof(HasSelection))]
     private int _selectionEnd;
+
+    public bool HasSelection => Math.Abs(SelectionStart - SelectionEnd) != 0;
 
     public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
 
@@ -142,8 +146,15 @@ public partial class SendPacketViewModel : ViewModelBase
             return;
         }
 
+        // Check if there is a valid selection and use that instead
+        var selectionStart = Math.Min(SelectionStart, SelectionEnd);
+        var selectionEnd = Math.Max(SelectionStart, SelectionEnd);
+        var selectionLength = selectionEnd - selectionStart;
+
+        var inputText = selectionLength > 0 ? InputText.Substring(selectionStart, selectionLength) : InputText;
+        
         // Perform immediate validation before sending
-        var lines = InputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
+        var lines = inputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
         if (!TryParseSendItems(lines, out var items, out var validationError))
         {
             // Update UI to show the validation error immediately

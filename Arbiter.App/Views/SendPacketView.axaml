@@ -159,7 +159,7 @@
                 <StackPanel Grid.Column="3" Orientation="Horizontal">
                     <!-- Send Button -->
                     <Button Command="{Binding StartSendCommand}"
-                            ToolTip.Tip="Starts sending the packets provided in the text box."
+                            ToolTip.Tip="Starts sending all packets in the input area."
                             HotKey="Shift+Enter"
                             Classes="toolbar play"
                             MinWidth="120" Height="40"
@@ -168,7 +168,7 @@
                         <Button.IsVisible>
                             <MultiBinding Converter="{x:Static BoolConverters.And}">
                                 <Binding Path="!IsSending"/>
-                                <Binding Path="!IsSending"/>
+                                <Binding Path="!HasSelection" FallbackValue="{x:False}"/>
                             </MultiBinding>
                         </Button.IsVisible>
                         <StackPanel Orientation="Horizontal" Spacing="16">
@@ -183,7 +183,7 @@
                     
                     <!-- Send Selected Button -->
                     <Button Command="{Binding StartSendCommand}"
-                            ToolTip.Tip="Starts sending the selected packets."
+                            ToolTip.Tip="Starts sending the selected packets in the input area."
                             HotKey="Shift+Enter"
                             Classes="toolbar play"
                             MinWidth="120" Height="40"
@@ -192,7 +192,7 @@
                         <Button.IsVisible>
                             <MultiBinding Converter="{x:Static BoolConverters.And}">
                                 <Binding Path="!IsSending"/>
-                                <Binding Path="!IsSending"/>
+                                <Binding Path="HasSelection" FallbackValue="{x:False}"/>
                             </MultiBinding>
                         </Button.IsVisible>
                         <StackPanel Orientation="Horizontal" Spacing="16">
@@ -231,6 +231,7 @@
                         Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
                         SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
+                        ClearSelectionOnLostFocus="False"
                         FontSize="16"
                         Classes="editor no-focus-outline"
                         AcceptsTab="False"

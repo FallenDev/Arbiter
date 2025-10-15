@@ -218,8 +218,8 @@
             <SolidColorBrush x:Key="Talgonite.TextBox.BorderBrush" Color="#373d49"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.WatermarkForeground" Color="#93959a"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.CaretForeground" Color="#cdcfd2"/>
-            <SolidColorBrush x:Key="Talgonite.TextBox.SelectionBackground" Color="#4a6380"/>
-            <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#ffffff"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.SelectionBackground" Color="#404a6380"/>
+            <SolidColorBrush x:Key="Talgonite.TextBox.SelectionForeground" Color="#81b8f5"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.DisabledForeground" Color="#7b7e85"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.HoverBorderBrush" Color="#4d535d"/>
             <SolidColorBrush x:Key="Talgonite.TextBox.FocusBorderBrush" Color="#81b8f5"/>

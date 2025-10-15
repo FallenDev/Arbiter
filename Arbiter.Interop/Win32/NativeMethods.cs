@@ -91,4 +91,8 @@ internal static class NativeMethods
 
     [DllImport("user32.dll", EntryPoint = "SetClassLongPtr")]
     internal static extern IntPtr SetClassLongPtr(IntPtr hWindow, Win32GetClassLongIndex index, IntPtr newValue);
+
+    [DllImport("user32.dll", EntryPoint = "ShowWindow", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool ShowWindow(IntPtr hWindow, Win32ShowWindowCommand showCommand);
 }
