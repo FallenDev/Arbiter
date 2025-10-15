@@ -2,7 +2,6 @@
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
@@ -12,7 +11,10 @@ public partial class ProxyViewModel
 {
     private const string DebugShowDialogFilterName = "Debug_ShowDialogFilter";
     private const string DebugShowDialogMenuFilterName = "Debug_ShowDialogMenuFilter";
-
+    
+    private NetworkFilterRef? _debugDialogFilter;
+    private NetworkFilterRef? _debugDialogMenuFilter;
+    
     private void AddDebugDialogFilters(DebugSettings settings)
     {
         if (!settings.ShowDialogId)
@@ -20,70 +22,53 @@ public partial class ProxyViewModel
             return;
         }
 
-        _proxyServer.AddFilter(ServerCommand.ShowDialog, new NetworkPacketFilter(HandleDialogMessage, settings)
+        _debugDialogFilter = _proxyServer.AddMessageFilter(new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
         {
             Name = DebugShowDialogFilterName,
             Priority = DebugFilterPriority
         });
 
-        _proxyServer.AddFilter(ServerCommand.ShowDialogMenu, new NetworkPacketFilter(HandleDialogMenuMessage, settings)
-        {
-            Name = DebugShowDialogMenuFilterName,
-            Priority = DebugFilterPriority
-        });
+        _debugDialogMenuFilter = _proxyServer.AddMessageFilter(
+            new ServerMessageFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage, settings)
+            {
+                Name = DebugShowDialogMenuFilterName,
+                Priority = DebugFilterPriority
+            });
     }
 
     private void RemoveDebugDialogFilters()
     {
-        _proxyServer.RemoveFilter(ServerCommand.ShowDialog, DebugShowDialogFilterName);
-        _proxyServer.RemoveFilter(ServerCommand.ShowDialogMenu, DebugShowDialogMenuFilterName);
+        _debugDialogFilter?.Unregister();
+        _debugDialogMenuFilter?.Unregister();
     }
 
-    private NetworkPacket HandleDialogMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket HandleDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings { ShowDialogId: true })
         {
-            return packet;
-        }
-
-        if (filterSettings is { ShowDialogId: false } ||
-            !_serverMessageFactory.TryCreate<ServerShowDialogMessage>(serverPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
         message.Name = $"{name} [0x{message.EntityId:X4}]";
 
-        // Build a new packet with the modified dialog data
-        var builder = new NetworkPacketBuilder(ServerCommand.ShowDialog);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return result.Replace(message);
     }
 
-    private NetworkPacket HandleDialogMenuMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket HandleDialogMenuMessage(ProxyConnection connection,
+        ServerShowDialogMenuMessage message, object? parameter,
+        NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
     {
         // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings { ShowDialogId: false })
         {
-            return packet;
-        }
-
-        if (filterSettings is { ShowDialogId: false } ||
-            !_serverMessageFactory.TryCreate<ServerShowDialogMenuMessage>(serverPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
         message.Name = $"{name} [0x{message.EntityId:X4}]";
 
-        // Build a new packet with the modified dialog data
-        var builder = new NetworkPacketBuilder(ServerCommand.ShowDialogMenu);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return result.Replace(message);
     }
 }

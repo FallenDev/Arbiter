@@ -6,7 +6,7 @@ using Arbiter.Net.Server.Messages;
 namespace Arbiter.Net.Filters;
 
 public delegate NetworkPacket? ServerMessageFilterHandler<TMessage>(ProxyConnection connection, TMessage message,
-    NetworkMessageFilterResult<TMessage> result) where TMessage : IServerMessage;
+    object? parameter, NetworkMessageFilterResult<TMessage> result) where TMessage : IServerMessage;
 
 public class ServerMessageFilter<TMessage> : INetworkMessageFilter where TMessage : IServerMessage
 {
@@ -15,7 +15,7 @@ public class ServerMessageFilter<TMessage> : INetworkMessageFilter where TMessag
 
     public string? Name { get; init; }
     public int Priority { get; init; }
-
+    public bool IsEnabled { get; set; } = true;
     public object? Parameter { get; }
 
     public NetworkFilterHandler Handler => HandlePacket;
@@ -50,6 +50,6 @@ public class ServerMessageFilter<TMessage> : INetworkMessageFilter where TMessag
                 return builder.ToPacket();
             });
 
-        return _handler(connection, message, result);
+        return _handler(connection, message, Parameter, result);
     }
 }

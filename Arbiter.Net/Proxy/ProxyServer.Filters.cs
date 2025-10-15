@@ -1,6 +1,8 @@
 ﻿using Arbiter.Net.Client;
+using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Server;
+using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.Net.Proxy;
 
@@ -10,10 +12,55 @@ public partial class ProxyServer
     private readonly NetworkPacketFilterCollection _clientFilters = new();
     private readonly NetworkPacketFilterCollection _serverFilters = new();
 
-    public void AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
+    private readonly ClientMessageFactory _clientMessageFactory = ClientMessageFactory.Default;
+    private readonly ServerMessageFactory _serverMessageFactory = ServerMessageFactory.Default;
+
+    public NetworkFilterRef AddMessageFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage
+    {
+        var messageType = typeof(T);
+        var command = _clientMessageFactory.GetMessageCommand(messageType);
+
+        if (command is null)
+        {
+            throw new ArgumentException($"Message type {messageType.FullName} is not a registered client message type.",
+                nameof(filter));
+        }
+
+        return AddFilter(command.Value, filter);
+    }
+
+    public NetworkFilterRef AddMessageFilter<T>(ServerMessageFilter<T> filter) where T : IServerMessage
+    {
+        var messageType = typeof(T);
+        var command = _serverMessageFactory.GetMessageCommand(messageType);
+
+        if (command is null)
+        {
+            throw new ArgumentException($"Message type {messageType.FullName} is not a registered server message type.",
+                nameof(filter));
+        }
+
+        return AddFilter(command.Value, filter);
+    }
+
+    public bool RemoveClientMessageFilter<T>(string name) where T : IClientMessage
+    {
+        var messageType = typeof(T);
+        var command = _clientMessageFactory.GetMessageCommand(messageType);
+        return command is not null && RemoveFilter(command.Value, name);
+    }
+
+    public bool RemoveServerMessageFilter<T>(string name) where T : IServerMessage
+    {
+        var messageType = typeof(T);
+        var command = _serverMessageFactory.GetMessageCommand(messageType);
+        return command is not null && RemoveFilter(command.Value, name);
+    }
+
+    public NetworkFilterRef AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
         AddFilterInternal(ProxyDirection.ClientToServer, (byte)command, filter);
 
-    public void AddFilter(ServerCommand command, INetworkPacketFilter filter) =>
+    public NetworkFilterRef AddFilter(ServerCommand command, INetworkPacketFilter filter) =>
         AddFilterInternal(ProxyDirection.ServerToClient, (byte)command, filter);
 
     public bool RemoveFilter(ClientCommand command, string name) =>
@@ -22,13 +69,13 @@ public partial class ProxyServer
     public bool RemoveFilter(ServerCommand command, string name) =>
         RemoveFilterInternal(ProxyDirection.ServerToClient, (byte)command, name);
 
-    public void AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
+    public NetworkFilterRef AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
         => AddFilterInternal(direction, null, filter);
 
     public bool RemoveGlobalFilter(ProxyDirection direction, string name) =>
         RemoveFilterInternal(direction, null, name);
-    
-    private void AddFilterInternal(ProxyDirection direction, byte? command, INetworkPacketFilter filter)
+
+    private NetworkFilterRef AddFilterInternal(ProxyDirection direction, byte? command, INetworkPacketFilter filter)
     {
         var filters = direction switch
         {
@@ -83,6 +130,13 @@ public partial class ProxyServer
                 }
             }
         }
+
+        // Return a reference to the filter so it can be removed or toggled later
+        var filterRef = new NetworkFilterRef(
+            setEnabledAction: enabled => filter.IsEnabled = enabled,
+            unregisterAction: () => RemoveFilterInternal(direction, command, filter.Name ?? string.Empty));
+
+        return filterRef;
     }
 
     private bool RemoveFilterInternal(ProxyDirection direction, byte? command, string name)

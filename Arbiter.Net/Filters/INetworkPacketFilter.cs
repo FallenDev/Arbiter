@@ -10,5 +10,6 @@ public interface INetworkPacketFilter
     string? Name { get; }
     int Priority { get;  }
     object? Parameter { get; }
+    bool IsEnabled { get; set; }
     NetworkFilterHandler Handler { get; }
 }
