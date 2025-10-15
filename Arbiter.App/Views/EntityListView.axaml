@@ -20,6 +20,29 @@
                           Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
                 </TextBox.InnerLeftContent>
             </TextBox>
+            <WrapPanel Grid.Row="1" ItemSpacing="2">
+                <ToggleButton Classes="glow" Content="USER"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              ToolTip.Tip="Whether to include player entities."
+                              IsChecked="{Binding IncludePlayers}"/>
+                <ToggleButton Classes="glow" Content="NPC"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              ToolTip.Tip="Whether to include mundane (NPC) entities."
+                              IsChecked="{Binding IncludeNpcs}"/>
+                <ToggleButton Classes="glow" Content="MOB"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              ToolTip.Tip="Whether to include monster entities."
+                              IsChecked="{Binding IncludeMonsters}"/>
+                <ToggleButton Classes="glow" Content="ITEM"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              ToolTip.Tip="Whether to include item entities (on ground)."
+                              IsChecked="{Binding IncludeItems}"/>
+                <ToggleButton Classes="glow" Content="REACT"
+                              FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                              ToolTip.Tip="Whether to include encountered reactor entities."
+                              IsChecked="{Binding IncludeReactors}"/>
+                
+            </WrapPanel>
             <!-- Filters -->
             <ListBox Grid.Row="2"
                      ItemsSource="{Binding FilteredEntities}"

@@ -6,9 +6,7 @@ using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.Threading;
-using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -22,6 +20,12 @@ public partial class EntityListViewModel : ViewModelBase
 
     private uint? _searchEntityId;
     [ObservableProperty] private string _searchText = string.Empty;
+
+    [ObservableProperty] private bool _includePlayers = true;
+    [ObservableProperty] private bool _includeNpcs = true;
+    [ObservableProperty] private bool _includeMonsters;
+    [ObservableProperty] private bool _includeItems;
+    [ObservableProperty] private bool _includeReactors;
 
     public FilteredObservableCollection<EntityViewModel> FilteredEntities { get; }
     public ObservableCollection<EntityViewModel> SelectedEntities { get; } = [];
@@ -38,28 +42,36 @@ public partial class EntityListViewModel : ViewModelBase
         AddPacketFilters(proxyServer);
     }
 
-    partial void OnSearchTextChanged(string? oldValue, string newValue)
-    {
-        _searchRefreshDebouncer.Execute(() =>
-        {
-            if (uint.TryParse(newValue.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var id))
-            {
-                _searchEntityId = id;
-            }
-            else
-            {
-                _searchEntityId = null;
-            }
-            
-            FilteredEntities.Refresh();
-        });
-    }
-
     private bool MatchesFilter(EntityViewModel entity)
     {
         if (_searchEntityId is not null && entity.Id == _searchEntityId)
         {
             return true;
+        }
+
+        if (entity.Flags.HasFlag(EntityFlags.Player) && !IncludePlayers)
+        {
+            return false;
+        }
+
+        if (entity.Flags.HasFlag(EntityFlags.Mundane) && !IncludeNpcs)
+        {
+            return false;
+        }
+
+        if (entity.Flags.HasFlag(EntityFlags.Monster) && !IncludeMonsters)
+        {
+            return false;
+        }
+
+        if (entity.Flags.HasFlag(EntityFlags.Item) && !IncludeItems)
+        {
+            return false;
+        }
+
+        if (entity.Flags.HasFlag(EntityFlags.Reactor) && !IncludeReactors)
+        {
+            return false;
         }
 
         return entity.Name?.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) ?? false;
@@ -109,4 +121,37 @@ public partial class EntityListViewModel : ViewModelBase
         _allEntities.Remove(existingEntity);
         FilteredEntities.Remove(existingEntity);
     }
+
+    partial void OnSearchTextChanged(string? oldValue, string newValue)
+    {
+        _searchRefreshDebouncer.Execute(() =>
+        {
+            if (uint.TryParse(newValue.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var id))
+            {
+                _searchEntityId = id;
+            }
+            else
+            {
+                _searchEntityId = null;
+            }
+
+            FilteredEntities.Refresh();
+        });
+    }
+
+    partial void OnIncludePlayersChanged(bool oldValue, bool newValue) =>
+        _searchRefreshDebouncer.Execute(() => FilteredEntities.Refresh());
+
+    partial void OnIncludeNpcsChanged(bool oldValue, bool newValue) =>
+        _searchRefreshDebouncer.Execute(() => FilteredEntities.Refresh());
+
+    partial void OnIncludeMonstersChanged(bool oldValue, bool newValue) =>
+        _searchRefreshDebouncer.Execute(() => FilteredEntities.Refresh());
+
+    partial void OnIncludeItemsChanged(bool oldValue, bool newValue) =>
+        _searchRefreshDebouncer.Execute(() => FilteredEntities.Refresh());
+
+    partial void OnIncludeReactorsChanged(bool oldValue, bool newValue) =>
+        _searchRefreshDebouncer.Execute(() => FilteredEntities.Refresh());
+
 }
