@@ -30,7 +30,7 @@ public partial class EntityViewModel : ViewModelBase
     
     public string TypeShorthand => Flags switch
     {
-        EntityFlags.Player => "P",
+        EntityFlags.Player => "U",
         EntityFlags.Monster => "M",
         EntityFlags.Mundane => "N",
         EntityFlags.Item => "I",
