@@ -9,7 +9,6 @@ public partial class ProxyServer
     private readonly ReaderWriterLockSlim _filtersLock = new();
     private readonly NetworkPacketFilterCollection _clientFilters = new();
     private readonly NetworkPacketFilterCollection _serverFilters = new();
-    private readonly NetworkMessageFilterProcessor _messageFilterProcessor = new();
 
     public void AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
         AddFilterInternal(ProxyDirection.ClientToServer, (byte)command, filter);
@@ -28,25 +27,6 @@ public partial class ProxyServer
 
     public bool RemoveGlobalFilter(ProxyDirection direction, string name) =>
         RemoveFilterInternal(direction, null, name);
-
-    public void AddMessageFilter<T>(INetworkMessageFilter<T> filter) where T : class
-    {
-        _messageFilterProcessor.AddMessageFilter(filter);
-    }
-
-    public void AddMessageFilter<T>(NetworkMessageFilterHandler<T> handler, string? name = null, int priority = 10,
-        object? parameter = null) where T : class
-    {
-        var filter = new NetworkMessageFilter<T>(handler, parameter)
-        {
-            Name = name,
-            Priority = priority
-        };
-        AddMessageFilter(filter);
-    }
-
-    public bool RemoveMessageFilter<T>(string name) where T : class =>
-        _messageFilterProcessor.RemoveMessageFilter<T>(name);
     
     private void AddFilterInternal(ProxyDirection direction, byte? command, INetworkPacketFilter filter)
     {
