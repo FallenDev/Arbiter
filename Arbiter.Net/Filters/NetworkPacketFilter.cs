@@ -3,8 +3,8 @@ namespace Arbiter.Net.Filters;
 
 public class NetworkPacketFilter : INetworkPacketFilter
 {
-    public string? Name { get; set; }
-    public int Priority { get; set; } = 10;
+    public string? Name { get; init; }
+    public int Priority { get; init; } = 10;
     public object? Parameter { get; }
     public NetworkFilterHandler Handler { get; }
 
