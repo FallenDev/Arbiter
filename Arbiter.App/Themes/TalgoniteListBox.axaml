@@ -45,9 +45,9 @@
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel>
                         <Border Classes="sunken-shadow"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}" ZIndex="100"/>
                         <Border Classes="sunken-highlight"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}" ZIndex="100"/>
                         <ScrollViewer Name="PART_ScrollViewer"
                                       Background="Transparent"
                                       HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
