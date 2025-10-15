@@ -1,5 +1,4 @@
-﻿using Arbiter.Net.Proxy;
-
+﻿
 namespace Arbiter.Net.Filters;
 
 public class NetworkPacketFilter : INetworkPacketFilter
@@ -9,12 +8,7 @@ public class NetworkPacketFilter : INetworkPacketFilter
     public object? Parameter { get; }
     public NetworkFilterHandler Handler { get; }
 
-    public NetworkPacketFilter(NetworkFilterHandler handler)
-        : this((connection, packet, _) => handler(connection, packet), null)
-    {
-    }
-
-    public NetworkPacketFilter(NetworkFilterHandler handler, object? parameter)
+    public NetworkPacketFilter(NetworkFilterHandler handler, object? parameter = null)
     {
         Handler = handler;
         Parameter = parameter;
