@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - 2025-10-15
 
 ### Added
 
 - Send Selected button in `Send` view
 - Dialog settings section with new option to show pursuit ID in dialog menus
 - Strongly-typed network message filtering wrappers (backend)
+- Entity list in right-hand panel
 
 ### Changed
 
