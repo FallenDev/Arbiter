@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
@@ -19,6 +20,7 @@ public partial class EntityListViewModel : ViewModelBase
     private readonly IEntityStore _entityStore;
     private readonly ConcurrentObservableCollection<EntityViewModel> _allEntities = [];
 
+    private uint? _searchEntityId;
     [ObservableProperty] private string _searchText = string.Empty;
 
     public FilteredObservableCollection<EntityViewModel> FilteredEntities { get; }
@@ -38,10 +40,30 @@ public partial class EntityListViewModel : ViewModelBase
 
     partial void OnSearchTextChanged(string? oldValue, string newValue)
     {
-        _searchRefreshDebouncer.Execute(() => { FilteredEntities.Refresh(); });
+        _searchRefreshDebouncer.Execute(() =>
+        {
+            if (uint.TryParse(newValue.Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var id))
+            {
+                _searchEntityId = id;
+            }
+            else
+            {
+                _searchEntityId = null;
+            }
+            
+            FilteredEntities.Refresh();
+        });
     }
 
-    private bool MatchesFilter(EntityViewModel entity) => true;
+    private bool MatchesFilter(EntityViewModel entity)
+    {
+        if (_searchEntityId is not null && entity.Id == _searchEntityId)
+        {
+            return true;
+        }
+
+        return entity.Name?.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) ?? false;
+    }
 
     private void OnEntityAdded(GameEntity entity)
     {
