@@ -63,10 +63,17 @@ public partial class EntityListViewModel
                 _ => EntityFlags.Item
             };
 
+            var name = entity switch
+            {
+                ServerCreatureEntity creature => creature.Name,
+                _ => null
+            };
+
             var gameEntity = new GameEntity
             {
                 Flags = flags,
                 Id = entity.Id,
+                Name = name,
                 Sprite = entity.Sprite,
                 X = entity.X,
                 Y = entity.Y,
@@ -86,6 +93,7 @@ public partial class EntityListViewModel
         {
             Flags = EntityFlags.Player,
             Id = message.EntityId,
+            Name = message.Name,
             Sprite = message.BodySprite.HasValue
                 ? (ushort)message.BodySprite.Value
                 : message.MonsterSprite ?? 0,
@@ -207,7 +215,12 @@ public partial class EntityListViewModel
     private NetworkPacket OnRemoveEntityMessage(ProxyConnection connection, ServerRemoveEntityMessage message,
         object? parameter, NetworkMessageFilterResult<ServerRemoveEntityMessage> result)
     {
-        _entityStore.RemoveEntity(message.EntityId, out _);
+        // Only remove monster and item entities since they are more ephemeral than player/npc entities
+        if (_entityStore.TryGetEntity(message.EntityId, out var existing) && existing.Flags == EntityFlags.Monster ||
+            existing.Flags == EntityFlags.Item)
+        {
+            _entityStore.RemoveEntity(message.EntityId, out _);
+        }
 
         // Do not alter the packet
         return result.Passthrough();

@@ -14,6 +14,17 @@ public partial class EntityViewModel : ViewModelBase
     public EntityFlags Flags => Entity.Flags;
     public long Id => Entity.Id;
     public string? Name => Entity.Name;
+
+    public string TypeName => Flags switch
+    {
+        EntityFlags.Player => "Player",
+        EntityFlags.Monster => "Monster",
+        EntityFlags.Mundane => "NPC",
+        EntityFlags.Item => "Item",
+        EntityFlags.Reactor => "Reactor",
+        _ => "Unknown"
+    };
+
     public ushort Sprite => Entity.Sprite;
     public int X => Entity.X;
     public int Y => Entity.Y;

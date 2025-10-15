@@ -44,9 +44,20 @@ public partial class EntityListViewModel : ViewModelBase
 
     private bool MatchesFilter(EntityViewModel entity)
     {
+        // Search match can ALWAYS appear even if it does not match toggles
         if (_searchEntityId is not null && entity.Id == _searchEntityId)
         {
             return true;
+        }
+
+        var hasSearchTerm = !string.IsNullOrWhiteSpace(SearchText);
+        
+        switch (hasSearchTerm)
+        {
+            case true when entity.Name?.Contains(SearchText, StringComparison.CurrentCulture) is true:
+                return true;
+            case true:
+                return false;
         }
 
         if (entity.Flags.HasFlag(EntityFlags.Player) && !IncludePlayers)
@@ -74,7 +85,7 @@ public partial class EntityListViewModel : ViewModelBase
             return false;
         }
 
-        return entity.Name?.Contains(SearchText.Trim(), StringComparison.OrdinalIgnoreCase) ?? false;
+        return true;
     }
 
     private void OnEntityAdded(GameEntity entity)
@@ -119,7 +130,6 @@ public partial class EntityListViewModel : ViewModelBase
         }
 
         _allEntities.Remove(existingEntity);
-        FilteredEntities.Remove(existingEntity);
     }
 
     partial void OnSearchTextChanged(string? oldValue, string newValue)
