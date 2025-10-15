@@ -6,7 +6,7 @@ using Arbiter.Net.Serialization;
 namespace Arbiter.Net.Filters;
 
 public delegate NetworkPacket? ClientMessageFilterHandler<TMessage>(ProxyConnection connection, TMessage message,
-    object? parameter, NetworkMessageFilterResult<TMessage>? result) where TMessage : IClientMessage;
+    object? parameter, NetworkMessageFilterResult<TMessage> result) where TMessage : IClientMessage;
 
 public class ClientMessageFilter<TMessage> : INetworkMessageFilter where TMessage : IClientMessage
 {

@@ -15,7 +15,7 @@ public partial class ProxyServer
     private readonly ClientMessageFactory _clientMessageFactory = ClientMessageFactory.Default;
     private readonly ServerMessageFactory _serverMessageFactory = ServerMessageFactory.Default;
 
-    public NetworkFilterRef AddMessageFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage
+    public NetworkFilterRef AddFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage
     {
         var messageType = typeof(T);
         var command = _clientMessageFactory.GetMessageCommand(messageType);
@@ -29,7 +29,7 @@ public partial class ProxyServer
         return AddFilter(command.Value, filter);
     }
 
-    public NetworkFilterRef AddMessageFilter<T>(ServerMessageFilter<T> filter) where T : IServerMessage
+    public NetworkFilterRef AddFilter<T>(ServerMessageFilter<T> filter) where T : IServerMessage
     {
         var messageType = typeof(T);
         var command = _serverMessageFactory.GetMessageCommand(messageType);

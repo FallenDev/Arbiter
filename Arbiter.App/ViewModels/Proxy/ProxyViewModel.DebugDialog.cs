@@ -2,19 +2,15 @@
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
-    private const string DebugShowDialogFilterName = "Debug_ShowDialogFilter";
-    private const string DebugShowDialogMenuFilterName = "Debug_ShowDialogMenuFilter";
-    
     private NetworkFilterRef? _debugDialogFilter;
     private NetworkFilterRef? _debugDialogMenuFilter;
-    
+
     private void AddDebugDialogFilters(DebugSettings settings)
     {
         if (!settings.ShowDialogId)
@@ -22,16 +18,17 @@ public partial class ProxyViewModel
             return;
         }
 
-        _debugDialogFilter = _proxyServer.AddMessageFilter(new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
-        {
-            Name = DebugShowDialogFilterName,
-            Priority = DebugFilterPriority
-        });
+        _debugDialogFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
+            {
+                Name = "Debug_ShowDialogFilter",
+                Priority = DebugFilterPriority
+            });
 
-        _debugDialogMenuFilter = _proxyServer.AddMessageFilter(
+        _debugDialogMenuFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage, settings)
             {
-                Name = DebugShowDialogMenuFilterName,
+                Name = "Debug_ShowDialogMenuFilter",
                 Priority = DebugFilterPriority
             });
     }
@@ -60,8 +57,7 @@ public partial class ProxyViewModel
         ServerShowDialogMenuMessage message, object? parameter,
         NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (parameter is not DebugSettings { ShowDialogId: false })
+        if (parameter is not DebugSettings { ShowDialogId: true })
         {
             return result.Passthrough();
         }

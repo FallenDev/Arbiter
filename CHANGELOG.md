@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Send Selected button in `Send` view
+- Strongly-typed network message filtering wrappers (backend)
 
 ### Changed
 

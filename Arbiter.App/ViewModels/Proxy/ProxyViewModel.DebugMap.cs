@@ -2,8 +2,6 @@
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Serialization;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -11,27 +9,27 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
-    private const string DebugUserIdFilterName = "Debug_UserIdFilter";
-    private const string DebugMapInfoFilterName = "Debug_MapInfoFilter";
+    private NetworkFilterRef? _debugUserIdFilter;
+    private NetworkFilterRef? _debugMapInfoFilter;
 
     private void AddDebugMapFilters(DebugSettings settings)
     {
         if (settings.EnableZoomedOutMap)
         {
-            _proxyServer.AddFilter(ServerCommand.UserId,
-                new NetworkPacketFilter(HandleUserIdMessage, settings)
+            _debugUserIdFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerUserIdMessage>(HandleUserIdMessage, settings)
                 {
-                    Name = DebugUserIdFilterName,
+                    Name = "Debug_UserIdFilter",
                     Priority = DebugFilterPriority
                 });
         }
 
         if (settings.EnableTabMap || settings.DisableWeatherEffects || settings.DisableDarkness)
         {
-            _proxyServer.AddFilter(ServerCommand.MapInfo,
-                new NetworkPacketFilter(HandleMapInfoMessage, settings)
+            _debugMapInfoFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerMapInfoMessage>(HandleMapInfoMessage, settings)
                 {
-                    Name = DebugMapInfoFilterName,
+                    Name = "Debug_MapInfoFilter",
                     Priority = DebugFilterPriority
                 });
         }
@@ -39,67 +37,62 @@ public partial class ProxyViewModel
 
     private void RemoveDebugMapFilters()
     {
-        _proxyServer.RemoveFilter(ServerCommand.UserId, DebugUserIdFilterName);
-        _proxyServer.RemoveFilter(ServerCommand.MapInfo, DebugMapInfoFilterName);
+        _debugUserIdFilter?.Unregister();
+        _debugMapInfoFilter?.Unregister();
     }
 
-    private NetworkPacket HandleUserIdMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket HandleUserIdMessage(ProxyConnection connection, ServerUserIdMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerUserIdMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
-        {
-            return packet;
-        }
-
-        if (filterSettings is { EnableZoomedOutMap: false } ||
-            !_serverMessageFactory.TryCreate<ServerUserIdMessage>(serverPacket, out var message) ||
+        if (parameter is not DebugSettings filterSettings ||
+            filterSettings is { EnableZoomedOutMap: false } ||
             !filterSettings.EnableZoomedOutMap)
         {
-            return packet;
+            return result.Passthrough();
+        }
+
+        if (message.Class == CharacterClass.Rogue)
+        {
+            return result.Passthrough();
         }
 
         message.Class = CharacterClass.Rogue;
-
-        // Build a new packet with the modified user data
-        var builder = new NetworkPacketBuilder(ServerCommand.UserId);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return result.Replace(message);
     }
 
-    private NetworkPacket HandleMapInfoMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket HandleMapInfoMessage(ProxyConnection connection, ServerMapInfoMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerMapInfoMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings filterSettings || filterSettings is
+                { EnableTabMap: false, DisableWeatherEffects: false, DisableDarkness: false })
         {
-            return packet;
+            return result.Passthrough();
         }
 
-        if (filterSettings is { EnableTabMap: false, DisableWeatherEffects: false, DisableDarkness: false } ||
-            !_serverMessageFactory.TryCreate<ServerMapInfoMessage>(serverPacket, out var message))
-        {
-            return packet;
-        }
+        var originalFlags = message.Flags;
+        var newFlags = originalFlags;
 
         if (filterSettings.EnableTabMap)
         {
-            message.Flags &= ~MapFlags.NoMap;
+            newFlags &= ~MapFlags.NoMap;
         }
 
         if (filterSettings.DisableWeatherEffects)
         {
-            message.Flags &= ~(MapFlags.Rain | MapFlags.Snow | MapFlags.Winter);
+            newFlags &= ~(MapFlags.Rain | MapFlags.Snow | MapFlags.Winter);
         }
 
         if (filterSettings.DisableDarkness)
         {
-            message.Flags &= ~MapFlags.Darkness;
+            newFlags &= ~MapFlags.Darkness;
         }
 
-        // Build a new packet with the modified map info data
-        var builder = new NetworkPacketBuilder(ServerCommand.MapInfo);
-        message.Serialize(builder);
+        if (newFlags == originalFlags)
+        {
+            return result.Passthrough();
+        }
 
-        return builder.ToPacket();
+        message.Flags = newFlags;
+        return result.Replace(message);
     }
 }

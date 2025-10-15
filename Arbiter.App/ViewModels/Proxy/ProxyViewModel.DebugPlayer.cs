@@ -2,8 +2,6 @@
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Serialization;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -11,37 +9,35 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
-    private const string DebugShowUserFilterName = "Debug_ShowUserFilter";
-
+    private NetworkFilterRef? _debugShowUserFilter;
+    
     private void AddDebugPlayerFilters(DebugSettings settings)
     {
         if (settings.ShowHiddenPlayers || settings.ShowPlayerNames)
         {
-            _proxyServer.AddFilter(ServerCommand.ShowUser, new NetworkPacketFilter(HandleShowUserMessage, settings)
+            _debugShowUserFilter = _proxyServer.AddFilter(new ServerMessageFilter<ServerShowUserMessage>(HandleShowUserMessage, settings)
             {
-                Name = DebugShowUserFilterName,
+                Name = "Debug_ShowUserFilter",
                 Priority = DebugFilterPriority
             });
         }
     }
 
-    private void RemoveDebugPlayerFilters() =>
-        _proxyServer.RemoveFilter(ServerCommand.ShowUser, DebugShowUserFilterName);
-
-    private NetworkPacket HandleShowUserMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private void RemoveDebugPlayerFilters()
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        _debugShowUserFilter?.Unregister();
+    }
+
+    private static NetworkPacket HandleShowUserMessage(ProxyConnection connection, ServerShowUserMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerShowUserMessage> result)
+    {
+        if (parameter is not DebugSettings filterSettings || filterSettings is
+                { ShowHiddenPlayers: false, ShowPlayerNames: false })
         {
-            return packet;
+            return result.Passthrough();
         }
 
-        if (filterSettings is { ShowHiddenPlayers: false, ShowPlayerNames: false } ||
-            !_serverMessageFactory.TryCreate<ServerShowUserMessage>(serverPacket, out var message))
-        {
-            return packet;
-        }
-
+        var hasChanges = false;
         if (message.IsHidden)
         {
             message.Name = "[Hidden]";
@@ -49,17 +45,16 @@ public partial class ProxyViewModel
             message.BodySprite = BodySprite.MaleInvisible;
             message.IsTranslucent = true;
             message.IsHidden = false;
+
+            hasChanges = true;
         }
         else if (filterSettings.ShowPlayerNames)
         {
             // Always show names instead of mouse over
             message.NameStyle = NameTagStyle.Neutral;
+            hasChanges = true;
         }
 
-        // Build a new packet with the modified user data
-        var builder = new NetworkPacketBuilder(ServerCommand.ShowUser);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return hasChanges ? result.Replace(message) : result.Passthrough();
     }
 }

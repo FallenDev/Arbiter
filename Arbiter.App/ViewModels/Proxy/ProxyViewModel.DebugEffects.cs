@@ -3,17 +3,12 @@ using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Serialization;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
-    private const string DebugShowEffectFilterName = "Debug_ShowEffectFilter";
-    private const string DebugUpdateStatsFilterName = "Debug_UpdateStatsFilter";
-
     private static readonly Dictionary<int, (ushort Effect, ushort? DurationOverride)> ClassicEffectReplacements = new()
     {
         [279] = (2, null), // modern ao puin => classic ao puin
@@ -51,24 +46,27 @@ public partial class ProxyViewModel
         [278] = (195, null), // modern mor pian na dion => classic mor pian na dion
     };
 
+    private NetworkFilterRef? _debugClassicEffectsFilter;
+    private NetworkFilterRef? _debugNoBlindFilter;
+
     private void AddDebugEffectsFilters(DebugSettings settings)
     {
         if (settings.UseClassicEffects)
         {
-            _proxyServer.AddFilter(ServerCommand.ShowEffect,
-                new NetworkPacketFilter(HandleShowEffectMessage, settings)
+            _debugClassicEffectsFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerShowEffectMessage>(HandleShowEffectMessage, settings)
                 {
-                    Name = DebugShowEffectFilterName,
+                    Name = "Debug_ShowEffectFilter",
                     Priority = DebugFilterPriority
                 });
         }
 
         if (settings.DisableBlind)
         {
-            _proxyServer.AddFilter(ServerCommand.UpdateStats,
-                new NetworkPacketFilter(HandleUpdateStatsMessage, settings)
+            _debugNoBlindFilter = _proxyServer.AddFilter(
+                new ServerMessageFilter<ServerUpdateStatsMessage>(HandleUpdateStatsMessage, settings)
                 {
-                    Name = DebugUpdateStatsFilterName,
+                    Name = "Debug_UpdateStatsFilter",
                     Priority = DebugFilterPriority
                 });
         }
@@ -76,22 +74,16 @@ public partial class ProxyViewModel
 
     private void RemoveDebugEffectsFilters()
     {
-        _proxyServer.RemoveFilter(ServerCommand.ShowEffect, DebugShowEffectFilterName);
-        _proxyServer.RemoveFilter(ServerCommand.UpdateStats, DebugUpdateStatsFilterName);
+        _debugClassicEffectsFilter?.Unregister();
+        _debugNoBlindFilter?.Unregister();
     }
 
-    private NetworkPacket HandleShowEffectMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket HandleShowEffectMessage(ProxyConnection connection, ServerShowEffectMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerShowEffectMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (parameter is not DebugSettings { UseClassicEffects: true })
         {
-            return packet;
-        }
-
-        if (filterSettings is { UseClassicEffects: false } ||
-            !_serverMessageFactory.TryCreate<ServerShowEffectMessage>(serverPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         var hasReplacement = false;
@@ -117,38 +109,18 @@ public partial class ProxyViewModel
             hasReplacement = true;
         }
 
-        if (!hasReplacement)
-        {
-            return packet;
-        }
-
-        // Build a new packet with the modified effect data
-        var builder = new NetworkPacketBuilder(ServerCommand.ShowEffect);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return hasReplacement ? result.Replace(message) : result.Passthrough();
     }
 
-    private NetworkPacket HandleUpdateStatsMessage(ProxyConnection connection, NetworkPacket packet, object? parameter)
+    private static NetworkPacket HandleUpdateStatsMessage(ProxyConnection connection, ServerUpdateStatsMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerUpdateStatsMessage> result)
     {
-        // Ensure the packet is the correct type and we have settings as a parameter
-        if (packet is not ServerPacket serverPacket || parameter is not DebugSettings filterSettings)
+        if (message.IsBlinded is not true || parameter is not DebugSettings { DisableBlind: true })
         {
-            return packet;
-        }
-
-        if (filterSettings is { DisableBlind: false } ||
-            !_serverMessageFactory.TryCreate<ServerUpdateStatsMessage>(serverPacket, out var message))
-        {
-            return packet;
+            return result.Passthrough();
         }
 
         message.IsBlinded = false;
-
-        // Build a new packet with the modified stats data
-        var builder = new NetworkPacketBuilder(ServerCommand.UpdateStats);
-        message.Serialize(builder);
-
-        return builder.ToPacket();
+        return result.Replace(message);
     }
 }
