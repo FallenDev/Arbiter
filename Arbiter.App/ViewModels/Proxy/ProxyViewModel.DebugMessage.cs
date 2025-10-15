@@ -16,7 +16,7 @@ public partial class ProxyViewModel
     private const string DebugWorldMessageFilterName = "Debug_WorldMessageFilter";
     private const string DebugEmptyWorldMessageFilterName = "Debug_EmptyWorldMessageFilter";
 
-    private readonly Dictionary<string, Regex> _regexCache = new();
+    private readonly Dictionary<string, Regex> _regexCache = [];
     
     private void AddDebugMessageFilters(DebugSettings settings, IReadOnlyList<MessageFilter> filters)
     {
@@ -26,7 +26,7 @@ public partial class ProxyViewModel
                 new NetworkPacketFilter(HandleEmptyWorldMessageMessage, settings)
                 {
                     Name = DebugEmptyWorldMessageFilterName,
-                    Priority = int.MaxValue
+                    Priority = DebugFilterPriority
                 });
         }
         
@@ -36,7 +36,7 @@ public partial class ProxyViewModel
                 new NetworkPacketFilter(HandleWorldMessage, filters.ToList())
                 {
                     Name = DebugWorldMessageFilterName,
-                    Priority = int.MaxValue - 1
+                    Priority = DebugFilterPriority - 1
                 });
         }
     }

@@ -33,7 +33,7 @@ public partial class ProxyViewModel
             _proxyServer.AddFilter(ServerCommand.AddEntity, new NetworkPacketFilter(HandleAddEntityMessage, settings)
             {
                 Name = DebugAddEntityFilterName,
-                Priority = int.MaxValue
+                Priority = DebugFilterPriority
             });
         }
 
@@ -42,7 +42,7 @@ public partial class ProxyViewModel
             _proxyServer.AddFilter(ClientCommand.Interact, new NetworkPacketFilter(HandleInteractMessage, settings)
             {
                 Name = DebugInteractFilterName,
-                Priority = int.MaxValue
+                Priority = DebugFilterPriority
             });
 
             _proxyServer.AddFilter(ServerCommand.WorldMessage,

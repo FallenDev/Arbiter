@@ -23,13 +23,13 @@ public partial class ProxyViewModel
         _proxyServer.AddFilter(ServerCommand.ShowDialog, new NetworkPacketFilter(HandleDialogMessage, settings)
         {
             Name = DebugShowDialogFilterName,
-            Priority = int.MaxValue
+            Priority = DebugFilterPriority
         });
 
         _proxyServer.AddFilter(ServerCommand.ShowDialogMenu, new NetworkPacketFilter(HandleDialogMenuMessage, settings)
         {
             Name = DebugShowDialogMenuFilterName,
-            Priority = int.MaxValue
+            Priority = DebugFilterPriority
         });
     }
 

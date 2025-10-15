@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arbiter.App.ViewModels.Entity"
+             mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="800"
+             x:Class="Arbiter.App.Views.EntityListView"
+             x:DataType="vm:EntityListViewModel">
+    <Grid Background="{StaticResource Talgonite.Control.Background}">
+        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4" Margin="8">
+            <!-- Search Text -->
+            <TextBox Grid.Row="0"
+                     Text="{Binding SearchText}"
+                     Watermark="Search for entity.."
+                     FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                     FontSize="16">
+                <TextBox.InnerLeftContent>
+                    <Path Width="16" Height="16" Margin="8"
+                          Stroke="{StaticResource Talgonite.TextBlock.DimForeground}"
+                          Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
+                </TextBox.InnerLeftContent>
+            </TextBox>
+        </Grid>
+    </Grid>
+</UserControl>

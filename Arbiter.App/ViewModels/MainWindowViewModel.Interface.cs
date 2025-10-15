@@ -92,7 +92,8 @@ public partial class MainWindowViewModel
                 SelectedRightPanelTabIndex = tabName switch
                 {
                     "hex" => 1,
-                    "crc" => 2,
+                    "entities" => 2,
+                    "crc" => 3,
                     _ => 0
                 };
             }

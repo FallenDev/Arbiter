@@ -14,6 +14,11 @@ internal class NetworkMessageFilterProcessor
     private readonly IClientMessageFactory _clientMessageFactory;
     private readonly IServerMessageFactory _serverMessageFactory;
 
+    public NetworkMessageFilterProcessor()
+        : this(new ClientMessageFactory(), new ServerMessageFactory())
+    {
+    }
+
     public NetworkMessageFilterProcessor(IClientMessageFactory clientMessageFactory, IServerMessageFactory serverMessageFactory)
     {
         _clientMessageFactory = clientMessageFactory;

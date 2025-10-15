@@ -20,7 +20,7 @@ public partial class ProxyViewModel
             _proxyServer.AddFilter(ServerCommand.ShowUser, new NetworkPacketFilter(HandleShowUserMessage, settings)
             {
                 Name = DebugShowUserFilterName,
-                Priority = int.MaxValue
+                Priority = DebugFilterPriority
             });
         }
     }

@@ -22,7 +22,7 @@ public partial class ProxyViewModel
                 new NetworkPacketFilter(HandleUserIdMessage, settings)
                 {
                     Name = DebugUserIdFilterName,
-                    Priority = int.MaxValue
+                    Priority = DebugFilterPriority
                 });
         }
 
@@ -32,7 +32,7 @@ public partial class ProxyViewModel
                 new NetworkPacketFilter(HandleMapInfoMessage, settings)
                 {
                     Name = DebugMapInfoFilterName,
-                    Priority = int.MaxValue
+                    Priority = DebugFilterPriority
                 });
         }
     }

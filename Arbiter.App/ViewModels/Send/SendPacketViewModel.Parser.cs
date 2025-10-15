@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Arbiter.App.Models;
 using Arbiter.App.Threading;
 using Arbiter.Net;
 using Arbiter.Net.Client;
@@ -26,7 +27,7 @@ public partial class SendPacketViewModel
     private static readonly Regex DisconnectLineRegex =
         new(@"^@(disconnect|dc)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     
-    private readonly List<SendItem> _parsedItems = [];
+    private readonly List<SendEntry> _parsedItems = [];
     private readonly Debouncer _validationDebouncer = new(TimeSpan.FromMilliseconds(300), Dispatcher.UIThread);
     
     private void PerformValidation()
@@ -48,7 +49,7 @@ public partial class SendPacketViewModel
     }
     
     // Pure parsing routine: parse lines to send items without mutating state
-    private bool TryParseSendItems(IReadOnlyList<string> lines, out List<SendItem> items, out string? validationError)
+    private bool TryParseSendItems(IReadOnlyList<string> lines, out List<SendEntry> items, out string? validationError)
     {
         validationError = null;
         items = [];
@@ -79,7 +80,7 @@ public partial class SendPacketViewModel
             var disconnectMatch = DisconnectLineRegex.Match(trimmed);
             if (disconnectMatch.Success)
             {
-                items.Add(SendItem.Disconnect);
+                items.Add(SendEntry.Disconnect);
                 continue;           
             }
             
@@ -101,7 +102,7 @@ public partial class SendPacketViewModel
                     return false;
                 }
 
-                items.Add(new SendItem(TimeSpan.FromMilliseconds(ms)));
+                items.Add(new SendEntry(TimeSpan.FromMilliseconds(ms)));
                 continue;
             }
 
@@ -132,7 +133,7 @@ public partial class SendPacketViewModel
                     _ => new ClientPacket(command, data)
                 };
 
-                items.Add(new SendItem(packet));
+                items.Add(new SendEntry(packet));
             }
             catch (Exception ex)
             {

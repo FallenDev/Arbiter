@@ -59,7 +59,7 @@ public partial class ProxyViewModel
                 new NetworkPacketFilter(HandleShowEffectMessage, settings)
                 {
                     Name = DebugShowEffectFilterName,
-                    Priority = int.MaxValue
+                    Priority = DebugFilterPriority
                 });
         }
 
@@ -69,7 +69,7 @@ public partial class ProxyViewModel
                 new NetworkPacketFilter(HandleUpdateStatsMessage, settings)
                 {
                     Name = DebugUpdateStatsFilterName,
-                    Priority = int.MaxValue
+                    Priority = DebugFilterPriority
                 });
         }
     }

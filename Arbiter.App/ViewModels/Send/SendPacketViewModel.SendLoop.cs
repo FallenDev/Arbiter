@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Arbiter.App.Models;
 using Arbiter.App.ViewModels.Client;
 using Avalonia.Threading;
 using Microsoft.Extensions.Logging;
@@ -86,21 +87,21 @@ public partial class SendPacketViewModel
         }
     }
 
-    private async Task HandleSendItemAsync(ClientViewModel client, SendItem item, CancellationToken token = default)
+    private async Task HandleSendItemAsync(ClientViewModel client, SendEntry entry, CancellationToken token = default)
     {
-        if (item.IsDisconnect)
+        if (entry.IsDisconnect)
         {
             client.Disconnect();
             return;
         }
 
-        if (item.IsWait && item.Wait > TimeSpan.Zero)
+        if (entry.IsWait && entry.Wait > TimeSpan.Zero)
         {
-            await Task.Delay(item.Wait.Value, token);
+            await Task.Delay(entry.Wait.Value, token);
             return;
         }
 
-        if (item.Packet is not { } packet)
+        if (entry.Packet is not { } packet)
         {
             return;
         }

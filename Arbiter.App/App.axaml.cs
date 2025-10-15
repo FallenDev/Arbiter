@@ -8,6 +8,7 @@ using Arbiter.App.Services;
 using Avalonia.Markup.Xaml;
 using Arbiter.App.ViewModels;
 using Arbiter.App.ViewModels.Client;
+using Arbiter.App.ViewModels.Entity;
 using Arbiter.App.ViewModels.Filters;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
@@ -89,6 +90,7 @@ public class App : Application
     private static void RegisterServices(IServiceCollection services)
     {
         // Singletons
+        services.AddSingleton<IEntityStore, EntityStore>();
         services.AddSingleton<IKeyboardService, KeyboardService>();
         services.AddSingleton<InspectorMappingRegistry>();
         services.AddSingleton<InspectorViewModelFactory>();
@@ -107,6 +109,7 @@ public class App : Application
         services.AddSingleton<ConsoleViewModel>();
         services.AddSingleton<ClientManagerViewModel>();
         services.AddSingleton<CrcCalculatorViewModel>();
+        services.AddSingleton<EntityListViewModel>();
         services.AddSingleton<InspectorViewModel>();
         services.AddSingleton<ProxyViewModel>();
         services.AddSingleton<SendPacketViewModel>();

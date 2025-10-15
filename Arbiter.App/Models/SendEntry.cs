@@ -1,19 +1,19 @@
 ﻿using System;
 using Arbiter.Net;
 
-namespace Arbiter.App.ViewModels.Send;
+namespace Arbiter.App.Models;
 
-internal readonly struct SendItem
+internal readonly struct SendEntry
 {
-    public static SendItem Disconnect => new() { IsDisconnect = true };
+    public static SendEntry Disconnect => new() { IsDisconnect = true };
         
-    public SendItem(NetworkPacket packet)
+    public SendEntry(NetworkPacket packet)
     {
         Packet = packet;
         Wait = null;
     }
 
-    public SendItem(TimeSpan wait)
+    public SendEntry(TimeSpan wait)
     {
         Wait = wait;
         Packet = null;

@@ -7,6 +7,9 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
+    // Almost highest, but allows for other filters to run first
+    private const int DebugFilterPriority = int.MaxValue - 100;
+    
     private readonly IClientMessageFactory _clientMessageFactory = new ClientMessageFactory();
     private readonly IServerMessageFactory _serverMessageFactory = new ServerMessageFactory();
 

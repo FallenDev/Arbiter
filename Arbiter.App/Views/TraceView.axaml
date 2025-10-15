@@ -75,10 +75,10 @@
                 <WrapPanel Grid.Column="1" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="Center">
                     <!-- Display Mode -->
                     <StackPanel Orientation="Horizontal">
-                        <!-- Decrypted Display -->
+                        <!-- Data Display -->
                         <RadioButton IsChecked="{Binding ShowRawPackets, Converter={x:Static BoolConverters.Not}}"
                                      GroupName="DisplayMode"
-                                     ToolTip.Tip="Shows the decrypted payload of packets."
+                                     ToolTip.Tip="Shows the data payload of each packet."
                                      Classes="segment segment-left">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <Canvas Width="16" Height="16" ClipToBounds="True">
@@ -86,19 +86,19 @@
                                           Stroke="{Binding $parent[RadioButton].Foreground}"
                                           Data="{StaticResource Talgonite.Icon.RevealEye}" />
                                 </Canvas>
-                                <TextBlock Text="Decrypted" />
+                                <TextBlock Text="Data" />
                             </StackPanel>
                         </RadioButton>
                         <!-- Encrypted (Raw) Display -->
                         <RadioButton IsChecked="{Binding ShowRawPackets}"
                                      GroupName="DisplayMode"
-                                     ToolTip.Tip="Shows the full encrypted packets."
+                                     ToolTip.Tip="Shows the full raw packet, including headers."
                                      Classes="segment segment-right">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <Path Width="16" Height="16"
                                       Stroke="{Binding $parent[RadioButton].Foreground}"
                                       Data="{StaticResource Talgonite.Icon.SecureLock}" />
-                                <TextBlock Text="Encrypted" />
+                                <TextBlock Text="Raw" />
                             </StackPanel>
                         </RadioButton>
                     </StackPanel>
