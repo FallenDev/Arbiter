@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
@@ -19,9 +21,10 @@ public partial class EntityListViewModel : ViewModelBase
     private readonly IPlayerService _playerService;
     private readonly ConcurrentObservableCollection<EntityViewModel> _allEntities = [];
 
+    private long _indexCounter = 1;
     private uint? _searchEntityId;
     [ObservableProperty] private string _searchText = string.Empty;
-
+    [ObservableProperty] private EntitySortOrder _sortOrder = EntitySortOrder.FirstSeen;
     [ObservableProperty] private bool _includePlayers = true;
     [ObservableProperty] private bool _includeNpcs = true;
     [ObservableProperty] private bool _includeMonsters;
@@ -31,11 +34,14 @@ public partial class EntityListViewModel : ViewModelBase
     public FilteredObservableCollection<EntityViewModel> FilteredEntities { get; }
     public ObservableCollection<EntityViewModel> SelectedEntities { get; } = [];
 
+    public List<EntitySortOrder> AvailableSortOrders =>
+        [EntitySortOrder.FirstSeen, EntitySortOrder.Name, EntitySortOrder.Id];
+    
     public EntityListViewModel(ProxyServer proxyServer, IEntityStore entityStore, IPlayerService playerService)
     {
         _entityStore = entityStore;
         _playerService = playerService;
-        
+
         _entityStore.EntityAdded += OnEntityAdded;
         _entityStore.EntityUpdated += OnEntityUpdated;
         _entityStore.EntityRemoved += OnEntityRemoved;
@@ -65,7 +71,7 @@ public partial class EntityListViewModel : ViewModelBase
         }
 
         var hasSearchTerm = !string.IsNullOrWhiteSpace(SearchText);
-        
+
         switch (hasSearchTerm)
         {
             case true when entity.Name?.Contains(SearchText, StringComparison.CurrentCulture) is true:
@@ -104,7 +110,12 @@ public partial class EntityListViewModel : ViewModelBase
 
     private void OnEntityAdded(GameEntity entity)
     {
-        var vm = new EntityViewModel(entity);
+        var sortIndex = Interlocked.Increment(ref _indexCounter);
+        var vm = new EntityViewModel(entity)
+        {
+            SortIndex = sortIndex
+        };
+
         _allEntities.Add(vm);
     }
 

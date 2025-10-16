@@ -14,6 +14,8 @@ public partial class EntityViewModel : ViewModelBase
 
     [ObservableProperty] private double _opacity = 1;
 
+    public long SortIndex { get; init; }
+    
     public EntityFlags Flags => Entity.Flags;
     public long Id => Entity.Id;
     public string? Name => Entity.Name ?? TypeName;

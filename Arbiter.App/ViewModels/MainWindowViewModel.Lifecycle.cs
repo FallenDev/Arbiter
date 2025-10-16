@@ -34,7 +34,7 @@ public partial class MainWindowViewModel
         {
             Trace.StopTracing();
         }
-        
+
         // Autosave live traces on exit
         if (Settings.TraceAutosave && Trace is { IsLive: true, IsEmpty: false })
         {
@@ -48,9 +48,12 @@ public partial class MainWindowViewModel
             }
         }
 
+        // Update entity sort oder to persist
+        Settings.EntitySorting = Entities.SortOrder;
+
         SaveWindowPosition();
         SaveLayout();
-        
+
         await _settingsService.SaveToFileAsync(Settings);
         return true;
     }

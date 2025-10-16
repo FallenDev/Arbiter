@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `Start Client` button also visible when left panel is collapsed
+- Entity sort ordering (persists across sessions)
 - Entity tooltip for additional information
 - Support for decimal literals `#value` (ex: `#100`) in the `Send` packet syntax
 - Support for string literals `"text"` in the `Send` packet syntax (single, double, and backticks all work)

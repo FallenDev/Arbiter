@@ -13,7 +13,7 @@
     </UserControl.Resources>
     
     <Grid Background="{StaticResource Talgonite.Control.Background}">
-        <Grid RowDefinitions="Auto,Auto,*" RowSpacing="4" Margin="8">
+        <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="4" Margin="8">
             <!-- Search Text -->
             <TextBox Grid.Row="0"
                      Text="{Binding SearchText}"
@@ -26,7 +26,39 @@
                           Data="{StaticResource Talgonite.Icon.SearchMagnify}"/>
                 </TextBox.InnerLeftContent>
             </TextBox>
-            <WrapPanel Grid.Row="1" ItemSpacing="2">
+            
+            <!-- Sorting -->
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Label Grid.Column="0"
+                       Content="Sort Order"
+                       ToolTip.Tip="Order in which entities are shown in the list."/>
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding AvailableSortOrders}"
+                          SelectedValue="{Binding SortOrder}"
+                          Height="40">
+                    <ComboBox.SelectionBoxItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="4,2">
+                                <TextBlock Text="{Binding .}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </ComboBox.SelectionBoxItemTemplate>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="8,4">
+                                <TextBlock Text="{Binding .}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+            
+            <!-- Filters -->
+            <WrapPanel Grid.Row="2" HorizontalAlignment="Center">
                 <ToggleButton Classes="glow entity-user" Content="USER"
                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
                               ToolTip.Tip="Whether to include player (user) entities."
@@ -49,8 +81,9 @@
                               IsChecked="{Binding IncludeReactors}"/>
                 
             </WrapPanel>
-            <!-- Filters -->
-            <ListBox Grid.Row="2"
+            
+            <!-- Entity List -->
+            <ListBox Grid.Row="3"
                      ItemsSource="{Binding FilteredEntities}"
                      SelectedItems="{Binding SelectedEntities}"
                      SelectionMode="Multiple">
