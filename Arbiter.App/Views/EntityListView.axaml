@@ -192,6 +192,20 @@
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy ID"
+                                  Command="{Binding CopyIdToClipboardCommand}"/>
+                        <MenuItem Header="Copy ID Bytes"
+                                  Command="{Binding CopyHexToClipboardCommand}"/>
+                        <MenuItem Header="Copy Sprite"
+                                  Command="{Binding CopySpriteToClipboardCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="Delete Selected"
+                                  Command="{Binding DeleteSelectedCommand}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
             </ListBox>
         </Grid>
     </Grid>

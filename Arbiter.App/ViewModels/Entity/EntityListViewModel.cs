@@ -47,7 +47,15 @@ public partial class EntityListViewModel : ViewModelBase
         _entityStore.EntityRemoved += OnEntityRemoved;
 
         FilteredEntities = new FilteredObservableCollection<EntityViewModel>(_allEntities, MatchesFilter);
-
+        
+        SelectedEntities.CollectionChanged += (_, _) =>
+        {
+            CopyIdToClipboardCommand.NotifyCanExecuteChanged();
+            CopyHexToClipboardCommand.NotifyCanExecuteChanged();
+            CopySpriteToClipboardCommand.NotifyCanExecuteChanged();
+            DeleteSelectedCommand.NotifyCanExecuteChanged();
+        };
+        
         AddPacketFilters(proxyServer);
     }
 
