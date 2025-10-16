@@ -6,14 +6,14 @@ namespace Arbiter.App.ViewModels.Entity;
 public partial class EntityViewModel : ViewModelBase
 {
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Flags), nameof(Id), nameof(Name), nameof(TypeName), nameof(TypeShorthand), nameof(Sprite), nameof(X), nameof(Y))]
+    [NotifyPropertyChangedFor(nameof(Flags), nameof(Id), nameof(Name), nameof(TypeName), nameof(TypeShorthand),
+        nameof(Sprite), nameof(MapId), nameof(MapName), nameof(X), nameof(Y), nameof(Position))]
     [NotifyPropertyChangedFor(nameof(IsPlayer), nameof(IsMonster), nameof(IsMundane), nameof(IsItem),
         nameof(IsReactor))]
     private GameEntity _entity;
 
-    [ObservableProperty]
-    private double _opacity = 1;
-    
+    [ObservableProperty] private double _opacity = 1;
+
     public EntityFlags Flags => Entity.Flags;
     public long Id => Entity.Id;
     public string? Name => Entity.Name;
@@ -27,7 +27,7 @@ public partial class EntityViewModel : ViewModelBase
         EntityFlags.Reactor => "Reactor",
         _ => "Unknown"
     };
-    
+
     public string TypeShorthand => Flags switch
     {
         EntityFlags.Player => "U",
@@ -39,8 +39,12 @@ public partial class EntityViewModel : ViewModelBase
     };
 
     public ushort Sprite => Entity.Sprite;
+    public int MapId => Entity.MapId ?? 0;
+    public string MapName => Entity.MapName ?? "Unknown Map";
+
     public int X => Entity.X;
     public int Y => Entity.Y;
+    public string Position => $"{X}, {Y}";
 
     public bool IsPlayer => Flags.HasFlag(EntityFlags.Player);
     public bool IsMonster => Flags.HasFlag(EntityFlags.Monster);

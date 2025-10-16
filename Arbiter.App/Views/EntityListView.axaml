@@ -58,7 +58,8 @@
                     <DataTemplate>
                         <Border Padding="4,2,8,2"
                                 Background="Transparent"
-                                Opacity="{Binding Opacity}">
+                                Opacity="{Binding Opacity}"
+                                ToolTip.Placement="BottomEdgeAlignedLeft">
                             <Border.Transitions>
                                 <Transitions>
                                     <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
@@ -66,24 +67,54 @@
                             </Border.Transitions> 
                             <!-- Tooltip -->
                             <ToolTip.Tip>
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" MinWidth="200">
-                                    <TextBlock Grid.Row="0" Grid.Column="0"
-                                               Text="{Binding Name}"
-                                               Foreground="{Binding Flags, Converter={x:Static converters:EntityColorConverter.Converter}}"
-                                               FontSize="16"
-                                               FontFamily="{StaticResource Talgonite.Font.InterfaceFont}"
-                                               FontWeight="SemiBold"
-                                               VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Row="0" Grid.Column="1"
-                                               Text="{Binding Id, StringFormat={}0x{0:X}}"
-                                               Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
-                                               FontSize="14"
-                                               FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                               VerticalAlignment="Bottom"/>
-                                    
-                                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                            Classes="divider-h"/>
-                                </Grid>
+                                <Border Padding="4">
+                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
+                                          RowSpacing="4" ColumnSpacing="4"
+                                          MinWidth="200">
+                                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                                   Text="{Binding Name}"
+                                                   Foreground="{Binding Flags, Converter={x:Static converters:EntityColorConverter.Converter}}"
+                                                   FontSize="16"
+                                                   FontFamily="{StaticResource Talgonite.Font.InterfaceFont}"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1"
+                                                   Text="{Binding Id, StringFormat={}0x{0:X}}"
+                                                   Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Bottom"/>
+                                        
+                                        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                Margin="-4,0"
+                                                Classes="divider-h"/>
+                                        
+                                        <TextBlock Grid.Row="2" Grid.Column="0"
+                                                   Text="{Binding Sprite, StringFormat={}Sprite {0}}"
+                                                   Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Center"/>
+                                        
+                                        <TextBlock Grid.Row="3" Grid.Column="0"
+                                                   Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Center">
+                                            <Span>
+                                                <Run Text="{Binding MapName}"/>
+                                                <Run Text="{Binding MapId, StringFormat={}({0})}"/>
+                                            </Span>
+                                        </TextBlock>
+                                        
+                                        <TextBlock Grid.Row="3" Grid.Column="1"
+                                                   Text="{Binding Position, StringFormat={}@ ({0})}"
+                                                   Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
                             </ToolTip.Tip>
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
                                 <!-- Type Symbol -->
