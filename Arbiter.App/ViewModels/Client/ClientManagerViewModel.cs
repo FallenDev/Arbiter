@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
+using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.Net.Proxy;
 using Avalonia.Threading;
@@ -14,22 +15,22 @@ public partial class ClientManagerViewModel : ViewModelBase
 {
     private readonly ProxyServer _proxyServer;
     private readonly IGameClientService _gameClientService;
-    
-    private readonly Lock _clientLock = new();
-    private readonly Dictionary<int, ClientViewModel> _clientMap = [];
+    private readonly IPlayerService _playerService;
+    private readonly ConcurrentDictionary<long, ClientViewModel> _clients = [];
 
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
-    
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasClients))]
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(HasClients))]
     private int _clientCount;
 
     public bool HasClients => ClientCount > 0;
-    
-    public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService)
+
+    public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
+        IPlayerService playerService)
     {
         _proxyServer = proxyServer;
         _gameClientService = gameClientService;
+        _playerService = playerService;
 
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
@@ -41,19 +42,21 @@ public partial class ClientManagerViewModel : ViewModelBase
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)
     {
         var connection = e.Connection;
-        var client = new ClientViewModel(connection) { Id = connection.Id, Name = connection.Name ?? string.Empty };
-        
+        var state = new PlayerState(connection.Id, connection.Name);
+        var client = new ClientViewModel(connection, state)
+            { Id = connection.Id, Name = connection.Name ?? string.Empty };
+
         // Start listening for packets and updating state
         client.Subscribe();
 
-        using var _ = _clientLock.EnterScope();
-        _clientMap[connection.Id] = client;
+        _clients.AddOrUpdate(client.Id, client, (_, _) => client);
+
+        _playerService.Register(connection.Id, state);
     }
 
     private void OnClientLoggedIn(object? sender, ProxyConnectionEventArgs e)
     {
-        using var _ = _clientLock.EnterScope();
-        var client = _clientMap.GetValueOrDefault(e.Connection.Id);
+        var client = _clients.GetValueOrDefault(e.Connection.Id);
 
         if (client is null)
         {
@@ -63,7 +66,7 @@ public partial class ClientManagerViewModel : ViewModelBase
         var windowTitle = !string.IsNullOrWhiteSpace(e.Connection.Name)
             ? $"Darkages - {e.Connection.Name}"
             : "Darkages";
-        
+
         SetClientWindowTitle(client, windowTitle);
         client.BringToFrontRequested += OnClientBringToFront;
 
@@ -77,17 +80,16 @@ public partial class ClientManagerViewModel : ViewModelBase
 
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
-        using var _ = _clientLock.EnterScope();
-        var client = _clientMap.GetValueOrDefault(e.Connection.Id);
+        var client = _clients.GetValueOrDefault(e.Connection.Id);
 
         if (client is null)
         {
             return;
         }
-        
+
         SetClientWindowTitle(client, "Darkages");
         client.BringToFrontRequested -= OnClientBringToFront;
-        
+
         // We are fully logged out and can remove the client
         Dispatcher.UIThread.Post(() =>
         {
@@ -110,7 +112,7 @@ public partial class ClientManagerViewModel : ViewModelBase
         {
             return;
         }
-        
+
         SetClientWindowTitle(client, "Darkages");
         client.BringToFrontRequested -= OnClientBringToFront;
 
@@ -121,8 +123,7 @@ public partial class ClientManagerViewModel : ViewModelBase
             ClientCount = Clients.Count;
         });
 
-        using var _ = _clientLock.EnterScope();
-        _clientMap.Remove(client.Id);
+        _clients.TryRemove(client.Id, out _);
     }
 
     private void OnClientBringToFront(object? sender, EventArgs e)
@@ -142,7 +143,7 @@ public partial class ClientManagerViewModel : ViewModelBase
         {
             return;
         }
-        
+
         var clientWindow = _gameClientService.GetGameClients().FirstOrDefault(gc => gc.CharacterName == vm.Name);
         clientWindow?.SetWindowTitle(windowTitle);
     }

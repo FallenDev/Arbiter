@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.Threading;
+using Arbiter.App.ViewModels.Client;
 using Arbiter.Net.Proxy;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -16,6 +18,7 @@ public partial class EntityListViewModel : ViewModelBase
 {
     private readonly Debouncer _searchRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
     private readonly IEntityStore _entityStore;
+    private readonly IPlayerService _playerService;
     private readonly ConcurrentObservableCollection<EntityViewModel> _allEntities = [];
 
     private uint? _searchEntityId;
@@ -30,9 +33,10 @@ public partial class EntityListViewModel : ViewModelBase
     public FilteredObservableCollection<EntityViewModel> FilteredEntities { get; }
     public ObservableCollection<EntityViewModel> SelectedEntities { get; } = [];
 
-    public EntityListViewModel(ProxyServer proxyServer, IEntityStore entityStore)
+    public EntityListViewModel(ProxyServer proxyServer, IEntityStore entityStore, IPlayerService playerService)
     {
         _entityStore = entityStore;
+        _playerService = playerService;
         _entityStore.EntityAdded += OnEntityAdded;
         _entityStore.EntityUpdated += OnEntityUpdated;
         _entityStore.EntityRemoved += OnEntityRemoved;

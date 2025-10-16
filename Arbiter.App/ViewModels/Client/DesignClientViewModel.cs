@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using Arbiter.App.Models;
 using Arbiter.Net.Proxy;
 
 namespace Arbiter.App.ViewModels.Client;
@@ -7,7 +8,7 @@ namespace Arbiter.App.ViewModels.Client;
 public class DesignClientViewModel : ClientViewModel
 {
     public DesignClientViewModel()
-        : base(new ProxyConnection(0, new TcpClient()))
+        : base(new ProxyConnection(0, new TcpClient()), new PlayerState(0, "VeryLongName"))
     {
         EntityId = 0xFEEDBEEF;
         Name = "VeryLongName";

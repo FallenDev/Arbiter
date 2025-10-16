@@ -95,6 +95,7 @@ public class App : Application
         services.AddSingleton<InspectorMappingRegistry>();
         services.AddSingleton<InspectorViewModelFactory>();
         services.AddSingleton<ProxyServer>();
+        services.AddSingleton<IPlayerService, PlayerService>();
         
         // Transients
         services.AddTransient<IDialogService, DialogService>();
