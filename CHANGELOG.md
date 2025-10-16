@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Color-coded entity types
+- Border Z-index for various UI controls
+- Pursuit + Step ID in debug filter
 
 ## [1.3.0] - 2025-10-15
 

@@ -10,17 +10,15 @@ namespace Arbiter.App.ViewModels.Proxy;
 public partial class ProxyViewModel
 {
     private NetworkFilterRef? _debugShowUserFilter;
-    
+
     private void AddDebugPlayerFilters(DebugSettings settings)
     {
-        if (settings.ShowHiddenPlayers || settings.ShowPlayerNames)
-        {
-            _debugShowUserFilter = _proxyServer.AddFilter(new ServerMessageFilter<ServerShowUserMessage>(HandleShowUserMessage, settings)
+        _debugShowUserFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerShowUserMessage>(HandleShowUserMessage, settings)
             {
                 Name = "Debug_ShowUserFilter",
                 Priority = DebugFilterPriority
             });
-        }
     }
 
     private void RemoveDebugPlayerFilters()

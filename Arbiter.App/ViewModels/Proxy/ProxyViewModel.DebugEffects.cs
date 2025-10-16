@@ -51,25 +51,19 @@ public partial class ProxyViewModel
 
     private void AddDebugEffectsFilters(DebugSettings settings)
     {
-        if (settings.UseClassicEffects)
-        {
-            _debugClassicEffectsFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerShowEffectMessage>(HandleShowEffectMessage, settings)
-                {
-                    Name = "Debug_ShowEffectFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
+        _debugClassicEffectsFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerShowEffectMessage>(HandleShowEffectMessage, settings)
+            {
+                Name = "Debug_ShowEffectFilter",
+                Priority = DebugFilterPriority
+            });
 
-        if (settings.DisableBlind)
-        {
-            _debugNoBlindFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerUpdateStatsMessage>(HandleUpdateStatsMessage, settings)
-                {
-                    Name = "Debug_UpdateStatsFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
+        _debugNoBlindFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerUpdateStatsMessage>(HandleUpdateStatsMessage, settings)
+            {
+                Name = "Debug_UpdateStatsFilter",
+                Priority = DebugFilterPriority
+            });
     }
 
     private void RemoveDebugEffectsFilters()
