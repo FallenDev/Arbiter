@@ -3,16 +3,47 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels.Dialogs"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Arbiter.App.Views.DialogView"
              x:DataType="vm:DialogViewModel">
+    
+    <Design.DataContext>
+        <vm:DesignDialogViewModel/>
+    </Design.DataContext>
+    
     <Grid RowDefinitions="Auto,*" RowSpacing="4"
           Background="{StaticResource Talgonite.Control.Background}">
         <!-- Toolbar Area -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4,4,4,0">
-            <Label Content="Client"></Label>
-            <ComboBox Height="40" Width="160" Margin="4,2"></ComboBox>
-        </StackPanel>
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,*,Auto"
+              Margin="4,4,4,0">
+            <!-- Left Side -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Label Content="Client"/>
+                <ComboBox Height="40" Width="160" Margin="4,2"/>
+            </StackPanel>
+            
+            <!-- Right Side -->
+            <WrapPanel Grid.Column="4" Orientation="Horizontal" ItemSpacing="4" ItemsAlignment="End">
+                <!-- Load Dialog Button -->
+                <Button Command="{Binding LoadDialogCommand}"
+                        HotKey="Ctrl+O"
+                        Classes="outline toolbar"
+                        ToolTip.Tip="Loads a dialog from a file.">
+                    <Path Width="16" Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          Data="{StaticResource Talgonite.Icon.LoadFolder}" />
+                </Button>
+                <!-- Save Dialog Button -->
+                <Button Command="{Binding SaveDialogCommand}"
+                        HotKey="Ctrl+S"
+                        Classes="outline toolbar"
+                        ToolTip.Tip="Saves the current dialog to file.">
+                    <Path Width="16" Height="16"
+                          Stroke="{Binding $parent[Button].Foreground}"
+                          Data="{StaticResource Talgonite.Icon.SaveDisk}" />
+                </Button>
+            </WrapPanel>
+        </Grid>
         
         <!-- Dialog Area -->
         <Grid Grid.Row="1" Background="{StaticResource Talgonite.Window.Background}"
@@ -23,6 +54,109 @@
             <Border Classes="sunken-highlight"
                     CornerRadius="2"
                     ZIndex="100"/>
+            
+            <Grid RowDefinitions="*,Auto">
+                <!-- Bottom Content Area -->
+                <Border Grid.Row="1" Background="{StaticResource Talgonite.Control.Background}"
+                        BorderBrush="{StaticResource Talgonite.Border.ShadowBrush}"
+                        BorderThickness="0,0,1,1"
+                        CornerRadius="2"
+                        MinHeight="120"
+                        Padding="8"
+                        Margin="8">
+                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="4">
+                        <!-- Name -->
+                        <TextBlock Grid.Row="0"
+                                 Text="{Binding Name}"
+                                 FontSize="16"
+                                 FontWeight="SemiBold"
+                                 Foreground="{StaticResource Talgonite.Color.LightBlue}"
+                                 Margin="8,4,8,0"/>
+                        
+                        <!-- Content -->
+                        <ScrollViewer Grid.Row="1">
+                            <TextBlock Text="{Binding Content}"
+                                       TextWrapping="WrapWithOverflow"
+                                       FontSize="14"
+                                       Foreground="{StaticResource Talgonite.Color.DimWhite}"
+                                       Margin="8,4"/>
+                        </ScrollViewer>
+                        
+                        <!-- Button Area -->
+                        <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="8"
+                              Margin="0,4,0,0">
+                            <!-- Previous Button -->
+                            <Button Grid.Column="0"
+                                    Command="{Binding NavigatePreviousCommand}"
+                                    Classes="outline toolbar"
+                                    ToolTip.Tip="Requests the previous dialog step."
+                                    MinWidth="120"
+                                    HorizontalContentAlignment="Stretch">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Path Grid.Column="0"
+                                          Width="16" Height="16"
+                                          Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{StaticResource Talgonite.Icon.LeftChevron}"/>
+                                    <TextBlock Grid.Column="1" Text="Previous"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Button>
+                            <!-- Next Button -->
+                            <Button Grid.Column="1"
+                                    Command="{Binding NavigateNextCommand}"
+                                    Classes="outline toolbar"
+                                    ToolTip.Tip="Requests the next dialog step."
+                                    MinWidth="120"
+                                    HorizontalContentAlignment="Stretch">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0" Text="Next"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                    <Path Grid.Column="1"
+                                          Width="16" Height="16"
+                                          Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{StaticResource Talgonite.Icon.RightChevron}"/>
+                                </Grid>
+                            </Button>
+                            <!-- Top Button -->
+                            <Button Grid.Column="3"
+                                    Command="{Binding NavigateTopCommand}"
+                                    Classes="outline toolbar"
+                                    ToolTip.Tip="Requests the initial dialog step."
+                                    MinWidth="120">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Path Width="16" Height="16"
+                                          Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{StaticResource Talgonite.Icon.ArrowUp}"/>
+                                    <TextBlock Text="Top"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <!-- Close Button -->
+                            <Button Grid.Column="4"
+                                    Command="{Binding CloseDialogCommand}"
+                                    Classes="outline toolbar destructive"
+                                    ToolTip.Tip="Closes the currently open dialog."
+                                    MinWidth="120">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <Path Width="16" Height="16"
+                                          Stroke="{Binding $parent[Button].Foreground}"
+                                          Data="{StaticResource Talgonite.Icon.CrossX}"/>
+                                    <TextBlock Text="Close"
+                                               FontSize="14"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>    
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

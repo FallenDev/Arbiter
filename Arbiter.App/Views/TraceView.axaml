@@ -139,11 +139,9 @@
                                 <Run>to append to the current trace.</Run>
                             </TextBlock>
                         </ToolTip.Tip>
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Path Width="16" Height="16"
-                                  Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.LoadFolder}" />
-                        </StackPanel>
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.LoadFolder}" />
                     </Button>
                     
                     <!-- Save Trace Button -->
@@ -152,11 +150,9 @@
                             HotKey="Ctrl+S"
                             Classes="toolbar"
                             IsEnabled="{Binding IsEmpty, Converter={x:Static BoolConverters.Not}}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Path Width="16" Height="16"
-                                  Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.SaveDisk}" />
-                        </StackPanel>
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.SaveDisk}" />
                     </Button>
                     
                     <!-- Clear Trace Button -->
@@ -164,11 +160,9 @@
                             ToolTip.Tip="Clears all packets from the trace."
                             Classes="toolbar destructive"
                             IsEnabled="{Binding IsEmpty, Converter={x:Static BoolConverters.Not}}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Path Width="16" Height="16"
-                                  Stroke="{Binding $parent[Button].Foreground}"
-                                  Data="{StaticResource Talgonite.Icon.ClearText}" />
-                        </StackPanel>
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.ClearText}" />
                     </Button>
                     
                     <!-- Scroll to End Button -->
