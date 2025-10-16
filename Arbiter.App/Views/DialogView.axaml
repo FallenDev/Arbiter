@@ -6,5 +6,23 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Arbiter.App.Views.DialogView"
              x:DataType="vm:DialogViewModel">
-    Dialog View
+    <Grid RowDefinitions="Auto,*" RowSpacing="4"
+          Background="{StaticResource Talgonite.Control.Background}">
+        <!-- Toolbar Area -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4,4,4,0">
+            <Label Content="Client"></Label>
+            <ComboBox Height="40" Width="160" Margin="4,2"></ComboBox>
+        </StackPanel>
+        
+        <!-- Dialog Area -->
+        <Grid Grid.Row="1" Background="{StaticResource Talgonite.Window.Background}"
+              Margin="2,0,2,2">
+            <Border Classes="sunken-shadow"
+                    CornerRadius="2"
+                    ZIndex="100"/>
+            <Border Classes="sunken-highlight"
+                    CornerRadius="2"
+                    ZIndex="100"/>
+        </Grid>
+    </Grid>
 </UserControl>
