@@ -30,8 +30,22 @@ public sealed class EntityStore : IEntityStore
             return;
         }
 
-        _entities[entity.Id] = entity;
-        OnEntityUpdated(entity);
+        if (!_entities.TryGetValue(entity.Id, out var existingEntity))
+        {
+            return;
+        }
+
+        // Preserve existing map data values
+        var updatedEntity = existingEntity with
+        {
+            MapId = entity.MapId ?? existingEntity.MapId,
+            MapName = entity.MapName ?? existingEntity.MapName,
+            X = entity.X,
+            Y = entity.Y
+        };
+
+        _entities[entity.Id] = updatedEntity;
+        OnEntityUpdated(updatedEntity);
         wasUpdated = true;
     }
 

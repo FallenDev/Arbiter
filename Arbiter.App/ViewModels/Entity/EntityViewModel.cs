@@ -16,7 +16,7 @@ public partial class EntityViewModel : ViewModelBase
 
     public EntityFlags Flags => Entity.Flags;
     public long Id => Entity.Id;
-    public string? Name => Entity.Name;
+    public string? Name => Entity.Name ?? TypeName;
 
     public string TypeName => Flags switch
     {

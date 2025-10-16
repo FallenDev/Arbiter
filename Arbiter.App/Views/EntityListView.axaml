@@ -69,7 +69,7 @@
                             <ToolTip.Tip>
                                 <Border Padding="4">
                                     <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
-                                          RowSpacing="4" ColumnSpacing="4"
+                                          RowSpacing="4" ColumnSpacing="8"
                                           MinWidth="200">
                                         <TextBlock Grid.Row="0" Grid.Column="0"
                                                    Text="{Binding Name}"
@@ -80,8 +80,9 @@
                                                    VerticalAlignment="Center"/>
                                         <TextBlock Grid.Row="0" Grid.Column="1"
                                                    Text="{Binding Id, StringFormat={}0x{0:X}}"
-                                                   Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
-                                                   FontSize="14"
+                                                   TextAlignment="Right"
+                                                   Foreground="{StaticResource Talgonite.Color.LightGray}"
+                                                   FontSize="16"
                                                    FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                                    VerticalAlignment="Bottom"/>
                                         
@@ -108,7 +109,7 @@
                                         </TextBlock>
                                         
                                         <TextBlock Grid.Row="3" Grid.Column="1"
-                                                   Text="{Binding Position, StringFormat={}@ ({0})}"
+                                                   Text="{Binding Position, StringFormat={}({0})}"
                                                    Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
                                                    FontSize="14"
                                                    FontFamily="{StaticResource Talgonite.Font.Monospace}"
