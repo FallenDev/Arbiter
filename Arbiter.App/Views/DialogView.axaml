@@ -68,19 +68,19 @@
                         VerticalAlignment="Bottom">
                     <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Label Content="Sprite"
-                               FontSize="16"
+                               FontSize="20"
                                ToolTip.Tip="The sprite being displayed."
                                Padding="0"/>
                         <TextBlock Text="None"
                                    TextAlignment="Center"
-                                   FontSize="16"
+                                   FontSize="24"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.LightGray}"
                                    VerticalAlignment="Center"
                                    IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
                         <TextBlock Text="{Binding Sprite, FallbackValue=None}"
                                    TextAlignment="Center"
-                                   FontSize="16"
+                                   FontSize="24"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.White}"
                                    VerticalAlignment="Center"
