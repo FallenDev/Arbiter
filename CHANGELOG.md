@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Color-coded entity types
 - Border Z-index for various UI controls
 - Pursuit + Step ID in debug filter
+- Show actual class instead of "Master" when pre-Medenia class
 
 ## [1.3.0] - 2025-10-15
 

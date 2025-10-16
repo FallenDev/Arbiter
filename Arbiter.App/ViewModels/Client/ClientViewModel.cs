@@ -156,7 +156,9 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
                 MapY = mapLocationMessage.Y;
                 break;
             case ServerSelfProfileMessage profileMessage:
-                Class = profileMessage.DisplayClass;
+                Class = string.Equals(profileMessage.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
+                    ? profileMessage.Class.ToString()
+                    : profileMessage.DisplayClass;
                 break;
             case ServerUpdateStatsMessage statsMessage:
                 UpdateStats(statsMessage);
