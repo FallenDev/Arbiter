@@ -31,7 +31,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly Window _mainWindow;
 
     [ObservableProperty] private string _title = "Arbiter";
-    [ObservableProperty] private ClientViewModel? _selectedClient;
     [ObservableProperty] private RawHexViewModel? _selectedRawHex;
 
     public ClientManagerViewModel ClientManager { get; }

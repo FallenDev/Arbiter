@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -81,14 +82,14 @@ public partial class SendPacketViewModel : ViewModelBase
 
     public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
 
-    public ObservableCollection<TimeSpan> AvailableDelays =>
+    public List<TimeSpan> AvailableDelays =>
     [
         TimeSpan.Zero,
         TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(4),
         TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30)
     ];
 
-    public ObservableCollection<TimeSpan> AvailableRates =>
+    public List<TimeSpan> AvailableRates =>
     [
         TimeSpan.Zero,
         TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(300),
@@ -105,6 +106,18 @@ public partial class SendPacketViewModel : ViewModelBase
         _entityStore = serviceProvider.GetRequiredService<IEntityStore>();
 
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
+        _clientManager.ClientSelected += OnClientSelected;
+    }
+
+    private void OnClientSelected(ClientViewModel? client)
+    {
+        if (client is null || SelectedClient is not null)
+        {
+            return;
+        }
+
+        // Automatically select the client if none is selected
+        SelectedClient = client;
     }
 
     private void OnClientsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

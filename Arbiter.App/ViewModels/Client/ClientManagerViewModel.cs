@@ -19,11 +19,16 @@ public partial class ClientManagerViewModel : ViewModelBase
     private readonly ConcurrentDictionary<long, ClientViewModel> _clients = [];
 
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
+    
+    [ObservableProperty]
+    private ClientViewModel? _selectedClient;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(HasClients))]
     private int _clientCount;
 
     public bool HasClients => ClientCount > 0;
+    
+    public event Action<ClientViewModel?>? ClientSelected;
 
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
         IPlayerService playerService)
@@ -37,6 +42,11 @@ public partial class ClientManagerViewModel : ViewModelBase
         _proxyServer.ClientLoggedOut += OnClientLoggedOut;
         _proxyServer.ClientRedirected += OnClientRedirected;
         _proxyServer.ClientDisconnected += OnClientDisconnected;
+    }
+
+    partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
+    {
+        ClientSelected?.Invoke(newValue);
     }
 
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)

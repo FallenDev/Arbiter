@@ -7,10 +7,6 @@
              x:Class="Arbiter.App.Views.DialogView"
              x:DataType="vm:DialogViewModel">
     
-    <Design.DataContext>
-        <vm:DesignDialogViewModel/>
-    </Design.DataContext>
-    
     <Grid RowDefinitions="Auto,*" RowSpacing="4"
           Background="{StaticResource Talgonite.Control.Background}">
         <!-- Toolbar Area -->
@@ -68,23 +64,23 @@
                         VerticalAlignment="Bottom">
                     <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Label Content="Sprite"
-                               FontSize="20"
+                               FontSize="18"
                                ToolTip.Tip="The sprite being displayed."
                                Padding="0"/>
                         <TextBlock Text="None"
                                    TextAlignment="Center"
-                                   FontSize="24"
+                                   FontSize="18"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.LightGray}"
                                    VerticalAlignment="Center"
-                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
+                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:True}}"/>
                         <TextBlock Text="{Binding Sprite, FallbackValue=None}"
                                    TextAlignment="Center"
-                                   FontSize="24"
+                                   FontSize="18"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.White}"
                                    VerticalAlignment="Center"
-                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:True}}"/>
+                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:False}}"/>
                     </StackPanel>
                 </Border>
                 

@@ -64,7 +64,7 @@
                             </Button>
                         </WrapPanel>
                         <ListBox ItemsSource="{Binding ClientManager.Clients}"
-                                 SelectedItem="{Binding SelectedClient}"
+                                 SelectedItem="{Binding ClientManager.SelectedClient}"
                                  Classes="bubble"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
