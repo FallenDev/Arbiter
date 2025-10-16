@@ -22,7 +22,7 @@ public class NetworkPacketFilterCollection
         }
     }
 
-    public void AddFilter(byte command, INetworkPacketFilter filter)
+    public NetworkFilterRef AddFilter(byte command, INetworkPacketFilter filter)
     {
         _lock.EnterWriteLock();
         try
@@ -40,6 +40,13 @@ public class NetworkPacketFilterCollection
             // Add the filter to the list, keep sorted by priority (highest first)
             var filters = _filters[command].Add(filter);
             _filters[command] = filters.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+
+            // Return a reference to the filter so it can be removed or toggled later
+            var filterRef = new NetworkFilterRef(
+                setEnabledAction: enabled => filter.IsEnabled = enabled,
+                unregisterAction: () => RemoveFilter(command, filter.Name ?? string.Empty));
+
+            return filterRef;
         }
         finally
         {
@@ -60,7 +67,7 @@ public class NetworkPacketFilterCollection
         }
     }
 
-    public void AddGlobalFilter(INetworkPacketFilter filter)
+    public NetworkFilterRef AddGlobalFilter(INetworkPacketFilter filter)
     {
         _lock.EnterWriteLock();
         try
@@ -82,6 +89,13 @@ public class NetworkPacketFilterCollection
                 var filters = _filters[i].Add(filter);
                 _filters[i] = filters.Sort((a, b) => b.Priority.CompareTo(a.Priority));
             }
+            
+            // Return a reference to the filter so it can be removed or toggled later
+            var filterRef = new NetworkFilterRef(
+                setEnabledAction: enabled => filter.IsEnabled = enabled,
+                unregisterAction: () => RemoveGlobalFilter(filter.Name ?? string.Empty));
+
+            return filterRef;
         }
         finally
         {

@@ -43,20 +43,6 @@ public partial class ProxyServer
         return AddFilter(command.Value, filter);
     }
 
-    public bool RemoveClientMessageFilter<T>(string name) where T : IClientMessage
-    {
-        var messageType = typeof(T);
-        var command = _clientMessageFactory.GetMessageCommand(messageType);
-        return command is not null && RemoveFilter(command.Value, name);
-    }
-
-    public bool RemoveServerMessageFilter<T>(string name) where T : IServerMessage
-    {
-        var messageType = typeof(T);
-        var command = _serverMessageFactory.GetMessageCommand(messageType);
-        return command is not null && RemoveFilter(command.Value, name);
-    }
-
     public NetworkFilterRef AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
         AddFilterInternal(ProxyDirection.ClientToServer, (byte)command, filter);
 

@@ -16,43 +16,43 @@ public partial class EntityListViewModel
         proxyServer.AddFilter(new ServerMessageFilter<ServerAddEntityMessage>(OnAddEntityMessage)
         {
             Name = "EntityView_AddEntityFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowUserMessage>(OnShowUserMessage)
         {
             Name = "EntityView_ShowUserFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
         {
             Name = "EntityView_ShowDialogFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage)
         {
             Name = "EntityView_ShowDialogMenuFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerEntityWalkMessage>(OnEntityWalkMessage)
         {
             Name = "EntityView_EntityWalkFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerWalkResponseMessage>(OnSelfWalkMessage)
         {
             Name = "EntityView_SelfWalkFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
         {
             Name = "EntityView_RemoveEntityFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
     }
 
@@ -157,6 +157,9 @@ public partial class EntityListViewModel
             Sprite = message.Sprite ?? 0,
             MapId = player?.MapId,
             MapName = player?.MapName,
+            // Reactors should assume the player's location when encountering
+            X = flags.HasFlag(EntityFlags.Reactor) ? player?.MapX ?? 0 : 0,
+            Y = flags.HasFlag(EntityFlags.Reactor) ? player?.MapY ?? 0 : 0,
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);

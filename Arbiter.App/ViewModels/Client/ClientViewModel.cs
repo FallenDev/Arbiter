@@ -1,13 +1,10 @@
 ﻿using System;
 using Arbiter.App.Models;
 using Arbiter.Net;
-using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -109,36 +106,10 @@ public partial class ClientViewModel : ViewModelBase
     
     public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
     
-    public void Subscribe()
-    {
-        _connection.PacketReceived += OnPacketReceived;
-    }
-
-    public void Unsubscribe()
-    {
-        _connection.PacketReceived -= OnPacketReceived;
-    }
+    public void Subscribe() => AddPacketFilters();
+    public void Unsubscribe() => RemovePacketFilters();
     
     public bool EnqueuePacket(NetworkPacket packet) => _connection.EnqueuePacket(packet);
-
-    private void OnPacketReceived(object? sender, NetworkTransferEventArgs e)
-    {
-        if (e.Decrypted is ClientPacket clientPacket)
-        {
-            if (ClientMessageFactory.Default.TryCreate(clientPacket, out var message))
-            {
-                Dispatcher.UIThread.Post(() => HandleClientMessage(message));
-            }
-        }
-
-        if (e.Decrypted is ServerPacket serverPacket)
-        {
-            if (ServerMessageFactory.Default.TryCreate(serverPacket, out var message))
-            {
-                Dispatcher.UIThread.Post(() => HandleServerMessage(message));
-            }
-        }
-    }
 
     private void HandleClientMessage(IClientMessage message)
     {
