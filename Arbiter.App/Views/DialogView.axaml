@@ -94,11 +94,37 @@
                         BorderThickness="0,0,1,1"
                         CornerRadius="2"
                         MinWidth="320" MinHeight="160"
+                        MaxWidth="540" MaxHeight="300"
                         Padding="8"
                         Margin="8,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom">
-                    
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding MenuChoices}">
+                            <ItemsControl.DataTemplates>
+                                <DataTemplate x:DataType="vm:DialogMenuChoiceViewModel">
+                                    <Button Command="{Binding $parent[UserControl].((vm:DialogViewModel)DataContext).SelectMenuChoiceCommand, FallbackValue={x:Null}}"
+                                            CommandParameter="{Binding .}"
+                                            Classes="outline toolbar"
+                                            HorizontalContentAlignment="Stretch">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Text}"
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding PursuitId, StringFormat={}[{0}]}"
+                                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                       FontSize="14"
+                                                       Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{Binding PursuitId, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.DataTemplates>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </Border>
                 
                 <!-- Bottom Content Area -->
@@ -110,13 +136,22 @@
                         Padding="8"
                         Margin="8,0,8,8">
                     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="4">
-                        <!-- Name -->
-                        <TextBlock Grid.Row="0"
-                                 Text="{Binding Name}"
-                                 FontSize="16"
-                                 FontWeight="SemiBold"
-                                 Foreground="{StaticResource Talgonite.Color.LightBlue}"
-                                 Margin="8,4,8,0"/>
+                        <WrapPanel Grid.Row="0" ItemSpacing="8" Margin="8,4,8,0">
+                            <!-- Name -->
+                            <TextBlock Text="{Binding Name}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource Talgonite.Color.LightBlue}"
+                                       VerticalAlignment="Center"/>
+                            
+                            <!-- Entity Id -->
+                            <TextBlock Text="{Binding EntityId, StringFormat={}[0x{0:X}]}"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="16"
+                                       Foreground="{StaticResource Talgonite.Color.LightGray}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding EntityId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                        </WrapPanel>
                         
                         <!-- Content -->
                         <ScrollViewer Grid.Row="1">

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Dialogs;
@@ -8,6 +9,7 @@ public partial class DialogViewModel : ViewModelBase
     [ObservableProperty] private string? _name;
     [ObservableProperty] private string? _content;
     [ObservableProperty] private int? _sprite;
+    [ObservableProperty] private int? _entityId;
     [ObservableProperty] private int? _pursuitId;
     [ObservableProperty] private int? _stepId;
 
@@ -22,6 +24,18 @@ public partial class DialogViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(NavigateTopCommand))]
     private bool _canNavigateTop;
+
+    public ObservableCollection<DialogMenuChoiceViewModel> MenuChoices { get; } = [];
+
+    public DialogViewModel()
+    {
+    }
+
+    [RelayCommand]
+    private void SelectMenuChoice(DialogMenuChoiceViewModel viewModel)
+    {
+        
+    }
     
     [RelayCommand(CanExecute = nameof(CanNavigatePrevious))]
     private void NavigatePrevious()
