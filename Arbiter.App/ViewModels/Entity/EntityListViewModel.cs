@@ -108,6 +108,91 @@ public partial class EntityListViewModel : ViewModelBase
         return true;
     }
 
+    private IComparer<EntityViewModel> GetComparer(EntitySortOrder? order = null)
+    {
+        var sortOrder = order ?? SortOrder;
+        return sortOrder switch
+        {
+            EntitySortOrder.FirstSeen => Comparer<EntityViewModel>.Create((a, b) =>
+            {
+                var c = a.SortIndex.CompareTo(b.SortIndex);
+                if (c != 0) return c;
+                c = a.Id.CompareTo(b.Id);
+                return c;
+            }),
+            EntitySortOrder.Id => Comparer<EntityViewModel>.Create((a, b) =>
+            {
+                var c = a.Id.CompareTo(b.Id);
+                if (c != 0) return c;
+                // Stable tiebreakers
+                c = a.SortIndex.CompareTo(b.SortIndex);
+                return c;
+            }),
+            EntitySortOrder.Name => Comparer<EntityViewModel>.Create((a, b) =>
+            {
+                var c = string.Compare(a.Name, b.Name, CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
+                if (c != 0) return c;
+                c = a.Id.CompareTo(b.Id);
+                return c != 0 ? c : a.SortIndex.CompareTo(b.SortIndex);
+            }),
+            _ => Comparer<EntityViewModel>.Default
+        };
+    }
+
+    private int FindInsertIndex(EntityViewModel vm, IComparer<EntityViewModel> comparer)
+    {
+        // Binary search to find insertion index in the already-sorted list
+        var min = 0;
+        var max = _allEntities.Count;
+        while (min < max)
+        {
+            var mid = (min + max) / 2;
+            var cmp = comparer.Compare(_allEntities[mid], vm);
+            if (cmp <= 0)
+            {
+                min = mid + 1;
+            }
+            else
+            {
+                max = mid;
+            }
+        }
+
+        return min;
+    }
+
+    private void InsertSorted(EntityViewModel vm)
+    {
+        var comparer = GetComparer();
+        var index = FindInsertIndex(vm, comparer);
+        _allEntities.Insert(index, vm);
+    }
+
+    private void ResortAll(IComparer<EntityViewModel> comparer)
+    {
+        // Perform minimal moves to match the desired order
+        var desired = _allEntities.OrderBy(e => e, comparer).ToList();
+        for (var i = 0; i < desired.Count; i++)
+        {
+            var target = desired[i];
+            if (ReferenceEquals(_allEntities[i], target))
+            {
+                continue;
+            }
+            
+            var currentIndex = _allEntities.IndexOf(target);
+            if (currentIndex >= 0)
+            {
+                _allEntities.Move(currentIndex, i);
+            }
+        }
+    }
+
+    partial void OnSortOrderChanged(EntitySortOrder oldValue, EntitySortOrder newValue)
+    {
+        ResortAll(GetComparer(newValue));
+    }
+
     private void OnEntityAdded(GameEntity entity)
     {
         var sortIndex = Interlocked.Increment(ref _indexCounter);
@@ -116,7 +201,7 @@ public partial class EntityListViewModel : ViewModelBase
             SortIndex = sortIndex
         };
 
-        _allEntities.Add(vm);
+        InsertSorted(vm);
     }
 
     private void OnEntityUpdated(GameEntity entity)
