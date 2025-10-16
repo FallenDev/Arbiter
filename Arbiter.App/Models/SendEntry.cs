@@ -1,5 +1,6 @@
 ﻿using System;
 using Arbiter.Net;
+using Arbiter.Net.Server;
 
 namespace Arbiter.App.Models;
 
@@ -7,20 +8,39 @@ internal readonly struct SendEntry
 {
     public static SendEntry Disconnect => new() { IsDisconnect = true };
         
+    public bool IsDisconnect { get; init; }
+    public bool IsWait => Wait.HasValue;
+    public NetworkPacket? Packet { get; }
+    public TimeSpan? Wait { get; }
+
+
+    public byte? Command { get; }
+    public byte[] DataTemplate { get; } = [];
+    public EntityRef[] EntityReferences { get; } = [];
+    public bool IsServerPacket { get; }
+    
     public SendEntry(NetworkPacket packet)
     {
         Packet = packet;
-        Wait = null;
+        IsServerPacket = packet is ServerPacket;
     }
 
     public SendEntry(TimeSpan wait)
     {
         Wait = wait;
-        Packet = null;
     }
 
-    public bool IsDisconnect { get; init; }
-    public NetworkPacket? Packet { get; }
-    public TimeSpan? Wait { get; }
-    public bool IsWait => Wait.HasValue;
+    public SendEntry(bool isServerPacket, byte command, byte[] dataTemplate, EntityRef[]? entityReferences)
+    {
+        Packet = null;
+        Wait = null;
+        Command = command;
+        DataTemplate = dataTemplate;
+        IsServerPacket = isServerPacket;
+
+        if (entityReferences is not null)
+        {
+            EntityReferences = entityReferences;
+        }
+    }
 }
