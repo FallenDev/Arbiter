@@ -142,7 +142,7 @@ public partial class SendPacketViewModel
                     }
                 }
 
-                var span = packetBuffer.AsSpan();
+                var span = packetBuffer.AsSpan(0, template.Length);
                 packet = entry.IsServerPacket
                     ? new ServerPacket(entry.Command.Value, span)
                     : new ClientPacket(entry.Command.Value, span);
