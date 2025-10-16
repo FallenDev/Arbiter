@@ -31,7 +31,7 @@ public partial class MainWindowViewModel
     [ObservableProperty] private bool _isBottomPanelCollapsed;
     [ObservableProperty] private int _selectedBottomPanelTabIndex;
     [ObservableProperty] private GridLength _bottomPanelHeight = new(1, GridUnitType.Star);
-    [ObservableProperty] private double _bottomPanelMinHeight = 300;
+    [ObservableProperty] private double _bottomPanelMinHeight = 190;
     [ObservableProperty] private double _bottomPanelMaxHeight = 720;
     [ObservableProperty] private GridLength _savedBottomPanelHeight = new(1, GridUnitType.Star);
 

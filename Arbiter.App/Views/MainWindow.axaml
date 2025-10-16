@@ -137,7 +137,7 @@
         <!-- Center Area -->
         <Grid Name="CenterContentGrid" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*" MinHeight="160"/>
+                <RowDefinition Height="2*" MinHeight="450"/>
                 <RowDefinition Height="8"/>
                 <RowDefinition Height="{Binding BottomPanelHeight, Mode=TwoWay}"
                                MinHeight="{Binding BottomPanelMinHeight}"

@@ -7,6 +7,9 @@ public partial class DialogViewModel : ViewModelBase
 {
     [ObservableProperty] private string? _name;
     [ObservableProperty] private string? _content;
+    [ObservableProperty] private int? _sprite;
+    [ObservableProperty] private int? _pursuitId;
+    [ObservableProperty] private int? _stepId;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(NavigatePreviousCommand))]

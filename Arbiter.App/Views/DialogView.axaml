@@ -55,15 +55,60 @@
                     CornerRadius="2"
                     ZIndex="100"/>
             
-            <Grid RowDefinitions="*,Auto">
+            <Grid RowDefinitions="*,Auto" RowSpacing="8">
+                <!-- Sprite Area -->
+                <Border Grid.Row="0" Background="{StaticResource Talgonite.Control.Background}"
+                        BorderBrush="{StaticResource Talgonite.Border.ShadowBrush}"
+                        BorderThickness="0,0,1,1"
+                        CornerRadius="2"
+                        Width="160" Height="160"
+                        Padding="8"
+                        Margin="8,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom">
+                    <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Label Content="Sprite"
+                               FontSize="16"
+                               ToolTip.Tip="The sprite being displayed."
+                               Padding="0"/>
+                        <TextBlock Text="None"
+                                   TextAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource Talgonite.Color.LightGray}"
+                                   VerticalAlignment="Center"
+                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
+                        <TextBlock Text="{Binding Sprite, FallbackValue=None}"
+                                   TextAlignment="Center"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource Talgonite.Color.White}"
+                                   VerticalAlignment="Center"
+                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:True}}"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Menu Area -->
+                <Border Grid.Row="0" Background="{StaticResource Talgonite.Control.Background}"
+                        BorderBrush="{StaticResource Talgonite.Border.ShadowBrush}"
+                        BorderThickness="0,0,1,1"
+                        CornerRadius="2"
+                        MinWidth="320" MinHeight="160"
+                        Padding="8"
+                        Margin="8,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom">
+                    
+                </Border>
+                
                 <!-- Bottom Content Area -->
                 <Border Grid.Row="1" Background="{StaticResource Talgonite.Control.Background}"
                         BorderBrush="{StaticResource Talgonite.Border.ShadowBrush}"
                         BorderThickness="0,0,1,1"
                         CornerRadius="2"
-                        MinHeight="120"
+                        MinHeight="160"
                         Padding="8"
-                        Margin="8">
+                        Margin="8,0,8,8">
                     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="4">
                         <!-- Name -->
                         <TextBlock Grid.Row="0"
