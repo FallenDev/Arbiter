@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Client;
-using Arbiter.App.ViewModels.Entity;
+using Arbiter.App.ViewModels.Dialogs;
+using Arbiter.App.ViewModels.Entities;
 using Arbiter.App.ViewModels.Inspector;
 using Arbiter.App.ViewModels.Logging;
 using Arbiter.App.ViewModels.Proxy;
@@ -41,6 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public CrcCalculatorViewModel CrcCalculator { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
+    public DialogViewModel Dialog { get; }
 
     public MainWindowViewModel(
         ILogger<MainWindowViewModel> logger,
@@ -65,6 +67,7 @@ public partial class MainWindowViewModel : ViewModelBase
         CrcCalculator = serviceProvider.GetRequiredService<CrcCalculatorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
+        Dialog = serviceProvider.GetRequiredService<DialogViewModel>();
 
         Trace.SelectedPacketChanged += OnPacketSelected;
     }

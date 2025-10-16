@@ -6,7 +6,7 @@ using Arbiter.App.Extensions;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Arbiter.App.ViewModels.Entity;
+namespace Arbiter.App.ViewModels.Entities;
 
 public partial class EntityListViewModel
 {

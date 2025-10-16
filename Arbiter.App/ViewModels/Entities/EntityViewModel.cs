@@ -1,7 +1,7 @@
 ﻿using Arbiter.App.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Arbiter.App.ViewModels.Entity;
+namespace Arbiter.App.ViewModels.Entities;
 
 public partial class EntityViewModel : ViewModelBase
 {
