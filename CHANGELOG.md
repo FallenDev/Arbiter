@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Entity tooltip for Sprite, X, Y
+- `Start Client` button also visible when left panel is collapsed
+- Entity tooltip for additional information
 - Support for decimal literals `#value` (ex: `#100`) in the `Send` packet syntax
 - Support for string literals `"text"` in the `Send` packet syntax (single, double, and backticks all work)
 - Support for entity ID reference `@Entity` (ex: `@Deoch`) in the `Send` packet syntax (must be seen before)
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pursuit + Step ID in debug filter
 - Show actual class instead of "Master" when pre-Medenia class
 - Ignore final `@wait` when sending if it is the last action in the `Send` queue
+- Improved packet filtering backend
 
 ## [1.3.0] - 2025-10-15
 

@@ -59,7 +59,9 @@
                         <Border Padding="4,2,8,2"
                                 Background="Transparent"
                                 Opacity="{Binding Opacity}"
-                                ToolTip.Placement="BottomEdgeAlignedLeft">
+                                ToolTip.Placement="BottomEdgeAlignedLeft"
+                                ToolTip.HorizontalOffset="24"
+                                ToolTip.VerticalOffset="-2">
                             <Border.Transitions>
                                 <Transitions>
                                     <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="QuadraticEaseInOut"/>
