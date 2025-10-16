@@ -136,22 +136,43 @@
                         Padding="8"
                         Margin="8,0,8,8">
                     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="4">
-                        <WrapPanel Grid.Row="0" ItemSpacing="8" Margin="8,4,8,0">
+                        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="8"
+                              Margin="8,4,8,0">
                             <!-- Name -->
-                            <TextBlock Text="{Binding Name}"
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding Name}"
                                        FontSize="16"
                                        FontWeight="SemiBold"
                                        Foreground="{StaticResource Talgonite.Color.LightBlue}"
                                        VerticalAlignment="Center"/>
                             
                             <!-- Entity Id -->
-                            <TextBlock Text="{Binding EntityId, StringFormat={}[0x{0:X}]}"
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding EntityId, StringFormat={}0x{0:X}}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                        FontSize="16"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
                                        IsVisible="{Binding EntityId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                        </WrapPanel>
+                            
+                            <!-- Pursuit Id -->
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding PursuitId, StringFormat={}Pursuit {0}}"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="14"
+                                       Foreground="{StaticResource Talgonite.Color.LightGray}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding PursuitId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                            
+                            <!-- Pursuit Id -->
+                            <TextBlock Grid.Column="4"
+                                       Text="{Binding StepId, StringFormat={}Step {0}}"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="14"
+                                       Foreground="{StaticResource Talgonite.Color.LightGray}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding StepId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                        </Grid>
                         
                         <!-- Content -->
                         <ScrollViewer Grid.Row="1">
