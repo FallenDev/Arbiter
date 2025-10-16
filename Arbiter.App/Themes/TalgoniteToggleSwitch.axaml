@@ -63,9 +63,11 @@
                                         CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
                                         Margin="2"/>
                                 <Border Classes="sunken-shadow"
-                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
+                                        ZIndex="100"/>
                                 <Border Classes="sunken-highlight"
-                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"/>
+                                        CornerRadius="{StaticResource Talgonite.ToggleSwitch.KnobCornerRadius}"
+                                        ZIndex="00"/>
                             </Panel>
                         </Border>
                         

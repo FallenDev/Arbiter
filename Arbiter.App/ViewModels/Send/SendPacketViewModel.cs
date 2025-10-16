@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
+using Arbiter.App.Services;
 using Arbiter.App.ViewModels.Client;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -15,6 +16,7 @@ public partial class SendPacketViewModel : ViewModelBase
 {
     private readonly ILogger<SendPacketViewModel> _logger;
     private readonly ClientManagerViewModel _clientManager;
+    private readonly IEntityStore _entityStore;
 
     private string _inputText = string.Empty;
 
@@ -100,6 +102,7 @@ public partial class SendPacketViewModel : ViewModelBase
     {
         _logger = logger;
         _clientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
+        _entityStore = serviceProvider.GetRequiredService<IEntityStore>();
 
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
     }
@@ -135,7 +138,7 @@ public partial class SendPacketViewModel : ViewModelBase
     {
         // For immediate validation check (used by send command), parse without debouncing
         var lines = InputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
-        return TryParseSendItems(lines, out _, out _);
+        return SendItemParser.TryParse(lines, out _, out _);
     }
 
     [RelayCommand(CanExecute = nameof(CanSend))]
@@ -155,7 +158,7 @@ public partial class SendPacketViewModel : ViewModelBase
         
         // Perform immediate validation before sending
         var lines = inputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
-        if (!TryParseSendItems(lines, out var items, out var validationError))
+        if (!SendItemParser.TryParse(lines, out var items, out var validationError))
         {
             // Update UI to show the validation error immediately
             ValidationError = validationError;
@@ -168,7 +171,7 @@ public partial class SendPacketViewModel : ViewModelBase
         _parsedItems.Clear();
         _parsedItems.AddRange(items);
 
-        HasPackets = _parsedItems.Any(x => x.Packet is not null);
+        HasPackets = _parsedItems.Any(x => x.Packet is not null || x.Command.HasValue);
         HasDisconnects = _parsedItems.Any(x => x.IsDisconnect);
 
         IsSending = true;

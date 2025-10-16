@@ -32,6 +32,8 @@ public class ArbiterSettings : ICloneable
 
     public List<MessageFilter> MessageFilters { get; set; } = [];
 
+    public EntitySortOrder EntitySorting { get; set; } = EntitySortOrder.FirstSeen;
+    
     public object Clone() => new ArbiterSettings
     {
         ClientExecutablePath = ClientExecutablePath,
@@ -48,6 +50,7 @@ public class ArbiterSettings : ICloneable
         LeftPanel = LeftPanel?.Clone() as InterfacePanelState,
         RightPanel = RightPanel?.Clone() as InterfacePanelState,
         BottomPanel = BottomPanel?.Clone() as InterfacePanelState,
-        MessageFilters = MessageFilters.Select(x => new MessageFilter { Pattern = x.Pattern }).ToList()
+        MessageFilters = MessageFilters.Select(x => new MessageFilter { Pattern = x.Pattern }).ToList(),
+        EntitySorting = EntitySorting
     };
 }

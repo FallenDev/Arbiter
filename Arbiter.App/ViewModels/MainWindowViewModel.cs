@@ -156,5 +156,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
         Trace.MaxTraceHistory = Settings.TraceMaxHistory;
+        Entities.SortOrder = Settings.EntitySorting;
     }
 }

@@ -14,25 +14,19 @@ public partial class ProxyViewModel
 
     private void AddDebugMapFilters(DebugSettings settings)
     {
-        if (settings.EnableZoomedOutMap)
-        {
-            _debugUserIdFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerUserIdMessage>(HandleUserIdMessage, settings)
-                {
-                    Name = "Debug_UserIdFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
+        _debugUserIdFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerUserIdMessage>(HandleUserIdMessage, settings)
+            {
+                Name = "Debug_UserIdFilter",
+                Priority = DebugFilterPriority
+            });
 
-        if (settings.EnableTabMap || settings.DisableWeatherEffects || settings.DisableDarkness)
-        {
-            _debugMapInfoFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerMapInfoMessage>(HandleMapInfoMessage, settings)
-                {
-                    Name = "Debug_MapInfoFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
+        _debugMapInfoFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerMapInfoMessage>(HandleMapInfoMessage, settings)
+            {
+                Name = "Debug_MapInfoFilter",
+                Priority = DebugFilterPriority
+            });
     }
 
     private void RemoveDebugMapFilters()

@@ -54,9 +54,11 @@
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel>
                         <Border Classes="sunken-shadow"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                ZIndex="100"/>
                         <Border Classes="sunken-highlight"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                ZIndex="100"/>
                         
                         <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,8,*,8,Auto"
                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

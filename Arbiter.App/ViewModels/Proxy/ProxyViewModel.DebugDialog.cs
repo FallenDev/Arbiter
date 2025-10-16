@@ -14,27 +14,20 @@ public partial class ProxyViewModel
 
     private void AddDebugDialogFilters(DebugSettings settings)
     {
+        _debugDialogFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
+            {
+                Name = "Debug_ShowDialogFilter",
+                Priority = DebugFilterPriority
+            });
 
-        if (settings.ShowDialogId)
-        {
-            _debugDialogFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
-                {
-                    Name = "Debug_ShowDialogFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
 
-        if (settings.ShowDialogId || settings.ShowPursuitId)
-        {
-
-            _debugDialogMenuFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage, settings)
-                {
-                    Name = "Debug_ShowDialogMenuFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
+        _debugDialogMenuFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage, settings)
+            {
+                Name = "Debug_ShowDialogMenuFilter",
+                Priority = DebugFilterPriority
+            });
     }
 
     private void RemoveDebugDialogFilters()
@@ -46,15 +39,29 @@ public partial class ProxyViewModel
     private static NetworkPacket HandleDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
     {
-        if (parameter is not DebugSettings { ShowDialogId: true })
+        if (parameter is not DebugSettings settings || settings is { ShowDialogId: false, ShowPursuitId: false })
         {
             return result.Passthrough();
         }
 
-        var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
-        message.Name = $"{name} [0x{message.EntityId:X4}]";
+        var hasChanges = false;
 
-        return result.Replace(message);
+        if (settings.ShowDialogId)
+        {
+            var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
+            message.Name = $"{name} - 0x{message.EntityId:X4}";
+            hasChanges = true;
+        }
+
+        if (settings.ShowPursuitId)
+        {
+            var pursuitText = $"Pursuit {message.PursuitId} => Step {message.StepId}";
+            message.Name = $"{message.Name} - {pursuitText}";
+            hasChanges = true;
+
+        }
+
+        return hasChanges ? result.Replace(message) : result.Passthrough();
     }
 
     private static NetworkPacket HandleDialogMenuMessage(ProxyConnection connection,
@@ -67,29 +74,39 @@ public partial class ProxyViewModel
         }
 
         var hasChanges = false;
-        
+
         if (settings.ShowDialogId)
         {
             var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
-            message.Name = $"{name} [0x{message.EntityId:X4}]";
-
+            message.Name = $"{name} 0x{message.EntityId:X4}";
             hasChanges = true;
         }
 
-        if (message.MenuChoices.Count > 0)
+        if (settings.ShowPursuitId)
         {
-            foreach (var choice in message.MenuChoices)
+            if (message.PursuitId is > 0)
             {
-                var pursuitText = $"[{choice.PursuitId}]";
-                var maxChoiceLength = 50 - pursuitText.Length;
-                var choiceText = choice.Text.Length > maxChoiceLength
-                    ? string.Concat(choice.Text.AsSpan(0, maxChoiceLength - 3), "...")
-                    : choice.Text;;
-
-                choice.Text = $"{choiceText} {pursuitText}";
+                var pursuitText = $"Pursuit {message.PursuitId}";
+                message.Name = $"{message.Name} - {pursuitText}";
+                hasChanges = true;
             }
 
-            hasChanges = true;
+            if (message.MenuChoices.Count > 0)
+            {
+                foreach (var choice in message.MenuChoices)
+                {
+                    var menuPursuitText = $"[{choice.PursuitId}]";
+                    var maxChoiceLength = 50 - menuPursuitText.Length;
+                    var choiceText = choice.Text.Length > maxChoiceLength
+                        ? string.Concat(choice.Text.AsSpan(0, maxChoiceLength - 3), "...")
+                        : choice.Text;
+                    ;
+
+                    choice.Text = $"{choiceText} {menuPursuitText}";
+                }
+
+                hasChanges = true;
+            }
         }
 
         return hasChanges ? result.Replace(message) : result.Passthrough();

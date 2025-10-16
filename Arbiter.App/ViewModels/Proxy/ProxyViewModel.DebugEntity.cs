@@ -25,32 +25,26 @@ public partial class ProxyViewModel
 
     private void AddDebugEntityFilters(DebugSettings settings)
     {
-        if (settings.ShowNpcId || settings.ShowMonsterId || settings.ShowMonsterClickId)
-        {
-            _debugAddEntityFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerAddEntityMessage>(HandleAddEntityMessage, settings)
-                {
-                    Name = "Debug_AddEntityFilter",
-                    Priority = DebugFilterPriority
-                });
-        }
+        _debugAddEntityFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerAddEntityMessage>(HandleAddEntityMessage, settings)
+            {
+                Name = "Debug_AddEntityFilter",
+                Priority = DebugFilterPriority
+            });
 
-        if (settings.ShowMonsterClickId)
-        {
-            _debugInteractFilter = _proxyServer.AddFilter(
-                new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage, settings)
-                {
-                    Name = "Debug_InteractFilter",
-                    Priority = DebugFilterPriority
-                });
+        _debugInteractFilter = _proxyServer.AddFilter(
+            new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage, settings)
+            {
+                Name = "Debug_InteractFilter",
+                Priority = DebugFilterPriority
+            });
 
-            _debugInteractMessageFilter = _proxyServer.AddFilter(
-                new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage, settings)
-                {
-                    Name = "Debug_InteractMessageFilter",
-                    Priority = DebugFilterPriority + 10
-                });
-        }
+        _debugInteractMessageFilter = _proxyServer.AddFilter(
+            new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage, settings)
+            {
+                Name = "Debug_InteractMessageFilter",
+                Priority = DebugFilterPriority + 10
+            });
     }
 
     private void RemoveDebugEntityFilters()

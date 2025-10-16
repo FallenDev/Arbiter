@@ -35,8 +35,10 @@
                             CornerRadius="2"
                             VerticalAlignment="Center">
                         <Panel>
-                            <Border Classes="sunken-shadow" CornerRadius="2"/>
-                            <Border Classes="sunken-highlight" CornerRadius="2"/>
+                            <Border Classes="sunken-shadow" CornerRadius="2"
+                                    ZIndex="100"/>
+                            <Border Classes="sunken-highlight" CornerRadius="2"
+                                    ZIndex="100"/>
                             
                             <!-- Checked square mark -->
                             <Border Name="CheckMark"

@@ -1,18 +1,16 @@
 ﻿using System;
+using Arbiter.App.Models;
 using Arbiter.Net;
-using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Client;
 
-public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
+public partial class ClientViewModel : ViewModelBase
 {
     public int Id { get; init; }
     public required string Name { get; set; }
@@ -64,7 +62,17 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
     private uint _maxMana;
-    
+
+    private readonly ProxyConnection _connection;
+
+    public PlayerState Player { get; }
+
+    public ClientViewModel(ProxyConnection connection, PlayerState state)
+    {
+        _connection = connection;
+        Player = state;
+    }
+
     public event EventHandler? BringToFrontRequested;
 
     public bool IsLoggedIn => EntityId is not null;
@@ -98,36 +106,10 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
     
     public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
     
-    public void Subscribe()
-    {
-        connection.PacketReceived += OnPacketReceived;
-    }
-
-    public void Unsubscribe()
-    {
-        connection.PacketReceived -= OnPacketReceived;
-    }
+    public void Subscribe() => AddPacketFilters();
+    public void Unsubscribe() => RemovePacketFilters();
     
-    public bool EnqueuePacket(NetworkPacket packet) => connection.EnqueuePacket(packet);
-
-    private void OnPacketReceived(object? sender, NetworkTransferEventArgs e)
-    {
-        if (e.Decrypted is ClientPacket clientPacket)
-        {
-            if (ClientMessageFactory.Default.TryCreate(clientPacket, out var message))
-            {
-                Dispatcher.UIThread.Post(() => HandleClientMessage(message));
-            }
-        }
-
-        if (e.Decrypted is ServerPacket serverPacket)
-        {
-            if (ServerMessageFactory.Default.TryCreate(serverPacket, out var message))
-            {
-                Dispatcher.UIThread.Post(() => HandleServerMessage(message));
-            }
-        }
-    }
+    public bool EnqueuePacket(NetworkPacket packet) => _connection.EnqueuePacket(packet);
 
     private void HandleClientMessage(IClientMessage message)
     {
@@ -146,17 +128,28 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
             case ServerUserIdMessage userIdMessage:
                 EntityId = userIdMessage.UserId;
                 Class = userIdMessage.Class.ToString();
+                Player.UserId = userIdMessage.UserId;
+                Player.Class = Class;
+                Player.NotifyChanged();
                 break;
             case ServerMapInfoMessage mapInfoMessage:
                 MapName = mapInfoMessage.Name;
                 MapId = mapInfoMessage.MapId;
+                Player.MapName = MapName;
+                Player.MapId = MapId;
+                Player.NotifyChanged();
                 break;
             case ServerMapLocationMessage mapLocationMessage:
                 MapX = mapLocationMessage.X;
                 MapY = mapLocationMessage.Y;
+                Player.MapX = MapX;
+                Player.MapY = MapY;
+                Player.NotifyChanged();
                 break;
             case ServerSelfProfileMessage profileMessage:
-                Class = profileMessage.DisplayClass;
+                Class = string.Equals(profileMessage.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
+                    ? profileMessage.Class.ToString()
+                    : profileMessage.DisplayClass;
                 break;
             case ServerUpdateStatsMessage statsMessage:
                 UpdateStats(statsMessage);
@@ -179,6 +172,10 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
             WorldDirection.Down => MapY + 1,
             _ => MapY
         };
+
+        Player.MapX = MapX;
+        Player.MapY = MapY;
+        Player.NotifyChanged();
     }
 
     private void UpdateStats(ServerUpdateStatsMessage message)
@@ -222,12 +219,12 @@ public partial class ClientViewModel(ProxyConnection connection) : ViewModelBase
         BringToFrontRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool CanDisconnect() => connection.IsConnected;
+    private bool CanDisconnect() => _connection.IsConnected;
 
     [RelayCommand(CanExecute = nameof(CanDisconnect))]
     public void Disconnect()
     {
-        connection.Disconnect();
+        _connection.Disconnect();
         DisconnectCommand.NotifyCanExecuteChanged();
     }
 }

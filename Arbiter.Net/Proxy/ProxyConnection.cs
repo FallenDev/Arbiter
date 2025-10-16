@@ -2,17 +2,21 @@
 using System.Net.Sockets;
 using System.Threading.Channels;
 using Arbiter.Net.Client;
+using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Server;
+using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.Net.Proxy;
 
 public partial class ProxyConnection : IDisposable
 {
     private const int RecvBufferSize = 4096;
-    
+
     private bool _isDisposed;
     private readonly TcpClient _client;
+    private readonly ClientMessageFactory _clientMessageFactory;
+    private readonly ServerMessageFactory _serverMessageFactory;
 
     private NetworkStream? _clientStream;
 
@@ -20,6 +24,7 @@ public partial class ProxyConnection : IDisposable
     {
         Sequence = ClientPacketEncryptor.IsEncrypted(command) ? data[0] : null
     });
+
     private readonly ClientPacketEncryptor _clientEncryptor = new();
 
     private TcpClient? _server;
@@ -31,13 +36,13 @@ public partial class ProxyConnection : IDisposable
     private int _serverSequence;
     private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
     private readonly Channel<NetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<NetworkPacket>();
-    
+
     public int Id { get; }
     public string? Name { get; set; }
     public long? UserId { get; set; }
     public bool HasAuthenticated { get; private set; }
     public bool IsLoggedIn { get; private set; }
-    
+
     public IPEndPoint? LocalEndpoint => _client.Client.LocalEndPoint as IPEndPoint;
     public IPEndPoint? RemoteEndpoint => _server?.Client.RemoteEndPoint as IPEndPoint;
     public bool IsConnected => IsClientConnected && IsServerConnected;
@@ -57,13 +62,17 @@ public partial class ProxyConnection : IDisposable
     public event EventHandler<NetworkPacketEventArgs>? PacketQueued;
     public event EventHandler<NetworkPacketEventArgs>? PacketException;
     public event EventHandler<NetworkFilterEventArgs>? FilterException;
-    
-    public ProxyConnection(int id, TcpClient client)
+
+    public ProxyConnection(int id, TcpClient client, ClientMessageFactory? clientMessageFactory = null,
+        ServerMessageFactory? serverMessageFactory = null)
     {
         Id = id;
 
         _client = client;
         _client.NoDelay = true;
+
+        _clientMessageFactory = clientMessageFactory ?? ClientMessageFactory.Default;
+        _serverMessageFactory = serverMessageFactory ?? ServerMessageFactory.Default;
     }
 
     public bool EnqueuePacket(NetworkPacket packet)
@@ -75,7 +84,7 @@ public partial class ProxyConnection : IDisposable
         {
             return false;
         }
-        
+
         PacketQueued?.Invoke(this, new NetworkPacketEventArgs(packet));
         return true;
     }
@@ -84,7 +93,7 @@ public partial class ProxyConnection : IDisposable
     {
         // Create the TCP client to connect to the remote server
         _server = new TcpClient(AddressFamily.InterNetwork) { NoDelay = true };
-        
+
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(token);
         await _server.ConnectAsync(remoteEndpoint, linked.Token).ConfigureAwait(false);
 
@@ -115,7 +124,7 @@ public partial class ProxyConnection : IDisposable
         {
             return;
         }
-        
+
         _client.Close();
     }
 

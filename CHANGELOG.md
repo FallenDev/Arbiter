@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `Start Client` button also visible when left panel is collapsed
+- Entity sort ordering (persists across sessions)
+- Entity tooltip for additional information
+- Entity context menu for copy / delete actions
+- Support for decimal literals `#value` (ex: `#100`) in the `Send` packet syntax
+- Support for string literals `"text"` in the `Send` packet syntax (single, double, and backticks all work)
+- Support for entity ID reference `@Entity` (ex: `@Deoch`) in the `Send` packet syntax (must be seen before)
+
+### Changed
+
+- Color-coded entity types
+- Border Z-index for various UI controls
+- Pursuit + Step ID in debug filter
+- Show actual class instead of "Master" when pre-Medenia class
+- Ignore final `@wait` when sending if it is the last action in the `Send` queue
+- Improved packet filtering backend
+
 ## [1.3.0] - 2025-10-15
 
 ### Added

@@ -1,6 +1,8 @@
 ﻿using Arbiter.Net.Client;
+using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Server;
+using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.Net.Proxy;
 
@@ -9,16 +11,44 @@ public partial class ProxyConnection
     private readonly NetworkPacketFilterCollection _clientFilters = new();
     private readonly NetworkPacketFilterCollection _serverFilters = new();
 
-    public void AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
+    public NetworkFilterRef AddFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage
+    {
+        var messageType = typeof(T);
+        var command = _clientMessageFactory.GetMessageCommand(messageType);
+
+        if (command is null)
+        {
+            throw new ArgumentException($"Message type {messageType.FullName} is not a registered client message type.",
+                nameof(filter));
+        }
+
+        return AddFilter(command.Value, filter);
+    }
+
+    public NetworkFilterRef AddFilter<T>(ServerMessageFilter<T> filter) where T : IServerMessage
+    {
+        var messageType = typeof(T);
+        var command = _serverMessageFactory.GetMessageCommand(messageType);
+
+        if (command is null)
+        {
+            throw new ArgumentException($"Message type {messageType.FullName} is not a registered server message type.",
+                nameof(filter));
+        }
+
+        return AddFilter(command.Value, filter);
+    }
+    
+    public NetworkFilterRef AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
         _clientFilters.AddFilter((byte)command, filter);
 
-    public void AddFilter(ServerCommand command, INetworkPacketFilter filter) =>
+    public NetworkFilterRef AddFilter(ServerCommand command, INetworkPacketFilter filter) =>
         _serverFilters.AddFilter((byte)command, filter);
 
     public bool RemoveFilter(ClientCommand command, string name) => _clientFilters.RemoveFilter((byte)command, name);
     public bool RemoveFilter(ServerCommand command, string name) => _serverFilters.RemoveFilter((byte)command, name);
 
-    public void AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
+    public NetworkFilterRef AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
     {
         var filters = direction switch
         {
@@ -27,7 +57,7 @@ public partial class ProxyConnection
             _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
         };
 
-        filters.AddGlobalFilter(filter);
+        return filters.AddGlobalFilter(filter);
     }
 
     public bool RemoveGlobalFilter(ProxyDirection direction, string name)

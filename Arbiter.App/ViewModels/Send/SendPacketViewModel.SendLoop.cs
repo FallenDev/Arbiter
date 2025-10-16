@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Buffers;
+using System.Buffers.Binary;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +8,8 @@ using Arbiter.App.Models;
 using Arbiter.App.ViewModels.Client;
 using Avalonia.Threading;
 using Microsoft.Extensions.Logging;
+using Arbiter.Net.Client;
+using Arbiter.Net.Server;
 
 namespace Arbiter.App.ViewModels.Send;
 
@@ -42,6 +46,12 @@ public partial class SendPacketViewModel
                 {
                     token.ThrowIfCancellationRequested();
                     var item = sendItems[i];
+
+                    // Ignore the last wait item if it's the last iteration
+                    if (item.IsWait && i == sendItems.Count - 1 && iterations is 1)
+                    {
+                        continue;
+                    }
 
                     await HandleSendItemAsync(client, item, token);
 
@@ -101,7 +111,54 @@ public partial class SendPacketViewModel
             return;
         }
 
-        if (entry.Packet is not { } packet)
+        var packet = entry.Packet;
+        if (packet is null && entry is { Command: not null, DataTemplate: { } template })
+        {
+            var packetBuffer = ArrayPool<byte>.Shared.Rent(template.Length);
+
+            try
+            {
+                // Build data by resolving entity references if any
+                Buffer.BlockCopy(template, 0, packetBuffer, 0, template.Length);
+                if (entry.EntityReferences.Length > 0)
+                {
+                    foreach (var (name, offset) in entry.EntityReferences)
+                    {
+                        var entity = _entityStore.Entities.FirstOrDefault(e =>
+                            string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase));
+                        uint id = 0;
+                        if (entity.Name is null ||
+                            !string.Equals(entity.Name, name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            _logger.LogWarning("Failed to resolve entity '@{Name}'. Using zero entity ID!", name);
+                        }
+                        else
+                        {
+                            id = (uint)entity.Id;
+                        }
+
+                        // Write 4-byte big-endian
+                        BinaryPrimitives.WriteUInt32BigEndian(packetBuffer.AsSpan(offset), id);
+                    }
+                }
+
+                var span = packetBuffer.AsSpan(0, template.Length);
+                packet = entry.IsServerPacket
+                    ? new ServerPacket(entry.Command.Value, span)
+                    : new ClientPacket(entry.Command.Value, span);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error building packet for send");
+                return;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(packetBuffer);
+            }
+        }
+
+        if (packet is null)
         {
             return;
         }

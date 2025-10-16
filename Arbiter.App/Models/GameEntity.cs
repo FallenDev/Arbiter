@@ -9,6 +9,7 @@ public readonly record struct GameEntity
 
     // Location where the entity was last seen
     public int? MapId { get; init; }
+    public string? MapName { get; init; }
     public int X { get; init; }
     public int Y { get; init; }
 }

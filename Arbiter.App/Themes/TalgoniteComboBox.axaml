@@ -51,11 +51,13 @@
                         
                         <Border Grid.Column="0" Grid.ColumnSpan="2"
                                 Classes="sunken-shadow"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                ZIndex="100"/>
                         
                         <Border Grid.Column="0" Grid.ColumnSpan="2"
                                 Classes="sunken-highlight"
-                                CornerRadius="{TemplateBinding CornerRadius}"/>
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                ZIndex="100"/>
                         
                         <!-- Content Area -->
                         <ContentControl Grid.Column="0"

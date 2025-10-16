@@ -87,6 +87,19 @@ For example:
 43 03 00 0A 00 08 01        
 ```
 
+#### Inline Data Types
+
+In addition to hex values, you can also specify other data types within a packet for ease of use.
+
+Supported data types:
+
+- `#value` - decimal value literal (ex: `#100` -> `64`)
+  - The hex will be 8-bit, 16-bit, or 32-bit depending on the value (smallest necessary).
+- `"string"` - ascii string literal (ex: `"hello world"` -> `68 65 6C 6C 6F 20 77 6F 72 6C 64`)
+  - Single-quote, double-quote, and backtick strings are all supported.
+- `@Entity` - entity ID replacement (ex: `@Deoch` -> `00 00 CA 1B`)
+  - The entity must have been seen before, otherwise a zero value will be used instead. 
+
 #### Wait Delays
 
 You can specify `@wait <milliseconds>` between certain packets if you want to introduce a variable delay.
@@ -102,6 +115,11 @@ For example:
 ```
 
 This will wait 2 seconds before sending the next packets. This is independent of the `Delay` and `Interval` settings.
+
+#### Disconnect
+
+You can specify `@disconnect` (or `@dc`) to force the client to disconnect.
+This can be useful when you want to "log out" after sending a packet.
 
 #### Comments
 

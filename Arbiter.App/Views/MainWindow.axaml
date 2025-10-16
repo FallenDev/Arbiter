@@ -58,11 +58,9 @@
                                     HotKey="Ctrl+N"
                                     ToolTip.Tip="Launch a new client."
                                     Classes="toolbar">
-                                <StackPanel Orientation="Horizontal" Spacing="8"> 
-                                    <Path Width="16" Height="16"
-                                          Stroke="{Binding Path=$parent[Button].Foreground}"
-                                          Data="{StaticResource Talgonite.Icon.NewPlus}"/>
-                                </StackPanel>
+                                <Path Width="16" Height="16"
+                                      Stroke="{Binding Path=$parent[Button].Foreground}"
+                                      Data="{StaticResource Talgonite.Icon.NewPlus}"/>
                             </Button>
                         </WrapPanel>
                         <ListBox ItemsSource="{Binding ClientManager.Clients}"
@@ -98,6 +96,14 @@
                IsVisible="{Binding IsLeftPanelCollapsed, FallbackValue={x:False}}">
             <LayoutTransformControl LayoutTransform="rotate(90deg)">
                 <WrapPanel ItemSpacing="4">
+                    <Button Command="{Binding LaunchClientCommand}"
+                            HotKey="Ctrl+N"
+                            ToolTip.Tip="Launch a new client."
+                            Classes="toolbar">
+                        <Path Width="16" Height="16"
+                              Stroke="{Binding Path=$parent[Button].Foreground}"
+                              Data="{StaticResource Talgonite.Icon.NewPlus}"/>
+                    </Button>
                     <Button Command="{Binding ToggleLeftPanelCommand}" CommandParameter="clients"
                             Classes="tab"
                             ToolTip.Tip="Shows the Clients view.">

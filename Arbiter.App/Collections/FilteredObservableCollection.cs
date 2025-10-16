@@ -50,12 +50,45 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add when e.NewItems is not null:
-                foreach (var item in e.NewItems.OfType<T>().Where(Predicate))
+            {
+                // Insert new items at the correct relative positions based on the source index
+                var newIndex = e.NewStartingIndex;
+                var i = 0;
+                foreach (var item in e.NewItems.OfType<T>())
                 {
-                    Add(item);
+                    if (Predicate(item))
+                    {
+                        var targetIndex = GetFilteredIndexForSourceIndex(newIndex + i);
+                        Insert(targetIndex, item);
+                    }
+                    i++;
                 }
-
                 break;
+            }
+
+            case NotifyCollectionChangedAction.Move when e.OldItems is not null:
+            {
+                // Move items to match the source order when the source moves them
+                var newIndex = e.NewStartingIndex;
+                var i = 0;
+                foreach (var item in e.OldItems.OfType<T>())
+                {
+                    if (Predicate(item))
+                    {
+                        var currentIndex = IndexOf(item);
+                        if (currentIndex >= 0)
+                        {
+                            var targetIndex = GetFilteredIndexForSourceIndex(newIndex + i);
+                            if (currentIndex != targetIndex)
+                            {
+                                Move(currentIndex, targetIndex);
+                            }
+                        }
+                    }
+                    i++;
+                }
+                break;
+            }
 
             case NotifyCollectionChangedAction.Remove when e.OldItems is not null:
                 foreach (var item in e.OldItems.OfType<T>())
@@ -71,9 +104,18 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
                     Remove(item);
                 }
 
-                foreach (var item in e.NewItems.OfType<T>().Where(Predicate))
                 {
-                    Add(item);
+                    var newIndex = e.NewStartingIndex;
+                    var i = 0;
+                    foreach (var item in e.NewItems.OfType<T>())
+                    {
+                        if (Predicate(item))
+                        {
+                            var targetIndex = GetFilteredIndexForSourceIndex(newIndex + i);
+                            Insert(targetIndex, item);
+                        }
+                        i++;
+                    }
                 }
 
                 break;
@@ -82,6 +124,21 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
                 Refresh();
                 break;
         }
+    }
+
+    private int GetFilteredIndexForSourceIndex(int sourceIndex)
+    {
+        // Count how many items in the source match the predicate up to (but not including) sourceIndex
+        var count = 0;
+        for (var i = 0; i < Math.Min(sourceIndex, _sourceCollection.Count); i++)
+        {
+            var srcItem = _sourceCollection[i];
+            if (Predicate(srcItem))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void Dispose()

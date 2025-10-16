@@ -16,37 +16,43 @@ public partial class EntityListViewModel
         proxyServer.AddFilter(new ServerMessageFilter<ServerAddEntityMessage>(OnAddEntityMessage)
         {
             Name = "EntityView_AddEntityFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowUserMessage>(OnShowUserMessage)
         {
             Name = "EntityView_ShowUserFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
         {
             Name = "EntityView_ShowDialogFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage)
         {
             Name = "EntityView_ShowDialogMenuFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerEntityWalkMessage>(OnEntityWalkMessage)
         {
             Name = "EntityView_EntityWalkFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
+        });
+
+        proxyServer.AddFilter(new ServerMessageFilter<ServerWalkResponseMessage>(OnSelfWalkMessage)
+        {
+            Name = "EntityView_SelfWalkFilter",
+            Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
         {
             Name = "EntityView_RemoveEntityFilter",
-            Priority = int.MaxValue
+            Priority = int.MaxValue - 10
         });
     }
 
@@ -69,12 +75,17 @@ public partial class EntityListViewModel
                 _ => null
             };
 
+            // Try to get the player so we can get map context
+            _playerService.TryGetState(connection.Id, out var player);
+
             var gameEntity = new GameEntity
             {
                 Flags = flags,
                 Id = entity.Id,
                 Name = name,
                 Sprite = entity.Sprite,
+                MapId = player?.MapId,
+                MapName = player?.MapName,
                 X = entity.X,
                 Y = entity.Y,
             };
@@ -89,6 +100,9 @@ public partial class EntityListViewModel
     private NetworkPacket OnShowUserMessage(ProxyConnection connection, ServerShowUserMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowUserMessage> result)
     {
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
         var entity = new GameEntity
         {
             Flags = EntityFlags.Player,
@@ -97,6 +111,8 @@ public partial class EntityListViewModel
             Sprite = message.BodySprite.HasValue
                 ? (ushort)message.BodySprite.Value
                 : message.MonsterSprite ?? 0,
+            MapId = player?.MapId,
+            MapName = player?.MapName,
             X = message.X,
             Y = message.Y
         };
@@ -130,12 +146,20 @@ public partial class EntityListViewModel
             _ => EntityFlags.Monster
         };
 
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
         var entity = new GameEntity
         {
             Flags = flags,
             Id = message.EntityId.Value,
             Name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString(),
             Sprite = message.Sprite ?? 0,
+            MapId = player?.MapId,
+            MapName = player?.MapName,
+            // Reactors should assume the player's location when encountering
+            X = flags.HasFlag(EntityFlags.Reactor) ? player?.MapX ?? 0 : 0,
+            Y = flags.HasFlag(EntityFlags.Reactor) ? player?.MapY ?? 0 : 0,
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
@@ -167,12 +191,17 @@ public partial class EntityListViewModel
             _ => EntityFlags.Monster
         };
 
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
         var entity = new GameEntity
         {
             Flags = flags,
             Id = message.EntityId.Value,
             Name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString(),
             Sprite = message.Sprite ?? 0,
+            MapId = player?.MapId,
+            MapName = player?.MapName
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
@@ -206,6 +235,44 @@ public partial class EntityListViewModel
             }
         };
 
+        _entityStore.AddOrUpdateEntity(newEntity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket OnSelfWalkMessage(ProxyConnection connection, ServerWalkResponseMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerWalkResponseMessage> result)
+    {
+        // If no active player, ignore
+        if (!_playerService.TryGetState(connection.Id, out var player) || player.UserId is null)
+        {
+            return result.Passthrough();
+        }
+
+        if (!_entityStore.TryGetEntity(player.UserId.Value, out var selfEntity))
+        {
+            return result.Passthrough();
+        }
+
+        var newEntity = selfEntity with
+        {
+            Name = player.Name,
+            MapId = player.MapId,
+            MapName = player.MapName,
+            X = message.Direction switch
+            {
+                WorldDirection.Left => Math.Max(0, message.PreviousX - 1),
+                WorldDirection.Right => message.PreviousX + 1,
+                _ => message.PreviousX
+            },
+            Y = message.Direction switch
+            {
+                WorldDirection.Up => Math.Max(0, message.PreviousY - 1),
+                WorldDirection.Down => message.PreviousX + 1,
+                _ => message.PreviousY
+            }
+        };
         _entityStore.AddOrUpdateEntity(newEntity, out _);
 
         // Do not alter the packet
