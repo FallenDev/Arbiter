@@ -43,6 +43,12 @@ public partial class SendPacketViewModel
                     token.ThrowIfCancellationRequested();
                     var item = sendItems[i];
 
+                    // Ignore the last wait item if it's the last iteration
+                    if (item.IsWait && i == sendItems.Count - 1 && iterations is 1)
+                    {
+                        continue;
+                    }
+
                     await HandleSendItemAsync(client, item, token);
 
                     // Do not apply interval after explicit wait line
