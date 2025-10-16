@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Arbiter.App.Models;
 
 namespace Arbiter.App.Services;
@@ -20,6 +21,7 @@ public sealed class PlayerService : IPlayerService
         return _players.TryRemove(connectionId, out _);
     }
 
-    public bool TryGetState(int connectionId, out PlayerState state) => _players.TryGetValue(connectionId, out state!);
+    public bool TryGetState(int connectionId, [NotNullWhen(true)] out PlayerState? state) =>
+        _players.TryGetValue(connectionId, out state);
 
 }

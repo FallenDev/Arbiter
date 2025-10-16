@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Design;
 using System.Globalization;
 using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
 using Arbiter.App.Threading;
-using Arbiter.App.ViewModels.Client;
 using Arbiter.Net.Proxy;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -37,6 +35,7 @@ public partial class EntityListViewModel : ViewModelBase
     {
         _entityStore = entityStore;
         _playerService = playerService;
+        
         _entityStore.EntityAdded += OnEntityAdded;
         _entityStore.EntityUpdated += OnEntityUpdated;
         _entityStore.EntityRemoved += OnEntityRemoved;

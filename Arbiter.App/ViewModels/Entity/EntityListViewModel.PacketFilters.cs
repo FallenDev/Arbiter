@@ -69,16 +69,17 @@ public partial class EntityListViewModel
                 _ => null
             };
 
-            var mapId = _playerService.TryGetState(connection.Id, out var ps1) ? ps1.MapId : null;
-            var mapName = _playerService.TryGetState(connection.Id, out ps1) ? ps1.MapName : null;
+            // Try to get the player so we can get map context
+            _playerService.TryGetState(connection.Id, out var player);
+
             var gameEntity = new GameEntity
             {
                 Flags = flags,
                 Id = entity.Id,
                 Name = name,
                 Sprite = entity.Sprite,
-                MapId = mapId,
-                MapName = mapName,
+                MapId = player?.MapId,
+                MapName = player?.MapName,
                 X = entity.X,
                 Y = entity.Y,
             };
@@ -93,8 +94,9 @@ public partial class EntityListViewModel
     private NetworkPacket OnShowUserMessage(ProxyConnection connection, ServerShowUserMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowUserMessage> result)
     {
-        var mapId2 = _playerService.TryGetState(connection.Id, out var ps2) ? ps2.MapId : null;
-        var mapName2 = _playerService.TryGetState(connection.Id, out ps2) ? ps2.MapName : null;
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
         var entity = new GameEntity
         {
             Flags = EntityFlags.Player,
@@ -103,8 +105,8 @@ public partial class EntityListViewModel
             Sprite = message.BodySprite.HasValue
                 ? (ushort)message.BodySprite.Value
                 : message.MonsterSprite ?? 0,
-            MapId = mapId2,
-            MapName = mapName2,
+            MapId = player?.MapId,
+            MapName = player?.MapName,
             X = message.X,
             Y = message.Y
         };
@@ -138,16 +140,17 @@ public partial class EntityListViewModel
             _ => EntityFlags.Monster
         };
 
-        var mapIdD = _playerService.TryGetState(connection.Id, out var psD) ? psD.MapId : null;
-        var mapNameD = _playerService.TryGetState(connection.Id, out psD) ? psD.MapName : null;
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
         var entity = new GameEntity
         {
             Flags = flags,
             Id = message.EntityId.Value,
             Name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString(),
             Sprite = message.Sprite ?? 0,
-            MapId = mapIdD,
-            MapName = mapNameD,
+            MapId = player?.MapId,
+            MapName = player?.MapName,
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
@@ -179,16 +182,17 @@ public partial class EntityListViewModel
             _ => EntityFlags.Monster
         };
 
-        var mapIdM = _playerService.TryGetState(connection.Id, out var psM) ? psM.MapId : null;
-        var mapNameM = _playerService.TryGetState(connection.Id, out psM) ? psM.MapName : null;
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
         var entity = new GameEntity
         {
             Flags = flags,
             Id = message.EntityId.Value,
             Name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString(),
             Sprite = message.Sprite ?? 0,
-            MapId = mapIdM,
-            MapName = mapNameM,
+            MapId = player?.MapId,
+            MapName = player?.MapName
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
