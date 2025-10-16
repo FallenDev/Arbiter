@@ -138,6 +138,14 @@ internal static class SendItemParser
                             return false;
                         }
 
+                        if (str.Length > 255)
+                        {
+                            validationError = $"String literal exceeds 255 characters on line {i + 1}";
+                            items = [];
+                            return false;
+                        }
+
+                        dataBytes.Add((byte)str.Length);
                         var ascii = Encoding.ASCII.GetBytes(str);
                         dataBytes.AddRange(ascii);
                         continue;
