@@ -43,6 +43,12 @@ public partial class EntityListViewModel
             Priority = int.MaxValue
         });
 
+        proxyServer.AddFilter(new ServerMessageFilter<ServerWalkResponseMessage>(OnSelfWalkMessage)
+        {
+            Name = "EntityView_SelfWalkFilter",
+            Priority = int.MaxValue
+        });
+
         proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
         {
             Name = "EntityView_RemoveEntityFilter",
@@ -226,6 +232,44 @@ public partial class EntityListViewModel
             }
         };
 
+        _entityStore.AddOrUpdateEntity(newEntity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket OnSelfWalkMessage(ProxyConnection connection, ServerWalkResponseMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerWalkResponseMessage> result)
+    {
+        // If no active player, ignore
+        if (!_playerService.TryGetState(connection.Id, out var player) || player.UserId is null)
+        {
+            return result.Passthrough();
+        }
+
+        if (!_entityStore.TryGetEntity(player.UserId.Value, out var selfEntity))
+        {
+            return result.Passthrough();
+        }
+
+        var newEntity = selfEntity with
+        {
+            Name = player.Name,
+            MapId = player.MapId,
+            MapName = player.MapName,
+            X = message.Direction switch
+            {
+                WorldDirection.Left => Math.Max(0, message.PreviousX - 1),
+                WorldDirection.Right => message.PreviousX + 1,
+                _ => message.PreviousX
+            },
+            Y = message.Direction switch
+            {
+                WorldDirection.Up => Math.Max(0, message.PreviousY - 1),
+                WorldDirection.Down => message.PreviousX + 1,
+                _ => message.PreviousY
+            }
+        };
         _entityStore.AddOrUpdateEntity(newEntity, out _);
 
         // Do not alter the packet
