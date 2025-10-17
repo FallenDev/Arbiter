@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
 
@@ -9,7 +10,9 @@ public class ServerMessageFactory : IServerMessageFactory
 {
     public static ServerMessageFactory Default { get; } = new();
 
-    private readonly Dictionary<ServerCommand, Type> _typeMappings = new();
+    private readonly Dictionary<ServerCommand, Func<IServerMessage>> _factoryMappings = new();
+    private readonly Dictionary<Type, ServerCommand> _commandMappings = new();
+    private readonly Dictionary<ServerCommand, Type> _reverseCommandMappings = new();
 
     public ServerMessageFactory()
     {
@@ -31,34 +34,39 @@ public class ServerMessageFactory : IServerMessageFactory
             }
 
             var command = (ServerCommand)attr.Command;
-            _typeMappings.Add(command, type);
+            
+            // Create compiled factory delegate for performance
+            var factory = CreateFactory(type);
+            _factoryMappings.Add(command, factory);
+            _commandMappings.Add(type, command);
+            _reverseCommandMappings.Add(command, type);
         }
     }
-
-    public Type? GetMessageType(ServerCommand command) => _typeMappings.GetValueOrDefault(command);
-
-    public ServerCommand? GetMessageCommand(Type messageType)
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Func<IServerMessage> CreateFactory(Type type)
     {
-        foreach (var (key, value) in _typeMappings)
-        {
-            if (value == messageType)
-            {
-                return key;
-            }
-        }
-
-        return null;
+        var ctor = type.GetConstructor(Type.EmptyTypes);
+        return ctor is null
+            ? throw new InvalidOperationException($"Type {type.Name} must have a parameterless constructor")
+            : () => (IServerMessage)ctor.Invoke(null);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Type? GetMessageType(ServerCommand command) => _reverseCommandMappings.GetValueOrDefault(command);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ServerCommand? GetMessageCommand(Type messageType) => _commandMappings.GetValueOrDefault(messageType);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IServerMessage? Create(ServerPacket packet)
     {
-        var type = GetMessageType(packet.Command);
-        if (type is null)
+        if (!_factoryMappings.TryGetValue(packet.Command, out var factory))
         {
             return null;
         }
 
-        var instance = (IServerMessage)Activator.CreateInstance(type)!;
+        var instance = factory();
         var reader = new NetworkPacketReader(packet);
         instance.Deserialize(reader);
 
