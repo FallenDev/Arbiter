@@ -30,8 +30,8 @@ public partial class ClientManagerViewModel : ViewModelBase
     public bool HasClients => ClientCount > 0;
     
     public event Action<ClientViewModel?>? ClientSelected;
-    public event Action<ClientViewModel?>? ClientConnected;
-    public event Action<ClientViewModel?>? ClientDisconnected;
+    public event Action<ClientViewModel>? ClientConnected;
+    public event Action<ClientViewModel>? ClientDisconnected;
 
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
         IPlayerService playerService)
