@@ -38,7 +38,7 @@ public sealed class EntityStore : IEntityStore
         // Preserve existing map data values
         var updatedEntity = existingEntity with
         {
-            Name = entity.Name ?? existingEntity.Name,
+            Name = !string.IsNullOrWhiteSpace(entity.Name) ? entity.Name : existingEntity.Name,
             Sprite = entity.Sprite ?? existingEntity.Sprite,
             MapId = entity.MapId ?? existingEntity.MapId,
             MapName = entity.MapName ?? existingEntity.MapName,
