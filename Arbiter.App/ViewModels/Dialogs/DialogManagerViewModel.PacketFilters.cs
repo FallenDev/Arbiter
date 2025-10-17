@@ -2,6 +2,7 @@
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
+using Arbiter.Net.Types;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Dialogs;
@@ -26,32 +27,94 @@ public partial class DialogManagerViewModel
     private NetworkPacket OnDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
     {
-        if (_clientManager.TryGetClient(connection.Id, out var client))
+        if (!ShouldSync || !_clientManager.TryGetClient(connection.Id, out var client))
         {
-            _logger.LogInformation("[{Client}] Received dialog message: {Message}", connection.Name, message.Name);
+            return result.Passthrough();
         }
-        else
+
+        var dialog = BuildDialogView(message);
+        SetActiveDialogForClient(client.Id, dialog);
+
+        if (client == SelectedClient)
         {
-            _logger.LogWarning("Unable to find client with ID {Id}", connection.Id);
+            ActiveDialog = dialog;
         }
-        
+
         // Do not alter the packet
         return result.Passthrough();
     }
-    
+
     private NetworkPacket OnDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
     {
-        if (_clientManager.TryGetClient(connection.Id, out var client))
+        if (ShouldSync || !_clientManager.TryGetClient(connection.Id, out var client))
         {
-            _logger.LogInformation("[{Client}] Received dialog menu: {Message}", connection.Name, message.Name);
+            return result.Passthrough();
         }
-        else
+
+        var dialog = BuildDialogView(message);
+        SetActiveDialogForClient(client.Id, dialog);
+
+        if (client == SelectedClient)
         {
-            _logger.LogWarning("Unable to find client with ID {Id}", connection.Id);
+            ActiveDialog = dialog;
         }
-        
+
         // Do not alter the packet
         return result.Passthrough();
+    }
+
+    private void SetActiveDialogForClient(long clientId, DialogViewModel? dialog)
+        => _activeDialogs.AddOrUpdate(clientId, dialog, (_, _) => dialog);
+
+    private static DialogViewModel? BuildDialogView(ServerShowDialogMessage message)
+    {
+        if (message.DialogType == DialogType.CloseDialog)
+        {
+            return null;
+        }
+        
+        var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
+        var dialog = new DialogViewModel
+        {
+            Name = name,
+            EntityId = message.EntityId,
+            Sprite = message.Sprite,
+            PursuitId = message.PursuitId,
+            StepId = message.StepId,
+            Content = message.Content,
+            CanNavigatePrevious = message.HasPreviousButton,
+            CanNavigateNext = message.HasNextButton,
+            CanNavigateTop = message.StepId is > 0,
+        };
+        
+        return dialog;
+    }
+
+    private static DialogViewModel? BuildDialogView(ServerShowDialogMenuMessage message)
+    {
+        var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
+        var dialog = new DialogViewModel
+        {
+            Name = name,
+            EntityId = message.EntityId,
+            Sprite = message.Sprite,
+            PursuitId = message.PursuitId,
+            Content = message.Content
+        };
+
+        if (message.MenuChoices.Count > 0)
+        {
+            foreach (var choice in message.MenuChoices)
+            {
+                dialog.MenuChoices.Add(new DialogMenuChoiceViewModel
+                {
+                    Text = choice.Text,
+                    PursuitId = choice.PursuitId,
+                });
+            }
+        }
+
+        return dialog;
     }
 }

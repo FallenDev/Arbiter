@@ -25,6 +25,11 @@ public partial class DialogManagerViewModel
 
     private void OnDialogClose(object? sender, DialogEventArgs e)
     {
+        ActiveDialog = null;
 
+        if (SelectedClient is not null)
+        {
+            SetActiveDialogForClient(SelectedClient.Id, null);
+        }
     }
 }

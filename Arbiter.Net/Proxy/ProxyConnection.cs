@@ -76,12 +76,20 @@ public partial class ProxyConnection : IDisposable
         _serverMessageFactory = serverMessageFactory ?? ServerMessageFactory.Default;
     }
 
-    public bool EnqueuePacket(NetworkPacket packet, bool prioritize = false)
+    public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal)
     {
         // Prioritize outgoing client heartbeat packets
-        var prioritized = prioritize || packet is ClientPacket { Command: ClientCommand.Heartbeat };
+        if (packet is ClientPacket { Command: ClientCommand.Heartbeat })
+        {
+            priority = NetworkPriority.High;
+        }
 
-        var writer = prioritized ? _prioritySendQueue.Writer : _sendQueue.Writer;
+        var writer = priority switch
+        {
+            NetworkPriority.High => _prioritySendQueue.Writer,
+            _ => _sendQueue.Writer,
+        };
+        
         if (!writer.TryWrite(packet))
         {
             return false;
@@ -91,7 +99,7 @@ public partial class ProxyConnection : IDisposable
         return true;
     }
 
-    public bool EnqueueMessage(IClientMessage message, bool prioritize = false)
+    public bool EnqueueMessage(IClientMessage message, NetworkPriority priority = NetworkPriority.Normal)
     {
         var command = _clientMessageFactory.GetMessageCommand(message.GetType());
         if (command is null)
@@ -106,9 +114,12 @@ public partial class ProxyConnection : IDisposable
             var packet = builder.ToPacket();
 
             // Prioritize outgoing client heartbeat packets
-            var prioritized = prioritize || packet is ClientPacket { Command: ClientCommand.Heartbeat };
+            if (packet is ClientPacket { Command: ClientCommand.Heartbeat })
+            {
+                priority = NetworkPriority.High;
+            }
 
-            return EnqueuePacket(packet, prioritized);
+            return EnqueuePacket(packet, priority);
         }
         finally
         {
@@ -116,7 +127,7 @@ public partial class ProxyConnection : IDisposable
         }
     }
 
-    public bool EnqueueMessage(IServerMessage message, bool prioritize = false)
+    public bool EnqueueMessage(IServerMessage message, NetworkPriority priority = NetworkPriority.Normal)
     {
         var command = _serverMessageFactory.GetMessageCommand(message.GetType());
         if (command is null)
@@ -131,9 +142,12 @@ public partial class ProxyConnection : IDisposable
             var packet = builder.ToPacket();
 
             // Prioritize incoming server heartbeat packets
-            var prioritized = prioritize || packet is ServerPacket { Command: ServerCommand.Heartbeat };
+            if (packet is ServerPacket { Command: ServerCommand.Heartbeat })
+            {
+                priority = NetworkPriority.High;
+            }
 
-            return EnqueuePacket(packet, prioritized);
+            return EnqueuePacket(packet, priority);
         }
         finally
         {

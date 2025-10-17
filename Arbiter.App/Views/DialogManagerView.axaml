@@ -44,6 +44,10 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
+                
+                <CheckBox IsChecked="{Binding ShouldSync}" Margin="8,0,0,0"/>
+                <Label Content="Sync" Padding="0"
+                       ToolTip.Tip="Sync dialog in real-time with the selected client."/>
             </StackPanel>
             
             <!-- Right Side -->
@@ -124,7 +128,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom">
                     <ScrollViewer>
-                        <ItemsControl ItemsSource="{Binding ActiveDialog.MenuChoices, FallbackValue=[]}">
+                        <ItemsControl ItemsSource="{Binding ActiveDialog.MenuChoices, FallbackValue={x:Null}}">
                             <ItemsControl.DataTemplates>
                                 <DataTemplate x:DataType="vm:DialogMenuChoiceViewModel">
                                     <Button Command="{Binding $parent[UserControl].((vm:DialogManagerViewModel)DataContext).ActiveDialog.SelectMenuChoiceCommand, FallbackValue={x:Null}}"
@@ -177,6 +181,7 @@
                                        FontSize="16"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
+                                       Margin="0,4,0,0"
                                        IsVisible="{Binding ActiveDialog.EntityId, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue={x:Null}}"/>
                             
                             <!-- Pursuit Id -->
@@ -202,7 +207,7 @@
                         <ScrollViewer Grid.Row="1">
                             <TextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
                                        TextWrapping="WrapWithOverflow"
-                                       FontSize="14"
+                                       FontSize="16"
                                        Foreground="{StaticResource Talgonite.Color.DimWhite}"
                                        Margin="8,4"/>
                         </ScrollViewer>
@@ -216,7 +221,8 @@
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the previous dialog step."
                                     MinWidth="120"
-                                    HorizontalContentAlignment="Stretch">
+                                    HorizontalContentAlignment="Stretch"
+                                    IsVisible="{Binding ActiveDialog.CanNavigatePrevious, FallbackValue={x:False}}">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <Path Grid.Column="0"
                                           Width="16" Height="16"
@@ -234,7 +240,8 @@
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the next dialog step."
                                     MinWidth="120"
-                                    HorizontalContentAlignment="Stretch">
+                                    HorizontalContentAlignment="Stretch"
+                                    IsVisible="{Binding ActiveDialog.CanNavigateNext, FallbackValue={x:False}}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0" Text="Next"
                                                FontSize="14"
@@ -251,7 +258,8 @@
                                     Command="{Binding ActiveDialog.NavigateTopCommand, FallbackValue={x:Null}}"
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the initial dialog step."
-                                    MinWidth="120">
+                                    MinWidth="120"
+                                    IsVisible="{Binding ActiveDialog.CanNavigateTop, FallbackValue={x:False}}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <Path Width="16" Height="16"
                                           Stroke="{Binding $parent[Button].Foreground}"

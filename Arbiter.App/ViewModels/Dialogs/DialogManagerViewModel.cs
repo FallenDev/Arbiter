@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Arbiter.App.ViewModels.Client;
@@ -16,11 +17,15 @@ public partial class DialogManagerViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
     private readonly ClientManagerViewModel _clientManager;
 
+    private readonly ConcurrentDictionary<long, DialogViewModel?> _activeDialogs = [];
+
     [ObservableProperty] private DialogViewModel? _activeDialog;
 
     [ObservableProperty] private bool _hasClients;
 
     [ObservableProperty] private ClientViewModel? _selectedClient;
+
+    [ObservableProperty] private bool _shouldSync = true;
 
     public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
 
@@ -31,7 +36,7 @@ public partial class DialogManagerViewModel : ViewModelBase
 
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
         _clientManager.ClientSelected += OnClientSelected;
-        
+
         _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
         AddPacketFilters();
     }

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Real-time dialog display
 - `Start Client` button also visible when left panel is collapsed
 - Entity sort ordering (persists across sessions)
 - Entity tooltip for additional information
