@@ -109,7 +109,9 @@ public partial class ClientViewModel : ViewModelBase
     public void Subscribe() => AddPacketFilters();
     public void Unsubscribe() => RemovePacketFilters();
     
-    public bool EnqueuePacket(NetworkPacket packet) => _connection.EnqueuePacket(packet);
+    public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueuePacket(packet, priority);
+    public bool EnqueueMessage(IClientMessage packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueueMessage(packet, priority);
+    public bool EnqueueMessage(IServerMessage packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueueMessage(packet, priority);
 
     private void HandleClientMessage(IClientMessage message)
     {

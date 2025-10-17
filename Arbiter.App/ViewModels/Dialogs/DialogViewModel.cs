@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Arbiter.Net.Types;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -11,8 +12,10 @@ public partial class DialogViewModel : ViewModelBase
     [ObservableProperty] private string? _content;
     [ObservableProperty] private int? _sprite;
     [ObservableProperty] private long? _entityId;
+    [ObservableProperty] private EntityTypeFlags _entityType;
     [ObservableProperty] private int? _pursuitId;
     [ObservableProperty] private int? _stepId;
+    [ObservableProperty] private bool _isMenu;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(NavigatePreviousCommand))]
     private bool _canNavigatePrevious;

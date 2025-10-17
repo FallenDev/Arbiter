@@ -46,7 +46,7 @@ public partial class DialogManagerViewModel
     private NetworkPacket OnDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
     {
-        if (ShouldSync || !_clientManager.TryGetClient(connection.Id, out var client))
+        if (!ShouldSync || !_clientManager.TryGetClient(connection.Id, out var client))
         {
             return result.Passthrough();
         }
@@ -78,13 +78,14 @@ public partial class DialogManagerViewModel
         {
             Name = name,
             EntityId = message.EntityId,
+            EntityType = message.EntityType,
             Sprite = message.Sprite,
             PursuitId = message.PursuitId,
             StepId = message.StepId,
             Content = message.Content,
             CanNavigatePrevious = message.HasPreviousButton,
             CanNavigateNext = message.HasNextButton,
-            CanNavigateTop = message.StepId is > 0,
+            IsMenu = false
         };
         
         return dialog;
@@ -97,9 +98,12 @@ public partial class DialogManagerViewModel
         {
             Name = name,
             EntityId = message.EntityId,
+            EntityType = message.EntityType,
             Sprite = message.Sprite,
             PursuitId = message.PursuitId,
-            Content = message.Content
+            Content = message.Content,
+            CanNavigateTop = true,
+            IsMenu = true
         };
 
         if (message.MenuChoices.Count > 0)

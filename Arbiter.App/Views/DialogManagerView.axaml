@@ -101,6 +101,7 @@
                                Padding="0"/>
                         <TextBlock Text="None"
                                    TextAlignment="Center"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                    FontSize="18"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.LightGray}"
@@ -108,6 +109,7 @@
                                    IsVisible="{Binding ActiveDialog.Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:True}}"/>
                         <TextBlock Text="{Binding ActiveDialog.Sprite, FallbackValue=None}"
                                    TextAlignment="Center"
+                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                    FontSize="18"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.White}"
@@ -127,7 +129,8 @@
                         Margin="8,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom">
-                    <ScrollViewer>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding ActiveDialog.MenuChoices, FallbackValue={x:Null}}">
                             <ItemsControl.DataTemplates>
                                 <DataTemplate x:DataType="vm:DialogMenuChoiceViewModel">
@@ -169,7 +172,7 @@
                             <!-- Name -->
                             <TextBlock Grid.Column="0"
                                        Text="{Binding ActiveDialog.Name, FallbackValue={x:Null}}"
-                                       FontSize="16"
+                                       FontSize="18"
                                        FontWeight="SemiBold"
                                        Foreground="{StaticResource Talgonite.Color.LightBlue}"
                                        VerticalAlignment="Center"/>
@@ -188,7 +191,7 @@
                             <TextBlock Grid.Column="3"
                                        Text="{Binding ActiveDialog.PursuitId, StringFormat={}Pursuit {0}, FallbackValue={x:Null}}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                       FontSize="14"
+                                       FontSize="16"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
                                        IsVisible="{Binding ActiveDialog.PursuitId, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue={x:Null}}"/>
@@ -197,17 +200,19 @@
                             <TextBlock Grid.Column="4"
                                        Text="{Binding ActiveDialog.StepId, StringFormat={}Step {0}, FallbackValue={x:Null}}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                       FontSize="14"
+                                       FontSize="16"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
                                        IsVisible="{Binding ActiveDialog.StepId, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue={x:Null}}"/>
                         </Grid>
                         
                         <!-- Content -->
-                        <ScrollViewer Grid.Row="1">
+                        <ScrollViewer Grid.Row="1"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollBarVisibility="Auto">
                             <TextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
                                        TextWrapping="WrapWithOverflow"
-                                       FontSize="16"
+                                       FontSize="18"
                                        Foreground="{StaticResource Talgonite.Color.DimWhite}"
                                        Margin="8,4"/>
                         </ScrollViewer>
@@ -222,14 +227,14 @@
                                     ToolTip.Tip="Requests the previous dialog step."
                                     MinWidth="120"
                                     HorizontalContentAlignment="Stretch"
-                                    IsVisible="{Binding ActiveDialog.CanNavigatePrevious, FallbackValue={x:False}}">
+                                    IsVisible="{Binding !ActiveDialog.IsMenu, FallbackValue={x:False}}">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <Path Grid.Column="0"
                                           Width="16" Height="16"
                                           Stroke="{Binding $parent[Button].Foreground}"
                                           Data="{StaticResource Talgonite.Icon.LeftChevron}"/>
                                     <TextBlock Grid.Column="1" Text="Previous"
-                                               FontSize="14"
+                                               FontSize="16"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center"/>
                                 </Grid>
@@ -241,10 +246,10 @@
                                     ToolTip.Tip="Requests the next dialog step."
                                     MinWidth="120"
                                     HorizontalContentAlignment="Stretch"
-                                    IsVisible="{Binding ActiveDialog.CanNavigateNext, FallbackValue={x:False}}">
+                                    IsVisible="{Binding !ActiveDialog.IsMenu, FallbackValue={x:False}}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0" Text="Next"
-                                               FontSize="14"
+                                               FontSize="16"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center"/>
                                     <Path Grid.Column="1"
@@ -259,13 +264,13 @@
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the initial dialog step."
                                     MinWidth="120"
-                                    IsVisible="{Binding ActiveDialog.CanNavigateTop, FallbackValue={x:False}}">
+                                    IsVisible="{Binding ActiveDialog.IsMenu, FallbackValue={x:False}}">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <Path Width="16" Height="16"
                                           Stroke="{Binding $parent[Button].Foreground}"
                                           Data="{StaticResource Talgonite.Icon.ArrowUp}"/>
                                     <TextBlock Text="Top"
-                                               FontSize="14"
+                                               FontSize="16"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
@@ -281,7 +286,7 @@
                                           Stroke="{Binding $parent[Button].Foreground}"
                                           Data="{StaticResource Talgonite.Icon.CrossX}"/>
                                     <TextBlock Text="Close"
-                                               FontSize="14"
+                                               FontSize="16"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>

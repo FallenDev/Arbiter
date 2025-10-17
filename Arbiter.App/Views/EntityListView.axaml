@@ -213,6 +213,14 @@
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            VerticalAlignment="Center"
                                            IsVisible="{Binding IsHidden}"/>
+                                <!-- Ghost -->
+                                <TextBlock Grid.Column="2"
+                                           Text="[Ghost]"
+                                           TextAlignment="Left"
+                                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsGhost}"/>
                                 <!-- ID -->
                                 <TextBlock Grid.Column="3"
                                            Text="{Binding Id, StringFormat={}0x{0:X}}"
