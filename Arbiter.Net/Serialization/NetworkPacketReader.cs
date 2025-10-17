@@ -100,9 +100,13 @@ public ref struct NetworkPacketReader(NetworkPacket packet, Encoding? encoding =
     public string ReadNullTerminatedString()
     {
         var length = 0;
-        while (_buffer[_position + length] != 0)
+        while (true)
         {
             EnsureCanRead(1);
+            if (_buffer[_position + length] == 0)
+            {
+                break;
+            }
             length++;
         }
 
@@ -115,9 +119,14 @@ public ref struct NetworkPacketReader(NetworkPacket packet, Encoding? encoding =
     public string ReadLine()
     {
         var length = 0;
-        while (_buffer[_position + length] != '\n' && _buffer[_position + length] != '\r')
+        while (true)
         {
             EnsureCanRead(1);
+            var b = _buffer[_position + length];
+            if (b == '\n' || b == '\r')
+            {
+                break;
+            }
             length++;
         }
 

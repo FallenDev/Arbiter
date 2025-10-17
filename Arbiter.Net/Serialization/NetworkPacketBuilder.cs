@@ -199,9 +199,11 @@ public ref struct NetworkPacketBuilder : IDisposable
 
     public NetworkPacket ToPacket()
     {
+        var packetData = _buffer.AsSpan(0, _position).ToArray();
+        
         NetworkPacket result = IsClient
-            ? new ClientPacket(Command, _buffer.AsSpan(0, _position))
-            : new ServerPacket(Command, _buffer.AsSpan(0, _position));
+            ? new ClientPacket(Command, packetData)
+            : new ServerPacket(Command, packetData);
 
         return result;
     }
