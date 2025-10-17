@@ -31,6 +31,12 @@ public partial class EntityListViewModel
             Priority = int.MaxValue - 10
         });
 
+        proxyServer.AddFilter(new ServerMessageFilter<ServerPublicMessageMessage>(OnPublicMessage)
+        {
+            Name = "EntityView_PublicMessageFilter",
+            Priority = int.MaxValue - 10
+        });
+
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
         {
             Name = "EntityView_ShowDialogFilter",
@@ -140,6 +146,47 @@ public partial class EntityListViewModel
             Flags = EntityFlags.Player,
             Id = message.EntityId,
             Name = message.Name,
+            MapId = player?.MapId,
+            MapName = player?.MapName
+        };
+
+        _entityStore.AddOrUpdateEntity(entity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+    
+    private NetworkPacket OnPublicMessage(ProxyConnection connection, ServerPublicMessageMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerPublicMessageMessage> result)
+    {
+        // Ignore world shouts
+        if (message.SenderId == 0)
+        {
+            return result.Passthrough();
+        }
+        
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+        
+        // Assume it might be a player ghost
+        var entityFlags = EntityFlags.Player;
+        var entitySprite = (ushort)BodySprite.MaleGhost;
+        
+        // Try to get the existing entity, this should rule out monsters/npcs that talk
+        if (_entityStore.TryGetEntity(message.SenderId, out var existing))
+        {
+            entityFlags = existing.Flags;
+            entitySprite = existing.Sprite ?? entitySprite;
+        }
+        
+        // The name should come before the symbol, so split on the first symbol (chat or shout)
+        var senderName = message.Message.Split(':', '!', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
+        var entity = new GameEntity
+        {
+            Flags = entityFlags,
+            Id = message.SenderId,
+            Sprite = entitySprite,
+            Name = senderName,
             MapId = player?.MapId,
             MapName = player?.MapName
         };

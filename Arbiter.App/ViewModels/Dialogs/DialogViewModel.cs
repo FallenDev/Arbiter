@@ -15,7 +15,14 @@ public partial class DialogViewModel : ViewModelBase
     [ObservableProperty] private EntityTypeFlags _entityType;
     [ObservableProperty] private int? _pursuitId;
     [ObservableProperty] private int? _stepId;
-    [ObservableProperty] private bool _isMenu;
+    [ObservableProperty] private bool _isTextInput;
+    [ObservableProperty] private string? _promptLine1;
+    [ObservableProperty] private string? _promptLine2;
+
+    [ObservableProperty] private int _inputMaxLength = 255;
+
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(ConfirmTextInputCommand))]
+    private string? _inputText;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(NavigatePreviousCommand))]
     private bool _canNavigatePrevious;
@@ -28,11 +35,19 @@ public partial class DialogViewModel : ViewModelBase
 
     public ObservableCollection<DialogMenuChoiceViewModel> MenuChoices { get; } = [];
 
+    public bool HasMenuChoices => MenuChoices.Count > 0;
+
     public event EventHandler<DialogEventArgs>? RequestPrevious;
     public event EventHandler<DialogEventArgs>? RequestNext;
     public event EventHandler<DialogEventArgs>? RequestTop;
     public event EventHandler<DialogEventArgs>? RequestClose;
     public event EventHandler<DialogMenuEventArgs>? MenuChoiceSelected;
+    public event EventHandler<DialogEventArgs>? TextInputConfirmed;
+
+    public DialogViewModel()
+    {
+        MenuChoices.CollectionChanged += (_, _) => { OnPropertyChanged(nameof(HasMenuChoices)); };
+    }
 
     [RelayCommand]
     private void SelectMenuChoice(DialogMenuChoiceViewModel viewModel)
@@ -71,6 +86,19 @@ public partial class DialogViewModel : ViewModelBase
         }
 
         RequestTop?.Invoke(this, new DialogEventArgs());
+    }
+
+    private bool CanConfirmTextInput() => IsTextInput && !string.IsNullOrWhiteSpace(InputText);
+
+    [RelayCommand(CanExecute = nameof(CanConfirmTextInput))]
+    private void ConfirmTextInput()
+    {
+        if (!IsTextInput)
+        {
+            return;
+        }
+
+        TextInputConfirmed?.Invoke(this, new DialogEventArgs());
     }
 
     [RelayCommand]

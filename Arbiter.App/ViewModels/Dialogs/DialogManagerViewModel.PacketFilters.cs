@@ -84,14 +84,33 @@ public partial class DialogManagerViewModel
             StepId = message.StepId,
             Content = message.Content,
             CanNavigatePrevious = message.HasPreviousButton,
-            CanNavigateNext = message.HasNextButton,
-            IsMenu = false
+            CanNavigateNext = message.HasNextButton
         };
-        
+
+        if (message.DialogType == DialogType.Menu)
+        {
+            for (var i = 0; i < message.MenuChoices.Count; i++)
+            {
+                dialog.MenuChoices.Add(new DialogMenuChoiceViewModel
+                {
+                    Index = i + 1,
+                    Text = message.MenuChoices[i]
+                });
+            }
+        }
+        else if (message.DialogType == DialogType.TextInput)
+        {
+            dialog.IsTextInput = true;
+            dialog.PromptLine1 = message.InputPrompt;
+            dialog.PromptLine2 = message.InputDescription;
+            dialog.InputMaxLength = message.InputMaxLength ?? 255;
+            dialog.CanNavigateNext = false;
+        }
+
         return dialog;
     }
 
-    private static DialogViewModel? BuildDialogView(ServerShowDialogMenuMessage message)
+    private static DialogViewModel BuildDialogView(ServerShowDialogMenuMessage message)
     {
         var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
         var dialog = new DialogViewModel
@@ -102,16 +121,17 @@ public partial class DialogManagerViewModel
             Sprite = message.Sprite,
             PursuitId = message.PursuitId,
             Content = message.Content,
-            CanNavigateTop = true,
-            IsMenu = true
+            CanNavigateTop = true
         };
 
         if (message.MenuChoices.Count > 0)
         {
-            foreach (var choice in message.MenuChoices)
+            for (var i = 0; i < message.MenuChoices.Count; i++)
             {
+                var choice = message.MenuChoices[i];
                 dialog.MenuChoices.Add(new DialogMenuChoiceViewModel
                 {
+                    Index = i + 1,
                     Text = choice.Text,
                     PursuitId = choice.PursuitId,
                 });

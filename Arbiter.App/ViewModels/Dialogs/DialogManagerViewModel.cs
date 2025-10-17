@@ -36,6 +36,7 @@ public partial class DialogManagerViewModel : ViewModelBase
 
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
         _clientManager.ClientSelected += OnClientSelected;
+        _clientManager.ClientDisconnected += OnClientDisconnected;
 
         _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
         AddPacketFilters();
@@ -51,6 +52,9 @@ public partial class DialogManagerViewModel : ViewModelBase
         // Automatically select the client if none is selected
         SelectedClient = client;
     }
+
+    private void OnClientDisconnected(ClientViewModel client) =>
+        _activeDialogs.TryRemove(client.Id, out _);
 
     private void OnClientsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -73,6 +77,31 @@ public partial class DialogManagerViewModel : ViewModelBase
         }
 
         SelectedClient = null;
+
+        if (ShouldSync)
+        {
+            ActiveDialog = null;
+        }
+    }
+
+    partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
+    {
+        if (!ShouldSync)
+        {
+            return;
+        }
+
+        if (newValue is not null)
+        {
+            if (_activeDialogs.TryGetValue(newValue.Id, out var dialog))
+            {
+                ActiveDialog = dialog;
+            }
+        }
+        else
+        {
+            ActiveDialog = null;
+        }
     }
 
     partial void OnActiveDialogChanged(DialogViewModel? oldValue, DialogViewModel? newValue)
@@ -91,6 +120,7 @@ public partial class DialogManagerViewModel : ViewModelBase
     private void Subscribe(DialogViewModel dialog)
     {
         dialog.MenuChoiceSelected += OnDialogMenuChoiceSelected;
+        dialog.TextInputConfirmed += OnTextInputConfirmed;
         dialog.RequestPrevious += OnDialogNavigatePrevious;
         dialog.RequestNext += OnDialogNavigateNext;
         dialog.RequestTop += OnDialogNavigateTop;
@@ -100,6 +130,7 @@ public partial class DialogManagerViewModel : ViewModelBase
     private void Unsubscribe(DialogViewModel dialog)
     {
         dialog.MenuChoiceSelected -= OnDialogMenuChoiceSelected;
+        dialog.TextInputConfirmed -= OnTextInputConfirmed;
         dialog.RequestPrevious -= OnDialogNavigatePrevious;
         dialog.RequestNext -= OnDialogNavigateNext;
         dialog.RequestTop -= OnDialogNavigateTop;
