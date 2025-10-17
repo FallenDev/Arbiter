@@ -4,6 +4,7 @@ using System.Threading.Channels;
 using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
@@ -75,10 +76,11 @@ public partial class ProxyConnection : IDisposable
         _serverMessageFactory = serverMessageFactory ?? ServerMessageFactory.Default;
     }
 
-    public bool EnqueuePacket(NetworkPacket packet)
+    public bool EnqueuePacket(NetworkPacket packet, bool prioritize = false)
     {
         // Prioritize outgoing client heartbeat packets
-        var prioritized = packet is ClientPacket { Command: ClientCommand.Heartbeat };
+        var prioritized = prioritize || packet is ClientPacket { Command: ClientCommand.Heartbeat };
+
         var writer = prioritized ? _prioritySendQueue.Writer : _sendQueue.Writer;
         if (!writer.TryWrite(packet))
         {
@@ -87,6 +89,42 @@ public partial class ProxyConnection : IDisposable
 
         PacketQueued?.Invoke(this, new NetworkPacketEventArgs(packet));
         return true;
+    }
+
+    public bool EnqueueMessage(IClientMessage message, bool prioritize = false)
+    {
+        var command = _clientMessageFactory.GetMessageCommand(message.GetType());
+        if (command is null)
+        {
+            return false;
+        }
+
+        var builder = new NetworkPacketBuilder(command.Value);
+        message.Serialize(builder);
+        var packet = builder.ToPacket();
+
+        // Prioritize outgoing client heartbeat packets
+        var prioritized = prioritize || packet is ClientPacket { Command: ClientCommand.Heartbeat };
+
+        return EnqueuePacket(packet, prioritized);
+    }
+
+    public bool EnqueueMessage(IServerMessage message, bool prioritize = false)
+    {
+        var command = _serverMessageFactory.GetMessageCommand(message.GetType());
+        if (command is null)
+        {
+            return false;
+        }
+
+        var builder = new NetworkPacketBuilder(command.Value);
+        message.Serialize(builder);
+        var packet = builder.ToPacket();
+
+        // Prioritize incoming server heartbeat packets
+        var prioritized = prioritize || packet is ServerPacket { Command: ServerCommand.Heartbeat };
+
+        return EnqueuePacket(packet, prioritized);
     }
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)

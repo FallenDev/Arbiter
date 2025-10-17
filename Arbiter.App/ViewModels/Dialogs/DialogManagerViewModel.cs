@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Arbiter.App.ViewModels.Client;
+using Arbiter.Net.Proxy;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ namespace Arbiter.App.ViewModels.Dialogs;
 public partial class DialogManagerViewModel : ViewModelBase
 {
     private readonly ILogger<DialogManagerViewModel> _logger;
+    private readonly ProxyServer _proxyServer;
     private readonly ClientManagerViewModel _clientManager;
 
     [ObservableProperty] private DialogViewModel? _activeDialog;
@@ -29,6 +31,9 @@ public partial class DialogManagerViewModel : ViewModelBase
 
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
         _clientManager.ClientSelected += OnClientSelected;
+        
+        _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
+        AddPacketFilters();
     }
 
     private void OnClientSelected(ClientViewModel? client)

@@ -29,6 +29,8 @@ public partial class ClientManagerViewModel : ViewModelBase
     public bool HasClients => ClientCount > 0;
     
     public event Action<ClientViewModel?>? ClientSelected;
+    public event Action<ClientViewModel?>? ClientConnected;
+    public event Action<ClientViewModel?>? ClientDisconnected;
 
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
         IPlayerService playerService)
@@ -60,8 +62,9 @@ public partial class ClientManagerViewModel : ViewModelBase
         client.Subscribe();
 
         _clients.AddOrUpdate(client.Id, client, (_, _) => client);
-
         _playerService.Register(connection.Id, state);
+        
+        ClientConnected?.Invoke(client);
     }
 
     private void OnClientLoggedIn(object? sender, ProxyConnectionEventArgs e)
@@ -91,21 +94,12 @@ public partial class ClientManagerViewModel : ViewModelBase
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
         var client = _clients.GetValueOrDefault(e.Connection.Id);
-
         if (client is null)
         {
             return;
         }
 
-        SetClientWindowTitle(client, "Darkages");
-        client.BringToFrontRequested -= OnClientBringToFront;
-
-        // We are fully logged out and can remove the client
-        Dispatcher.UIThread.Post(() =>
-        {
-            Clients.Remove(client);
-            ClientCount = Clients.Count;
-        });
+        CleanupClient(client);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
@@ -123,6 +117,11 @@ public partial class ClientManagerViewModel : ViewModelBase
             return;
         }
 
+        CleanupClient(client);
+    }
+
+    private void CleanupClient(ClientViewModel client)
+    {
         SetClientWindowTitle(client, "Darkages");
         client.BringToFrontRequested -= OnClientBringToFront;
 
@@ -134,6 +133,9 @@ public partial class ClientManagerViewModel : ViewModelBase
         });
 
         _clients.TryRemove(client.Id, out _);
+        _playerService.Unregister(client.Id);
+        
+        ClientDisconnected?.Invoke(client);
     }
 
     private void OnClientBringToFront(object? sender, EventArgs e)

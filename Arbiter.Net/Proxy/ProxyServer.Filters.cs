@@ -54,7 +54,7 @@ public partial class ProxyServer
 
     public bool RemoveFilter(ServerCommand command, string name) =>
         RemoveFilterInternal(ProxyDirection.ServerToClient, (byte)command, name);
-
+    
     public NetworkFilterRef AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
         => AddFilterInternal(direction, null, filter);
 
