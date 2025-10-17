@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pursuit + Step ID in debug filter
 - Show actual class instead of "Master" when pre-Medenia class
 - Ignore final `@wait` when sending if it is the last action in the `Send` queue
-- Improved packet filtering backend
+- Improved packet reader/write + filtering backend
 
 ## [1.3.0] - 2025-10-15
 
