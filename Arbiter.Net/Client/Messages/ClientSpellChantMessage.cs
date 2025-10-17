@@ -8,16 +8,16 @@ public class ClientSpellChantMessage : ClientMessage
 {
     public string Content { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
         Content = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendString8(Content);
     }

@@ -5,7 +5,7 @@ using Arbiter.Net.Server;
 
 namespace Arbiter.Net.Serialization;
 
-public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null) : INetworkPacketReader
+public ref struct NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null)
 {
     private int _position;
     private readonly byte[] _buffer = packet.Data;
@@ -100,9 +100,13 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     public string ReadNullTerminatedString()
     {
         var length = 0;
-        while (_buffer[_position + length] != 0)
+        while (true)
         {
             EnsureCanRead(1);
+            if (_buffer[_position + length] == 0)
+            {
+                break;
+            }
             length++;
         }
 
@@ -115,9 +119,14 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     public string ReadLine()
     {
         var length = 0;
-        while (_buffer[_position + length] != '\n' && _buffer[_position + length] != '\r')
+        while (true)
         {
             EnsureCanRead(1);
+            var b = _buffer[_position + length];
+            if (b == '\n' || b == '\r')
+            {
+                break;
+            }
             length++;
         }
 
@@ -174,6 +183,36 @@ public class NetworkPacketReader(NetworkPacket packet, Encoding? encoding = null
     {
         var length = Length - _position;
         ReadBytes(destination, length);
+    }
+    
+    public IReadOnlyList<string> ReadStringArgs8()
+    {
+        var args = new List<string>();
+        while(!IsEndOfPacket())
+        {
+            var text = ReadString8();
+            if (!string.IsNullOrEmpty(text))
+            {
+                args.Add(text);
+            }
+        }
+
+        return args;
+    }
+    
+    public IReadOnlyList<string> ReadStringArgs16()
+    {
+        var args = new List<string>();
+        while(!IsEndOfPacket())
+        {
+            var text = ReadString16();
+            if (!string.IsNullOrEmpty(text))
+            {
+                args.Add(text);
+            }
+        }
+
+        return args;
     }
 
     public void Skip(int length)

@@ -14,7 +14,7 @@ public class ServerMetadataMessage : ServerMessage
     public IReadOnlyList<byte>? Data { get; set; }
     public List<ServerMetadataEntry>? MetadataFiles { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -44,9 +44,9 @@ public class ServerMetadataMessage : ServerMessage
         }
     }
     
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)ResponseType);
 

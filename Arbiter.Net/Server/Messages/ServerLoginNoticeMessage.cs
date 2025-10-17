@@ -11,7 +11,7 @@ public class ServerLoginNoticeMessage : ServerMessage
     public uint? Checksum { get; set; }
     public string? Content { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -31,9 +31,9 @@ public class ServerLoginNoticeMessage : ServerMessage
         Content = Encoding.UTF8.GetString(decompressed);
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         if (string.IsNullOrEmpty(Content))
         {

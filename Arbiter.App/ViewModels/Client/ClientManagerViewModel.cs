@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
@@ -19,11 +20,18 @@ public partial class ClientManagerViewModel : ViewModelBase
     private readonly ConcurrentDictionary<long, ClientViewModel> _clients = [];
 
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
+    
+    [ObservableProperty]
+    private ClientViewModel? _selectedClient;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(HasClients))]
     private int _clientCount;
 
     public bool HasClients => ClientCount > 0;
+    
+    public event Action<ClientViewModel?>? ClientSelected;
+    public event Action<ClientViewModel>? ClientConnected;
+    public event Action<ClientViewModel>? ClientDisconnected;
 
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
         IPlayerService playerService)
@@ -39,6 +47,14 @@ public partial class ClientManagerViewModel : ViewModelBase
         _proxyServer.ClientDisconnected += OnClientDisconnected;
     }
 
+    public bool TryGetClient(long id, [NotNullWhen(true)] out ClientViewModel? client) =>
+        _clients.TryGetValue(id, out client);
+
+    partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
+    {
+        ClientSelected?.Invoke(newValue);
+    }
+
     private void OnClientAuthenticated(object? sender, ProxyConnectionEventArgs e)
     {
         var connection = e.Connection;
@@ -50,8 +66,9 @@ public partial class ClientManagerViewModel : ViewModelBase
         client.Subscribe();
 
         _clients.AddOrUpdate(client.Id, client, (_, _) => client);
-
         _playerService.Register(connection.Id, state);
+
+        ClientConnected?.Invoke(client);
     }
 
     private void OnClientLoggedIn(object? sender, ProxyConnectionEventArgs e)
@@ -75,27 +92,21 @@ public partial class ClientManagerViewModel : ViewModelBase
         {
             Clients.Add(client);
             ClientCount = Clients.Count;
+            
+            // Select the client if no other selection
+            SelectedClient ??= client;
         });
     }
 
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
         var client = _clients.GetValueOrDefault(e.Connection.Id);
-
         if (client is null)
         {
             return;
         }
 
-        SetClientWindowTitle(client, "Darkages");
-        client.BringToFrontRequested -= OnClientBringToFront;
-
-        // We are fully logged out and can remove the client
-        Dispatcher.UIThread.Post(() =>
-        {
-            Clients.Remove(client);
-            ClientCount = Clients.Count;
-        });
+        CleanupClient(client);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
@@ -113,6 +124,11 @@ public partial class ClientManagerViewModel : ViewModelBase
             return;
         }
 
+        CleanupClient(client);
+    }
+
+    private void CleanupClient(ClientViewModel client)
+    {
         SetClientWindowTitle(client, "Darkages");
         client.BringToFrontRequested -= OnClientBringToFront;
 
@@ -124,6 +140,9 @@ public partial class ClientManagerViewModel : ViewModelBase
         });
 
         _clients.TryRemove(client.Id, out _);
+        _playerService.Unregister(client.Id);
+        
+        ClientDisconnected?.Invoke(client);
     }
 
     private void OnClientBringToFront(object? sender, EventArgs e)

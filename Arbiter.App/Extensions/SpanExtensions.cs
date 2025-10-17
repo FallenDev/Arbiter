@@ -8,7 +8,6 @@ public static class SpanExtensions
     public static string ToHexString(this byte[] buffer, string delimiter = "") =>
         ToHexString(buffer.AsSpan(), delimiter);
 
-
     public static string ToHexString(this Memory<byte> memory, string delimiter = "") =>
         ToHexString(memory.Span, delimiter);
 

@@ -9,7 +9,7 @@ public class ServerMapTransferMessage : ServerMessage
     public ushort RowY { get; set; }
     public IReadOnlyList<byte> Data { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -17,9 +17,9 @@ public class ServerMapTransferMessage : ServerMessage
         Data = reader.ReadToEnd();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt16(RowY);
         builder.AppendBytes(Data);

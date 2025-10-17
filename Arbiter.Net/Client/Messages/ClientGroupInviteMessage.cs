@@ -13,7 +13,7 @@ public class ClientGroupInviteMessage : ClientMessage
     
     public ClientGroupBox? GroupBox { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -37,9 +37,9 @@ public class ClientGroupInviteMessage : ClientMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte((byte)Action);
         builder.AppendString8(TargetName);

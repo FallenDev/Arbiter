@@ -13,7 +13,7 @@ public class ServerUserIdMessage : ServerMessage
     public CharacterClass Class { get; set; }
     public bool CanMove { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -26,9 +26,9 @@ public class ServerUserIdMessage : ServerMessage
         CanMove = (reader.ReadByte() & 1) == 0; // seems to be a bit flag but not sure what else it affects
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt32(UserId);
         builder.AppendByte((byte)Direction);

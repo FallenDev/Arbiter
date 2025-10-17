@@ -1,6 +1,6 @@
 ﻿namespace Arbiter.Net.Filters;
 
-public class NetworkMessageFilterResult<TMessage>
+public readonly ref struct NetworkMessageFilterResult<TMessage>
 {
     private readonly Func<NetworkPacket> _originalPacketFactory;
     private readonly Func<TMessage, NetworkPacket> _modifiedPacketFactory;

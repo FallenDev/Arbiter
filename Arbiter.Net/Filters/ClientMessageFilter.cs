@@ -10,7 +10,7 @@ public delegate NetworkPacket? ClientMessageFilterHandler<TMessage>(ProxyConnect
 
 public class ClientMessageFilter<TMessage> : INetworkMessageFilter where TMessage : IClientMessage
 {
-    private readonly IClientMessageFactory _messageFactory = ClientMessageFactory.Default;
+    private readonly ClientMessageFactory _messageFactory = ClientMessageFactory.Default;
     private readonly ClientMessageFilterHandler<TMessage> _handler;
 
     public string? Name { get; init; }
@@ -46,8 +46,16 @@ public class ClientMessageFilter<TMessage> : INetworkMessageFilter where TMessag
             modifiedPacketFactory: modifiedMessage =>
             {
                 var builder = new NetworkPacketBuilder(modifiedMessage.Command);
-                modifiedMessage.Serialize(builder);
-                return builder.ToPacket();
+                try
+                {
+                    modifiedMessage.Serialize(ref builder);
+                    var newPacket = builder.ToPacket();
+                    return newPacket;
+                }
+                finally
+                {
+                    builder.Dispose();   
+                }               
             });
 
         return _handler(connection, message, Parameter, result);

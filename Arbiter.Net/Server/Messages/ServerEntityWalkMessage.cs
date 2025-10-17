@@ -13,7 +13,7 @@ public class ServerEntityWalkMessage : ServerMessage
     public WorldDirection Direction { get; set; }
     public byte Unknown { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -24,9 +24,9 @@ public class ServerEntityWalkMessage : ServerMessage
         Unknown = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendUInt32(EntityId);
         builder.AppendUInt16(OriginX);

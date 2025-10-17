@@ -13,7 +13,7 @@ public class ServerShowNotepadMessage : ServerMessage
     public byte Width { get; set; }
     public string Content { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -24,9 +24,9 @@ public class ServerShowNotepadMessage : ServerMessage
         Content = reader.ReadString16();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte(Slot);
         builder.AppendByte((byte)Style);

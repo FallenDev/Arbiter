@@ -10,7 +10,7 @@ public class ClientSayMessage : ClientMessage
     public PublicMessageType MessageType { get; set; }
     public string Content { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -18,9 +18,9 @@ public class ClientSayMessage : ClientMessage
         Content = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)MessageType);
         builder.AppendString8(Content);

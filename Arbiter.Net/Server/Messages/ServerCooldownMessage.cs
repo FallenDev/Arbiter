@@ -11,7 +11,7 @@ public class ServerCooldownMessage : ServerMessage
     public byte Slot { get; set; }
     public uint Seconds { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -20,9 +20,9 @@ public class ServerCooldownMessage : ServerMessage
         Seconds = reader.ReadUInt32();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)AbilityType);
         builder.AppendByte(Slot);

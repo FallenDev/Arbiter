@@ -12,7 +12,7 @@ using Arbiter.Net.Proxy;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Arbiter.App.ViewModels.Entity;
+namespace Arbiter.App.ViewModels.Entities;
 
 public partial class EntityListViewModel : ViewModelBase
 {

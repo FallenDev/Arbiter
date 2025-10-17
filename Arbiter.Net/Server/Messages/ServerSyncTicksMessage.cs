@@ -8,16 +8,16 @@ public class ServerSyncTicksMessage : ServerMessage
 {
     public uint TickCount { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
         TickCount = reader.ReadUInt32();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendUInt32(TickCount);
     }

@@ -9,7 +9,7 @@ public class ClientEditNotepadMessage : ClientMessage
     public byte Slot { get; set; }
     public string Content { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -17,9 +17,9 @@ public class ClientEditNotepadMessage : ClientMessage
         Content = reader.ReadString16();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte(Slot);
         builder.AppendString16(Content);

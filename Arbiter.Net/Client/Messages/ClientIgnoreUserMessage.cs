@@ -11,7 +11,7 @@ public class ClientIgnoreUserMessage : ClientMessage
     
     public string? Name { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -23,9 +23,9 @@ public class ClientIgnoreUserMessage : ClientMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)Action);
 

@@ -14,7 +14,7 @@ public class ServerWalkResponseMessage : ServerMessage
     public ushort UnknownY { get; set; }
     public byte Unknown { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -28,9 +28,9 @@ public class ServerWalkResponseMessage : ServerMessage
         Unknown = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)Direction);
         builder.AppendUInt16(PreviousX);

@@ -10,7 +10,7 @@ public class ClientGiveItemMessage : ClientMessage
     public uint EntityId { get; set; }
     public byte Quantity { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -19,9 +19,9 @@ public class ClientGiveItemMessage : ClientMessage
         Quantity = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte(Slot);
         builder.AppendUInt32(EntityId);

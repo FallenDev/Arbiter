@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:Arbiter.App.ViewModels.Entity"
+             xmlns:vm="using:Arbiter.App.ViewModels.Entities"
              xmlns:converters="using:Arbiter.App.Converters"
              mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="800"
              x:Class="Arbiter.App.Views.EntityListView"
@@ -106,13 +106,16 @@
                                     <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
                                           RowSpacing="4" ColumnSpacing="8"
                                           MinWidth="200">
+                                        <!-- Name -->
                                         <TextBlock Grid.Row="0" Grid.Column="0"
-                                                   Text="{Binding Name}"
+                                                   Text="{Binding NameOrTypeName}"
                                                    Foreground="{Binding Flags, Converter={x:Static converters:EntityColorConverter.Converter}}"
                                                    FontSize="16"
                                                    FontFamily="{StaticResource Talgonite.Font.InterfaceFont}"
                                                    FontWeight="SemiBold"
                                                    VerticalAlignment="Center"/>
+                                        
+                                        <!-- Entity Id -->
                                         <TextBlock Grid.Row="0" Grid.Column="1"
                                                    Text="{Binding Id, StringFormat={}0x{0:X}}"
                                                    TextAlignment="Right"
@@ -125,6 +128,7 @@
                                                 Margin="-4,0"
                                                 Classes="divider-h"/>
                                         
+                                        <!-- Sprite Number -->
                                         <TextBlock Grid.Row="2" Grid.Column="0"
                                                    Text="{Binding Sprite, StringFormat={}Sprite {0}}"
                                                    Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
@@ -132,6 +136,25 @@
                                                    FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                                    VerticalAlignment="Center"/>
                                         
+                                        <!-- Hidden Tag -->
+                                        <TextBlock Grid.Row="2" Grid.Column="1"
+                                                   Text="Hidden"
+                                                   Foreground="{StaticResource Talgonite.Color.LightRed}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsHidden}"/>
+                                        
+                                        <!-- Ghost Tag -->
+                                        <TextBlock Grid.Row="2" Grid.Column="1"
+                                                   Text="Ghost"
+                                                   Foreground="{StaticResource Talgonite.Color.LightBlue}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsGhost}"/>
+                                        
+                                        <!-- Map name and ID -->
                                         <TextBlock Grid.Row="3" Grid.Column="0"
                                                    Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
                                                    FontSize="14"
@@ -143,6 +166,7 @@
                                             </Span>
                                         </TextBlock>
                                         
+                                        <!-- Map Position -->
                                         <TextBlock Grid.Row="3" Grid.Column="1"
                                                    Text="{Binding Position, StringFormat={}({0})}"
                                                    Foreground="{StaticResource Talgonite.TextBlock.Foreground}"
@@ -152,7 +176,7 @@
                                     </Grid>
                                 </Border>
                             </ToolTip.Tip>
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="4">
+                            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="4">
                                 <!-- Type Symbol -->
                                 <Border Grid.Column="0"
                                         Background="{StaticResource Talgonite.Entity.TypeBackground}"
@@ -181,8 +205,24 @@
                                            FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                            VerticalAlignment="Center"
                                            IsVisible="{Binding Name, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                                <!-- ID -->
+                                <!-- Hidden -->
                                 <TextBlock Grid.Column="2"
+                                           Text="[Hidden]"
+                                           TextAlignment="Left"
+                                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsHidden}"/>
+                                <!-- Ghost -->
+                                <TextBlock Grid.Column="2"
+                                           Text="[Ghost]"
+                                           TextAlignment="Left"
+                                           Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
+                                           FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsGhost}"/>
+                                <!-- ID -->
+                                <TextBlock Grid.Column="3"
                                            Text="{Binding Id, StringFormat={}0x{0:X}}"
                                            TextAlignment="Right"
                                            Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"

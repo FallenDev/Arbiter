@@ -48,7 +48,7 @@ public class ServerShowUserMessage : ServerMessage
     public string? Name { get; set; }
     public string? GroupBox { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -120,9 +120,9 @@ public class ServerShowUserMessage : ServerMessage
         IsHidden = BodySprite == Arbiter.Net.Types.BodySprite.None && !IsTranslucent;
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendUInt16(X);
         builder.AppendUInt16(Y);

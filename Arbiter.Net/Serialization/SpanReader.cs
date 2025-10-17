@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Arbiter.Net.Serialization;
 
-public class SpanReader(Endianness? endianness = null, Encoding? encoding = null)
+public ref struct SpanReader(Endianness? endianness = null, Encoding? encoding = null)
 {
     private readonly Endianness _endianness = endianness switch
     {

@@ -11,7 +11,7 @@ public class ServerHealthBarMessage : ServerMessage
     public byte Sound { get; set; }
     public byte Unknown { get; set; }
     
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -21,9 +21,9 @@ public class ServerHealthBarMessage : ServerMessage
         Sound = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt32(EntityId);
         builder.AppendByte(Unknown);

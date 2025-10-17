@@ -11,7 +11,7 @@ public class ServerMapLocationMessage : ServerMessage
     public ushort UnknownX { get; set; }
     public ushort UnknownY { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -21,9 +21,9 @@ public class ServerMapLocationMessage : ServerMessage
         UnknownY = reader.ReadUInt16();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt16(X);
         builder.AppendUInt16(Y);

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Real-time dialog display
+- Dialog interaction via buttons
 - `Start Client` button also visible when left panel is collapsed
 - Entity sort ordering (persists across sessions)
 - Entity tooltip for additional information
@@ -19,12 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Auto-select the client in the `Send` view when selected in the left-side panel (if no selected client)
 - Color-coded entity types
+- Handle hidden/ghost players in `Entity` list
+- Update entities on user profile click
 - Border Z-index for various UI controls
 - Pursuit + Step ID in debug filter
 - Show actual class instead of "Master" when pre-Medenia class
 - Ignore final `@wait` when sending if it is the last action in the `Send` queue
-- Improved packet filtering backend
+- Improved packet reader/write + filtering backend
 
 ## [1.3.0] - 2025-10-15
 

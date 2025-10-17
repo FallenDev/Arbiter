@@ -11,7 +11,7 @@ public class ClientLoginMessage : ClientMessage
     public uint ClientId { get; set; }
     public ushort Checksum { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -28,9 +28,9 @@ public class ClientLoginMessage : ClientMessage
         Checksum = TransformChecksum(encodedChecksum, key1, key2);
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendString8(Name);
         builder.AppendString8(Password);

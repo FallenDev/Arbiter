@@ -1,0 +1,151 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using Arbiter.App.ViewModels.Client;
+using Arbiter.Net.Proxy;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace Arbiter.App.ViewModels.Dialogs;
+
+public partial class DialogManagerViewModel : ViewModelBase
+{
+    private readonly ILogger<DialogManagerViewModel> _logger;
+    private readonly ProxyServer _proxyServer;
+    private readonly ClientManagerViewModel _clientManager;
+
+    private readonly ConcurrentDictionary<long, DialogViewModel?> _activeDialogs = [];
+
+    [ObservableProperty] private DialogViewModel? _activeDialog;
+
+    [ObservableProperty] private bool _hasClients;
+
+    [ObservableProperty] private ClientViewModel? _selectedClient;
+
+    [ObservableProperty] private bool _shouldSync = true;
+
+    public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
+
+    public DialogManagerViewModel(ILogger<DialogManagerViewModel> logger, IServiceProvider serviceProvider)
+    {
+        _logger = logger;
+        _clientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
+
+        _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
+        _clientManager.ClientSelected += OnClientSelected;
+        _clientManager.ClientDisconnected += OnClientDisconnected;
+
+        _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
+        AddPacketFilters();
+    }
+
+    private void OnClientSelected(ClientViewModel? client)
+    {
+        if (client is null || SelectedClient is not null)
+        {
+            return;
+        }
+
+        // Automatically select the client if none is selected
+        SelectedClient = client;
+    }
+
+    private void OnClientDisconnected(ClientViewModel client) =>
+        _activeDialogs.TryRemove(client.Id, out _);
+
+    private void OnClientsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (sender is not ObservableCollection<ClientViewModel> collection)
+        {
+            return;
+        }
+
+        HasClients = collection.Count > 0;
+
+        if (e.Action != NotifyCollectionChangedAction.Remove)
+        {
+            return;
+        }
+
+        // If the currently selected client was removed from the collection, clear the selection
+        if (SelectedClient is null || collection.Contains(SelectedClient))
+        {
+            return;
+        }
+
+        SelectedClient = null;
+
+        if (ShouldSync)
+        {
+            ActiveDialog = null;
+        }
+    }
+
+    partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
+    {
+        if (!ShouldSync)
+        {
+            return;
+        }
+
+        if (newValue is not null)
+        {
+            if (_activeDialogs.TryGetValue(newValue.Id, out var dialog))
+            {
+                ActiveDialog = dialog;
+            }
+        }
+        else
+        {
+            ActiveDialog = null;
+        }
+    }
+
+    partial void OnActiveDialogChanged(DialogViewModel? oldValue, DialogViewModel? newValue)
+    {
+        if (oldValue is not null)
+        {
+            Unsubscribe(oldValue);
+        }
+
+        if (newValue is not null)
+        {
+            Subscribe(newValue);
+        }
+    }
+
+    private void Subscribe(DialogViewModel dialog)
+    {
+        dialog.MenuChoiceSelected += OnDialogMenuChoiceSelected;
+        dialog.TextInputConfirmed += OnTextInputConfirmed;
+        dialog.RequestPrevious += OnDialogNavigatePrevious;
+        dialog.RequestNext += OnDialogNavigateNext;
+        dialog.RequestTop += OnDialogNavigateTop;
+        dialog.RequestClose += OnDialogClose;
+    }
+
+    private void Unsubscribe(DialogViewModel dialog)
+    {
+        dialog.MenuChoiceSelected -= OnDialogMenuChoiceSelected;
+        dialog.TextInputConfirmed -= OnTextInputConfirmed;
+        dialog.RequestPrevious -= OnDialogNavigatePrevious;
+        dialog.RequestNext -= OnDialogNavigateNext;
+        dialog.RequestTop -= OnDialogNavigateTop;
+        dialog.RequestClose -= OnDialogClose;
+    }
+
+    [RelayCommand]
+    private void LoadDialog()
+    {
+
+    }
+
+    [RelayCommand]
+    private void SaveDialog()
+    {
+
+    }
+}

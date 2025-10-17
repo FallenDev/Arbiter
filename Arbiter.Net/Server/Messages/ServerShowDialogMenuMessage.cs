@@ -27,7 +27,7 @@ public class ServerShowDialogMenuMessage : ServerMessage
     public byte? Unknown1 { get; set; }
     public byte? Unknown2 { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -148,9 +148,9 @@ public class ServerShowDialogMenuMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)MenuType);
 

@@ -54,7 +54,7 @@ public class ServerUpdateStatsMessage : ServerMessage
     
     public uint? Unknown { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -121,9 +121,9 @@ public class ServerUpdateStatsMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte((byte)Fields);
 

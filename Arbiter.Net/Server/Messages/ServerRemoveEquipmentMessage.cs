@@ -9,16 +9,16 @@ public class ServerRemoveEquipmentMessage : ServerMessage
 {
     public EquipmentSlot Slot { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
         Slot = (EquipmentSlot)reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte((byte)Slot);
     }

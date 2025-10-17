@@ -9,7 +9,7 @@ public class ServerMapChangingMessage : ServerMessage
     public byte ChangeType { get; set; }
     public uint Unknown { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -17,9 +17,9 @@ public class ServerMapChangingMessage : ServerMessage
         Unknown = reader.ReadUInt32();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte(ChangeType);
         builder.AppendUInt32(Unknown);

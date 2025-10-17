@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Arbiter.Net.Annotations;
 using Arbiter.Net.Serialization;
 
@@ -9,7 +10,9 @@ public class ClientMessageFactory : IClientMessageFactory
 {
     public static ClientMessageFactory Default { get; } = new();
 
-    private readonly Dictionary<ClientCommand, Type> _typeMappings = new();
+    private readonly Dictionary<ClientCommand, Func<IClientMessage>> _factoryMappings = new();
+    private readonly Dictionary<Type, ClientCommand> _commandMappings = new();
+    private readonly Dictionary<ClientCommand, Type> _reverseCommandMappings = new();
 
     public ClientMessageFactory()
     {
@@ -21,7 +24,7 @@ public class ClientMessageFactory : IClientMessageFactory
         var assembly = Assembly.GetExecutingAssembly();
         var types = assembly.GetTypes()
             .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(IClientMessage).IsAssignableFrom(t));
-            
+
         foreach (var type in types)
         {
             var attr = type.GetCustomAttribute<NetworkCommandAttribute>();
@@ -31,40 +34,45 @@ public class ClientMessageFactory : IClientMessageFactory
             }
 
             var command = (ClientCommand)attr.Command;
-            _typeMappings.Add(command, type);
+
+            // Create compiled factory delegate for performance
+            var factory = CreateFactory(type);
+            _factoryMappings.Add(command, factory);
+            _commandMappings.Add(type, command);
+            _reverseCommandMappings.Add(command, type);
         }
     }
 
-    public Type? GetMessageType(ClientCommand command) => _typeMappings.GetValueOrDefault(command);
-
-    public ClientCommand? GetMessageCommand(Type messageType)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Func<IClientMessage> CreateFactory(Type type)
     {
-        foreach (var (key, value) in _typeMappings)
-        {
-            if (value == messageType)
-            {
-                return key;
-            }
-        }
-
-        return null;
+        var ctor = type.GetConstructor(Type.EmptyTypes);
+        return ctor is null
+            ? throw new InvalidOperationException($"Type {type.Name} must have a parameterless constructor")
+            : () => (IClientMessage)ctor.Invoke(null);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Type? GetMessageType(ClientCommand command) => _reverseCommandMappings.GetValueOrDefault(command);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ClientCommand? GetMessageCommand(Type messageType) => _commandMappings.GetValueOrDefault(messageType);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IClientMessage? Create(ClientPacket packet)
     {
-        var type = GetMessageType(packet.Command);
-        if (type is null)
+        if (!_factoryMappings.TryGetValue(packet.Command, out var factory))
         {
             return null;
         }
 
-        var instance = (IClientMessage)Activator.CreateInstance(type)!;
+        var instance = factory();
         var reader = new NetworkPacketReader(packet);
         instance.Deserialize(reader);
 
         return instance;
     }
-    
+
     public bool TryCreate(ClientPacket packet, [NotNullWhen(true)] out IClientMessage? message)
     {
         try

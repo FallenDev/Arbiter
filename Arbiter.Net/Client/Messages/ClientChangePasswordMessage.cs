@@ -10,7 +10,7 @@ public class ClientChangePasswordMessage : ClientMessage
     public string CurrentPassword { get; set; } = string.Empty;
     public string NewPassword { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -19,9 +19,9 @@ public class ClientChangePasswordMessage : ClientMessage
         NewPassword = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendString8(Name);
         builder.AppendString8(CurrentPassword);

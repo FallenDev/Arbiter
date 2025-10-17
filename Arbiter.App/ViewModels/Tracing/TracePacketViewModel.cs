@@ -96,9 +96,9 @@ public partial class TracePacketViewModel(
     public static TracePacketViewModel FromTracePacket(TracePacket tracePacket, PacketDisplayMode displayMode)
     {
         var command = tracePacket.Command;
-        var encryptedPayload = tracePacket.RawData.Skip(4);
-        var decryptedPayload = tracePacket.Payload;
-        var filteredPayload = tracePacket.FilteredPayload;
+        var encryptedPayload = tracePacket.RawData.Skip(4).ToArray();
+        var decryptedPayload = tracePacket.Payload.ToArray();
+        var filteredPayload = tracePacket.FilteredPayload?.ToArray();
 
         NetworkPacket decryptedPacket = tracePacket.Direction switch
         {
