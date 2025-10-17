@@ -17,9 +17,9 @@ public class ClientEditNotepadMessage : ClientMessage
         Content = reader.ReadString16();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte(Slot);
         builder.AppendString16(Content);

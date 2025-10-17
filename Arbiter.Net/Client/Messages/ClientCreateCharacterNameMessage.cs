@@ -19,9 +19,9 @@ public class ClientCreateCharacterNameMessage : ClientMessage
         Email = reader.ReadString8();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendString8(Name);
         builder.AppendString8(Password);

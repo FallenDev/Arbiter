@@ -24,9 +24,9 @@ public class ServerEntityWalkMessage : ServerMessage
         Unknown = reader.ReadByte();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendUInt32(EntityId);
         builder.AppendUInt16(OriginX);

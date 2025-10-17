@@ -15,7 +15,7 @@ public class ClientUseSkillMessage : ClientMessage
         Slot = reader.ReadByte();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

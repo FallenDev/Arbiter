@@ -44,6 +44,7 @@ public ref struct NetworkPacketBuilder : IDisposable
 
     private void EnsureCapacity(int additional)
     {
+        CheckIfDisposed();
         if (_position + additional <= _buffer.Length)
         {
             return;
@@ -185,6 +186,7 @@ public ref struct NetworkPacketBuilder : IDisposable
     public void AppendBytes(ReadOnlySpan<byte> buffer)
     {
         EnsureCapacity(buffer.Length);
+        
         buffer.CopyTo(_buffer.AsSpan(_position));
         _position += buffer.Length;
     }
@@ -199,6 +201,7 @@ public ref struct NetworkPacketBuilder : IDisposable
 
     public NetworkPacket ToPacket()
     {
+        CheckIfDisposed();
         var packetData = _buffer.AsSpan(0, _position).ToArray();
         
         NetworkPacket result = IsClient
@@ -210,6 +213,7 @@ public ref struct NetworkPacketBuilder : IDisposable
 
     public override string ToString()
     {
+        CheckIfDisposed();
         var sb = new StringBuilder(Command.ToString("X2"));
 
         if (_position <= 0)
@@ -243,9 +247,10 @@ public ref struct NetworkPacketBuilder : IDisposable
         if (isDisposing)
         {
             ArrayPool<byte>.Shared.Return(_buffer);
-            _buffer = [];
         }
 
         _isDisposed = true;
     }
+    
+    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Network packet builder is disposed");
 }

@@ -21,9 +21,9 @@ public class ClientWorldMapClickMessage : ClientMessage
         Y = reader.ReadUInt16();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt16(Checksum);
         builder.AppendUInt16(MapId);

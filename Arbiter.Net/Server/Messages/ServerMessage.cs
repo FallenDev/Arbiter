@@ -13,7 +13,7 @@ public abstract class ServerMessage : IServerMessage
         Sequence = reader.Sequence;
     }
 
-    public virtual void Serialize(NetworkPacketBuilder builder)
+    public virtual void Serialize(ref NetworkPacketBuilder builder)
     {
         
     }

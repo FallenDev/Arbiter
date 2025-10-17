@@ -31,9 +31,9 @@ public class ServerRedirectMessage : ServerMessage
         ConnectionId = reader.ReadUInt32();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendIPv4Address(Address);
         builder.AppendUInt16(Port);

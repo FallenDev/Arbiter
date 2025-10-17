@@ -16,9 +16,9 @@ public class ClientSetStatusMessage : ClientMessage
         Status = (SocialStatus)reader.ReadByte();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte((byte)Status);
     }

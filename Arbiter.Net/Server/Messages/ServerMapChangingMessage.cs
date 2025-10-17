@@ -17,9 +17,9 @@ public class ServerMapChangingMessage : ServerMessage
         Unknown = reader.ReadUInt32();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte(ChangeType);
         builder.AppendUInt32(Unknown);

@@ -28,9 +28,9 @@ public class ClientLoginMessage : ClientMessage
         Checksum = TransformChecksum(encodedChecksum, key1, key2);
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendString8(Name);
         builder.AppendString8(Password);

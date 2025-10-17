@@ -15,9 +15,9 @@ public class ClientRequestLoginNoticeMessage : ClientMessage
         // Nothing to read
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         // Nothing to write
     }

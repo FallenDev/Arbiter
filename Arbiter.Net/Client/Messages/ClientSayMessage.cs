@@ -18,9 +18,9 @@ public class ClientSayMessage : ClientMessage
         Content = reader.ReadString8();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendByte((byte)MessageType);
         builder.AppendString8(Content);

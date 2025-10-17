@@ -99,14 +99,21 @@ public partial class ProxyConnection : IDisposable
             return false;
         }
 
-        using var builder = new NetworkPacketBuilder(command.Value);
-        message.Serialize(builder);
-        var packet = builder.ToPacket();
+        var builder = new NetworkPacketBuilder(command.Value);
+        try
+        {
+            message.Serialize(ref builder);
+            var packet = builder.ToPacket();
 
-        // Prioritize outgoing client heartbeat packets
-        var prioritized = prioritize || packet is ClientPacket { Command: ClientCommand.Heartbeat };
+            // Prioritize outgoing client heartbeat packets
+            var prioritized = prioritize || packet is ClientPacket { Command: ClientCommand.Heartbeat };
 
-        return EnqueuePacket(packet, prioritized);
+            return EnqueuePacket(packet, prioritized);
+        }
+        finally
+        {
+            builder.Dispose();
+        }
     }
 
     public bool EnqueueMessage(IServerMessage message, bool prioritize = false)
@@ -117,14 +124,21 @@ public partial class ProxyConnection : IDisposable
             return false;
         }
 
-        using var builder = new NetworkPacketBuilder(command.Value);
-        message.Serialize(builder);
-        var packet = builder.ToPacket();
+        var builder = new NetworkPacketBuilder(command.Value);
+        try
+        {
+            message.Serialize(ref builder);
+            var packet = builder.ToPacket();
 
-        // Prioritize incoming server heartbeat packets
-        var prioritized = prioritize || packet is ServerPacket { Command: ServerCommand.Heartbeat };
+            // Prioritize incoming server heartbeat packets
+            var prioritized = prioritize || packet is ServerPacket { Command: ServerCommand.Heartbeat };
 
-        return EnqueuePacket(packet, prioritized);
+            return EnqueuePacket(packet, prioritized);
+        }
+        finally
+        {
+            builder.Dispose();
+        }
     }
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)

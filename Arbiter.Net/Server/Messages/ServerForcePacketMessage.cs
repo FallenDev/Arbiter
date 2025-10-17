@@ -19,9 +19,9 @@ public class ServerForcePacketMessage : ServerMessage
         Data = reader.ReadBytes(length - 1);
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         var dataLength = Math.Min(Data.Count, ushort.MaxValue - 1);
         

@@ -3,5 +3,5 @@
 public interface INetworkSerializable
 {
     void Deserialize(NetworkPacketReader reader);
-    void Serialize(NetworkPacketBuilder builder);
+    void Serialize(ref NetworkPacketBuilder builder);
 }

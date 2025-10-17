@@ -120,9 +120,9 @@ public class ServerShowUserMessage : ServerMessage
         IsHidden = BodySprite == Arbiter.Net.Types.BodySprite.None && !IsTranslucent;
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendUInt16(X);
         builder.AppendUInt16(Y);

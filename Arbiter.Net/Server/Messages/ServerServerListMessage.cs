@@ -24,9 +24,9 @@ public class ServerServerListMessage : ServerMessage
         PrivateKey = reader.ReadBytes(keyLength);
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendByte(0);  // not sure what this byte is for
         

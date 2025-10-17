@@ -17,9 +17,9 @@ public class ServerMapTransferMessage : ServerMessage
         Data = reader.ReadToEnd();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt16(RowY);
         builder.AppendBytes(Data);

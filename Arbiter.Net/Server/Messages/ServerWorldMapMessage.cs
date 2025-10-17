@@ -39,9 +39,9 @@ public class ServerWorldMapMessage : ServerMessage
         }
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
         
         builder.AppendString8(FieldName);
         builder.AppendByte((byte)Locations.Count);

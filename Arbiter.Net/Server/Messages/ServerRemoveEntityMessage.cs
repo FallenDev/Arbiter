@@ -15,9 +15,9 @@ public class ServerRemoveEntityMessage : ServerMessage
         EntityId = reader.ReadUInt32();
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt32(EntityId);
     }

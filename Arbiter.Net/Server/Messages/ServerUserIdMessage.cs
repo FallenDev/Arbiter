@@ -26,9 +26,9 @@ public class ServerUserIdMessage : ServerMessage
         CanMove = (reader.ReadByte() & 1) == 0; // seems to be a bit flag but not sure what else it affects
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         builder.AppendUInt32(UserId);
         builder.AppendByte((byte)Direction);

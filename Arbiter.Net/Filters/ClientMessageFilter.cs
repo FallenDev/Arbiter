@@ -45,9 +45,17 @@ public class ClientMessageFilter<TMessage> : INetworkMessageFilter where TMessag
             originalPacketFactory: () => packet,
             modifiedPacketFactory: modifiedMessage =>
             {
-                using var builder = new NetworkPacketBuilder(modifiedMessage.Command);
-                modifiedMessage.Serialize(builder);
-                return builder.ToPacket();
+                var builder = new NetworkPacketBuilder(modifiedMessage.Command);
+                try
+                {
+                    modifiedMessage.Serialize(ref builder);
+                    var newPacket = builder.ToPacket();
+                    return newPacket;
+                }
+                finally
+                {
+                    builder.Dispose();   
+                }               
             });
 
         return _handler(connection, message, Parameter, result);

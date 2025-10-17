@@ -39,7 +39,7 @@ public class ServerServerTableMessage : ServerMessage
         }
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

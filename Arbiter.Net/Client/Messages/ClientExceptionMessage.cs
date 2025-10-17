@@ -17,9 +17,9 @@ public class ClientExceptionMessage : ClientMessage
         Message = Encoding.ASCII.GetString(bytes);
     }
 
-    public override void Serialize(NetworkPacketBuilder builder)
+    public override void Serialize(ref NetworkPacketBuilder builder)
     {
-        base.Serialize(builder);
+        base.Serialize(ref builder);
 
         var textBytes = Encoding.ASCII.GetBytes(Message);
         builder.AppendBytes(textBytes);
