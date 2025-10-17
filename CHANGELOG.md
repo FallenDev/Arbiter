@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.4.0] - 2025-10-17
 
 ### Added
 
@@ -25,11 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Color-coded entity types
 - Handle hidden/ghost players in `Entity` list
 - Update entities on user profile click
+- Update entities on say/shout (useful for ghosts)
 - Border Z-index for various UI controls
 - Pursuit + Step ID in debug filter
 - Show actual class instead of "Master" when pre-Medenia class
 - Ignore final `@wait` when sending if it is the last action in the `Send` queue
 - Improved packet reader/write + filtering backend
+- Fix concurrency issue with new `Entity` view
 
 ## [1.3.0] - 2025-10-15
 
