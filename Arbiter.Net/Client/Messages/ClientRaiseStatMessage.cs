@@ -9,14 +9,14 @@ public class ClientRaiseStatMessage : ClientMessage
 {
     public CharacterStatFlags Stat { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
         Stat = (CharacterStatFlags)reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

@@ -9,7 +9,7 @@ public class ServerLightLevelMessage : ServerMessage
     public byte TimeOfDay { get; set; }
     public byte Lighting { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -17,7 +17,7 @@ public class ServerLightLevelMessage : ServerMessage
         Lighting = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

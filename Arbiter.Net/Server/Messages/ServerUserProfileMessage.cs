@@ -32,7 +32,7 @@ public class ServerUserProfileMessage : ServerMessage
     public IReadOnlyList<byte>? Portrait { get; set; }
     public string? Bio { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -82,7 +82,7 @@ public class ServerUserProfileMessage : ServerMessage
         Bio = reader.ReadString16();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

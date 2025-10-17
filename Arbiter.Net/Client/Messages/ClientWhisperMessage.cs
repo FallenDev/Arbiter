@@ -9,7 +9,7 @@ public class ClientWhisperMessage : ClientMessage
     public string Target { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -17,7 +17,7 @@ public class ClientWhisperMessage : ClientMessage
         Content = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

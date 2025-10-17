@@ -10,7 +10,7 @@ public class ServerStatusEffectMessage : ServerMessage
     public ushort Icon { get; set; }
     public StatusEffectDuration Duration { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -18,7 +18,7 @@ public class ServerStatusEffectMessage : ServerMessage
         Duration = (StatusEffectDuration)reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

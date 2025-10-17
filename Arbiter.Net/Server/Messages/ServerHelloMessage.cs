@@ -8,7 +8,7 @@ public class ServerHelloMessage : ServerMessage
 {
     public string Message { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -16,7 +16,7 @@ public class ServerHelloMessage : ServerMessage
         Message = reader.ReadLine();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

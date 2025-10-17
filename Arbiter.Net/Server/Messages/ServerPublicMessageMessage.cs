@@ -11,7 +11,7 @@ public class ServerPublicMessageMessage : ServerMessage
     public uint SenderId { get; set; }
     public string Message { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -20,7 +20,7 @@ public class ServerPublicMessageMessage : ServerMessage
         Message = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

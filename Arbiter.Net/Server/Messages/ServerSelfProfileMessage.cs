@@ -22,7 +22,7 @@ public class ServerSelfProfileMessage : ServerMessage
     public string Guild { get; set; } = string.Empty;
     public List<ServerLegendMark> LegendMarks { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -75,7 +75,7 @@ public class ServerSelfProfileMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

@@ -10,7 +10,7 @@ public class ServerServerListMessage : ServerMessage
     public byte Seed { get; set; }
     public IReadOnlyList<byte> PrivateKey { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -24,7 +24,7 @@ public class ServerServerListMessage : ServerMessage
         PrivateKey = reader.ReadBytes(keyLength);
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

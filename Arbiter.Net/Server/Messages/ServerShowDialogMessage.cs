@@ -27,7 +27,7 @@ public class ServerShowDialogMessage : ServerMessage
     public byte? Unknown1 { get; set; }
     public byte? Unknown2 { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -89,7 +89,7 @@ public class ServerShowDialogMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

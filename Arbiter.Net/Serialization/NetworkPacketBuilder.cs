@@ -5,7 +5,7 @@ using Arbiter.Net.Server;
 
 namespace Arbiter.Net.Serialization;
 
-public class NetworkPacketBuilder : INetworkPacketBuilder
+public readonly ref struct NetworkPacketBuilder
 {
     private readonly List<byte> _buffer = [];
     private readonly Encoding _encoding;

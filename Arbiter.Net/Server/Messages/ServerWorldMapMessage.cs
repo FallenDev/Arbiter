@@ -12,7 +12,7 @@ public class ServerWorldMapMessage : ServerMessage
     
     public List<ServerWorldMapNode> Locations { get; set; } = [];
     
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -39,7 +39,7 @@ public class ServerWorldMapMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

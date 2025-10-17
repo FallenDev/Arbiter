@@ -8,14 +8,14 @@ public class ClientUseSkillMessage : ClientMessage
 {
     public byte Slot { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
         Slot = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

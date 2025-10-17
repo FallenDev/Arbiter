@@ -13,7 +13,7 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
     public byte? Slot { get; set; }
     public List<string> Arguments { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -31,7 +31,7 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

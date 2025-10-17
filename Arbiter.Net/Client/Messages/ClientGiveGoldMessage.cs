@@ -9,7 +9,7 @@ public class ClientGiveGoldMessage : ClientMessage
     public uint Amount { get; set; }
     public uint EntityId { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -17,7 +17,7 @@ public class ClientGiveGoldMessage : ClientMessage
         EntityId = reader.ReadUInt32();
     }
     
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

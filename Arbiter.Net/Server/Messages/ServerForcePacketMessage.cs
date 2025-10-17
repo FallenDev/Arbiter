@@ -10,7 +10,7 @@ public class ServerForcePacketMessage : ServerMessage
     public ClientCommand ClientCommand { get; set; }
     public IReadOnlyList<byte> Data { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -19,7 +19,7 @@ public class ServerForcePacketMessage : ServerMessage
         Data = reader.ReadBytes(length - 1);
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

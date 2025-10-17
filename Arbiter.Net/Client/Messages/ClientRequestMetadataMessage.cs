@@ -10,7 +10,7 @@ public class ClientRequestMetadataMessage : ClientMessage
     public MetadataRequestType RequestType { get; set; }
     public string? Name { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -22,7 +22,7 @@ public class ClientRequestMetadataMessage : ClientMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

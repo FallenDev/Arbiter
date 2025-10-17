@@ -10,7 +10,7 @@ public class ServerAddSkillMessage : ServerMessage
     public ushort Icon { get; set; }
     public string Name { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -19,7 +19,7 @@ public class ServerAddSkillMessage : ServerMessage
         Name = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

@@ -7,13 +7,13 @@ public abstract class ServerMessage : IServerMessage
     public ServerCommand Command { get; private set; }
     public byte? Sequence { get; private set; }
 
-    public virtual void Deserialize(INetworkPacketReader reader)
+    public virtual void Deserialize(NetworkPacketReader reader)
     {
         Command = (ServerCommand)reader.Command;
         Sequence = reader.Sequence;
     }
 
-    public virtual void Serialize(INetworkPacketBuilder builder)
+    public virtual void Serialize(NetworkPacketBuilder builder)
     {
         
     }

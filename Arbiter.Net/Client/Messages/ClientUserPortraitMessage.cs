@@ -10,7 +10,7 @@ public class ClientUserPortraitMessage : ClientMessage
 
     public string Bio { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -25,7 +25,7 @@ public class ClientUserPortraitMessage : ClientMessage
         Bio = reader.ReadString16();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

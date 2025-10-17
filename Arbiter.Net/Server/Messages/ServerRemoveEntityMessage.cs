@@ -8,14 +8,14 @@ public class ServerRemoveEntityMessage : ServerMessage
 {
     public uint EntityId { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
         EntityId = reader.ReadUInt32();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

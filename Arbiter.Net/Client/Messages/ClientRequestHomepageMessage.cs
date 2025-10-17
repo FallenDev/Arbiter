@@ -8,14 +8,14 @@ public class ClientRequestHomepageMessage : ClientMessage
 {
     public bool NeedsHomepage { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
         NeedsHomepage = reader.ReadBoolean();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

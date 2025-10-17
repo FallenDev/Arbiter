@@ -9,7 +9,7 @@ public class ClientExceptionMessage : ClientMessage
 {
     public string Message { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -17,7 +17,7 @@ public class ClientExceptionMessage : ClientMessage
         Message = Encoding.ASCII.GetString(bytes);
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

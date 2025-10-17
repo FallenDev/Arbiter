@@ -10,7 +10,7 @@ public class ServerLoginResultMessage : ServerMessage
     public LoginResult Result { get; set; }
     public string? Message { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -18,7 +18,7 @@ public class ServerLoginResultMessage : ServerMessage
         Message = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 

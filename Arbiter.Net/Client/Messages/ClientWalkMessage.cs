@@ -10,7 +10,7 @@ public class ClientWalkMessage : ClientMessage
     public WorldDirection Direction { get; set; }
     public byte StepCount { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -18,7 +18,7 @@ public class ClientWalkMessage : ClientMessage
         StepCount = reader.ReadByte();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

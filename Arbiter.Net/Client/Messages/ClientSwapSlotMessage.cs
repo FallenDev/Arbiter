@@ -11,7 +11,7 @@ public class ClientSwapSlotMessage : ClientMessage
     public byte SourceSlot { get; set; }
     public byte TargetSlot { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -20,7 +20,7 @@ public class ClientSwapSlotMessage : ClientMessage
         TargetSlot = reader.ReadByte();
     }
     
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

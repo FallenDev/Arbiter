@@ -10,7 +10,7 @@ public class ServerServerTableMessage : ServerMessage
 {
     public List<ServerTableEntry> Servers { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -39,7 +39,7 @@ public class ServerServerTableMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         throw new NotImplementedException();
     }

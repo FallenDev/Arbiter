@@ -16,7 +16,7 @@ public class ServerAddItemMessage : ServerMessage
     public uint Durability { get; set; }
     public uint MaxDurability { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -30,7 +30,7 @@ public class ServerAddItemMessage : ServerMessage
         Durability = reader.ReadUInt32();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

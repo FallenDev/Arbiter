@@ -12,7 +12,7 @@ public class ServerGroupMessage : ServerMessage
     public string Name { get; set; } = string.Empty;
     public ServerGroupBox? GroupBox { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -48,7 +48,7 @@ public class ServerGroupMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
     

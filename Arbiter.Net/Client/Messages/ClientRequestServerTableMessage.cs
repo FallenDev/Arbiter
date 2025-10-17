@@ -8,14 +8,14 @@ public class ClientRequestServerTableMessage : ClientMessage
 {
     public bool NeedsServerTable { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
         NeedsServerTable = reader.ReadBoolean();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

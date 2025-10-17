@@ -9,7 +9,7 @@ public class ClientRequestExitMessage : ClientMessage
 {
     public ClientExitReason? Reason { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -19,7 +19,7 @@ public class ClientRequestExitMessage : ClientMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

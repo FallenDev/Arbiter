@@ -10,7 +10,7 @@ public class ServerWorldMessageMessage : ServerMessage
     public WorldMessageType MessageType { get; set; }
     public string Message { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -18,7 +18,7 @@ public class ServerWorldMessageMessage : ServerMessage
         Message = reader.ReadString16();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

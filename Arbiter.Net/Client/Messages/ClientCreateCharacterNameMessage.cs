@@ -10,7 +10,7 @@ public class ClientCreateCharacterNameMessage : ClientMessage
     public string Password { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -19,7 +19,7 @@ public class ClientCreateCharacterNameMessage : ClientMessage
         Email = reader.ReadString8();
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

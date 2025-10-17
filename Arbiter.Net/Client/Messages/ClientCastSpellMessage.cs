@@ -12,7 +12,7 @@ public class ClientCastSpellMessage : ClientMessage
     public ushort? TargetY { get; set; }
     public string? TextInput { get; set; }
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
         
@@ -40,7 +40,7 @@ public class ClientCastSpellMessage : ClientMessage
         }
     }
     
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
         

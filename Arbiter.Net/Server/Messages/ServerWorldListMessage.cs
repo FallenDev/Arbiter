@@ -12,7 +12,7 @@ public class ServerWorldListMessage : ServerMessage
     public ushort CountryCount { get; set; }
     public List<ServerWorldListUser> Users { get; set; } = [];
 
-    public override void Deserialize(INetworkPacketReader reader)
+    public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
 
@@ -36,7 +36,7 @@ public class ServerWorldListMessage : ServerMessage
         }
     }
 
-    public override void Serialize(INetworkPacketBuilder builder)
+    public override void Serialize(NetworkPacketBuilder builder)
     {
         base.Serialize(builder);
 
