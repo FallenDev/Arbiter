@@ -47,6 +47,8 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
 
     private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        using var _ = Lock.EnterScope();
+        
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add when e.NewItems is not null:
@@ -59,6 +61,7 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
                     if (Predicate(item))
                     {
                         var targetIndex = GetFilteredIndexForSourceIndex(newIndex + i);
+                        targetIndex = Math.Min(targetIndex, Count);
                         Insert(targetIndex, item);
                     }
                     i++;
@@ -79,6 +82,7 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
                         if (currentIndex >= 0)
                         {
                             var targetIndex = GetFilteredIndexForSourceIndex(newIndex + i);
+                            targetIndex = Math.Min(targetIndex, Count - 1);
                             if (currentIndex != targetIndex)
                             {
                                 Move(currentIndex, targetIndex);
@@ -112,6 +116,7 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
                         if (Predicate(item))
                         {
                             var targetIndex = GetFilteredIndexForSourceIndex(newIndex + i);
+                            targetIndex = Math.Min(targetIndex, Count);
                             Insert(targetIndex, item);
                         }
                         i++;
