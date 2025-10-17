@@ -9,7 +9,17 @@ public partial class DialogManagerViewModel
 {
     private void OnDialogMenuChoiceSelected(object? sender, DialogMenuEventArgs e)
     {
-        
+        if (SelectedClient is null || ActiveDialog?.EntityId is null || e.SelectedChoice.PursuitId is null)
+        {
+            return;
+        }
+
+        var menuChoiceMessage = new ClientDialogMenuChoiceMessage
+        {
+            EntityId = (uint)ActiveDialog.EntityId.Value,
+            PursuitId = (ushort)e.SelectedChoice.PursuitId
+        };
+        SelectedClient.EnqueueMessage(menuChoiceMessage);
     }
     
     private void OnDialogNavigatePrevious(object? sender, DialogEventArgs e)
