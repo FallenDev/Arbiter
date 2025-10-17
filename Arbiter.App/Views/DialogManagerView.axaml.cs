@@ -2,9 +2,9 @@
 
 namespace Arbiter.App.Views;
 
-public partial class DialogView : UserControl
+public partial class DialogManagerView : UserControl
 {
-    public DialogView()
+    public DialogManagerView()
     {
         InitializeComponent();
     }

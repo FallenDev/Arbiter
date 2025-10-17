@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels.Dialogs"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
-             x:Class="Arbiter.App.Views.DialogView"
-             x:DataType="vm:DialogViewModel">
+             x:Class="Arbiter.App.Views.DialogManagerView"
+             x:DataType="vm:DialogManagerViewModel">
     
     <Grid RowDefinitions="Auto,*" RowSpacing="4"
           Background="{StaticResource Talgonite.Control.Background}">
@@ -13,9 +13,37 @@
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,*,Auto"
               Margin="4,4,4,0">
             <!-- Left Side -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <Label Content="Client"/>
-                <ComboBox Height="40" Width="160" Margin="4,2"/>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                <!-- Client Dropdown -->
+                <Label Content="Client"
+                       ToolTip.Tip="The client connection to send packets to or from."/>
+                <ComboBox ItemsSource="{Binding Clients}"
+                          SelectedValue="{Binding SelectedClient}"
+                          PlaceholderText="&lt;none&gt;"
+                          FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                          Width="160" Height="40">
+                    <ComboBox.IsEnabled>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="HasClients"/>
+                        </MultiBinding>
+                    </ComboBox.IsEnabled>
+                    <ComboBox.SelectionBoxItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"
+                                       Padding="8,4" />
+                        </DataTemplate>
+                    </ComboBox.SelectionBoxItemTemplate>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"
+                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                       FontSize="16"
+                                       TextAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       Padding="8,4"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
             
             <!-- Right Side -->
@@ -73,14 +101,14 @@
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.LightGray}"
                                    VerticalAlignment="Center"
-                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:True}}"/>
-                        <TextBlock Text="{Binding Sprite, FallbackValue=None}"
+                                   IsVisible="{Binding ActiveDialog.Sprite, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:True}}"/>
+                        <TextBlock Text="{Binding ActiveDialog.Sprite, FallbackValue=None}"
                                    TextAlignment="Center"
                                    FontSize="18"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource Talgonite.Color.White}"
                                    VerticalAlignment="Center"
-                                   IsVisible="{Binding Sprite, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:False}}"/>
+                                   IsVisible="{Binding ActiveDialog.Sprite, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:False}}"/>
                     </StackPanel>
                 </Border>
                 
@@ -96,10 +124,10 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom">
                     <ScrollViewer>
-                        <ItemsControl ItemsSource="{Binding MenuChoices}">
+                        <ItemsControl ItemsSource="{Binding ActiveDialog.MenuChoices, FallbackValue=[]}">
                             <ItemsControl.DataTemplates>
                                 <DataTemplate x:DataType="vm:DialogMenuChoiceViewModel">
-                                    <Button Command="{Binding $parent[UserControl].((vm:DialogViewModel)DataContext).SelectMenuChoiceCommand, FallbackValue={x:Null}}"
+                                    <Button Command="{Binding $parent[UserControl].((vm:DialogManagerViewModel)DataContext).ActiveDialog.SelectMenuChoiceCommand, FallbackValue={x:Null}}"
                                             CommandParameter="{Binding .}"
                                             Classes="outline toolbar"
                                             HorizontalContentAlignment="Stretch">
@@ -136,7 +164,7 @@
                               Margin="8,4,8,0">
                             <!-- Name -->
                             <TextBlock Grid.Column="0"
-                                       Text="{Binding Name}"
+                                       Text="{Binding ActiveDialog.Name, FallbackValue={x:Null}}"
                                        FontSize="16"
                                        FontWeight="SemiBold"
                                        Foreground="{StaticResource Talgonite.Color.LightBlue}"
@@ -144,35 +172,35 @@
                             
                             <!-- Entity Id -->
                             <TextBlock Grid.Column="1"
-                                       Text="{Binding EntityId, StringFormat={}0x{0:X}}"
+                                       Text="{Binding ActiveDialog.EntityId, StringFormat={}0x{0:X}, FallbackValue={x:Null}}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                        FontSize="16"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
-                                       IsVisible="{Binding EntityId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                       IsVisible="{Binding ActiveDialog.EntityId, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue={x:Null}}"/>
                             
                             <!-- Pursuit Id -->
                             <TextBlock Grid.Column="3"
-                                       Text="{Binding PursuitId, StringFormat={}Pursuit {0}}"
+                                       Text="{Binding ActiveDialog.PursuitId, StringFormat={}Pursuit {0}, FallbackValue={x:Null}}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                        FontSize="14"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
-                                       IsVisible="{Binding PursuitId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                       IsVisible="{Binding ActiveDialog.PursuitId, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue={x:Null}}"/>
                             
                             <!-- Pursuit Id -->
                             <TextBlock Grid.Column="4"
-                                       Text="{Binding StepId, StringFormat={}Step {0}}"
+                                       Text="{Binding ActiveDialog.StepId, StringFormat={}Step {0}, FallbackValue={x:Null}}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                        FontSize="14"
                                        Foreground="{StaticResource Talgonite.Color.LightGray}"
                                        VerticalAlignment="Center"
-                                       IsVisible="{Binding StepId, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                       IsVisible="{Binding ActiveDialog.StepId, Converter={x:Static StringConverters.IsNotNullOrEmpty}, FallbackValue={x:Null}}"/>
                         </Grid>
                         
                         <!-- Content -->
                         <ScrollViewer Grid.Row="1">
-                            <TextBlock Text="{Binding Content}"
+                            <TextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
                                        TextWrapping="WrapWithOverflow"
                                        FontSize="14"
                                        Foreground="{StaticResource Talgonite.Color.DimWhite}"
@@ -184,7 +212,7 @@
                               Margin="0,4,0,0">
                             <!-- Previous Button -->
                             <Button Grid.Column="0"
-                                    Command="{Binding NavigatePreviousCommand}"
+                                    Command="{Binding ActiveDialog.NavigatePreviousCommand, FallbackValue={x:Null}}"
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the previous dialog step."
                                     MinWidth="120"
@@ -202,7 +230,7 @@
                             </Button>
                             <!-- Next Button -->
                             <Button Grid.Column="1"
-                                    Command="{Binding NavigateNextCommand}"
+                                    Command="{Binding ActiveDialog.NavigateNextCommand, FallbackValue={x:Null}}"
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the next dialog step."
                                     MinWidth="120"
@@ -220,7 +248,7 @@
                             </Button>
                             <!-- Top Button -->
                             <Button Grid.Column="3"
-                                    Command="{Binding NavigateTopCommand}"
+                                    Command="{Binding ActiveDialog.NavigateTopCommand, FallbackValue={x:Null}}"
                                     Classes="outline toolbar"
                                     ToolTip.Tip="Requests the initial dialog step."
                                     MinWidth="120">
@@ -236,7 +264,7 @@
                             </Button>
                             <!-- Close Button -->
                             <Button Grid.Column="4"
-                                    Command="{Binding CloseDialogCommand}"
+                                    Command="{Binding ActiveDialog.CloseDialogCommand, FallbackValue={x:Null}}"
                                     Classes="outline toolbar destructive"
                                     ToolTip.Tip="Closes the currently open dialog."
                                     MinWidth="120">

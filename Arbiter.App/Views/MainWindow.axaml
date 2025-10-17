@@ -149,7 +149,7 @@
                     <v:TraceView DataContext="{Binding Trace}"/>
                 </TabItem>
                 <TabItem Header="Dialog">
-                    <v:DialogView DataContext="{Binding Dialog}"/>
+                    <v:DialogManagerView DataContext="{Binding DialogManager}"/>
                 </TabItem>
             </TabControl>
             

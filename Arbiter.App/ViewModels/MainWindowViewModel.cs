@@ -41,7 +41,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public CrcCalculatorViewModel CrcCalculator { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
-    public DialogViewModel Dialog { get; }
+    public DialogManagerViewModel DialogManager { get; }
 
     public MainWindowViewModel(
         ILogger<MainWindowViewModel> logger,
@@ -66,7 +66,7 @@ public partial class MainWindowViewModel : ViewModelBase
         CrcCalculator = serviceProvider.GetRequiredService<CrcCalculatorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
-        Dialog = serviceProvider.GetRequiredService<DialogViewModel>();
+        DialogManager = serviceProvider.GetRequiredService<DialogManagerViewModel>();
 
         Trace.SelectedPacketChanged += OnPacketSelected;
     }
