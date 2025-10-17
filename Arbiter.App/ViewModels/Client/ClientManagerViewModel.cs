@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Arbiter.App.Models;
 using Arbiter.App.Services;
@@ -46,6 +47,9 @@ public partial class ClientManagerViewModel : ViewModelBase
         _proxyServer.ClientDisconnected += OnClientDisconnected;
     }
 
+    public bool TryGetClient(long id, [NotNullWhen(true)] out ClientViewModel? client) =>
+        _clients.TryGetValue(id, out client);
+
     partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
     {
         ClientSelected?.Invoke(newValue);
@@ -63,7 +67,7 @@ public partial class ClientManagerViewModel : ViewModelBase
 
         _clients.AddOrUpdate(client.Id, client, (_, _) => client);
         _playerService.Register(connection.Id, state);
-        
+
         ClientConnected?.Invoke(client);
     }
 
@@ -88,6 +92,9 @@ public partial class ClientManagerViewModel : ViewModelBase
         {
             Clients.Add(client);
             ClientCount = Clients.Count;
+            
+            // Select the client if no other selection
+            SelectedClient ??= client;
         });
     }
 

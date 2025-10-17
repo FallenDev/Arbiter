@@ -26,7 +26,15 @@ public partial class DialogManagerViewModel
     private NetworkPacket OnDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
     {
-        _logger.LogInformation("{}");
+        if (_clientManager.TryGetClient(connection.Id, out var client))
+        {
+            _logger.LogInformation("[{Client}] Received dialog message: {Message}", connection.Name, message.Name);
+        }
+        else
+        {
+            _logger.LogWarning("Unable to find client with ID {Id}", connection.Id);
+        }
+        
         // Do not alter the packet
         return result.Passthrough();
     }
@@ -34,6 +42,15 @@ public partial class DialogManagerViewModel
     private NetworkPacket OnDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message,
         object? parameter, NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
     {
+        if (_clientManager.TryGetClient(connection.Id, out var client))
+        {
+            _logger.LogInformation("[{Client}] Received dialog menu: {Message}", connection.Name, message.Name);
+        }
+        else
+        {
+            _logger.LogWarning("Unable to find client with ID {Id}", connection.Id);
+        }
+        
         // Do not alter the packet
         return result.Passthrough();
     }
