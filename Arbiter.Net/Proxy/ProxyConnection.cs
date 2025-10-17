@@ -99,7 +99,7 @@ public partial class ProxyConnection : IDisposable
             return false;
         }
 
-        var builder = new NetworkPacketBuilder(command.Value);
+        using var builder = new NetworkPacketBuilder(command.Value);
         message.Serialize(builder);
         var packet = builder.ToPacket();
 
@@ -117,7 +117,7 @@ public partial class ProxyConnection : IDisposable
             return false;
         }
 
-        var builder = new NetworkPacketBuilder(command.Value);
+        using var builder = new NetworkPacketBuilder(command.Value);
         message.Serialize(builder);
         var packet = builder.ToPacket();
 
