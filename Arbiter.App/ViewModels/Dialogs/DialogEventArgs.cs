@@ -2,7 +2,4 @@
 
 namespace Arbiter.App.ViewModels.Dialogs;
 
-public class DialogEventArgs : EventArgs
-{
-    
-}
+public class DialogEventArgs : EventArgs;

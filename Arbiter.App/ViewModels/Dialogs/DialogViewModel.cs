@@ -25,11 +25,11 @@ public partial class DialogViewModel : ViewModelBase
 
     public ObservableCollection<DialogMenuChoiceViewModel> MenuChoices { get; } = [];
 
-    public EventHandler<DialogEventArgs>? RequestPrevious;
-    public EventHandler<DialogEventArgs>? RequestNext;
-    public EventHandler<DialogEventArgs>? RequestTop;
-    public EventHandler<DialogEventArgs>? RequestClose;
-    public EventHandler<DialogMenuEventArgs>? MenuChoiceSelected;
+    public event EventHandler<DialogEventArgs>? RequestPrevious;
+    public event EventHandler<DialogEventArgs>? RequestNext;
+    public event EventHandler<DialogEventArgs>? RequestTop;
+    public event EventHandler<DialogEventArgs>? RequestClose;
+    public event EventHandler<DialogMenuEventArgs>? MenuChoiceSelected;
 
     [RelayCommand]
     private void SelectMenuChoice(DialogMenuChoiceViewModel viewModel)

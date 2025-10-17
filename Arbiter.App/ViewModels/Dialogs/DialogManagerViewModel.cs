@@ -13,14 +13,12 @@ public partial class DialogManagerViewModel : ViewModelBase
 {
     private readonly ILogger<DialogManagerViewModel> _logger;
     private readonly ClientManagerViewModel _clientManager;
-    
+
     [ObservableProperty] private DialogViewModel? _activeDialog;
-    
-    [ObservableProperty]
-    private bool _hasClients;
-    
-    [ObservableProperty]
-    private ClientViewModel? _selectedClient;
+
+    [ObservableProperty] private bool _hasClients;
+
+    [ObservableProperty] private ClientViewModel? _selectedClient;
 
     public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
 
@@ -28,11 +26,11 @@ public partial class DialogManagerViewModel : ViewModelBase
     {
         _logger = logger;
         _clientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
-        
+
         _clientManager.Clients.CollectionChanged += OnClientsCollectionChanged;
         _clientManager.ClientSelected += OnClientSelected;
     }
-    
+
     private void OnClientSelected(ClientViewModel? client)
     {
         if (client is null || SelectedClient is not null)
@@ -63,19 +61,50 @@ public partial class DialogManagerViewModel : ViewModelBase
         {
             return;
         }
-        
+
         SelectedClient = null;
+    }
+
+    partial void OnActiveDialogChanged(DialogViewModel? oldValue, DialogViewModel? newValue)
+    {
+        if (oldValue is not null)
+        {
+            Unsubscribe(oldValue);
+        }
+
+        if (newValue is not null)
+        {
+            Subscribe(newValue);
+        }
+    }
+
+    private void Subscribe(DialogViewModel dialog)
+    {
+        dialog.MenuChoiceSelected += OnDialogMenuChoiceSelected;
+        dialog.RequestPrevious += OnDialogNavigatePrevious;
+        dialog.RequestNext += OnDialogNavigateNext;
+        dialog.RequestTop += OnDialogNavigateTop;
+        dialog.RequestClose += OnDialogClose;
+    }
+
+    private void Unsubscribe(DialogViewModel dialog)
+    {
+        dialog.MenuChoiceSelected -= OnDialogMenuChoiceSelected;
+        dialog.RequestPrevious -= OnDialogNavigatePrevious;
+        dialog.RequestNext -= OnDialogNavigateNext;
+        dialog.RequestTop -= OnDialogNavigateTop;
+        dialog.RequestClose -= OnDialogClose;
     }
 
     [RelayCommand]
     private void LoadDialog()
     {
-        
+
     }
 
     [RelayCommand]
     private void SaveDialog()
     {
-        
+
     }
 }
