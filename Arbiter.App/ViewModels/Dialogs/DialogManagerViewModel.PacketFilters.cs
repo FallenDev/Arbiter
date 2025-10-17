@@ -3,7 +3,6 @@ using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
-using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Dialogs;
 

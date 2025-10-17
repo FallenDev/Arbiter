@@ -24,6 +24,12 @@ public partial class EntityListViewModel
             Name = "EntityView_ShowUserFilter",
             Priority = int.MaxValue - 10
         });
+        
+        proxyServer.AddFilter(new ServerMessageFilter<ServerUserProfileMessage>(OnUserProfileMessage)
+        {
+            Name = "EntityView_UserProfileFilter",
+            Priority = int.MaxValue - 10
+        });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
         {
@@ -115,6 +121,27 @@ public partial class EntityListViewModel
             MapName = player?.MapName,
             X = message.X,
             Y = message.Y
+        };
+
+        _entityStore.AddOrUpdateEntity(entity, out _);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+    
+    private NetworkPacket OnUserProfileMessage(ProxyConnection connection, ServerUserProfileMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerUserProfileMessage> result)
+    {
+        // Try to get the player so we can get map context
+        _playerService.TryGetState(connection.Id, out var player);
+
+        var entity = new GameEntity
+        {
+            Flags = EntityFlags.Player,
+            Id = message.EntityId,
+            Name = message.Name,
+            MapId = player?.MapId,
+            MapName = player?.MapName
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);

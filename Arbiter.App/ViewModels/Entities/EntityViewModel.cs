@@ -7,7 +7,7 @@ public partial class EntityViewModel : ViewModelBase
 {
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Flags), nameof(Id), nameof(Name), nameof(TypeName), nameof(TypeShorthand),
-        nameof(Sprite), nameof(MapId), nameof(MapName), nameof(X), nameof(Y), nameof(Position))]
+        nameof(Sprite), nameof(MapId), nameof(MapName), nameof(X), nameof(Y), nameof(Position), nameof(IsHidden))]
     [NotifyPropertyChangedFor(nameof(IsPlayer), nameof(IsMonster), nameof(IsMundane), nameof(IsItem),
         nameof(IsReactor))]
     private GameEntity _entity;
@@ -18,7 +18,7 @@ public partial class EntityViewModel : ViewModelBase
     
     public EntityFlags Flags => Entity.Flags;
     public long Id => Entity.Id;
-    public string? Name => Entity.Name ?? TypeName;
+    public string Name => Entity.Name ?? (IsHidden ? "[Hidden]" : TypeName);
 
     public string TypeName => Flags switch
     {
@@ -40,13 +40,13 @@ public partial class EntityViewModel : ViewModelBase
         _ => "?"
     };
 
-    public ushort Sprite => Entity.Sprite;
+    public ushort Sprite => Entity.Sprite ?? 0;
     public int MapId => Entity.MapId ?? 0;
     public string MapName => Entity.MapName ?? "Unknown Map";
-
     public int X => Entity.X;
     public int Y => Entity.Y;
     public string Position => $"{X}, {Y}";
+    public bool IsHidden => Flags.HasFlag(EntityFlags.Player) && Sprite == 0;
 
     public bool IsPlayer => Flags.HasFlag(EntityFlags.Player);
     public bool IsMonster => Flags.HasFlag(EntityFlags.Monster);

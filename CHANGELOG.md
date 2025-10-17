@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Auto-select the client in the `Send` view when selected in the left-side panel (if no selected client)
 - Color-coded entity types
+- Handle hidden players in `Entity` list
 - Border Z-index for various UI controls
 - Pursuit + Step ID in debug filter
 - Show actual class instead of "Master" when pre-Medenia class
