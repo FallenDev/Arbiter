@@ -48,16 +48,31 @@ public sealed class EntityStore : IEntityStore
 
         using var _ = _lock.EnterScope();
 
-        // Handle players differently since they can re-appear with new IDs due to re-logging
+        // Remove existing player entity with same name to avoid duplicates (relogging gives a new ID)
+        GameEntity? existingPlayer = null;
         if (entity.Flags.HasFlag(EntityFlags.Player))
         {
-            _playerEntities.TryGetValue(entity.Name ?? string.Empty, out var existingPlayer);
-            AddOrUpdatePlayerEntity(existingPlayer, entity, out var _);
-            return;
+            if (_playerEntities.TryGetValue(entity.Name ?? string.Empty, out var player))
+            {
+                existingPlayer = player;
+            }
+
+            if (existingPlayer is not null && existingPlayer.Value.Id != entity.Id)
+            {
+                _playerEntities.Remove(existingPlayer.Value.Name ?? string.Empty);
+                RemoveEntity(existingPlayer.Value.Id, out var _);
+            }
         }
 
+        // If adding a new entity, add it to the dictionary
         if (_entities.TryAdd(entity.Id, entity))
         {
+            // If adding a player entity, add it to the player dictionary
+            if (entity.Flags.HasFlag(EntityFlags.Player) && !string.IsNullOrWhiteSpace(entity.Name))
+            {
+                _playerEntities[entity.Name] = entity;
+            }
+
             OnEntityAdded(entity);
             return;
         }
@@ -94,30 +109,6 @@ public sealed class EntityStore : IEntityStore
         }
 
         return wasRemoved;
-    }
-
-    private void AddOrUpdatePlayerEntity(GameEntity? oldValue, GameEntity newValue, out bool wasReplaced)
-    {
-        wasReplaced = false;
-
-        if (oldValue is not null)
-        {
-            _playerEntities.Remove(oldValue.Value.Name ?? string.Empty);
-            RemoveEntity(oldValue.Value.Id, out _);
-
-            OnEntityRemoved(oldValue.Value);
-            wasReplaced = true;
-        }
-
-        if (_entities.TryAdd(newValue.Id, newValue))
-        {
-            if (!string.IsNullOrWhiteSpace(newValue.Name))
-            {
-                _playerEntities.TryAdd(newValue.Name ?? string.Empty, newValue);
-            }
-
-            OnEntityAdded(newValue);
-        }
     }
 
     private void OnEntityAdded(GameEntity entity) => EntityAdded?.Invoke(entity);
