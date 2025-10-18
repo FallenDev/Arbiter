@@ -49,11 +49,6 @@ public partial class EntityManagerViewModel
     [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
     private async Task CopyHexToClipboard()
     {
-        if (SelectedEntities.Count == 0)
-        {
-            return;
-        }
-        
         var clipboard = Application.Current?.TryGetClipboard();
         if (clipboard is null || SelectedEntities.Count == 0)
         {
@@ -68,11 +63,6 @@ public partial class EntityManagerViewModel
     [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
     private async Task CopySpriteToClipboard()
     {
-        if (SelectedEntities.Count == 0)
-        {
-            return;
-        }
-        
         var clipboard = Application.Current?.TryGetClipboard();
         if (clipboard is null || SelectedEntities.Count == 0)
         {

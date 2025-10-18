@@ -230,11 +230,18 @@
                         <ScrollViewer Grid.Row="1"
                                       HorizontalScrollBarVisibility="Disabled"
                                       VerticalScrollBarVisibility="Auto">
-                            <TextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
-                                       TextWrapping="WrapWithOverflow"
-                                       FontSize="18"
-                                       Foreground="{StaticResource Talgonite.Color.DimWhite}"
-                                       Margin="8,4"/>
+                            <SelectableTextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
+                                                 TextWrapping="WrapWithOverflow"
+                                                 FontSize="18"
+                                                 Foreground="{StaticResource Talgonite.Color.DimWhite}"
+                                                 Margin="8,4">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu IsEnabled="{Binding ActiveDialog, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                        <MenuItem Header="Copy Text"
+                                                  Command="{Binding CopyDialogTextToClipboardCommand}"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </SelectableTextBlock>
                         </ScrollViewer>
                         
                         <!-- Button Area -->

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Interact` context menu to Entity list
 - Entity filter mode for `All`, (same) `Map`, and `Nearby` (within visible range)
+- `Copy Text` context menu to dialog content area
 
 ### Changed
 

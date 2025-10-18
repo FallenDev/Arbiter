@@ -2,8 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
+using Arbiter.App.Extensions;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net.Proxy;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -127,6 +130,18 @@ public partial class DialogManagerViewModel : ViewModelBase
         dialog.RequestNext -= OnDialogNavigateNext;
         dialog.RequestTop -= OnDialogNavigateTop;
         dialog.RequestClose -= OnDialogClose;
+    }
+
+    [RelayCommand]
+    private async Task CopyDialogTextToClipboard()
+    {
+        var clipboard = Application.Current?.TryGetClipboard();
+        if (clipboard is null || ActiveDialog is null)
+        {
+            return;
+        }
+
+        await clipboard.SetTextAsync(ActiveDialog.Content);
     }
 
     [RelayCommand]
