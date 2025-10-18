@@ -112,6 +112,12 @@ public partial class EntityManagerViewModel : ViewModelBase
         {
             FilteredEntities.Add(vm);
         }
+
+        // If currently sorting by Name and the name changed, re-apply sorting to preserve order
+        if (nameChanged && SortOrder == EntitySortOrder.Name)
+        {
+            ResortAll(GetComparer());
+        }
     }
 
     private void OnEntityRemoved(GameEntity entity)

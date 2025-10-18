@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix entity map information being incorrect at times
 - Entity search now highlights similar to `Trace` view
 - Entity ID uses lighter gray color in the list view
+- Color coding in dialog filters to show entity/pursuit IDs
 
 ## [1.4.0] - 2025-10-17
 
