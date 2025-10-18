@@ -16,7 +16,7 @@ public partial class ProxyViewModel
         _debugShowUserFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerShowUserMessage>(HandleShowUserMessage, settings)
             {
-                Name = "Debug_ShowUserFilter",
+                Name = $"{FilterPrefix}_Player_ServerShowUser",
                 Priority = DebugFilterPriority
             });
     }

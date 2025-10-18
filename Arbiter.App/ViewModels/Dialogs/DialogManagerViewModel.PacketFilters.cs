@@ -8,17 +8,19 @@ namespace Arbiter.App.ViewModels.Dialogs;
 
 public partial class DialogManagerViewModel
 {
+    private const string FilterPrefix = nameof(DialogManagerViewModel);
+    
     private void AddPacketFilters()
     {
         _proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnDialogMessage)
         {
-            Name = "DialogManager_ShowDialogMessage",
+            Name = $"{FilterPrefix}_ServerShowDialog",
             Priority = int.MaxValue
         });
         
         _proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnDialogMenuMessage)
         {
-            Name = "DialogManager_ShowDialogMenuMessage",
+            Name = $"{FilterPrefix}_ServerShowDialogMenu",
             Priority = int.MaxValue
         });
     }

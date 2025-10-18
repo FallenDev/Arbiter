@@ -72,7 +72,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
     {
         registry.Register<ServerAddEntityMessage>(b =>
         {
-            b.Section("Entities")
+            b.Section("EntityManager")
                 .Property(m => m.Entities);
         });
     }

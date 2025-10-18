@@ -223,7 +223,7 @@
                     <v:HexView DataContext="{Binding SelectedRawHex}"/>
                 </TabItem>
                 <TabItem Header="Entities">
-                    <v:EntityListView DataContext="{Binding Entities}"/>
+                    <v:EntityManagerView DataContext="{Binding EntityManager}"/>
                 </TabItem>
                 <TabItem Header="CRC">
                     <v:CrcCalculatorView DataContext="{Binding CrcCalculator}"/>

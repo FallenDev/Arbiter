@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Option for global pursuits for NPCs via "mod menu" dialog injection
+- Reveal Monster name on interact in the `Entity` list
+- `Interact` context menu to Entity list
+- Entity filter mode for `All`, (same) `Map`, and `Nearby` (within visible range)
+- `Copy Text` context menu to dialog content area
+
+### Changed
+
+- Replace players with same name in `Entity` list (relogged characters)
+- Select next available client when selected one disconnects
+- Removed client combo box selections, views now use the selected client globally
+- Main app title changes based on selected client
+- Fix entity map information being incorrect at times
+- Entity search now highlights similar to `Trace` view
+- Entity ID uses lighter gray color in the list view
+- Color coding in dialog filters to show entity/pursuit IDs
+
 ## [1.4.0] - 2025-10-17
 
 ### Added

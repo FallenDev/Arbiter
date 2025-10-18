@@ -53,6 +53,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugDisableWeatherEffects))]
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
+    [NotifyPropertyChangedFor(nameof(DebugEnableNpcModMenu))]
     [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
@@ -327,6 +328,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.IgnoreEmptyMessages = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugEnableNpcModMenu
+    {
+        get => Settings.Debug.EnableNpcModMenu;
+        set
+        {
+            Settings.Debug.EnableNpcModMenu = value;
             OnPropertyChanged();
             HasChanges = true;
         }

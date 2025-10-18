@@ -3,13 +3,38 @@ using System.Buffers.Binary;
 using System.Linq;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
+using Arbiter.App.Models;
+using Arbiter.Net.Client.Messages;
+using Arbiter.Net.Types;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Entities;
 
-public partial class EntityListViewModel
+public partial class EntityManagerViewModel
 {
+    private bool CanInteract() => SelectedClient is not null && SelectedEntities.Count == 1 &&
+                                  !SelectedEntities[0].Flags.HasFlag(EntityFlags.Item);
+
+    [RelayCommand(CanExecute = nameof(CanInteract))]
+    private void Interact()
+    {
+        if (SelectedClient is null || SelectedEntities.Count == 0)
+        {
+            return;
+        }
+
+        var entityId = (uint)SelectedEntities[0].Id;
+        var clientInteract = new ClientInteractMessage
+        {
+            InteractionType = InteractionType.Entity,
+            TargetId = entityId
+        };
+
+        QueueInteractionRequest(SelectedClient.Id, entityId);
+        SelectedClient.EnqueueMessage(clientInteract);
+    }
+
     private bool CanCopyToClipboard() => SelectedEntities.Count == 1;
     
     [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
@@ -27,11 +52,6 @@ public partial class EntityListViewModel
     [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
     private async Task CopyHexToClipboard()
     {
-        if (SelectedEntities.Count == 0)
-        {
-            return;
-        }
-        
         var clipboard = Application.Current?.TryGetClipboard();
         if (clipboard is null || SelectedEntities.Count == 0)
         {
@@ -46,11 +66,6 @@ public partial class EntityListViewModel
     [RelayCommand(CanExecute = nameof(CanCopyToClipboard))]
     private async Task CopySpriteToClipboard()
     {
-        if (SelectedEntities.Count == 0)
-        {
-            return;
-        }
-        
         var clipboard = Application.Current?.TryGetClipboard();
         if (clipboard is null || SelectedEntities.Count == 0)
         {

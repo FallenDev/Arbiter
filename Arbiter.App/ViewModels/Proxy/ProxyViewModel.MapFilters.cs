@@ -17,14 +17,14 @@ public partial class ProxyViewModel
         _debugUserIdFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerUserIdMessage>(HandleUserIdMessage, settings)
             {
-                Name = "Debug_UserIdFilter",
+                Name = $"{FilterPrefix}_Map_ServerUserId",
                 Priority = DebugFilterPriority
             });
 
         _debugMapInfoFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerMapInfoMessage>(HandleMapInfoMessage, settings)
             {
-                Name = "Debug_MapInfoFilter",
+                Name = $"{FilterPrefix}_Map_ServerMapInfo",
                 Priority = DebugFilterPriority
             });
     }

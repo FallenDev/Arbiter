@@ -10,43 +10,11 @@
     <Grid RowDefinitions="Auto,*" RowSpacing="4"
           Background="{StaticResource Talgonite.Control.Background}">
         <!-- Toolbar Area -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,*,Auto"
-              Margin="4,4,4,0">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,*,Auto" Margin="4">
             <!-- Left Side -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
-                <!-- Client Dropdown -->
-                <Label Content="Client"
-                       ToolTip.Tip="The client connection to send packets to or from."/>
-                <ComboBox ItemsSource="{Binding Clients}"
-                          SelectedValue="{Binding SelectedClient}"
-                          PlaceholderText="&lt;none&gt;"
-                          FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                          Width="160" Height="40">
-                    <ComboBox.IsEnabled>
-                        <MultiBinding Converter="{x:Static BoolConverters.And}">
-                            <Binding Path="HasClients"/>
-                        </MultiBinding>
-                    </ComboBox.IsEnabled>
-                    <ComboBox.SelectionBoxItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"
-                                       Padding="8,4" />
-                        </DataTemplate>
-                    </ComboBox.SelectionBoxItemTemplate>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"
-                                       FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                       FontSize="16"
-                                       TextAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Padding="8,4"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                
-                <CheckBox IsChecked="{Binding ShouldSync}" Margin="8,0,0,0"/>
-                <Label Content="Sync" Padding="0"
+                <CheckBox IsChecked="{Binding ShouldSync}" Margin="8,4,0,4"/>
+                <Label Content="Sync Client" Padding="0"
                        ToolTip.Tip="Sync dialog in real-time with the selected client."/>
             </StackPanel>
             
@@ -262,11 +230,18 @@
                         <ScrollViewer Grid.Row="1"
                                       HorizontalScrollBarVisibility="Disabled"
                                       VerticalScrollBarVisibility="Auto">
-                            <TextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
-                                       TextWrapping="WrapWithOverflow"
-                                       FontSize="18"
-                                       Foreground="{StaticResource Talgonite.Color.DimWhite}"
-                                       Margin="8,4"/>
+                            <SelectableTextBlock Text="{Binding ActiveDialog.Content, FallbackValue={x:Null}}"
+                                                 TextWrapping="WrapWithOverflow"
+                                                 FontSize="18"
+                                                 Foreground="{StaticResource Talgonite.Color.DimWhite}"
+                                                 Margin="8,4">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu IsEnabled="{Binding ActiveDialog, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                        <MenuItem Header="Copy Text"
+                                                  Command="{Binding CopyDialogTextToClipboardCommand}"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </SelectableTextBlock>
                         </ScrollViewer>
                         
                         <!-- Button Area -->

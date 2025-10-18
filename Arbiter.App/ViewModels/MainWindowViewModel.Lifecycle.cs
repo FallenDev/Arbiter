@@ -49,7 +49,7 @@ public partial class MainWindowViewModel
         }
 
         // Update entity sort oder to persist
-        Settings.EntitySorting = Entities.SortOrder;
+        Settings.EntitySorting = EntityManager.SortOrder;
 
         SaveWindowPosition();
         SaveLayout();
