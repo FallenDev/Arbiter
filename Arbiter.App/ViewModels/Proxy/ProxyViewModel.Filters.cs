@@ -23,6 +23,7 @@ public partial class ProxyViewModel
         AddDebugEffectsFilters(settings);
         AddDebugMapFilters(settings);
         AddDebugMessageFilters(settings, filters);
+        AddModMenuFilters(settings);
     }
 
     public void RemoveDebugFilters()
@@ -33,5 +34,6 @@ public partial class ProxyViewModel
         RemoveDebugEffectsFilters();
         RemoveDebugMapFilters();
         RemoveDebugMessageFilters();
+        RemoveModMenuFilters();
     }
 }
