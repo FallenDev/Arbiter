@@ -49,14 +49,14 @@ public partial class ProxyViewModel
         if (settings.ShowDialogId)
         {
             var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
-            message.Name = $"{name} - 0x{message.EntityId:X4}";
+            message.Name = $"{name} {{=h[0x{message.EntityId:X4}]";
             hasChanges = true;
         }
 
         if (settings.ShowPursuitId)
         {
-            var pursuitText = $"Pursuit {message.PursuitId} => Step {message.StepId}";
-            message.Name = $"{message.Name} - {pursuitText}";
+            var pursuitText = $"{{=ePursuit {message.PursuitId} => Step {message.StepId}";
+            message.Name = $"{message.Name} {pursuitText}";
             hasChanges = true;
 
         }
@@ -78,7 +78,7 @@ public partial class ProxyViewModel
         if (settings.ShowDialogId)
         {
             var name = !string.IsNullOrWhiteSpace(message.Name) ? message.Name : message.EntityType.ToString();
-            message.Name = $"{name} 0x{message.EntityId:X4}";
+            message.Name = $"{name} {{=h[0x{message.EntityId:X4}]";
             hasChanges = true;
         }
 
@@ -86,7 +86,7 @@ public partial class ProxyViewModel
         {
             if (message.PursuitId is > 0)
             {
-                var pursuitText = $"Pursuit {message.PursuitId}";
+                var pursuitText = $"{{=ePursuit {message.PursuitId}";
                 message.Name = $"{message.Name} - {pursuitText}";
                 hasChanges = true;
             }
@@ -95,7 +95,7 @@ public partial class ProxyViewModel
             {
                 foreach (var choice in message.MenuChoices)
                 {
-                    var menuPursuitText = $"[{choice.PursuitId}]";
+                    var menuPursuitText = $"{{=j[{choice.PursuitId}]";
                     var maxChoiceLength = 50 - menuPursuitText.Length;
                     var choiceText = choice.Text.Length > maxChoiceLength
                         ? string.Concat(choice.Text.AsSpan(0, maxChoiceLength - 3), "...")
