@@ -40,6 +40,9 @@ public partial class EntityManagerViewModel
             }),
             EntitySortOrder.Name => Comparer<EntityViewModel>.Create((a, b) =>
             {
+                if (string.IsNullOrEmpty(a.Name) && string.IsNullOrEmpty(b.Name)) return 0;
+                if (string.IsNullOrEmpty(a.Name)) return 1;
+                if (string.IsNullOrEmpty(b.Name)) return -1;
                 var c = string.Compare(a.Name, b.Name, CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
                 if (c != 0) return c;
                 c = a.Id.CompareTo(b.Id);

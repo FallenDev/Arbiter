@@ -62,7 +62,7 @@ public partial class EntityManagerViewModel : ViewModelBase
             return;
         }
 
-        FilteredEntities.Refresh();
+        RefreshFilterPreservingSelection();
     }
 
     private void OnClientSelected(ClientViewModel? client)

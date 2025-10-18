@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Arbiter.App.Collections;
 using Arbiter.App.Models;
 using Arbiter.App.Threading;
@@ -11,7 +12,7 @@ namespace Arbiter.App.ViewModels.Entities;
 public partial class EntityManagerViewModel
 {
     private readonly Debouncer _filterDebouncer = new(TimeSpan.FromMilliseconds(100), Dispatcher.UIThread);
-    
+
     [ObservableProperty] private EntityFilterMode _filterMode = EntityFilterMode.Nearby;
 
     [ObservableProperty] private bool _includePlayers = true;
@@ -22,26 +23,26 @@ public partial class EntityManagerViewModel
 
     public List<EntityFilterMode> AvailableFilterModes =>
         [EntityFilterMode.All, EntityFilterMode.Map, EntityFilterMode.Nearby];
-    
+
     public FilteredObservableCollection<EntityViewModel> FilteredEntities { get; }
 
     partial void OnFilterModeChanged(EntityFilterMode oldValue, EntityFilterMode newValue) =>
-        _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        _filterDebouncer.Execute(RefreshFilterPreservingSelection);
 
     partial void OnIncludePlayersChanged(bool oldValue, bool newValue) =>
-        _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        _filterDebouncer.Execute(RefreshFilterPreservingSelection);
 
     partial void OnIncludeNpcsChanged(bool oldValue, bool newValue) =>
-        _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        _filterDebouncer.Execute(RefreshFilterPreservingSelection);
 
     partial void OnIncludeMonstersChanged(bool oldValue, bool newValue) =>
-        _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        _filterDebouncer.Execute(RefreshFilterPreservingSelection);
 
     partial void OnIncludeItemsChanged(bool oldValue, bool newValue) =>
-        _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        _filterDebouncer.Execute(RefreshFilterPreservingSelection);
 
     partial void OnIncludeReactorsChanged(bool oldValue, bool newValue) =>
-        _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        _filterDebouncer.Execute(RefreshFilterPreservingSelection);
 
     private bool MatchesFilter(EntityViewModel entity)
     {
@@ -52,6 +53,12 @@ public partial class EntityManagerViewModel
             if (SelectedClient is null || !_playerService.TryGetState(SelectedClient.Id, out var player))
             {
                 return false;
+            }
+
+            // Always include self
+            if (player.UserId == entity.Id)
+            {
+                return true;
             }
 
             // Check if the entity is within range
@@ -72,5 +79,24 @@ public partial class EntityManagerViewModel
                (IncludeMonsters || !entity.Flags.HasFlag(EntityFlags.Monster)) &&
                (IncludeItems || !entity.Flags.HasFlag(EntityFlags.Item)) &&
                (IncludeReactors || !entity.Flags.HasFlag(EntityFlags.Reactor));
+    }
+
+    private void RefreshFilterPreservingSelection()
+    {
+        // Remember selection by IDs
+        var selectedIds = SelectedEntities.Select(e => e.Id).ToHashSet();
+        FilteredEntities.Refresh();
+        if (selectedIds.Count == 0)
+        {
+            return;
+        }
+
+        // Restore selection for items still present
+        var toSelect = FilteredEntities.Where(vm => selectedIds.Contains(vm.Id)).ToList();
+        SelectedEntities.Clear();
+        foreach (var vm in toSelect)
+        {
+            SelectedEntities.Add(vm);
+        }
     }
 }

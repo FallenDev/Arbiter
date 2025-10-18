@@ -6,7 +6,6 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
 using Arbiter.Net.Types;
-using Avalonia.Threading;
 
 namespace Arbiter.App.ViewModels.Entities;
 
@@ -61,6 +60,12 @@ public partial class EntityManagerViewModel
         proxyServer.AddFilter(new ServerMessageFilter<ServerWalkResponseMessage>(OnSelfWalkMessage)
         {
             Name = $"{FilterPrefix}_ServerWalkResponse",
+            Priority = int.MaxValue - 10
+        });
+
+        proxyServer.AddFilter(new ServerMessageFilter<ServerMapLocationMessage>(OnServerMapLocationMessage)
+        {
+            Name = $"{FilterPrefix}_ServerMapLocation",
             Priority = int.MaxValue - 10
         });
 
@@ -315,6 +320,11 @@ public partial class EntityManagerViewModel
 
         _entityStore.AddOrUpdateEntity(newEntity, out _);
 
+        if (SelectedClient is not null && FilterMode is not EntityFilterMode.All)
+        {
+            _filterDebouncer.Execute(RefreshFilterPreservingSelection);
+        }
+
         // Do not alter the packet
         return result.Passthrough();
     }
@@ -355,8 +365,21 @@ public partial class EntityManagerViewModel
 
         if (SelectedClient is not null)
         {
-            _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+            _filterDebouncer.Execute(RefreshFilterPreservingSelection);
         }
+        
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket OnServerMapLocationMessage(ProxyConnection connection, ServerMapLocationMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerMapLocationMessage> result)
+    {
+        if (SelectedClient is not null && FilterMode is not EntityFilterMode.All)
+        {
+            _filterDebouncer.Execute(RefreshFilterPreservingSelection);
+        }
+
         // Do not alter the packet
         return result.Passthrough();
     }
