@@ -77,7 +77,7 @@ public partial class EntityManagerViewModel
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
         {
-            Name = $"{FilterPrefix}_RemoveEntity",
+            Name = $"{FilterPrefix}_ServerRemoveEntity",
             Priority = int.MaxValue - 10
         });
 
@@ -105,6 +105,14 @@ public partial class EntityManagerViewModel
     private void OnClientDisconnected(object? sender, ProxyConnectionEventArgs e)
         => _interactRequests.TryRemove(e.Connection.Id, out _);
 
+    private void QueueInteractionRequest(int connectionId, uint entityId)
+    {
+        if (_interactRequests.TryGetValue(connectionId, out var queue))
+        {
+            queue.Enqueue((entityId, DateTime.Now));
+        }
+    }
+    
     private NetworkPacket OnAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
         object? parameter, NetworkMessageFilterResult<ServerAddEntityMessage> result)
     {
@@ -503,13 +511,5 @@ public partial class EntityManagerViewModel
 
         // Do not alter the packet
         return result.Passthrough();
-    }
-
-    private void QueueInteractionRequest(int connectionId, uint entityId)
-    {
-        if (_interactRequests.TryGetValue(connectionId, out var queue))
-        {
-            queue.Enqueue((entityId, DateTime.Now));
-        }
     }
 }
