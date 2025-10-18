@@ -6,6 +6,7 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
 using Arbiter.Net.Types;
+using Avalonia.Threading;
 
 namespace Arbiter.App.ViewModels.Entities;
 
@@ -352,6 +353,10 @@ public partial class EntityManagerViewModel
         };
         _entityStore.AddOrUpdateEntity(newEntity, out _);
 
+        if (SelectedClient is not null)
+        {
+            _filterDebouncer.Execute(() => FilteredEntities.Refresh());
+        }
         // Do not alter the packet
         return result.Passthrough();
     }

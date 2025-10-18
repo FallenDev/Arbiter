@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Interact` context menu to Entity list
+- Entity filter mode for `All`, (same) `Map`, and `Nearby` (within visible range)
 
 ### Changed
 
@@ -16,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Select next available client when selected one disconnects
 - Removed client combo box selections, views now use the selected client globally
 - Main app title changes based on selected client
+- Fix entity map information being incorrect at times
+- Entity search now highlights similar to `Trace` view
+- Entity ID uses lighter gray color in the list view
 
 ## [1.4.0] - 2025-10-17
 
