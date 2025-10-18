@@ -22,14 +22,14 @@ public partial class ProxyViewModel
         _emptyWorldMessageFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerWorldMessageMessage>(HandleEmptyWorldMessageMessage, settings)
             {
-                Name = "Debug_WorldMessageFilter",
+                Name = $"{FilterPrefix}_Message_EmptyServerWorldMessage",
                 Priority = DebugFilterPriority
             });
 
         _worldMessageFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerWorldMessageMessage>(HandleWorldMessage, filters.ToList())
             {
-                Name = "Debug_EmptyWorldMessageFilter",
+                Name = $"{FilterPrefix}_Message_ServerWorldMessageFilter",
                 Priority = DebugFilterPriority - 10
             });
     }

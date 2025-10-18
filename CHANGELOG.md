@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replace players with same name in `Entity` list (relogged characters)
+- Select next available client when selected one disconnects
+- Removed client combo box selections, views now use the selected client globally
+- Main app title changes based on selected client
 
 ## [1.4.0] - 2025-10-17
 

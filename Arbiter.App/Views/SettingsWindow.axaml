@@ -154,7 +154,7 @@
             </TabItem>
             
             <!-- Entities Settings Tab -->
-            <TabItem Header="Entities">
+            <TabItem Header="EntityManager">
                 <StackPanel Spacing="4" Margin="4">
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Entity ID for Dialogs -->

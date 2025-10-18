@@ -112,7 +112,7 @@ public class App : Application
         services.AddSingleton<ClientManagerViewModel>();
         services.AddSingleton<CrcCalculatorViewModel>();
         services.AddSingleton<DialogManagerViewModel>();
-        services.AddSingleton<EntityListViewModel>();
+        services.AddSingleton<EntityManagerViewModel>();
         services.AddSingleton<InspectorViewModel>();
         services.AddSingleton<ProxyViewModel>();
         services.AddSingleton<SendPacketViewModel>();

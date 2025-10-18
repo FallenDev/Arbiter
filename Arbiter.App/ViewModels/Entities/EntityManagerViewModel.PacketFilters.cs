@@ -9,61 +9,63 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.App.ViewModels.Entities;
 
-public partial class EntityListViewModel
+public partial class EntityManagerViewModel
 {
+    private const string FilterPrefix = nameof(EntityManagerViewModel);
+
     private void AddPacketFilters(ProxyServer proxyServer)
     {
         proxyServer.AddFilter(new ServerMessageFilter<ServerAddEntityMessage>(OnAddEntityMessage)
         {
-            Name = "EntityView_AddEntityFilter",
+            Name = $"{FilterPrefix}_ServerAddEntity",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowUserMessage>(OnShowUserMessage)
         {
-            Name = "EntityView_ShowUserFilter",
+            Name = $"{FilterPrefix}_ServerShowUser",
             Priority = int.MaxValue - 10
         });
-        
+
         proxyServer.AddFilter(new ServerMessageFilter<ServerUserProfileMessage>(OnUserProfileMessage)
         {
-            Name = "EntityView_UserProfileFilter",
+            Name = $"{FilterPrefix}_ServerUserProfile",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerPublicMessageMessage>(OnPublicMessage)
         {
-            Name = "EntityView_PublicMessageFilter",
+            Name = $"{FilterPrefix}_ServerPublicMessage",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
         {
-            Name = "EntityView_ShowDialogFilter",
+            Name = $"{FilterPrefix}_ServerShowDialog",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage)
         {
-            Name = "EntityView_ShowDialogMenuFilter",
+            Name = $"{FilterPrefix}_ServerShowDialogMenu",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerEntityWalkMessage>(OnEntityWalkMessage)
         {
-            Name = "EntityView_EntityWalkFilter",
+            Name = $"{FilterPrefix}_ServerEntityWalk",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerWalkResponseMessage>(OnSelfWalkMessage)
         {
-            Name = "EntityView_SelfWalkFilter",
+            Name = $"{FilterPrefix}_ServerWalkResponse",
             Priority = int.MaxValue - 10
         });
 
         proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
         {
-            Name = "EntityView_RemoveEntityFilter",
+            Name = $"{FilterPrefix}_RemoveEntity",
             Priority = int.MaxValue - 10
         });
     }
@@ -134,7 +136,7 @@ public partial class EntityListViewModel
         // Do not alter the packet
         return result.Passthrough();
     }
-    
+
     private NetworkPacket OnUserProfileMessage(ProxyConnection connection, ServerUserProfileMessage message,
         object? parameter, NetworkMessageFilterResult<ServerUserProfileMessage> result)
     {
@@ -155,7 +157,7 @@ public partial class EntityListViewModel
         // Do not alter the packet
         return result.Passthrough();
     }
-    
+
     private NetworkPacket OnPublicMessage(ProxyConnection connection, ServerPublicMessageMessage message,
         object? parameter, NetworkMessageFilterResult<ServerPublicMessageMessage> result)
     {
@@ -164,23 +166,24 @@ public partial class EntityListViewModel
         {
             return result.Passthrough();
         }
-        
+
         // Try to get the player so we can get map context
         _playerService.TryGetState(connection.Id, out var player);
-        
+
         // Assume it might be a player ghost
         var entityFlags = EntityFlags.Player;
         var entitySprite = (ushort)BodySprite.MaleGhost;
-        
+
         // Try to get the existing entity, this should rule out monsters/npcs that talk
         if (_entityStore.TryGetEntity(message.SenderId, out var existing))
         {
             entityFlags = existing.Flags;
             entitySprite = existing.Sprite ?? entitySprite;
         }
-        
+
         // The name should come before the symbol, so split on the first symbol (chat or shout)
-        var senderName = message.Message.Split(':', '!', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
+        var senderName =
+            message.Message.Split(':', '!', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
         var entity = new GameEntity
         {
             Flags = entityFlags,

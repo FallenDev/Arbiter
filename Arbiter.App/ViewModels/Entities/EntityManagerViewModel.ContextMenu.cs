@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Entities;
 
-public partial class EntityListViewModel
+public partial class EntityManagerViewModel
 {
     private bool CanCopyToClipboard() => SelectedEntities.Count == 1;
     

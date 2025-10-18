@@ -5,8 +5,8 @@
              xmlns:vm="using:Arbiter.App.ViewModels.Entities"
              xmlns:converters="using:Arbiter.App.Converters"
              mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="800"
-             x:Class="Arbiter.App.Views.EntityListView"
-             x:DataType="vm:EntityListViewModel">
+             x:Class="Arbiter.App.Views.EntityManagerView"
+             x:DataType="vm:EntityManagerViewModel">
     
     <UserControl.Resources>
         <SolidColorBrush x:Key="Talgonite.Entity.TypeBackground" Color="#292d34"/>

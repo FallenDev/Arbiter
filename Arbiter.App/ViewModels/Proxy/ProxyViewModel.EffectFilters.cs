@@ -54,14 +54,14 @@ public partial class ProxyViewModel
         _debugClassicEffectsFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerShowEffectMessage>(HandleShowEffectMessage, settings)
             {
-                Name = "Debug_ShowEffectFilter",
+                Name = $"{FilterPrefix}_Effect_ServerShowEffect",
                 Priority = DebugFilterPriority
             });
 
         _debugNoBlindFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerUpdateStatsMessage>(HandleUpdateStatsMessage, settings)
             {
-                Name = "Debug_UpdateStatsFilter",
+                Name = $"{FilterPrefix}_Effect_ServerUpdateStats",
                 Priority = DebugFilterPriority
             });
     }

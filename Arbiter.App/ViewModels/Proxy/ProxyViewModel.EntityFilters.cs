@@ -28,21 +28,21 @@ public partial class ProxyViewModel
         _debugAddEntityFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerAddEntityMessage>(HandleAddEntityMessage, settings)
             {
-                Name = "Debug_AddEntityFilter",
+                Name = $"{FilterPrefix}_Entity_ServerAddEntity",
                 Priority = DebugFilterPriority
             });
 
         _debugInteractFilter = _proxyServer.AddFilter(
             new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage, settings)
             {
-                Name = "Debug_InteractFilter",
+                Name = $"{FilterPrefix}_Entity_ClientInteract",
                 Priority = DebugFilterPriority
             });
 
         _debugInteractMessageFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage, settings)
             {
-                Name = "Debug_InteractMessageFilter",
+                Name = $"{FilterPrefix}_Entity_ServerWorldMessage",
                 Priority = DebugFilterPriority + 10
             });
     }

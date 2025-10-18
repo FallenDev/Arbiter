@@ -4,7 +4,6 @@ using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
-using Arbiter.Net.Types;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -112,106 +111,6 @@ public partial class ClientViewModel : ViewModelBase
     public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueuePacket(packet, priority);
     public bool EnqueueMessage(IClientMessage packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueueMessage(packet, priority);
     public bool EnqueueMessage(IServerMessage packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueueMessage(packet, priority);
-
-    private void HandleClientMessage(IClientMessage message)
-    {
-        switch (message)
-        {
-            case ClientWalkMessage walkMessage:
-                Walk(walkMessage.Direction);
-                break;
-        }
-    }
-
-    private void HandleServerMessage(IServerMessage message)
-    {
-        switch (message)
-        {
-            case ServerUserIdMessage userIdMessage:
-                EntityId = userIdMessage.UserId;
-                Class = userIdMessage.Class.ToString();
-                Player.UserId = userIdMessage.UserId;
-                Player.Class = Class;
-                Player.NotifyChanged();
-                break;
-            case ServerMapInfoMessage mapInfoMessage:
-                MapName = mapInfoMessage.Name;
-                MapId = mapInfoMessage.MapId;
-                Player.MapName = MapName;
-                Player.MapId = MapId;
-                Player.NotifyChanged();
-                break;
-            case ServerMapLocationMessage mapLocationMessage:
-                MapX = mapLocationMessage.X;
-                MapY = mapLocationMessage.Y;
-                Player.MapX = MapX;
-                Player.MapY = MapY;
-                Player.NotifyChanged();
-                break;
-            case ServerSelfProfileMessage profileMessage:
-                Class = string.Equals(profileMessage.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
-                    ? profileMessage.Class.ToString()
-                    : profileMessage.DisplayClass;
-                break;
-            case ServerUpdateStatsMessage statsMessage:
-                UpdateStats(statsMessage);
-                break;
-        }
-    }
-
-    private void Walk(WorldDirection direction)
-    {
-        MapX = direction switch
-        {
-            WorldDirection.Left => MapX - 1,
-            WorldDirection.Right => MapX + 1,
-            _ => MapX
-        };
-
-        MapY = direction switch
-        {
-            WorldDirection.Up => MapY - 1,
-            WorldDirection.Down => MapY + 1,
-            _ => MapY
-        };
-
-        Player.MapX = MapX;
-        Player.MapY = MapY;
-        Player.NotifyChanged();
-    }
-
-    private void UpdateStats(ServerUpdateStatsMessage message)
-    {
-        if (message.Level.HasValue)
-        {
-            Level = message.Level.Value;
-        }
-
-        if (message.AbilityLevel.HasValue)
-        {
-            AbilityLevel = message.AbilityLevel.Value;
-        }
-
-        if (message.Health.HasValue)
-        {
-            CurrentHealth = message.Health.Value;
-        }
-
-        if (message.MaxHealth.HasValue)
-        {
-            MaxHealth = message.MaxHealth.Value;
-        }
-
-        if (message.Mana.HasValue)
-        {
-            CurrentMana = message.Mana.Value;
-        }
-
-        if (message.MaxMana.HasValue)
-        {
-            MaxMana = message.MaxMana.Value;
-        }
-    }
     
     private static bool CanBringToFront() => OperatingSystem.IsWindows();
 

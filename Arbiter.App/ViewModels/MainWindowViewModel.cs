@@ -37,7 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public SendPacketViewModel SendPacket { get; }
     public ConsoleViewModel Console { get; }
     public InspectorViewModel Inspector { get; }
-    public EntityListViewModel Entities { get; }
+    public EntityManagerViewModel EntityManager { get; }
     public CrcCalculatorViewModel CrcCalculator { get; }
     public ProxyViewModel Proxy { get; }
     public TraceViewModel Trace { get; }
@@ -62,13 +62,19 @@ public partial class MainWindowViewModel : ViewModelBase
         SendPacket = serviceProvider.GetRequiredService<SendPacketViewModel>();
         Console = serviceProvider.GetRequiredService<ConsoleViewModel>();
         Inspector = serviceProvider.GetRequiredService<InspectorViewModel>();
-        Entities = serviceProvider.GetRequiredService<EntityListViewModel>();
+        EntityManager = serviceProvider.GetRequiredService<EntityManagerViewModel>();
         CrcCalculator = serviceProvider.GetRequiredService<CrcCalculatorViewModel>();
         Proxy = serviceProvider.GetRequiredService<ProxyViewModel>();
         Trace = serviceProvider.GetRequiredService<TraceViewModel>();
         DialogManager = serviceProvider.GetRequiredService<DialogManagerViewModel>();
 
         Trace.SelectedPacketChanged += OnPacketSelected;
+        ClientManager.ClientSelected += OnClientSelected;
+    }
+
+    private void OnClientSelected(ClientViewModel? selectedClient)
+    {
+        Title = selectedClient is null ? "Arbiter" : $"Arbiter - {selectedClient.Name}";
     }
 
     private bool CanLaunchClient() =>
@@ -158,6 +164,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
         Trace.MaxTraceHistory = Settings.TraceMaxHistory;
-        Entities.SortOrder = Settings.EntitySorting;
+        EntityManager.SortOrder = Settings.EntitySorting;
     }
 }

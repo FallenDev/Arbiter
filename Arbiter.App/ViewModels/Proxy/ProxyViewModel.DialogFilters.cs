@@ -17,7 +17,7 @@ public partial class ProxyViewModel
         _debugDialogFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
             {
-                Name = "Debug_ShowDialogFilter",
+                Name = $"{FilterPrefix}_Dialog_ServerShowDialog",
                 Priority = DebugFilterPriority
             });
 
@@ -25,7 +25,7 @@ public partial class ProxyViewModel
         _debugDialogMenuFilter = _proxyServer.AddFilter(
             new ServerMessageFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage, settings)
             {
-                Name = "Debug_ShowDialogMenuFilter",
+                Name = $"{FilterPrefix}_Dialog_ServerShowDialogMenu",
                 Priority = DebugFilterPriority
             });
     }

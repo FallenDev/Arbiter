@@ -132,11 +132,18 @@ public partial class ClientManagerViewModel : ViewModelBase
         SetClientWindowTitle(client, "Darkages");
         client.BringToFrontRequested -= OnClientBringToFront;
 
+        var selectNextClient = SelectedClient == client;
+        
         // Try removing the client from the list
         Dispatcher.UIThread.Post(() =>
         {
             Clients.Remove(client);
             ClientCount = Clients.Count;
+
+            if (selectNextClient)
+            {
+                SelectedClient ??= Clients.FirstOrDefault();
+            }
         });
 
         _clients.TryRemove(client.Id, out _);

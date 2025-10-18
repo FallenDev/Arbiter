@@ -2,9 +2,9 @@
 
 namespace Arbiter.App.Views;
 
-public partial class EntityListView : UserControl
+public partial class EntityManagerView : UserControl
 {
-    public EntityListView()
+    public EntityManagerView()
     {
         InitializeComponent();
     }

@@ -5,6 +5,8 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
+    private const string FilterPrefix = nameof(ProxyViewModel);
+    
     // Almost highest, but allows for other filters to run first
     private const int DebugFilterPriority = int.MaxValue - 100;
 

@@ -14,7 +14,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Entities;
 
-public partial class EntityListViewModel : ViewModelBase
+public partial class EntityManagerViewModel : ViewModelBase
 {
     private readonly Debouncer _searchRefreshDebouncer = new(TimeSpan.FromMilliseconds(50), Dispatcher.UIThread);
     private readonly IEntityStore _entityStore;
@@ -37,7 +37,7 @@ public partial class EntityListViewModel : ViewModelBase
     public List<EntitySortOrder> AvailableSortOrders =>
         [EntitySortOrder.FirstSeen, EntitySortOrder.Name, EntitySortOrder.Id];
     
-    public EntityListViewModel(ProxyServer proxyServer, IEntityStore entityStore, IPlayerService playerService)
+    public EntityManagerViewModel(ProxyServer proxyServer, IEntityStore entityStore, IPlayerService playerService)
     {
         _entityStore = entityStore;
         _playerService = playerService;

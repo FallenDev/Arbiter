@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Arbiter.App.Models;
+﻿namespace Arbiter.App.Models;
 
 public sealed class PlayerState
 {
@@ -15,13 +13,10 @@ public sealed class PlayerState
     public int? MapX { get; set; }
     public int? MapY { get; set; }
 
-    public event EventHandler? Changed;
 
     public PlayerState(int connectionId, string? name)
     {
         ConnectionId = connectionId;
         Name = name;
     }
-
-    public void NotifyChanged() => Changed?.Invoke(this, EventArgs.Empty);
 }
