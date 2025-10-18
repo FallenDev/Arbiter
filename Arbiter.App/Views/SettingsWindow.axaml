@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="720" Height="520"
+                          Width="720" Height="540"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -154,7 +154,7 @@
             </TabItem>
             
             <!-- Entities Settings Tab -->
-            <TabItem Header="EntityManager">
+            <TabItem Header="Entities">
                 <StackPanel Spacing="4" Margin="4">
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Entity ID for Dialogs -->
@@ -222,6 +222,20 @@
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowPlayerNames}"/>
                         
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- NPCs Settings Tab -->
+            <TabItem Header="NPCs">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
+                        <!-- Mod Menu -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Inject Global Pursuits Menu"
+                               ToolTip.Tip="Allows global pursuits with all NPCs through dialog custom menu."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugEnableNpcModMenu}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

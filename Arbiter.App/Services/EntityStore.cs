@@ -42,6 +42,42 @@ public sealed class EntityStore : IEntityStore
         return _entities.TryGetValue(id, out entity);
     }
 
+    public bool TrySetEntityName(long id, string name)
+    {
+        using var _ = _lock.EnterScope();
+        if (!_entities.TryGetValue(id, out var entity))
+        {
+            return false;
+        }
+
+        if (string.Equals(name, entity.Name, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        entity = entity with { Name = name };
+        AddOrUpdateEntity(entity, out var _);
+        return true;
+    }
+
+    public bool TrySetEntityLocation(long id, int x, int y)
+    {
+        using var _ = _lock.EnterScope();
+        if (!_entities.TryGetValue(id, out var entity))
+        {
+            return false;
+        }
+
+        if (entity.X == x && entity.Y == y)
+        {
+            return false;
+        }
+
+        entity = entity with { X = x, Y = y };
+        AddOrUpdateEntity(entity, out var _);
+        return true;
+    }
+
     public void AddOrUpdateEntity(GameEntity entity, out bool wasUpdated)
     {
         wasUpdated = false;

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using Arbiter.App.Services;
 using Arbiter.Net.Proxy;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Proxy;
@@ -10,13 +12,16 @@ public partial class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
+    private readonly IEntityStore _entityStore;
 
     public bool IsRunning => _proxyServer.IsRunning;
 
-    public ProxyViewModel(ILogger<ProxyViewModel> logger, ProxyServer proxyServer)
+    public ProxyViewModel(ILogger<ProxyViewModel> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _proxyServer = proxyServer;
+        
+        _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
+        _entityStore = serviceProvider.GetRequiredService<IEntityStore>();
     }
 
     public void Start(int localPort, IPAddress remoteIpAddress, int remotePort)

@@ -16,7 +16,6 @@ public partial class ProxyViewModel
     private static readonly TimeSpan InteractRequestTimeout = TimeSpan.FromSeconds(2);
 
     // Used to track interaction queries for a client to map back to the correct entity
-    private readonly ConcurrentDictionary<uint, WorldEntity> _worldEntities = [];
     private readonly ConcurrentDictionary<int, ConcurrentQueue<(uint, DateTime)>> _interactRequests = [];
 
     private NetworkFilterRef? _debugAddEntityFilter;
@@ -54,31 +53,13 @@ public partial class ProxyViewModel
         _debugInteractMessageFilter?.Unregister();
     }
 
-    private NetworkPacket HandleAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
+    private static NetworkPacket HandleAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
         object? parameter, NetworkMessageFilterResult<ServerAddEntityMessage> result)
     {
         if (parameter is not DebugSettings filterSettings ||
             filterSettings is { ShowMonsterId: false, ShowNpcId: false })
         {
             return result.Passthrough();
-        }
-
-        // Update all entities in the world list
-        foreach (var entity in message.Entities)
-        {
-            var entityType = entity switch
-            {
-                ServerCreatureEntity creatureEntity => creatureEntity.CreatureType == CreatureType.Mundane
-                    ? WorldEntityType.Mundane
-                    : WorldEntityType.Monster,
-                _ => WorldEntityType.Item,
-            };
-
-            // Make a copy of the entity so we can store its original form
-            var worldEntity = new WorldEntity(entityType, entity.Id, entity.X, entity.Y, entity.Sprite,
-                entity is ServerCreatureEntity { Name: not null } nameEntity ? nameEntity.Name : null);
-
-            _worldEntities.AddOrUpdate(entity.Id, worldEntity, (_, _) => worldEntity);
         }
 
         var hasChanges = false;
@@ -134,9 +115,9 @@ public partial class ProxyViewModel
         {
             // The entity in question should be a monster for us to queue it
             var isMonster = false;
-            if (_worldEntities.TryGetValue(message.TargetId.Value, out var entity))
+            if (_entityStore.TryGetEntity(message.TargetId.Value, out var entity))
             {
-                isMonster = entity.Type == WorldEntityType.Monster;
+                isMonster = entity.Flags == EntityFlags.Monster;
             }
 
             if (isMonster && _interactRequests.TryGetValue(connection.Id, out var queue))
@@ -199,8 +180,8 @@ public partial class ProxyViewModel
 
             message.Message = $"{trimmedMessage} 0x{entityId:X4}";
 
-            // Also append the sprite index if we can find the entity in the world list
-            if (_worldEntities.TryGetValue(entityId, out var entity))
+            // Also append the sprite index if we can find the entity
+            if (_entityStore.TryGetEntity(entityId, out var entity))
             {
                 message.Message = $"{message.Message} - Sprite {entity.Sprite}";
             }

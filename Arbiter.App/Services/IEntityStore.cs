@@ -17,6 +17,10 @@ public interface IEntityStore
 
     bool TryGetEntity(long id, out GameEntity entity);
     
+    bool TrySetEntityName(long id, string name);
+
+    bool TrySetEntityLocation(long id, int x, int y);
+    
     void AddOrUpdateEntity(GameEntity entity, out bool wasUpdated);
     
     bool RemoveEntity(long id, out GameEntity entity);

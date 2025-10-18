@@ -24,11 +24,14 @@ public partial class EntityManagerViewModel
             return;
         }
 
+        var entityId = (uint)SelectedEntities[0].Id;
         var clientInteract = new ClientInteractMessage
         {
             InteractionType = InteractionType.Entity,
-            TargetId =(uint)SelectedEntities[0].Id
+            TargetId = entityId
         };
+
+        QueueInteractionRequest(SelectedClient.Id, entityId);
         SelectedClient.EnqueueMessage(clientInteract);
     }
 

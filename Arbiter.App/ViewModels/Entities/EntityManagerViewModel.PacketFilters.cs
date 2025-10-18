@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using Arbiter.App.Models;
 using Arbiter.Net;
+using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
@@ -12,6 +14,10 @@ namespace Arbiter.App.ViewModels.Entities;
 public partial class EntityManagerViewModel
 {
     private const string FilterPrefix = nameof(EntityManagerViewModel);
+    private static readonly TimeSpan InteractRequestTimeout = TimeSpan.FromSeconds(2);
+
+    // Used to track interaction queries for a client to map back to the correct entity
+    private readonly ConcurrentDictionary<int, ConcurrentQueue<(uint, DateTime)>> _interactRequests = [];
 
     private void AddPacketFilters(ProxyServer proxyServer)
     {
@@ -74,7 +80,30 @@ public partial class EntityManagerViewModel
             Name = $"{FilterPrefix}_RemoveEntity",
             Priority = int.MaxValue - 10
         });
+
+        proxyServer.AddFilter(
+            new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage)
+            {
+                Name = $"{FilterPrefix}_ClientInteract",
+                Priority = int.MaxValue - 10
+            });
+
+        proxyServer.AddFilter(
+            new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage)
+            {
+                Name = $"{FilterPrefix}_ServerWorldMessage",
+                Priority = int.MaxValue - 10
+            });
+
+        proxyServer.ClientConnected += OnClientConnected;
+        proxyServer.ClientDisconnected += OnClientDisconnected;
     }
+
+    private void OnClientConnected(object? sender, ProxyConnectionEventArgs e)
+        => _interactRequests.AddOrUpdate(e.Connection.Id, [], (_, _) => []);
+
+    private void OnClientDisconnected(object? sender, ProxyConnectionEventArgs e)
+        => _interactRequests.TryRemove(e.Connection.Id, out _);
 
     private NetworkPacket OnAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
         object? parameter, NetworkMessageFilterResult<ServerAddEntityMessage> result)
@@ -296,29 +325,27 @@ public partial class EntityManagerViewModel
     private NetworkPacket OnEntityWalkMessage(ProxyConnection connection, ServerEntityWalkMessage message,
         object? parameter, NetworkMessageFilterResult<ServerEntityWalkMessage> result)
     {
-        var existing = _entityStore.TryGetEntity(message.EntityId, out var entity);
+        var existing = _entityStore.TryGetEntity(message.EntityId, out _);
         if (!existing)
         {
             return result.Passthrough();
         }
 
-        var newEntity = entity with
+        var newX = message.Direction switch
         {
-            X = message.Direction switch
-            {
-                WorldDirection.Left => Math.Max(0, message.OriginX - 1),
-                WorldDirection.Right => message.OriginX + 1,
-                _ => message.OriginX
-            },
-            Y = message.Direction switch
-            {
-                WorldDirection.Up => Math.Max(0, message.OriginY - 1),
-                WorldDirection.Down => message.OriginY + 1,
-                _ => message.OriginY
-            }
+            WorldDirection.Left => Math.Max(0, message.OriginX - 1),
+            WorldDirection.Right => message.OriginX + 1,
+            _ => message.OriginX
         };
 
-        _entityStore.AddOrUpdateEntity(newEntity, out _);
+        var newY = message.Direction switch
+        {
+            WorldDirection.Up => Math.Max(0, message.OriginY - 1),
+            WorldDirection.Down => message.OriginY + 1,
+            _ => message.OriginY
+        };
+
+        _entityStore.TrySetEntityLocation(message.EntityId, newX, newY);
 
         if (SelectedClient is not null && FilterMode is not EntityFilterMode.All)
         {
@@ -367,7 +394,7 @@ public partial class EntityManagerViewModel
         {
             _filterDebouncer.Execute(RefreshFilterPreservingSelection);
         }
-        
+
         // Do not alter the packet
         return result.Passthrough();
     }
@@ -378,6 +405,86 @@ public partial class EntityManagerViewModel
         if (SelectedClient is not null && FilterMode is not EntityFilterMode.All)
         {
             _filterDebouncer.Execute(RefreshFilterPreservingSelection);
+        }
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket HandleInteractMessage(ProxyConnection connection, ClientInteractMessage message,
+        object? parameter, NetworkMessageFilterResult<ClientInteractMessage> result)
+    {
+        // Ensure there is a valid entity interaction request
+        if (message.InteractionType != InteractionType.Entity || !message.TargetId.HasValue)
+        {
+            return result.Passthrough();
+        }
+
+        // Determine which entity type we are interacting with
+        var entityFlags = EntityFlags.None;
+        if (_entityStore.TryGetEntity(message.TargetId.Value, out var entity))
+        {
+            entityFlags = entity.Flags;
+        }
+
+        // If it's a player, npc, or item we can ignore it
+        if (entityFlags.HasFlag(EntityFlags.Player) || entityFlags.HasFlag(EntityFlags.Mundane) ||
+            entityFlags.HasFlag(EntityFlags.Item))
+        {
+            return result.Passthrough();
+        }
+
+        QueueInteractionRequest(connection.Id, message.TargetId.Value);
+
+        // Do not alter the packet
+        return result.Passthrough();
+    }
+
+    private NetworkPacket HandleInteractResponseMessage(ProxyConnection connection, ServerWorldMessageMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerWorldMessageMessage> result)
+    {
+        var trimmedMessage = message.Message.Trim();
+
+        // If the message is empty it's not a monster name
+        if (string.IsNullOrWhiteSpace(trimmedMessage))
+        {
+            return result.Passthrough();
+        }
+
+        // If the message ends with a period, question mark, or exclamation mark then it's not a monster name
+        if (trimmedMessage.EndsWith('.') || trimmedMessage.EndsWith('!') || trimmedMessage.EndsWith('?'))
+        {
+            return result.Passthrough();
+        }
+
+        // We can safely ignore any message that contains any of the following characters
+        foreach (var c in trimmedMessage)
+        {
+            if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?' or '"' or ',')
+            {
+                return result.Passthrough();
+            }
+        }
+
+        // If there is no queue or it is empty then not pending interactions
+        if (!_interactRequests.TryGetValue(connection.Id, out var queue) || queue.IsEmpty)
+        {
+            return result.Passthrough();
+        }
+
+        // Look for a request that has not timed out
+        var now = DateTime.Now;
+        while (queue.TryDequeue(out var pair))
+        {
+            var (entityId, timestamp) = pair;
+            var elapsed = now - timestamp;
+
+            if (elapsed > InteractRequestTimeout)
+            {
+                continue;
+            }
+
+            _entityStore.TrySetEntityName(entityId, trimmedMessage);
         }
 
         // Do not alter the packet
@@ -396,5 +503,13 @@ public partial class EntityManagerViewModel
 
         // Do not alter the packet
         return result.Passthrough();
+    }
+
+    private void QueueInteractionRequest(int connectionId, uint entityId)
+    {
+        if (_interactRequests.TryGetValue(connectionId, out var queue))
+        {
+            queue.Enqueue((entityId, DateTime.Now));
+        }
     }
 }

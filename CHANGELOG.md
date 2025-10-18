@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Option for global pursuits for NPCs via "mod menu" dialog injection
+- Reveal Monster name on interact in the `Entity` list
 - `Interact` context menu to Entity list
 - Entity filter mode for `All`, (same) `Map`, and `Nearby` (within visible range)
 - `Copy Text` context menu to dialog content area

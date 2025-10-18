@@ -18,6 +18,7 @@ public class DebugSettings : ICloneable
     public bool EnableTabMap { get; set; }
     public bool EnableZoomedOutMap { get; set; }
     public bool IgnoreEmptyMessages { get; set; }
+    public bool EnableNpcModMenu { get; set; }
 
     public object Clone() => new DebugSettings
     {
@@ -35,5 +36,6 @@ public class DebugSettings : ICloneable
         DisableWeatherEffects = DisableWeatherEffects,
         DisableDarkness = DisableDarkness,
         IgnoreEmptyMessages = IgnoreEmptyMessages,
+        EnableNpcModMenu = EnableNpcModMenu,
     };
 }
