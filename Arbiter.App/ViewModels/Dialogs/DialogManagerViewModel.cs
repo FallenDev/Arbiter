@@ -27,8 +27,6 @@ public partial class DialogManagerViewModel : ViewModelBase
 
     [ObservableProperty] private bool _shouldSync = true;
 
-    public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
-
     public DialogManagerViewModel(ILogger<DialogManagerViewModel> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
@@ -44,12 +42,6 @@ public partial class DialogManagerViewModel : ViewModelBase
 
     private void OnClientSelected(ClientViewModel? client)
     {
-        if (client is null || SelectedClient is not null)
-        {
-            return;
-        }
-
-        // Automatically select the client if none is selected
         SelectedClient = client;
     }
 

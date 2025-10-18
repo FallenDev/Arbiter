@@ -70,17 +70,17 @@ public partial class SendPacketViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(StopSendCommand))]
     private bool _isSending;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand), nameof(CopyToClipboardCommand))]
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StartSendCommand), nameof(CopyToClipboardCommand))]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
     private int _selectionStart;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(StartSendCommand), nameof(CopyToClipboardCommand))]
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StartSendCommand), nameof(CopyToClipboardCommand))]
     [NotifyPropertyChangedFor(nameof(HasSelection))]
     private int _selectionEnd;
 
     public bool HasSelection => Math.Abs(SelectionStart - SelectionEnd) != 0;
-
-    public ObservableCollection<ClientViewModel> Clients => _clientManager.Clients;
 
     public List<TimeSpan> AvailableDelays =>
     [
@@ -109,14 +109,16 @@ public partial class SendPacketViewModel : ViewModelBase
         _clientManager.ClientSelected += OnClientSelected;
     }
 
+    partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
+    {
+        if (oldValue != newValue)
+        {
+            StopSend();
+        }
+    }
+
     private void OnClientSelected(ClientViewModel? client)
     {
-        if (client is null || SelectedClient is not null)
-        {
-            return;
-        }
-
-        // Automatically select the client if none is selected
         SelectedClient = client;
     }
 
@@ -139,7 +141,7 @@ public partial class SendPacketViewModel : ViewModelBase
         {
             return;
         }
-        
+
         StopSend();
         SelectedClient = null;
     }
@@ -168,7 +170,7 @@ public partial class SendPacketViewModel : ViewModelBase
         var selectionLength = selectionEnd - selectionStart;
 
         var inputText = selectionLength > 0 ? InputText.Substring(selectionStart, selectionLength) : InputText;
-        
+
         // Perform immediate validation before sending
         var lines = inputText.Split(NewLineCharacters, StringSplitOptions.RemoveEmptyEntries);
         if (!SendItemParser.TryParse(lines, out var items, out var validationError))
