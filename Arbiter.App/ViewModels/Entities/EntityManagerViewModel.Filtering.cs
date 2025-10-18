@@ -46,39 +46,42 @@ public partial class EntityManagerViewModel
 
     private bool MatchesFilter(EntityViewModel entity)
     {
-        // Check if map or nearby x/y are enabled
-        if (FilterMode is EntityFilterMode.Map or EntityFilterMode.Nearby)
+        // Determine if the entity type is allowed by toggles
+        var typeAllowed = (IncludePlayers || !entity.Flags.HasFlag(EntityFlags.Player)) &&
+                          (IncludeNpcs || !entity.Flags.HasFlag(EntityFlags.Mundane)) &&
+                          (IncludeMonsters || !entity.Flags.HasFlag(EntityFlags.Monster)) &&
+                          (IncludeItems || !entity.Flags.HasFlag(EntityFlags.Item)) &&
+                          (IncludeReactors || !entity.Flags.HasFlag(EntityFlags.Reactor));
+        
+        if (FilterMode is not (EntityFilterMode.Map or EntityFilterMode.Nearby))
         {
-            // If no client or no player state, do not show
-            if (SelectedClient is null || !_playerService.TryGetState(SelectedClient.Id, out var player))
-            {
-                return false;
-            }
-
-            // Always include self
-            if (player.UserId == entity.Id)
-            {
-                return true;
-            }
-
-            // Check if the entity is within range
-            var isWithinRange = FilterMode switch
-            {
-                EntityFilterMode.Map => player.MapId == entity.MapId,
-                EntityFilterMode.Nearby => player.MapId == entity.MapId && player is { MapX: not null, MapY: not null }
-                                                                        && Math.Abs(player.MapX.Value - entity.X) < 15
-                                                                        && Math.Abs(player.MapY.Value - entity.Y) < 15,
-                _ => true
-            };
-
-            return isWithinRange;
+            return typeAllowed;
+        }
+        
+        // If no client or no player state, do not show anything
+        if (SelectedClient is null || !_playerService.TryGetState(SelectedClient.Id, out var player))
+        {
+            return false;
         }
 
-        return (IncludePlayers || !entity.Flags.HasFlag(EntityFlags.Player)) &&
-               (IncludeNpcs || !entity.Flags.HasFlag(EntityFlags.Mundane)) &&
-               (IncludeMonsters || !entity.Flags.HasFlag(EntityFlags.Monster)) &&
-               (IncludeItems || !entity.Flags.HasFlag(EntityFlags.Item)) &&
-               (IncludeReactors || !entity.Flags.HasFlag(EntityFlags.Reactor));
+        // Always include self regardless of toggles
+        if (player.UserId == entity.Id)
+        {
+            return true;
+        }
+
+        // Check if the entity is within range
+        var isWithinRange = FilterMode switch
+        {
+            EntityFilterMode.Map => player.MapId == entity.MapId,
+            EntityFilterMode.Nearby => player.MapId == entity.MapId && player is { MapX: not null, MapY: not null }
+                                                                    && Math.Abs(player.MapX.Value - entity.X) < 15
+                                                                    && Math.Abs(player.MapY.Value - entity.Y) < 15,
+            _ => true
+        };
+
+        // Both spatial condition and type toggle must pass
+        return isWithinRange && typeAllowed;
     }
 
     private void RefreshFilterPreservingSelection()
