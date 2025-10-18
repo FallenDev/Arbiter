@@ -18,6 +18,7 @@ public partial class ProxyViewModel
         ("Interact", 0xFF00),
         ("Buy", 64),
         ("Sell", 65),
+        ("Destroy Item", 0xFF01),
         ("Fix Item", 71),
         ("Fix All Items", 72),
         ("Deposit Money", 66),
@@ -89,8 +90,6 @@ public partial class ProxyViewModel
             return result.Passthrough();
         }
 
-        _logger.LogInformation("User selected dialog choice: {PursuitId:X4}", message.PursuitId);
-
         // Treat as interact request
         if (message.PursuitId == 0xFF00)
         {
@@ -103,6 +102,15 @@ public partial class ProxyViewModel
             return result.Block();
         }
         
+        // Handle destroy item custom dialog menu
+        if (message.PursuitId == 0xFF01 && _entityStore.TryGetEntity(message.EntityId, out var entity) &&
+            entity.Flags.HasFlag(EntityFlags.Mundane))
+        {
+            var destroyItemMenu = GetDestroyItemDialogForEntity(entity);
+            connection.EnqueueMessage(destroyItemMenu);
+            return result.Block();
+        }
+
         // Only block our virtual menu pursuits
         return message.PursuitId >= 0xFF00 ? result.Block() : result.Passthrough();
     }
@@ -135,6 +143,36 @@ public partial class ProxyViewModel
                 Text = choice.Text,
                 PursuitId = choice.PursuitId
             });
+        }
+
+        return dialog;
+    }
+
+    private static ServerShowDialogMenuMessage GetDestroyItemDialogForEntity(GameEntity entity)
+    {
+        var dialog = new ServerShowDialogMenuMessage
+        {
+            MenuType = DialogMenuType.UserInventory,
+            EntityType = entity.Flags switch
+            {
+                EntityFlags.Item => EntityTypeFlags.Item,
+                EntityFlags.Reactor => EntityTypeFlags.Reactor,
+                _ => EntityTypeFlags.Creature
+            },
+            EntityId = (uint)entity.Id,
+            Sprite = entity.Sprite,
+            SpriteType = SpriteType.Monster,
+            ShowGraphic = true,
+            PursuitId = 77,
+            Name = entity.Name,
+            Content =
+                "Which item do you wish to destroy?\n\n{=sBe careful! This cannot be undone."
+        };
+
+        // Add all inventory slots
+        for (var i = 1; i < 60; i++)
+        {
+            dialog.InventorySlots.Add((byte)i);
         }
 
         return dialog;
