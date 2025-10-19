@@ -14,20 +14,12 @@ public partial class ProxyViewModel
 
     private void AddDebugDialogFilters(DebugSettings settings)
     {
-        _debugDialogFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerShowDialogMessage>(HandleDialogMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Dialog_ServerShowDialog",
-                Priority = DebugFilterPriority
-            });
+        _debugDialogFilter = _proxyServer.AddFilter<ServerShowDialogMessage>(HandleDialogMessage,
+            $"{FilterPrefix}_Dialog_ServerShowDialog", DebugFilterPriority, settings);
 
 
-        _debugDialogMenuFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Dialog_ServerShowDialogMenu",
-                Priority = DebugFilterPriority
-            });
+        _debugDialogMenuFilter = _proxyServer.AddFilter<ServerShowDialogMenuMessage>(HandleDialogMenuMessage,
+            $"{FilterPrefix}_Dialog_ServerShowDialogMenu", DebugFilterPriority, settings);
     }
 
     private void RemoveDebugDialogFilters()

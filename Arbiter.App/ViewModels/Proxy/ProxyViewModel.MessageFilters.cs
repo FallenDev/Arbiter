@@ -19,19 +19,11 @@ public partial class ProxyViewModel
 
     private void AddDebugMessageFilters(DebugSettings settings, IReadOnlyList<MessageFilter> filters)
     {
-        _emptyWorldMessageFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerWorldMessageMessage>(HandleEmptyWorldMessageMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Message_EmptyServerWorldMessage",
-                Priority = DebugFilterPriority
-            });
+        _emptyWorldMessageFilter = _proxyServer.AddFilter<ServerWorldMessageMessage>(HandleEmptyWorldMessageMessage,
+            $"{FilterPrefix}_Message_EmptyServerWorldMessage", DebugFilterPriority, settings);
 
-        _worldMessageFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerWorldMessageMessage>(HandleWorldMessage, filters.ToList())
-            {
-                Name = $"{FilterPrefix}_Message_ServerWorldMessageFilter",
-                Priority = DebugFilterPriority - 10
-            });
+        _worldMessageFilter = _proxyServer.AddFilter<ServerWorldMessageMessage>(HandleWorldMessage,
+            $"{FilterPrefix}_Message_ServerWorldMessageFilter", DebugFilterPriority - 10, filters.ToList());
     }
 
     private void RemoveDebugMessageFilters()

@@ -105,8 +105,8 @@ public partial class ClientViewModel : ViewModelBase
     
     public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
     
-    public void Subscribe() => AddPacketFilters();
-    public void Unsubscribe() => RemovePacketFilters();
+    public void Subscribe() => AddObservers();
+    public void Unsubscribe() => RemoveObservers();
     
     public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueuePacket(packet, priority);
     public bool EnqueueMessage(IClientMessage packet, NetworkPriority priority = NetworkPriority.Normal) => _connection.EnqueueMessage(packet, priority);

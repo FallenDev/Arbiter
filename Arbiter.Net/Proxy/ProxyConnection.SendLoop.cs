@@ -1,6 +1,4 @@
 ﻿using System.Buffers;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using Arbiter.Net.Client;
 using Arbiter.Net.Security;
 using Arbiter.Net.Server;
@@ -47,6 +45,7 @@ public partial class ProxyConnection
                         {
                             break;
                         }
+
                         continue;
                     }
                 }

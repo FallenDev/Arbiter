@@ -52,7 +52,7 @@ public partial class EntityManagerViewModel : ViewModelBase
         var clientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
         clientManager.ClientSelected += OnClientSelected;
 
-        AddPacketFilters(proxyServer);
+        AddObservers(proxyServer);
     }
 
     partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)

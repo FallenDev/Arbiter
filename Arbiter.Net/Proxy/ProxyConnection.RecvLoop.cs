@@ -1,6 +1,5 @@
 ﻿using System.Buffers;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using Arbiter.Net.Client;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Security;
@@ -85,6 +84,8 @@ public partial class ProxyConnection
                         new NetworkTransferEventArgs(NetworkDirection.Receive, encryptedPacket, decrypted,
                             filterResult));
 
+                    NotifyObservers(this, decrypted);
+                    
                     // If the packet was blocked, do not send it to the other end
                     if (filterResult.Action == NetworkFilterAction.Block)
                     {

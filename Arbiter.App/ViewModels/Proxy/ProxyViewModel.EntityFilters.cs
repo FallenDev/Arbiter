@@ -4,6 +4,7 @@ using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
@@ -19,38 +20,26 @@ public partial class ProxyViewModel
     private readonly ConcurrentDictionary<int, ConcurrentQueue<(uint, DateTime)>> _interactRequests = [];
 
     private NetworkFilterRef? _debugAddEntityFilter;
-    private NetworkFilterRef? _debugInteractFilter;
-    private NetworkFilterRef? _debugInteractMessageFilter;
+    private NetworkObserverRef? _debugInteractObserver;
+    private NetworkFilterRef? _debugInteractResponseFilter;
 
     private void AddDebugEntityFilters(DebugSettings settings)
     {
-        _debugAddEntityFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerAddEntityMessage>(HandleAddEntityMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Entity_ServerAddEntity",
-                Priority = DebugFilterPriority
-            });
+        _debugAddEntityFilter = _proxyServer.AddFilter<ServerAddEntityMessage>(HandleAddEntityMessage,
+            $"{FilterPrefix}_Entity_ServerAddEntity", DebugFilterPriority, settings);
 
-        _debugInteractFilter = _proxyServer.AddFilter(
-            new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Entity_ClientInteract",
-                Priority = DebugFilterPriority
-            });
+        _debugInteractObserver = _proxyServer.AddObserver<ClientInteractMessage>(OnClientInteractMessage, settings);
 
-        _debugInteractMessageFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Entity_ServerWorldMessage",
-                Priority = DebugFilterPriority + 10
-            });
+        _debugInteractResponseFilter =
+            _proxyServer.AddFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage,
+                $"{FilterPrefix}_Entity_OnServerInteractMessage", DebugFilterPriority - 10, settings);
     }
 
     private void RemoveDebugEntityFilters()
     {
         _debugAddEntityFilter?.Unregister();
-        _debugInteractFilter?.Unregister();
-        _debugInteractMessageFilter?.Unregister();
+        _debugInteractObserver?.Unregister();
+        _debugInteractResponseFilter?.Unregister();
     }
 
     private static NetworkPacket HandleAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
@@ -102,12 +91,11 @@ public partial class ProxyViewModel
         return hasChanges ? result.Replace(message) : result.Passthrough();
     }
 
-    private NetworkPacket HandleInteractMessage(ProxyConnection connection, ClientInteractMessage message,
-        object? parameter, NetworkMessageFilterResult<ClientInteractMessage> result)
+    private void OnClientInteractMessage(ProxyConnection connection, ClientInteractMessage message, object? parameter)
     {
         if (parameter is not DebugSettings filterSettings || filterSettings is { ShowMonsterClickId: false })
         {
-            return result.Passthrough();
+            return;
         }
 
         // If the interaction type is Entity, queue the entity ID for later lookup when receiving the response
@@ -125,8 +113,6 @@ public partial class ProxyViewModel
                 queue.Enqueue((message.TargetId.Value, DateTime.Now));
             }
         }
-
-        return result.Passthrough();
     }
 
     private NetworkPacket HandleInteractResponseMessage(ProxyConnection connection, ServerWorldMessageMessage message,

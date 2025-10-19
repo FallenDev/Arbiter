@@ -39,7 +39,7 @@ public partial class ProxyConnection : IDisposable
     private readonly Channel<NetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<NetworkPacket>();
 
     public int Id { get; }
-    public string? Name { get; set; }
+    public string? Name { get; private set; }
     public long? UserId { get; set; }
     public bool HasAuthenticated { get; private set; }
     public bool IsLoggedIn { get; private set; }
@@ -89,7 +89,7 @@ public partial class ProxyConnection : IDisposable
             NetworkPriority.High => _prioritySendQueue.Writer,
             _ => _sendQueue.Writer,
         };
-        
+
         if (!writer.TryWrite(packet))
         {
             return false;
@@ -221,4 +221,7 @@ public partial class ProxyConnection : IDisposable
 
         _isDisposed = true;
     }
+
+    private void CheckIfDisposed()
+        => ObjectDisposedException.ThrowIf(_isDisposed, nameof(ProxyConnection));
 }
