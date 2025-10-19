@@ -6,6 +6,20 @@ namespace Arbiter.App.Converters;
 
 public class TimeSpanConverter : IValueConverter
 {
+    private readonly Func<TimeSpan, string> _formatter;
+
+    public static TimeSpanConverter Milliseconds => new(ts =>
+        ts.TotalMilliseconds < 1000
+            ? ts.TotalMilliseconds.ToString("F0") + " ms"
+            : ts.TotalSeconds.ToString("F0") + "s");
+    
+    public static TimeSpanConverter Seconds => new(ts => ts.TotalSeconds.ToString("F0") + "s");
+
+    public TimeSpanConverter(Func<TimeSpan, string>? formatter = null)
+    {
+        _formatter = formatter ?? Format;
+    }
+
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not TimeSpan timeSpan)
@@ -18,6 +32,11 @@ public class TimeSpanConverter : IValueConverter
             return parameter as string ?? "Zero";
         }
 
+        return _formatter.Invoke(timeSpan);
+    }
+
+    private static string Format(TimeSpan timeSpan)
+    {
         var hours = (int)timeSpan.TotalHours;
         var minutes = timeSpan.Minutes;
         var seconds = timeSpan.Seconds;
