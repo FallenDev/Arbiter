@@ -14,19 +14,11 @@ public partial class ProxyViewModel
 
     private void AddDebugMapFilters(DebugSettings settings)
     {
-        _debugUserIdFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerUserIdMessage>(HandleUserIdMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Map_ServerUserId",
-                Priority = DebugFilterPriority
-            });
+        _debugUserIdFilter = _proxyServer.AddFilter<ServerUserIdMessage>(HandleUserIdMessage,
+            $"{FilterPrefix}_Map_ServerUserId", DebugFilterPriority, settings);
 
-        _debugMapInfoFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerMapInfoMessage>(HandleMapInfoMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Map_ServerMapInfo",
-                Priority = DebugFilterPriority
-            });
+        _debugMapInfoFilter = _proxyServer.AddFilter<ServerMapInfoMessage>(HandleMapInfoMessage,
+            $"{FilterPrefix}_Map_ServerMapInfo", DebugFilterPriority, settings);
     }
 
     private void RemoveDebugMapFilters()
@@ -40,12 +32,7 @@ public partial class ProxyViewModel
     {
         if (parameter is not DebugSettings filterSettings ||
             filterSettings is { EnableZoomedOutMap: false } ||
-            !filterSettings.EnableZoomedOutMap)
-        {
-            return result.Passthrough();
-        }
-
-        if (message.Class == CharacterClass.Rogue)
+            !filterSettings.EnableZoomedOutMap || message.Class == CharacterClass.Rogue)
         {
             return result.Passthrough();
         }

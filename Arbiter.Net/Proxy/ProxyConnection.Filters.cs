@@ -11,10 +11,24 @@ public partial class ProxyConnection
     private readonly NetworkPacketFilterCollection _clientFilters = new();
     private readonly NetworkPacketFilterCollection _serverFilters = new();
 
+    public NetworkFilterRef AddFilter<T>(ClientMessageFilterHandler<T> handler, string name, int priority,
+        object? parameter = null) where T : IClientMessage
+    {
+        CheckIfDisposed();
+
+        var serverFilter = new ClientMessageFilter<T>(handler, parameter)
+        {
+            Name = name,
+            Priority = priority
+        };
+
+        return AddFilter(serverFilter);
+    }
+
     public NetworkFilterRef AddFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage
     {
         CheckIfDisposed();
-        
+
         var messageType = typeof(T);
         var command = _clientMessageFactory.GetMessageCommand(messageType);
 
@@ -27,10 +41,24 @@ public partial class ProxyConnection
         return AddFilter(command.Value, filter);
     }
 
+    public NetworkFilterRef AddFilter<T>(ServerMessageFilterHandler<T> handler, string name, int priority,
+        object? parameter = null) where T : IServerMessage
+    {
+        CheckIfDisposed();
+
+        var serverFilter = new ServerMessageFilter<T>(handler, parameter)
+        {
+            Name = name,
+            Priority = priority
+        };
+
+        return AddFilter(serverFilter);
+    }
+
     public NetworkFilterRef AddFilter<T>(ServerMessageFilter<T> filter) where T : IServerMessage
     {
         CheckIfDisposed();
-        
+
         var messageType = typeof(T);
         var command = _serverMessageFactory.GetMessageCommand(messageType);
 
@@ -66,11 +94,11 @@ public partial class ProxyConnection
         CheckIfDisposed();
         return _serverFilters.RemoveFilter((byte)command, name);
     }
-    
+
     public NetworkFilterRef AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
     {
         CheckIfDisposed();
-        
+
         var filters = direction switch
         {
             ProxyDirection.ClientToServer => _clientFilters,
@@ -84,7 +112,7 @@ public partial class ProxyConnection
     public bool RemoveGlobalFilter(ProxyDirection direction, string name)
     {
         CheckIfDisposed();
-        
+
         var filters = direction switch
         {
             ProxyDirection.ClientToServer => _clientFilters,

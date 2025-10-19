@@ -7,7 +7,6 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
 using Arbiter.Net.Types;
-using Microsoft.Extensions.Logging;
 
 namespace Arbiter.App.ViewModels.Proxy;
 
@@ -33,19 +32,11 @@ public partial class ProxyViewModel
 
     private void AddModMenuFilters(DebugSettings settings)
     {
-        _modMenuInteractFilter = _proxyServer.AddFilter(
-            new ClientMessageFilter<ClientInteractMessage>(HandleModMenuInteractMessage, settings)
-            {
-                Name = $"{FilterPrefix}_ModMenu_ClientInteract",
-                Priority = int.MinValue // Lowest priority
-            });
+        _modMenuInteractFilter = _proxyServer.AddFilter<ClientInteractMessage>(HandleModMenuInteractMessage,
+            $"{FilterPrefix}_ModMenu_ClientInteract", int.MinValue, settings);
 
-        _modMenuInteractFilter = _proxyServer.AddFilter(
-            new ClientMessageFilter<ClientDialogMenuChoiceMessage>(HandleModMenuDialogChoiceMessage, settings)
-            {
-                Name = $"{FilterPrefix}_ModMenu_ClientInteract",
-                Priority = int.MinValue // Lowest priority
-            });
+        _modMenuInteractFilter = _proxyServer.AddFilter<ClientDialogMenuChoiceMessage>(HandleModMenuDialogChoiceMessage,
+            $"{FilterPrefix}_ModMenu_ClientInteract", int.MinValue, settings);
     }
 
     private void RemoveModMenuFilters()
@@ -101,7 +92,7 @@ public partial class ProxyViewModel
             connection.EnqueueMessage(interactMessage);
             return result.Block();
         }
-        
+
         // Handle destroy item custom dialog menu
         if (message.PursuitId == 0xFF01 && _entityStore.TryGetEntity(message.EntityId, out var entity) &&
             entity.Flags.HasFlag(EntityFlags.Mundane))

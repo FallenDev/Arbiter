@@ -13,12 +13,8 @@ public partial class ProxyViewModel
 
     private void AddDebugPlayerFilters(DebugSettings settings)
     {
-        _debugShowUserFilter = _proxyServer.AddFilter(
-            new ServerMessageFilter<ServerShowUserMessage>(HandleShowUserMessage, settings)
-            {
-                Name = $"{FilterPrefix}_Player_ServerShowUser",
-                Priority = DebugFilterPriority
-            });
+        _debugShowUserFilter = _proxyServer.AddFilter<ServerShowUserMessage>(HandleShowUserMessage,
+            $"{FilterPrefix}_Player_ServerShowUser", DebugFilterPriority, settings);
     }
 
     private void RemoveDebugPlayerFilters()
