@@ -9,8 +9,6 @@ namespace Arbiter.App.ViewModels.Client;
 
 public partial class ClientViewModel
 {
-    private const string FilterPrefix = nameof(ClientViewModel);
-
     private NetworkObserverRef? _walkMessageObserver;
     private NetworkObserverRef? _userIdMessageObserver;
     private NetworkObserverRef? _mapInfoMessageObserver;

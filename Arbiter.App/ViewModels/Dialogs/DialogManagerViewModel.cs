@@ -40,7 +40,7 @@ public partial class DialogManagerViewModel : ViewModelBase
         _clientManager.ClientDisconnected += OnClientDisconnected;
 
         _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
-        AddPacketFilters();
+        AddObservers();
     }
 
     private void OnClientSelected(ClientViewModel? client)

@@ -1,6 +1,4 @@
-﻿using Arbiter.Net;
-using Arbiter.Net.Filters;
-using Arbiter.Net.Proxy;
+﻿using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -8,29 +6,17 @@ namespace Arbiter.App.ViewModels.Dialogs;
 
 public partial class DialogManagerViewModel
 {
-    private const string FilterPrefix = nameof(DialogManagerViewModel);
-    
-    private void AddPacketFilters()
+    private void AddObservers()
     {
-        _proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnDialogMessage)
-        {
-            Name = $"{FilterPrefix}_ServerShowDialog",
-            Priority = int.MaxValue
-        });
-        
-        _proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnDialogMenuMessage)
-        {
-            Name = $"{FilterPrefix}_ServerShowDialogMenu",
-            Priority = int.MaxValue
-        });
+        _proxyServer.AddObserver<ServerShowDialogMessage>(OnDialogMessage);
+        _proxyServer.AddObserver<ServerShowDialogMenuMessage>(OnDialogMenuMessage);
     }
 
-    private NetworkPacket OnDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
+    private void OnDialogMessage(ProxyConnection connection, ServerShowDialogMessage message, object? parameter)
     {
         if (!ShouldSync || !_clientManager.TryGetClient(connection.Id, out var client))
         {
-            return result.Passthrough();
+            return;
         }
 
         var dialog = BuildDialogView(message);
@@ -40,17 +26,13 @@ public partial class DialogManagerViewModel
         {
             ActiveDialog = dialog;
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
+    private void OnDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message, object? parameter)
     {
         if (!ShouldSync || !_clientManager.TryGetClient(connection.Id, out var client))
         {
-            return result.Passthrough();
+            return;
         }
 
         var dialog = BuildDialogView(message);
@@ -60,9 +42,6 @@ public partial class DialogManagerViewModel
         {
             ActiveDialog = dialog;
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
     private void SetActiveDialogForClient(long clientId, DialogViewModel? dialog)
