@@ -166,7 +166,7 @@ public partial class ProxyViewModel
             PursuitId = 77,
             Name = entity.Name,
             Content =
-                "Which item do you wish to destroy?\n\n{=sBe careful! This cannot be undone."
+                "Which item do you wish to destroy?\n{=hThis may not work on items which cannot be dropped.\n{=sBe careful! This cannot be undone.\n"
         };
 
         // Add all inventory slots

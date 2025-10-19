@@ -39,7 +39,8 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
         using var _ = Lock.EnterScope();
         Clear();
 
-        foreach (var item in _sourceCollection.Where(Predicate))
+        var copy = _sourceCollection.Where(Predicate).ToList();
+        foreach (var item in copy)
         {
             Add(item);
         }

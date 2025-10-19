@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Destroy Item option in the NPC mod menu
 
+### Changed
+
+- Fix rare concurrency issue with `Entity` list
+
 ## [1.5.0] - 2025-10-18
 
 ### Added
