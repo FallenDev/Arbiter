@@ -2,7 +2,7 @@
 
 namespace Arbiter.Net.Server.Messages;
 
-public interface IServerMessage : INetworkSerializable
+public interface IServerMessage : INetworkMessage, INetworkSerializable
 {
     public ServerCommand Command { get; }
     public byte? Sequence { get; }
