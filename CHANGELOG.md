@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Fix rare concurrency issue with `Entity` list
+- Change `Delay` and `Rate` dropdowns to shorthand
 
 ## [1.5.0] - 2025-10-18
 
