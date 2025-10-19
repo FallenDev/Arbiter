@@ -5,7 +5,7 @@ public class NetworkFilterRef : IDisposable
     private bool _isDisposed;
     private readonly Action<bool> _setEnabledAction;
     private readonly Action _unregisterAction;
-    
+
     public bool IsRegistered { get; private set; } = true;
 
     internal NetworkFilterRef(Action<bool> setEnabledAction, Action unregisterAction)
@@ -38,7 +38,7 @@ public class NetworkFilterRef : IDisposable
     {
         CheckIfDisposed();
         _unregisterAction();
-        
+
         IsRegistered = false;
     }
 
@@ -56,18 +56,11 @@ public class NetworkFilterRef : IDisposable
                 _unregisterAction();
             }
         }
-        
+
         IsRegistered = false;
         _isDisposed = true;
     }
-    
+
     private void CheckIfDisposed()
-    {
-        if (!_isDisposed)
-        {
-            return;
-        }
-        
-        throw new ObjectDisposedException(nameof(NetworkFilterRef));
-    }
+        => ObjectDisposedException.ThrowIf(_isDisposed, nameof(NetworkFilterRef));
 }

@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Observers;
 using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.Net.Proxy;
@@ -60,6 +61,9 @@ public partial class ProxyServer : IDisposable
         _listener = new TcpListener(IPAddress.Loopback, listenPort);
         _listener.Start();
 
+        // Start the dispatcher task
+        _observerDispatcher = new NetworkObserverDispatcher();
+        
         _ = AcceptLoopAsync(_cancelTokenSource.Token);
 
         Started?.Invoke();
@@ -77,6 +81,9 @@ public partial class ProxyServer : IDisposable
         _cancelTokenSource?.Cancel();
         _listener?.Stop();
         _listener = null;
+
+        _observerDispatcher?.Dispose();
+        _observerDispatcher = null;
 
         Stopped?.Invoke();
     }
@@ -173,10 +180,19 @@ public partial class ProxyServer : IDisposable
     private void OnServerDisconnected(object? sender, EventArgs e) =>
         ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
-    private void OnRecv(object? sender, NetworkTransferEventArgs e) =>
+    private void OnRecv(object? sender, NetworkTransferEventArgs e)
+    {
+        if (sender is not ProxyConnection connection)
+        {
+            return;
+        }
+
         PacketReceived?.Invoke(this,
-            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Encrypted, e.Decrypted,
+            new ProxyConnectionDataEventArgs(connection, e.Direction, e.Encrypted, e.Decrypted,
                 e.FilterResult));
+        
+        NotifyObservers(connection, e.Decrypted);
+    }
 
     private void OnSend(object? sender, NetworkTransferEventArgs e) =>
         PacketSent?.Invoke(this,
