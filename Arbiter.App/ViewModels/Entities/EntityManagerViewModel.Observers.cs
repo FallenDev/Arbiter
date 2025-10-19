@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using Arbiter.App.Models;
-using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
-using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Server.Types;
@@ -13,87 +11,26 @@ namespace Arbiter.App.ViewModels.Entities;
 
 public partial class EntityManagerViewModel
 {
-    private const string FilterPrefix = nameof(EntityManagerViewModel);
     private static readonly TimeSpan InteractRequestTimeout = TimeSpan.FromSeconds(2);
 
     // Used to track interaction queries for a client to map back to the correct entity
     private readonly ConcurrentDictionary<int, ConcurrentQueue<(uint, DateTime)>> _interactRequests = [];
 
-    private void AddPacketFilters(ProxyServer proxyServer)
+    private void AddObservers(ProxyServer proxyServer)
     {
-        proxyServer.AddFilter(new ServerMessageFilter<ServerAddEntityMessage>(OnAddEntityMessage)
-        {
-            Name = $"{FilterPrefix}_ServerAddEntity",
-            Priority = int.MaxValue - 10
-        });
+        proxyServer.AddObserver<ClientInteractMessage>(OnClientInteractMessage);
 
-        proxyServer.AddFilter(new ServerMessageFilter<ServerShowUserMessage>(OnShowUserMessage)
-        {
-            Name = $"{FilterPrefix}_ServerShowUser",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerUserProfileMessage>(OnUserProfileMessage)
-        {
-            Name = $"{FilterPrefix}_ServerUserProfile",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerPublicMessageMessage>(OnPublicMessage)
-        {
-            Name = $"{FilterPrefix}_ServerPublicMessage",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMessage>(OnShowDialogMessage)
-        {
-            Name = $"{FilterPrefix}_ServerShowDialog",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage)
-        {
-            Name = $"{FilterPrefix}_ServerShowDialogMenu",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerEntityWalkMessage>(OnEntityWalkMessage)
-        {
-            Name = $"{FilterPrefix}_ServerEntityWalk",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerWalkResponseMessage>(OnSelfWalkMessage)
-        {
-            Name = $"{FilterPrefix}_ServerWalkResponse",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerMapLocationMessage>(OnServerMapLocationMessage)
-        {
-            Name = $"{FilterPrefix}_ServerMapLocation",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(new ServerMessageFilter<ServerRemoveEntityMessage>(OnRemoveEntityMessage)
-        {
-            Name = $"{FilterPrefix}_ServerRemoveEntity",
-            Priority = int.MaxValue - 10
-        });
-
-        proxyServer.AddFilter(
-            new ClientMessageFilter<ClientInteractMessage>(HandleInteractMessage)
-            {
-                Name = $"{FilterPrefix}_ClientInteract",
-                Priority = int.MaxValue - 10
-            });
-
-        proxyServer.AddFilter(
-            new ServerMessageFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage)
-            {
-                Name = $"{FilterPrefix}_ServerWorldMessage",
-                Priority = int.MaxValue - 10
-            });
+        proxyServer.AddObserver<ServerAddEntityMessage>(OnAddEntityMessage);
+        proxyServer.AddObserver<ServerRemoveEntityMessage>(OnRemoveEntityMessage);
+        proxyServer.AddObserver<ServerShowUserMessage>(OnShowUserMessage);
+        proxyServer.AddObserver<ServerUserProfileMessage>(OnUserProfileMessage);
+        proxyServer.AddObserver<ServerPublicMessageMessage>(OnPublicMessage);
+        proxyServer.AddObserver<ServerShowDialogMessage>(OnShowDialogMessage);
+        proxyServer.AddObserver<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage);
+        proxyServer.AddObserver<ServerEntityWalkMessage>(OnEntityWalkMessage);
+        proxyServer.AddObserver<ServerWalkResponseMessage>(OnSelfWalkMessage);
+        proxyServer.AddObserver<ServerMapLocationMessage>(OnServerMapLocationMessage);
+        proxyServer.AddObserver<ServerWorldMessageMessage>(OnInteractResponse);
 
         proxyServer.ClientConnected += OnClientConnected;
         proxyServer.ClientDisconnected += OnClientDisconnected;
@@ -112,9 +49,8 @@ public partial class EntityManagerViewModel
             queue.Enqueue((entityId, DateTime.Now));
         }
     }
-    
-    private NetworkPacket OnAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerAddEntityMessage> result)
+
+    private void OnAddEntityMessage(ProxyConnection connection, ServerAddEntityMessage message, object? parameter)
     {
         foreach (var entity in message.Entities)
         {
@@ -149,13 +85,19 @@ public partial class EntityManagerViewModel
 
             _entityStore.AddOrUpdateEntity(gameEntity, out _);
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
+    }
+    
+    private void OnRemoveEntityMessage(ProxyConnection connection, ServerRemoveEntityMessage message, object? parameter)
+    {
+        // Only remove monster and item entities since they are more ephemeral than player/npc entities
+        if (_entityStore.TryGetEntity(message.EntityId, out var existing) && existing.Flags == EntityFlags.Monster ||
+            existing.Flags == EntityFlags.Item)
+        {
+            _entityStore.RemoveEntity(message.EntityId, out _);
+        }
     }
 
-    private NetworkPacket OnShowUserMessage(ProxyConnection connection, ServerShowUserMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerShowUserMessage> result)
+    private void OnShowUserMessage(ProxyConnection connection, ServerShowUserMessage message, object? parameter)
     {
         // Try to get the player so we can get map context
         _playerService.TryGetState(connection.Id, out var player);
@@ -175,13 +117,9 @@ public partial class EntityManagerViewModel
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnUserProfileMessage(ProxyConnection connection, ServerUserProfileMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerUserProfileMessage> result)
+    private void OnUserProfileMessage(ProxyConnection connection, ServerUserProfileMessage message, object? parameter)
     {
         // Try to get the player so we can get map context
         _playerService.TryGetState(connection.Id, out var player);
@@ -196,18 +134,14 @@ public partial class EntityManagerViewModel
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnPublicMessage(ProxyConnection connection, ServerPublicMessageMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerPublicMessageMessage> result)
+    private void OnPublicMessage(ProxyConnection connection, ServerPublicMessageMessage message, object? parameter)
     {
         // Ignore world shouts
         if (message.SenderId == 0)
         {
-            return result.Passthrough();
+            return;
         }
 
         // Try to get the player so we can get map context
@@ -238,24 +172,20 @@ public partial class EntityManagerViewModel
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnShowDialogMessage(ProxyConnection connection, ServerShowDialogMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerShowDialogMessage> result)
+    private void OnShowDialogMessage(ProxyConnection connection, ServerShowDialogMessage message, object? parameter)
     {
         // Skip on invalid entity ID
         if (message.EntityId is null or 0)
         {
-            return result.Passthrough();
+            return;
         }
 
         var wasFound = _entityStore.TryGetEntity(message.EntityId.Value, out _);
         if (wasFound)
         {
-            return result.Passthrough();
+            return;
         }
 
         var flags = message.EntityType switch
@@ -283,24 +213,20 @@ public partial class EntityManagerViewModel
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnShowDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerShowDialogMenuMessage> result)
+    private void OnShowDialogMenuMessage(ProxyConnection connection, ServerShowDialogMenuMessage message, object? parameter)
     {
         // Skip on invalid entity ID
         if (message.EntityId is null or 0)
         {
-            return result.Passthrough();
+            return;
         }
 
         var wasFound = _entityStore.TryGetEntity(message.EntityId.Value, out _);
         if (wasFound)
         {
-            return result.Passthrough();
+            return;
         }
 
         var flags = message.EntityType switch
@@ -325,18 +251,14 @@ public partial class EntityManagerViewModel
         };
 
         _entityStore.AddOrUpdateEntity(entity, out _);
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnEntityWalkMessage(ProxyConnection connection, ServerEntityWalkMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerEntityWalkMessage> result)
+    private void OnEntityWalkMessage(ProxyConnection connection, ServerEntityWalkMessage message, object? parameter)
     {
         var existing = _entityStore.TryGetEntity(message.EntityId, out _);
         if (!existing)
         {
-            return result.Passthrough();
+            return;
         }
 
         var newX = message.Direction switch
@@ -359,23 +281,19 @@ public partial class EntityManagerViewModel
         {
             _filterDebouncer.Execute(RefreshFilterPreservingSelection);
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnSelfWalkMessage(ProxyConnection connection, ServerWalkResponseMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerWalkResponseMessage> result)
+    private void OnSelfWalkMessage(ProxyConnection connection, ServerWalkResponseMessage message, object? parameter)
     {
         // If no active player, ignore
         if (!_playerService.TryGetState(connection.Id, out var player) || player.UserId is null)
         {
-            return result.Passthrough();
+            return;
         }
 
         if (!_entityStore.TryGetEntity(player.UserId.Value, out var selfEntity))
         {
-            return result.Passthrough();
+            return;
         }
 
         var newEntity = selfEntity with
@@ -402,30 +320,23 @@ public partial class EntityManagerViewModel
         {
             _filterDebouncer.Execute(RefreshFilterPreservingSelection);
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket OnServerMapLocationMessage(ProxyConnection connection, ServerMapLocationMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerMapLocationMessage> result)
+    private void OnServerMapLocationMessage(ProxyConnection connection, ServerMapLocationMessage message, object? parameter)
     {
         if (SelectedClient is not null && FilterMode is not EntityFilterMode.All)
         {
             _filterDebouncer.Execute(RefreshFilterPreservingSelection);
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket HandleInteractMessage(ProxyConnection connection, ClientInteractMessage message,
-        object? parameter, NetworkMessageFilterResult<ClientInteractMessage> result)
+    private void OnClientInteractMessage(ProxyConnection connection, ClientInteractMessage message,
+        object? parameter)
     {
         // Ensure there is a valid entity interaction request
         if (message.InteractionType != InteractionType.Entity || !message.TargetId.HasValue)
         {
-            return result.Passthrough();
+            return;
         }
 
         // Determine which entity type we are interacting with
@@ -439,30 +350,26 @@ public partial class EntityManagerViewModel
         if (entityFlags.HasFlag(EntityFlags.Player) || entityFlags.HasFlag(EntityFlags.Mundane) ||
             entityFlags.HasFlag(EntityFlags.Item))
         {
-            return result.Passthrough();
+            return;
         }
 
         QueueInteractionRequest(connection.Id, message.TargetId.Value);
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 
-    private NetworkPacket HandleInteractResponseMessage(ProxyConnection connection, ServerWorldMessageMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerWorldMessageMessage> result)
+    private void OnInteractResponse(ProxyConnection connection, ServerWorldMessageMessage message, object? parameter)
     {
         var trimmedMessage = message.Message.Trim();
 
         // If the message is empty it's not a monster name
         if (string.IsNullOrWhiteSpace(trimmedMessage))
         {
-            return result.Passthrough();
+            return;
         }
 
         // If the message ends with a period, question mark, or exclamation mark then it's not a monster name
         if (trimmedMessage.EndsWith('.') || trimmedMessage.EndsWith('!') || trimmedMessage.EndsWith('?'))
         {
-            return result.Passthrough();
+            return;
         }
 
         // We can safely ignore any message that contains any of the following characters
@@ -470,14 +377,14 @@ public partial class EntityManagerViewModel
         {
             if (c is '[' or ']' or '(' or ')' or '<' or '>' or ':' or '!' or '?' or '"' or ',')
             {
-                return result.Passthrough();
+                return;
             }
         }
 
         // If there is no queue or it is empty then not pending interactions
         if (!_interactRequests.TryGetValue(connection.Id, out var queue) || queue.IsEmpty)
         {
-            return result.Passthrough();
+            return;
         }
 
         // Look for a request that has not timed out
@@ -494,22 +401,5 @@ public partial class EntityManagerViewModel
 
             _entityStore.TrySetEntityName(entityId, trimmedMessage);
         }
-
-        // Do not alter the packet
-        return result.Passthrough();
-    }
-
-    private NetworkPacket OnRemoveEntityMessage(ProxyConnection connection, ServerRemoveEntityMessage message,
-        object? parameter, NetworkMessageFilterResult<ServerRemoveEntityMessage> result)
-    {
-        // Only remove monster and item entities since they are more ephemeral than player/npc entities
-        if (_entityStore.TryGetEntity(message.EntityId, out var existing) && existing.Flags == EntityFlags.Monster ||
-            existing.Flags == EntityFlags.Item)
-        {
-            _entityStore.RemoveEntity(message.EntityId, out _);
-        }
-
-        // Do not alter the packet
-        return result.Passthrough();
     }
 }

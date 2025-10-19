@@ -132,7 +132,7 @@ public class NetworkObserverDispatcher : IDisposable
                         taskArray[i] = SafeHandleAsync(observer, message.Connection, message.Message);
                     }
 
-                    await Task.WhenAll(taskArray);
+                    await Task.WhenAll(taskArray.AsSpan(0, count));
                 }
             }
             finally

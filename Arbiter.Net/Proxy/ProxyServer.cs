@@ -60,9 +60,6 @@ public partial class ProxyServer : IDisposable
         _cancelTokenSource = new CancellationTokenSource();
         _listener = new TcpListener(IPAddress.Loopback, listenPort);
         _listener.Start();
-
-        // Start the dispatcher task
-        _observerDispatcher = new NetworkObserverDispatcher();
         
         _ = AcceptLoopAsync(_cancelTokenSource.Token);
 
@@ -81,9 +78,6 @@ public partial class ProxyServer : IDisposable
         _cancelTokenSource?.Cancel();
         _listener?.Stop();
         _listener = null;
-
-        _observerDispatcher?.Dispose();
-        _observerDispatcher = null;
 
         Stopped?.Invoke();
     }
@@ -244,6 +238,8 @@ public partial class ProxyServer : IDisposable
             }
 
             _connections.Clear();
+            
+            _observerDispatcher.Dispose();
         }
 
         _listener = null;

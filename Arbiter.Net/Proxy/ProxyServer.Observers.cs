@@ -6,7 +6,21 @@ namespace Arbiter.Net.Proxy;
 
 public partial class ProxyServer
 {
-    private NetworkObserverDispatcher? _observerDispatcher;
+    private readonly NetworkObserverDispatcher _observerDispatcher = new();
+
+    public NetworkObserverRef AddObserver<T>(NetworkMessageObserver<T> observer, object? parameter = null)
+        where T : class, INetworkMessage
+    {
+        CheckIfDisposed();
+        return _observerDispatcher.AddObserver(observer, parameter);
+    }
+
+    public NetworkObserverRef AddObserver<T>(AsyncNetworkMessageObserver<T> observer, object? parameter = null)
+        where T : class, INetworkMessage
+    {
+        CheckIfDisposed();
+        return _observerDispatcher.AddObserver(observer, parameter);
+    }
 
     private void NotifyObservers(ProxyConnection connection, NetworkPacket packet)
     {
@@ -19,7 +33,7 @@ public partial class ProxyServer
                     return;
                 }
 
-                _observerDispatcher?.TryNotify(connection, message);
+                _observerDispatcher.TryNotify(connection, message);
                 break;
             }
             case ClientPacket clientPacket:
@@ -29,7 +43,7 @@ public partial class ProxyServer
                     return;
                 }
 
-                _observerDispatcher?.TryNotify(connection, message);
+                _observerDispatcher.TryNotify(connection, message);
                 break;
             }
         }

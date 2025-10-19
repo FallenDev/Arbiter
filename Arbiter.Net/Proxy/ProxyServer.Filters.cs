@@ -17,6 +17,8 @@ public partial class ProxyServer
 
     public NetworkFilterRef AddFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage
     {
+        CheckIfDisposed();
+        
         var messageType = typeof(T);
         var command = _clientMessageFactory.GetMessageCommand(messageType);
 
@@ -31,6 +33,8 @@ public partial class ProxyServer
 
     public NetworkFilterRef AddFilter<T>(ServerMessageFilter<T> filter) where T : IServerMessage
     {
+        CheckIfDisposed();
+        
         var messageType = typeof(T);
         var command = _serverMessageFactory.GetMessageCommand(messageType);
 
@@ -43,23 +47,41 @@ public partial class ProxyServer
         return AddFilter(command.Value, filter);
     }
 
-    public NetworkFilterRef AddFilter(ClientCommand command, INetworkPacketFilter filter) =>
-        AddFilterInternal(ProxyDirection.ClientToServer, (byte)command, filter);
+    public NetworkFilterRef AddFilter(ClientCommand command, INetworkPacketFilter filter)
+    {
+        CheckIfDisposed();
+        return AddFilterInternal(ProxyDirection.ClientToServer, (byte)command, filter);
+    }
 
-    public NetworkFilterRef AddFilter(ServerCommand command, INetworkPacketFilter filter) =>
-        AddFilterInternal(ProxyDirection.ServerToClient, (byte)command, filter);
+    public NetworkFilterRef AddFilter(ServerCommand command, INetworkPacketFilter filter)
+    {
+        CheckIfDisposed();
+        return AddFilterInternal(ProxyDirection.ServerToClient, (byte)command, filter);
+    }
 
-    public bool RemoveFilter(ClientCommand command, string name) =>
-        RemoveFilterInternal(ProxyDirection.ClientToServer, (byte)command, name);
+    public bool RemoveFilter(ClientCommand command, string name)
+    {
+        CheckIfDisposed();
+        return RemoveFilterInternal(ProxyDirection.ClientToServer, (byte)command, name);
+    }
 
-    public bool RemoveFilter(ServerCommand command, string name) =>
-        RemoveFilterInternal(ProxyDirection.ServerToClient, (byte)command, name);
-    
+    public bool RemoveFilter(ServerCommand command, string name)
+    {
+        CheckIfDisposed();
+        return RemoveFilterInternal(ProxyDirection.ServerToClient, (byte)command, name);
+    }
+
     public NetworkFilterRef AddGlobalFilter(ProxyDirection direction, INetworkPacketFilter filter)
-        => AddFilterInternal(direction, null, filter);
+    {
+        CheckIfDisposed();
+        return AddFilterInternal(direction, null, filter);
+    }
 
-    public bool RemoveGlobalFilter(ProxyDirection direction, string name) =>
-        RemoveFilterInternal(direction, null, name);
+    public bool RemoveGlobalFilter(ProxyDirection direction, string name)
+    {
+        CheckIfDisposed();
+        return RemoveFilterInternal(direction, null, name);
+    }
 
     private NetworkFilterRef AddFilterInternal(ProxyDirection direction, byte? command, INetworkPacketFilter filter)
     {
