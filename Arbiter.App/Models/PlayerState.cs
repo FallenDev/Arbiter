@@ -12,7 +12,8 @@ public sealed class PlayerState
     public int? MapId { get; set; }
     public int? MapX { get; set; }
     public int? MapY { get; set; }
-
+    
+    public PlayerInventory Inventory { get; set; } = new();
 
     public PlayerState(int connectionId, string? name)
     {

@@ -41,62 +41,58 @@ public partial class ClientViewModel
         // Update predicted client position on UI thread
         var direction = message.Direction;
 
-        MapX = direction switch
+        var currentX = Player.MapX;
+        var newX = direction switch
         {
-            WorldDirection.Left => MapX - 1,
-            WorldDirection.Right => MapX + 1,
-            _ => MapX
+            WorldDirection.Left => currentX - 1,
+            WorldDirection.Right => currentX + 1,
+            _ => currentX
         };
 
-        MapY = direction switch
+        var currentY = Player.MapY;
+        var newY = direction switch
         {
-            WorldDirection.Up => MapY - 1,
-            WorldDirection.Down => MapY + 1,
-            _ => MapY
+            WorldDirection.Up => currentY - 1,
+            WorldDirection.Down => currentY + 1,
+            _ => currentY
         };
 
-        Player.MapX = MapX;
-        Player.MapY = MapY;
+        Player.MapX = newX;
+        Player.MapY = newY;
     }
 
     private void OnUserIdMessage(ProxyConnection connection, ServerUserIdMessage message, object? parameter)
     {
-        EntityId = message.UserId;
-        Class = message.Class.ToString();
-        Player.UserId = message.UserId;
-        Player.Class = Class;
+        Player.EntityId = message.UserId;
+        Player.Class = message.Class.ToString();
     }
 
     private void OnMapInfoMessage(ProxyConnection connection, ServerMapInfoMessage message, object? parameter)
     {
-        MapName = message.Name;
-        MapId = message.MapId;
-        Player.MapName = MapName;
-        Player.MapId = MapId;
+        Player.MapId = message.MapId;
+        Player.MapName = message.Name;
     }
 
     private void OnMapLocationMessage(ProxyConnection connection, ServerMapLocationMessage message, object? parameter)
     {
-        MapX = message.X;
-        MapY = message.Y;
-        Player.MapX = MapX;
-        Player.MapY = MapY;
+        Player.MapX = message.X;
+        Player.MapY = message.Y;
     }
 
     private void OnSelfProfileMessage(ProxyConnection connection, ServerSelfProfileMessage message, object? parameter)
     {
-        Class = string.Equals(message.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
+        Player.Class = string.Equals(message.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
             ? message.Class.ToString()
             : message.DisplayClass;
     }
 
     private void OnUpdateStatsMessage(ProxyConnection connection, ServerUpdateStatsMessage message, object? parameter)
     {
-        Level = message.Level ?? Level;
-        AbilityLevel = message.AbilityLevel ?? AbilityLevel;
-        CurrentHealth = message.Health ?? CurrentHealth;
-        MaxHealth = message.MaxHealth ?? MaxHealth;
-        CurrentMana = message.Mana ?? CurrentMana;
-        MaxMana = message.MaxMana ?? MaxMana;
+        Player.Level = message.Level ?? Player.Level;
+        Player.AbilityLevel = message.AbilityLevel ?? Player.AbilityLevel;
+        Player.CurrentHealth = message.Health ?? Player.CurrentHealth;
+        Player.MaxHealth = message.MaxHealth ?? Player.MaxHealth;
+        Player.CurrentMana = message.Mana ?? Player.CurrentMana;
+        Player.MaxMana = message.MaxMana ?? Player.MaxMana;
     }
 }
