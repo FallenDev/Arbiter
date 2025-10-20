@@ -6,9 +6,9 @@ using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
-namespace Arbiter.App.ViewModels.Client;
+namespace Arbiter.App.ViewModels.Player;
 
-public partial class ClientViewModel
+public partial class PlayerViewModel
 {
     private NetworkObserverRef? _walkMessageObserver;
     private NetworkObserverRef? _userIdMessageObserver;
@@ -19,24 +19,27 @@ public partial class ClientViewModel
     private NetworkObserverRef? _addItemObserver;
     private NetworkObserverRef? _removeItemObserver;
 
-    private void AddObservers()
+    public void Subscribe(ProxyConnection connection)
     {
         const int observerPriority = int.MaxValue - 100;
-        
-        _userIdMessageObserver = _connection.AddObserver<ServerUserIdMessage>(OnUserIdMessage, observerPriority);
 
-        _walkMessageObserver = _connection.AddObserver<ClientWalkMessage>(OnClientWalkMessage, observerPriority);
-        _mapInfoMessageObserver = _connection.AddObserver<ServerMapInfoMessage>(OnMapInfoMessage, observerPriority);
-        _mapLocationMessageObserver = _connection.AddObserver<ServerMapLocationMessage>(OnMapLocationMessage, observerPriority);
-        _selfProfileMessageObserver = _connection.AddObserver<ServerSelfProfileMessage>(OnSelfProfileMessage, observerPriority);
-        _updateStatsMessageObserver = _connection.AddObserver<ServerUpdateStatsMessage>(OnUpdateStatsMessage, observerPriority);
+        _userIdMessageObserver = connection.AddObserver<ServerUserIdMessage>(OnUserIdMessage, observerPriority);
+
+        _walkMessageObserver = connection.AddObserver<ClientWalkMessage>(OnClientWalkMessage, observerPriority);
+        _mapInfoMessageObserver = connection.AddObserver<ServerMapInfoMessage>(OnMapInfoMessage, observerPriority);
+        _mapLocationMessageObserver =
+            connection.AddObserver<ServerMapLocationMessage>(OnMapLocationMessage, observerPriority);
+        _selfProfileMessageObserver =
+            connection.AddObserver<ServerSelfProfileMessage>(OnSelfProfileMessage, observerPriority);
+        _updateStatsMessageObserver =
+            connection.AddObserver<ServerUpdateStatsMessage>(OnUpdateStatsMessage, observerPriority);
 
         // Inventory
-        _addItemObserver = _connection.AddObserver<ServerAddItemMessage>(OnAddItemMessage);
-        _removeItemObserver = _connection.AddObserver<ServerRemoveItemMessage>(OnRemoveItemMessage);
+        _addItemObserver = connection.AddObserver<ServerAddItemMessage>(OnAddItemMessage);
+        _removeItemObserver = connection.AddObserver<ServerRemoveItemMessage>(OnRemoveItemMessage);
     }
 
-    private void RemoveObservers()
+    public void Unsubscribe()
     {
         _userIdMessageObserver?.Unregister();
         _walkMessageObserver?.Unregister();
@@ -50,10 +53,10 @@ public partial class ClientViewModel
 
     private void OnUserIdMessage(ProxyConnection connection, ServerUserIdMessage message, object? parameter)
     {
-        Player.EntityId = message.UserId;
-        Player.Class = message.Class.ToString();
+        EntityId = message.UserId;
+        Class = message.Class.ToString();
     }
-    
+
     #region Location Observers
 
     private void OnClientWalkMessage(ProxyConnection connection, ClientWalkMessage message, object? parameter)
@@ -61,7 +64,7 @@ public partial class ClientViewModel
         // Update predicted client position on UI thread
         var direction = message.Direction;
 
-        var currentX = Player.MapX;
+        var currentX = MapX;
         var newX = direction switch
         {
             WorldDirection.Left => currentX - 1,
@@ -69,7 +72,7 @@ public partial class ClientViewModel
             _ => currentX
         };
 
-        var currentY = Player.MapY;
+        var currentY = MapY;
         var newY = direction switch
         {
             WorldDirection.Up => currentY - 1,
@@ -77,20 +80,20 @@ public partial class ClientViewModel
             _ => currentY
         };
 
-        Player.MapX = newX;
-        Player.MapY = newY;
+        MapX = newX;
+        MapY = newY;
     }
 
     private void OnMapInfoMessage(ProxyConnection connection, ServerMapInfoMessage message, object? parameter)
     {
-        Player.MapId = message.MapId;
-        Player.MapName = message.Name;
+        MapId = message.MapId;
+        MapName = message.Name;
     }
 
     private void OnMapLocationMessage(ProxyConnection connection, ServerMapLocationMessage message, object? parameter)
     {
-        Player.MapX = message.X;
-        Player.MapY = message.Y;
+        MapX = message.X;
+        MapY = message.Y;
     }
 
     #endregion
@@ -99,19 +102,19 @@ public partial class ClientViewModel
 
     private void OnSelfProfileMessage(ProxyConnection connection, ServerSelfProfileMessage message, object? parameter)
     {
-        Player.Class = string.Equals(message.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
+        Class = string.Equals(message.DisplayClass, "Master", StringComparison.OrdinalIgnoreCase)
             ? message.Class.ToString()
             : message.DisplayClass;
     }
 
     private void OnUpdateStatsMessage(ProxyConnection connection, ServerUpdateStatsMessage message, object? parameter)
     {
-        Player.Level = message.Level ?? Player.Level;
-        Player.AbilityLevel = message.AbilityLevel ?? Player.AbilityLevel;
-        Player.CurrentHealth = message.Health ?? Player.CurrentHealth;
-        Player.MaxHealth = message.MaxHealth ?? Player.MaxHealth;
-        Player.CurrentMana = message.Mana ?? Player.CurrentMana;
-        Player.MaxMana = message.MaxMana ?? Player.MaxMana;
+        Level = message.Level ?? Level;
+        AbilityLevel = message.AbilityLevel ?? AbilityLevel;
+        CurrentHealth = message.Health ?? CurrentHealth;
+        MaxHealth = message.MaxHealth ?? MaxHealth;
+        CurrentMana = message.Mana ?? CurrentMana;
+        MaxMana = message.MaxMana ?? MaxMana;
     }
 
     #endregion
@@ -131,12 +134,13 @@ public partial class ClientViewModel
             Durability = message.Durability,
             MaxDurability = message.MaxDurability,
         };
-        Player.Inventory.SetSlot(message.Slot, item);
+
+        Inventory.SetSlot(message.Slot, item);
     }
 
     private void OnRemoveItemMessage(ProxyConnection connection, ServerRemoveItemMessage message, object? parameter)
     {
-        Player.Inventory.ClearSlot(message.Slot);
+        Inventory.ClearSlot(message.Slot);
     }
 
     #endregion

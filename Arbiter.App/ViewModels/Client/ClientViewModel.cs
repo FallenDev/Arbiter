@@ -25,10 +25,9 @@ public partial class ClientViewModel : ViewModelBase
     }
 
     public event EventHandler? BringToFrontRequested;
-
-
-    public void Subscribe() => AddObservers();
-    public void Unsubscribe() => RemoveObservers();
+    
+    public void Subscribe() => Player.Subscribe(_connection);
+    public void Unsubscribe() => Player.Unsubscribe();
 
     public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal) =>
         _connection.EnqueuePacket(packet, priority);

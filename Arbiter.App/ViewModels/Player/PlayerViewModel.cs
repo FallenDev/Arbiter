@@ -6,14 +6,16 @@ namespace Arbiter.App.ViewModels.Player;
 
 public partial class PlayerViewModel : ViewModelBase
 {
+    private readonly PlayerState _player;
+
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsLoggedIn))]
     private long? _entityId;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(DisplayLevel))]
-    private int? _level;
+    private int _level;
 
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(DisplayLevel))]
-    private int? _abilityLevel;
+    private int _abilityLevel;
 
     [ObservableProperty] private string? _class;
 
@@ -30,22 +32,22 @@ public partial class PlayerViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HealthPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedHealthPercent))]
-    private uint _currentHealth;
+    private long _currentHealth;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HealthPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedHealthPercent))]
-    private uint _maxHealth;
+    private long _maxHealth;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
-    private uint _currentMana;
+    private long _currentMana;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
-    private uint _maxMana;
+    private long _maxMana;
 
     public bool IsLoggedIn => EntityId is not null;
 
@@ -82,7 +84,21 @@ public partial class PlayerViewModel : ViewModelBase
 
     public PlayerViewModel(PlayerState player)
     {
+        _player = player;
+
         Inventory = new PlayerInventoryViewModel(player.Inventory);
     }
 
+    // Forward all property changes to the player model
+    partial void OnEntityIdChanged(long? value) => _player.UserId = value;
+    partial void OnLevelChanged(int value) => _player.Level = value;
+    partial void OnAbilityLevelChanged(int value) => _player.AbilityLevel = value;
+    partial void OnClassChanged(string? value) => _player.Class = value;
+    partial void OnMapNameChanged(string? value) => _player.MapName = value;
+    partial void OnMapXChanged(int? value) => _player.MapX = value;
+    partial void OnMapYChanged(int? value) => _player.MapY = value;
+    partial void OnCurrentHealthChanged(long value) => _player.CurrentHealth = value;
+    partial void OnMaxHealthChanged(long value) => _player.MaxHealth = value;
+    partial void OnCurrentManaChanged(long value) => _player.CurrentMana = value;
+    partial void OnMaxManaChanged(long value) => _player.MaxMana = value;
 }

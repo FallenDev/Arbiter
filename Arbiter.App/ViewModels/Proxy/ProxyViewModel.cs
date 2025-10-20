@@ -15,7 +15,6 @@ public partial class ProxyViewModel : ViewModelBase
     private readonly IPlayerService _playerService;
     private readonly IEntityStore _entityStore;
     
-
     public bool IsRunning => _proxyServer.IsRunning;
 
     public ProxyViewModel(ILogger<ProxyViewModel> logger, IServiceProvider serviceProvider)

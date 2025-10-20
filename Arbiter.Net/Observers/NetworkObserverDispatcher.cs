@@ -124,7 +124,7 @@ public class NetworkObserverDispatcher : IDisposable
                 _lock.ExitReadLock();
             }
 
-            if (observersArray == null)
+            if (observersArray == null || observerCount == 0)
             {
                 continue;
             }
