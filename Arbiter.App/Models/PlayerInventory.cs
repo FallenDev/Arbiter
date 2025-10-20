@@ -12,6 +12,7 @@ public sealed class PlayerInventory
 
     public InventoryItem this[int index] => _items[index];
 
+    public int Capacity => _items.Length;
     public int Count => _items.Count(i => !i.IsEmpty);
 
     public event Action<InventoryItem>? ItemAdded;
@@ -49,6 +50,24 @@ public sealed class PlayerInventory
                 yield return i + 1;
             }
         }
+    }
+
+    public bool TryFindItem(string name, out InventoryItem item)
+    {
+        item = InventoryItem.Empty;
+
+        foreach (var t in _items)
+        {
+            if (!string.Equals(name, t.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            item = t;
+            return true;
+        }
+
+        return false;
     }
 
     public bool IsSlotEmpty(int slot)

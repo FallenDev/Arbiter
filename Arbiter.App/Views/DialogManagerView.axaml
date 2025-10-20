@@ -323,5 +323,10 @@
                 </Border>    
             </Grid>
         </Grid>
+        
+        <!-- Placeholder Text -->
+        <TextBlock Grid.Row="1" Text="No Character Selected"
+                   Classes="placeholder"
+                   IsVisible="{Binding Path=SelectedClient, Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
     </Grid>
 </UserControl>

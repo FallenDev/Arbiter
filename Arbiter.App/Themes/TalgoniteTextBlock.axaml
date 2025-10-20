@@ -5,6 +5,15 @@
             <TextBlock Classes="link" Text="https://www.darkages.com"></TextBlock>
         </Border>
     </Design.PreviewWith>
+    
+    <Style Selector="TextBlock.placeholder">
+        <Setter Property="Foreground" Value="{StaticResource Talgonite.TextBlock.DimForeground}"/>    
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+    </Style>
 
     <Style Selector="TextBlock:disabled">
         <Setter Property="Foreground" Value="{StaticResource Talgonite.TextBlock.DimForeground}"/>    

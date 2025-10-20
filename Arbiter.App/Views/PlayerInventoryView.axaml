@@ -1,0 +1,52 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Arbiter.App.ViewModels.Player"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Arbiter.App.Views.PlayerInventoryView"
+             x:DataType="vm:PlayerInventoryViewModel">
+    
+    <Design.DataContext>
+        <vm:DesignPlayerInventoryViewModel/>
+    </Design.DataContext>
+    
+    <Grid Background="{StaticResource Talgonite.Control.Background}"
+          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+        <ListBox ItemsSource="{Binding InventorySlots}"
+                 SelectedValue="{Binding SelectedItem}"
+                 SelectionMode="Single"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Margin="2"
+                 Padding="4">
+            
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="12" ColumnSpacing="4" RowSpacing="4"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent"
+                            BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
+                            BorderThickness="1">
+                        <TextBlock Text="{Binding Slot}"
+                                 FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                 FontSize="24"
+                                 Foreground="{StaticResource Talgonite.Color.Gray}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"/>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <!-- Placeholder Text -->
+        <TextBlock Text="No Character Selected"
+                   Classes="placeholder"
+                   IsVisible="{Binding Path=., Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
+    </Grid>
+</UserControl>

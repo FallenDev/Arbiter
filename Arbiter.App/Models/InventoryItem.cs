@@ -4,32 +4,29 @@ namespace Arbiter.App.Models;
 
 public readonly struct InventoryItem
 {
-    public static InventoryItem Empty => new() { IsEmpty = true };
+    public static InventoryItem Empty => new() { IsEmpty = true, Name = string.Empty };
 
-    public bool IsEmpty { get; init; }
+    public bool IsEmpty { get; private init; }
+    public ushort Sprite { get; init; }
+    public byte Color { get; init; }
+    public required string Name { get; init; }
+    public long Quantity { get; init; }
+    public bool IsStackable { get; init; }
+    public long? Durability { get; init; }
+    public long? MaxDurability { get; init; }
 
-    public ushort Sprite { get; }
-    public string Name { get; }
-    public int Count { get; }
-    public long? Durability { get; }
-    public long? MaxDurability { get; }
-
-    public InventoryItem(ushort sprite, string name, int count = 1, long? durability = null, long? maxDurability = null)
+    public InventoryItem()
     {
-        Sprite = sprite;
-        Name = name;
-        Count = count;
-        Durability = durability;
-        MaxDurability = maxDurability;
+        Quantity = 1;
     }
 
     public override string ToString()
     {
         var sb = new StringBuilder(Name);
 
-        if (Count > 1)
+        if (Quantity > 1 || IsStackable)
         {
-            sb.Append($" (Count = {Count})");
+            sb.Append($" [{Quantity}]");
         }
 
         if (Durability.HasValue && MaxDurability.HasValue)

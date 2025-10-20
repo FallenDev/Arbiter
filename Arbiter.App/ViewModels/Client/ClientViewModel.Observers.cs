@@ -1,4 +1,5 @@
 ﻿using System;
+using Arbiter.App.Models;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;
@@ -15,26 +16,43 @@ public partial class ClientViewModel
     private NetworkObserverRef? _mapLocationMessageObserver;
     private NetworkObserverRef? _selfProfileMessageObserver;
     private NetworkObserverRef? _updateStatsMessageObserver;
+    private NetworkObserverRef? _addItemObserver;
+    private NetworkObserverRef? _removeItemObserver;
 
     private void AddObservers()
     {
-        _walkMessageObserver = _connection.AddObserver<ClientWalkMessage>(OnClientWalkMessage);
         _userIdMessageObserver = _connection.AddObserver<ServerUserIdMessage>(OnUserIdMessage);
+
+        _walkMessageObserver = _connection.AddObserver<ClientWalkMessage>(OnClientWalkMessage);
         _mapInfoMessageObserver = _connection.AddObserver<ServerMapInfoMessage>(OnMapInfoMessage);
         _mapLocationMessageObserver = _connection.AddObserver<ServerMapLocationMessage>(OnMapLocationMessage);
         _selfProfileMessageObserver = _connection.AddObserver<ServerSelfProfileMessage>(OnSelfProfileMessage);
         _updateStatsMessageObserver = _connection.AddObserver<ServerUpdateStatsMessage>(OnUpdateStatsMessage);
+
+        // Inventory
+        _addItemObserver = _connection.AddObserver<ServerAddItemMessage>(OnAddItemMessage);
+        _removeItemObserver = _connection.AddObserver<ServerRemoveItemMessage>(OnRemoveItemMessage);
     }
 
     private void RemoveObservers()
     {
-        _walkMessageObserver?.Unregister();
         _userIdMessageObserver?.Unregister();
+        _walkMessageObserver?.Unregister();
         _mapInfoMessageObserver?.Unregister();
         _mapLocationMessageObserver?.Unregister();
         _selfProfileMessageObserver?.Unregister();
         _updateStatsMessageObserver?.Unregister();
+        _addItemObserver?.Unregister();
+        _removeItemObserver?.Unregister();
     }
+
+    private void OnUserIdMessage(ProxyConnection connection, ServerUserIdMessage message, object? parameter)
+    {
+        Player.EntityId = message.UserId;
+        Player.Class = message.Class.ToString();
+    }
+    
+    #region Location Observers
 
     private void OnClientWalkMessage(ProxyConnection connection, ClientWalkMessage message, object? parameter)
     {
@@ -61,12 +79,6 @@ public partial class ClientViewModel
         Player.MapY = newY;
     }
 
-    private void OnUserIdMessage(ProxyConnection connection, ServerUserIdMessage message, object? parameter)
-    {
-        Player.EntityId = message.UserId;
-        Player.Class = message.Class.ToString();
-    }
-
     private void OnMapInfoMessage(ProxyConnection connection, ServerMapInfoMessage message, object? parameter)
     {
         Player.MapId = message.MapId;
@@ -78,6 +90,10 @@ public partial class ClientViewModel
         Player.MapX = message.X;
         Player.MapY = message.Y;
     }
+
+    #endregion
+
+    #region Stats Observers
 
     private void OnSelfProfileMessage(ProxyConnection connection, ServerSelfProfileMessage message, object? parameter)
     {
@@ -95,4 +111,30 @@ public partial class ClientViewModel
         Player.CurrentMana = message.Mana ?? Player.CurrentMana;
         Player.MaxMana = message.MaxMana ?? Player.MaxMana;
     }
+
+    #endregion
+
+    #region Inventory Observers
+
+    private void OnAddItemMessage(ProxyConnection connection, ServerAddItemMessage message, object? parameter)
+    {
+        var item = new InventoryItem
+        {
+            Name = message.Name,
+            Sprite = message.Sprite,
+            Color = (byte)message.Color,
+            Quantity = message.Quantity,
+            IsStackable = message.IsStackable,
+            Durability = message.Durability,
+            MaxDurability = message.MaxDurability,
+        };
+        Player.Inventory.SetSlot(message.Slot, item);
+    }
+
+    private void OnRemoveItemMessage(ProxyConnection connection, ServerRemoveItemMessage message, object? parameter)
+    {
+        Player.Inventory.ClearSlot(message.Slot);
+    }
+
+    #endregion
 }
