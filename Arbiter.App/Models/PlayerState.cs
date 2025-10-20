@@ -11,7 +11,7 @@ public sealed class PlayerState
     public int Level { get; set; }
     public int AbilityLevel { get; set; }
     public string? MapName { get; set; }
-    public int MapId { get; set; }
+    public int? MapId { get; set; }
     public int? MapX { get; set; }
     public int? MapY { get; set; }
     

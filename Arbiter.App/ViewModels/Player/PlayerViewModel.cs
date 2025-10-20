@@ -94,6 +94,7 @@ public partial class PlayerViewModel : ViewModelBase
     partial void OnLevelChanged(int value) => _player.Level = value;
     partial void OnAbilityLevelChanged(int value) => _player.AbilityLevel = value;
     partial void OnClassChanged(string? value) => _player.Class = value;
+    partial void OnMapIdChanged(int? value) => _player.MapId = value;
     partial void OnMapNameChanged(string? value) => _player.MapName = value;
     partial void OnMapXChanged(int? value) => _player.MapX = value;
     partial void OnMapYChanged(int? value) => _player.MapY = value;
