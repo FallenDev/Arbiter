@@ -21,13 +21,15 @@ public partial class ClientViewModel
 
     private void AddObservers()
     {
-        _userIdMessageObserver = _connection.AddObserver<ServerUserIdMessage>(OnUserIdMessage);
+        const int observerPriority = int.MaxValue - 100;
+        
+        _userIdMessageObserver = _connection.AddObserver<ServerUserIdMessage>(OnUserIdMessage, observerPriority);
 
-        _walkMessageObserver = _connection.AddObserver<ClientWalkMessage>(OnClientWalkMessage);
-        _mapInfoMessageObserver = _connection.AddObserver<ServerMapInfoMessage>(OnMapInfoMessage);
-        _mapLocationMessageObserver = _connection.AddObserver<ServerMapLocationMessage>(OnMapLocationMessage);
-        _selfProfileMessageObserver = _connection.AddObserver<ServerSelfProfileMessage>(OnSelfProfileMessage);
-        _updateStatsMessageObserver = _connection.AddObserver<ServerUpdateStatsMessage>(OnUpdateStatsMessage);
+        _walkMessageObserver = _connection.AddObserver<ClientWalkMessage>(OnClientWalkMessage, observerPriority);
+        _mapInfoMessageObserver = _connection.AddObserver<ServerMapInfoMessage>(OnMapInfoMessage, observerPriority);
+        _mapLocationMessageObserver = _connection.AddObserver<ServerMapLocationMessage>(OnMapLocationMessage, observerPriority);
+        _selfProfileMessageObserver = _connection.AddObserver<ServerSelfProfileMessage>(OnSelfProfileMessage, observerPriority);
+        _updateStatsMessageObserver = _connection.AddObserver<ServerUpdateStatsMessage>(OnUpdateStatsMessage, observerPriority);
 
         // Inventory
         _addItemObserver = _connection.AddObserver<ServerAddItemMessage>(OnAddItemMessage);
