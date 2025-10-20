@@ -7,10 +7,6 @@
              x:Class="Arbiter.App.Views.ClientView"
              x:DataType="vm:ClientViewModel">
     
-    <Design.DataContext>
-        <vm:DesignClientViewModel/>
-    </Design.DataContext>
-    
     <UserControl.Resources>
         <SolidColorBrush x:Key="Talgonite.Client.NameForeground" Color="#e0e0e0"/>
         <SolidColorBrush x:Key="Talgonite.Client.LevelForeground" Color="#7b7e85"/>
@@ -42,12 +38,12 @@
 
                     <!-- Level and Class -->
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
-                        <TextBlock Text="{Binding DisplayLevel}"
+                        <TextBlock Text="{Binding Player.DisplayLevel}"
                                    TextAlignment="Right"
                                    FontSize="14"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
                                    VerticalAlignment="Top"/>
-                        <TextBlock Text="{Binding Class}"
+                        <TextBlock Text="{Binding Player.Class}"
                                    TextAlignment="Right"
                                    FontSize="14"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
@@ -57,10 +53,10 @@
 
                 <!-- Map Location -->
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock Text="{Binding MapName}"
+                    <TextBlock Text="{Binding Player.MapName}"
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
-                    <TextBlock Text="{Binding MapPosition, StringFormat={}({0})}"
+                    <TextBlock Text="{Binding Player.MapPosition, StringFormat={}({0})}"
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
                 </StackPanel>
@@ -83,15 +79,15 @@
                                Foreground="{StaticResource Talgonite.Client.TextForeground}"
                                TextAlignment="Right"
                                VerticalAlignment="Center">
-                        <Run Text="{Binding CurrentHealth}"/>
+                        <Run Text="{Binding Player.CurrentHealth}"/>
                         <Run Text="/"/>
-                        <Run Text="{Binding MaxHealth}"/>
+                        <Run Text="{Binding Player.MaxHealth}"/>
                     </TextBlock>
                 </Grid>
 
                 <!-- HP Bar -->
                 <ProgressBar Minimum="0" Maximum="100"
-                             Value="{Binding BoundedHealthPercent}"
+                             Value="{Binding Player.BoundedHealthPercent}"
                              ShowProgressText="False"
                              Foreground="{StaticResource Talgonite.Client.HealthForeground}"/>
 
@@ -110,15 +106,15 @@
                                Foreground="{StaticResource Talgonite.Client.TextForeground}"
                                TextAlignment="Right"
                                VerticalAlignment="Center">
-                        <Run Text="{Binding CurrentMana}"/>
+                        <Run Text="{Binding Player.CurrentMana}"/>
                         <Run Text="/"/>
-                        <Run Text="{Binding MaxMana}"/>
+                        <Run Text="{Binding Player.MaxMana}"/>
                     </TextBlock>
                 </Grid>
 
                 <!-- MP Bar -->
                 <ProgressBar Minimum="0" Maximum="100"
-                             Value="{Binding BoundedManaPercent}"
+                             Value="{Binding Player.BoundedManaPercent}"
                              ShowProgressText="False"
                              Foreground="{StaticResource Talgonite.Client.ManaForeground}"/>
             </StackPanel>

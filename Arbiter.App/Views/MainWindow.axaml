@@ -63,17 +63,23 @@
                                       Data="{StaticResource Talgonite.Icon.NewPlus}"/>
                             </Button>
                         </WrapPanel>
-                        <ListBox ItemsSource="{Binding ClientManager.Clients}"
-                                 SelectedItem="{Binding ClientManager.SelectedClient}"
-                                 Classes="bubble"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <ListBox.DataTemplates>
-                                <DataTemplate DataType="vmc:ClientViewModel">
-                                    <v:ClientView/>
-                                </DataTemplate>
-                            </ListBox.DataTemplates>
-                        </ListBox>
+                        <Grid>
+                            <ListBox ItemsSource="{Binding ClientManager.Clients}"
+                                     SelectedItem="{Binding ClientManager.SelectedClient}"
+                                     Classes="bubble"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.DataTemplates>
+                                    <DataTemplate DataType="vmc:ClientViewModel">
+                                        <v:ClientView/>
+                                    </DataTemplate>
+                                </ListBox.DataTemplates>
+                            </ListBox>
+                            
+                            <TextBlock Text="No Clients"
+                                       Classes="placeholder"
+                                       IsVisible="{Binding !ClientManager.HasClients}"/>
+                        </Grid>
                     </DockPanel>
                 </TabItem>
             </TabControl>
@@ -145,11 +151,17 @@
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0">
+                <!-- Trace View -->
                 <TabItem Header="Trace">
                     <v:TraceView DataContext="{Binding Trace}"/>
                 </TabItem>
+                <!-- Dialog View -->
                 <TabItem Header="Dialog">
                     <v:DialogManagerView DataContext="{Binding DialogManager}"/>
+                </TabItem>
+                <!-- Inventory View -->
+                <TabItem Header="Inventory">
+                    <v:PlayerInventoryView DataContext="{Binding ClientManager.SelectedClient.Player.Inventory, FallbackValue={x:Null}}"/>
                 </TabItem>
             </TabControl>
             

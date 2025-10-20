@@ -28,7 +28,7 @@ public partial class ProxyViewModel
         _debugAddEntityFilter = _proxyServer.AddFilter<ServerAddEntityMessage>(HandleAddEntityMessage,
             $"{FilterPrefix}_Entity_ServerAddEntity", DebugFilterPriority, settings);
 
-        _debugInteractObserver = _proxyServer.AddObserver<ClientInteractMessage>(OnClientInteractMessage, settings);
+        _debugInteractObserver = _proxyServer.AddObserver<ClientInteractMessage>(OnClientInteractMessage, parameter: settings);
 
         _debugInteractResponseFilter =
             _proxyServer.AddFilter<ServerWorldMessageMessage>(HandleInteractResponseMessage,

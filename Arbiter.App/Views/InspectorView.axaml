@@ -20,14 +20,15 @@
           Background="{StaticResource Talgonite.Control.Background}">
         
         <!-- No Selection Placeholder -->
-        <TextBlock Grid.Row="3"
-                   Text="No packet selected"
-                   TextAlignment="Center"
-                   Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
-                   FontSize="18"
-                   VerticalAlignment="Center"
-                   IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}"/>
-        
+        <Grid Grid.Row="3" Background="{StaticResource Talgonite.Window.Background}"
+              Margin="2"
+              IsVisible="{Binding InspectedPacket, Converter={x:Static ObjectConverters.IsNull}}">
+            <Border Classes="sunken-highlight"/>
+            <Border Classes="sunken-shadow"/>
+            <TextBlock Text="No Packet Selected"
+                       Classes="placeholder"/>
+        </Grid>
+      
         <!-- Empty Placeholder -->
         <TextBlock Grid.Row="3"
                    Text="No properties to show"

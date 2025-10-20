@@ -2,10 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using Arbiter.Net.Client;
-using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
-using Arbiter.Net.Observers;
-using Arbiter.Net.Server.Messages;
 
 namespace Arbiter.Net.Proxy;
 
@@ -105,6 +102,8 @@ public partial class ProxyServer : IDisposable
 
             // Inherit proxy-wide filters for newly connected client
             InheritFilters(connection);
+            // Inherit proxy-wide observers for newly connected client
+            InheritObservers(connection);
 
             ClientConnected?.Invoke(this, new ProxyConnectionEventArgs(connection));
 
@@ -175,18 +174,9 @@ public partial class ProxyServer : IDisposable
         ServerDisconnected?.Invoke(this, new ProxyConnectionEventArgs((sender as ProxyConnection)!));
 
     private void OnRecv(object? sender, NetworkTransferEventArgs e)
-    {
-        if (sender is not ProxyConnection connection)
-        {
-            return;
-        }
-
-        PacketReceived?.Invoke(this,
-            new ProxyConnectionDataEventArgs(connection, e.Direction, e.Encrypted, e.Decrypted,
+        => PacketReceived?.Invoke(this,
+            new ProxyConnectionDataEventArgs((sender as ProxyConnection)!, e.Direction, e.Encrypted, e.Decrypted,
                 e.FilterResult));
-        
-        NotifyObservers(connection, e.Decrypted);
-    }
 
     private void OnSend(object? sender, NetworkTransferEventArgs e) =>
         PacketSent?.Invoke(this,
@@ -238,8 +228,6 @@ public partial class ProxyServer : IDisposable
             }
 
             _connections.Clear();
-            
-            _observerDispatcher.Dispose();
         }
 
         _listener = null;

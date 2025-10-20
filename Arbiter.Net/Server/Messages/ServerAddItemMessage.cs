@@ -21,7 +21,7 @@ public class ServerAddItemMessage : ServerMessage
         base.Deserialize(reader);
         
         Slot = reader.ReadByte();
-        Sprite = reader.ReadUInt16();
+        Sprite = SpriteFlags.ClearFlags(reader.ReadUInt16());
         Color = (DyeColor)reader.ReadByte();
         Name = reader.ReadString8();
         Quantity = reader.ReadUInt32();
@@ -33,9 +33,11 @@ public class ServerAddItemMessage : ServerMessage
     public override void Serialize(ref NetworkPacketBuilder builder)
     {
         base.Serialize(ref builder);
+
+        var spriteWithFlags = SpriteFlags.SetItem(Sprite);
         
         builder.AppendByte(Slot);
-        builder.AppendUInt16(Sprite);
+        builder.AppendUInt16(spriteWithFlags);
         builder.AppendByte((byte)Color);
         builder.AppendString8(Name);
         builder.AppendUInt32(Quantity);

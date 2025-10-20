@@ -4,7 +4,6 @@ using System.Threading.Channels;
 using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
-using Arbiter.Net.Serialization;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
@@ -12,6 +11,8 @@ namespace Arbiter.Net.Proxy;
 
 public partial class ProxyConnection : IDisposable
 {
+    private record struct QueuedNetworkPacket(NetworkPacket Packet, NetworkPacketSource Source);
+    
     private const int RecvBufferSize = 4096;
 
     private bool _isDisposed;
@@ -35,8 +36,8 @@ public partial class ProxyConnection : IDisposable
 
     private int _clientSequence;
     private int _serverSequence;
-    private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
-    private readonly Channel<NetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<NetworkPacket>();
+    private readonly Channel<QueuedNetworkPacket> _sendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
+    private readonly Channel<QueuedNetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
 
     public int Id { get; }
     public string? Name { get; private set; }
@@ -74,85 +75,6 @@ public partial class ProxyConnection : IDisposable
 
         _clientMessageFactory = clientMessageFactory ?? ClientMessageFactory.Default;
         _serverMessageFactory = serverMessageFactory ?? ServerMessageFactory.Default;
-    }
-
-    public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal)
-    {
-        // Prioritize outgoing client heartbeat packets
-        if (packet is ClientPacket { Command: ClientCommand.Heartbeat })
-        {
-            priority = NetworkPriority.High;
-        }
-
-        var writer = priority switch
-        {
-            NetworkPriority.High => _prioritySendQueue.Writer,
-            _ => _sendQueue.Writer,
-        };
-
-        if (!writer.TryWrite(packet))
-        {
-            return false;
-        }
-
-        PacketQueued?.Invoke(this, new NetworkPacketEventArgs(packet));
-        return true;
-    }
-
-    public bool EnqueueMessage(IClientMessage message, NetworkPriority priority = NetworkPriority.Normal)
-    {
-        var command = _clientMessageFactory.GetMessageCommand(message.GetType());
-        if (command is null)
-        {
-            return false;
-        }
-
-        var builder = new NetworkPacketBuilder(command.Value);
-        try
-        {
-            message.Serialize(ref builder);
-            var packet = builder.ToPacket();
-
-            // Prioritize outgoing client heartbeat packets
-            if (packet is ClientPacket { Command: ClientCommand.Heartbeat })
-            {
-                priority = NetworkPriority.High;
-            }
-
-            return EnqueuePacket(packet, priority);
-        }
-        finally
-        {
-            builder.Dispose();
-        }
-    }
-
-    public bool EnqueueMessage(IServerMessage message, NetworkPriority priority = NetworkPriority.Normal)
-    {
-        var command = _serverMessageFactory.GetMessageCommand(message.GetType());
-        if (command is null)
-        {
-            return false;
-        }
-
-        var builder = new NetworkPacketBuilder(command.Value);
-        try
-        {
-            message.Serialize(ref builder);
-            var packet = builder.ToPacket();
-
-            // Prioritize incoming server heartbeat packets
-            if (packet is ServerPacket { Command: ServerCommand.Heartbeat })
-            {
-                priority = NetworkPriority.High;
-            }
-
-            return EnqueuePacket(packet, priority);
-        }
-        finally
-        {
-            builder.Dispose();
-        }
     }
 
     internal async Task ConnectToRemoteAsync(IPEndPoint remoteEndpoint, CancellationToken token = default)

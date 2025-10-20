@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-10-20
+
+### Added
+
+- Option to show item quantity in sell/deposit dialogs
+- `Inventory` tab showing selected character inventory
+- Sync inventory state for characters
+- Observers in network layer
+- Network packet source for detecting injected packets
+
+### Changed
+
+- Allow mod menu to show in Dialog view
+- Only non-empty slots in Destroy Item mod menu option
+- Remove sprite flags in Sprite value for `ServerAddItemMessage` previews
+- Placeholder text in `Dialog` view when no selected client
+- Placeholder text in `Clients` view when no clients available
+- Placeholder background for `Inspector` view to make it less empty
+- Refactor several filters to observers for performance
+
 ## [1.5.1] - 2025-10-18
 
 ### Added

@@ -18,19 +18,21 @@ public partial class EntityManagerViewModel
 
     private void AddObservers(ProxyServer proxyServer)
     {
-        proxyServer.AddObserver<ClientInteractMessage>(OnClientInteractMessage);
+        const int observerPriority = int.MinValue;
+        
+        proxyServer.AddObserver<ClientInteractMessage>(OnClientInteractMessage, observerPriority);
 
-        proxyServer.AddObserver<ServerAddEntityMessage>(OnAddEntityMessage);
-        proxyServer.AddObserver<ServerRemoveEntityMessage>(OnRemoveEntityMessage);
-        proxyServer.AddObserver<ServerShowUserMessage>(OnShowUserMessage);
-        proxyServer.AddObserver<ServerUserProfileMessage>(OnUserProfileMessage);
-        proxyServer.AddObserver<ServerPublicMessageMessage>(OnPublicMessage);
-        proxyServer.AddObserver<ServerShowDialogMessage>(OnShowDialogMessage);
-        proxyServer.AddObserver<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage);
-        proxyServer.AddObserver<ServerEntityWalkMessage>(OnEntityWalkMessage);
-        proxyServer.AddObserver<ServerWalkResponseMessage>(OnSelfWalkMessage);
-        proxyServer.AddObserver<ServerMapLocationMessage>(OnServerMapLocationMessage);
-        proxyServer.AddObserver<ServerWorldMessageMessage>(OnInteractResponse);
+        proxyServer.AddObserver<ServerAddEntityMessage>(OnAddEntityMessage, observerPriority);
+        proxyServer.AddObserver<ServerRemoveEntityMessage>(OnRemoveEntityMessage, observerPriority);
+        proxyServer.AddObserver<ServerShowUserMessage>(OnShowUserMessage, observerPriority);
+        proxyServer.AddObserver<ServerUserProfileMessage>(OnUserProfileMessage, observerPriority);
+        proxyServer.AddObserver<ServerPublicMessageMessage>(OnPublicMessage, observerPriority);
+        proxyServer.AddObserver<ServerShowDialogMessage>(OnShowDialogMessage, observerPriority);
+        proxyServer.AddObserver<ServerShowDialogMenuMessage>(OnShowDialogMenuMessage, observerPriority);
+        proxyServer.AddObserver<ServerEntityWalkMessage>(OnEntityWalkMessage, observerPriority);
+        proxyServer.AddObserver<ServerWalkResponseMessage>(OnSelfWalkMessage, observerPriority);
+        proxyServer.AddObserver<ServerMapLocationMessage>(OnServerMapLocationMessage, observerPriority);
+        proxyServer.AddObserver<ServerWorldMessageMessage>(OnInteractResponse, observerPriority);
 
         proxyServer.ClientConnected += OnClientConnected;
         proxyServer.ClientDisconnected += OnClientDisconnected;

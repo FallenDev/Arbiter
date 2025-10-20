@@ -16,11 +16,13 @@ public partial class ProxyConnection
             while (!token.IsCancellationRequested)
             {
                 NetworkPacket decryptedPacket;
-
+                NetworkPacketSource source;
+                
                 // Prefer priority queue packets first
                 if (_prioritySendQueue.Reader.TryRead(out var priorityPacket))
                 {
-                    decryptedPacket = priorityPacket;
+                    decryptedPacket = priorityPacket.Packet;
+                    source = priorityPacket.Source;
                 }
                 else
                 {
@@ -31,17 +33,19 @@ public partial class ProxyConnection
 
                     if (_prioritySendQueue.Reader.TryRead(out priorityPacket))
                     {
-                        decryptedPacket = priorityPacket;
+                        decryptedPacket = priorityPacket.Packet;
+                        source = priorityPacket.Source;
                     }
                     else if (_sendQueue.Reader.TryRead(out var normalPacket))
                     {
-                        decryptedPacket = normalPacket;
+                        decryptedPacket = normalPacket.Packet;
+                        source = normalPacket.Source;
                     }
                     else
                     {
                         // Both queues completed or canceled
-                        if ((priorityWait.IsCompleted && priorityWait.Result == false) &&
-                            (normalWait.IsCompleted && normalWait.Result == false))
+                        if (priorityWait is { IsCompleted: true, Result: false } &&
+                            normalWait is { IsCompleted: true, Result: false })
                         {
                             break;
                         }
@@ -110,6 +114,13 @@ public partial class ProxyConnection
                 // Notify that we have sent a packet
                 PacketSent?.Invoke(this,
                     new NetworkTransferEventArgs(NetworkDirection.Send, encryptedPacket, decryptedPacket));
+                
+                // Notify observers for injected packet messages
+                // Normally the receive loop handles it but for custom packets we notify on successful send
+                if (source == NetworkPacketSource.Injected)
+                {
+                    NotifyObservers(this, decryptedPacket);
+                }
             }
         }
         catch when (token.IsCancellationRequested)

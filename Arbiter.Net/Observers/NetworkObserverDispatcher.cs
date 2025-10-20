@@ -1,5 +1,4 @@
 ﻿using System.Buffers;
-using System.Collections.Concurrent;
 using System.Threading.Channels;
 using Arbiter.Net.Proxy;
 
@@ -14,10 +13,11 @@ public class NetworkObserverDispatcher : IDisposable
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly Task _dispatcherTask;
 
-    private readonly ConcurrentDictionary<Type, ConcurrentBag<IObserverRegistration>> _observersByType = new();
+    private readonly ReaderWriterLockSlim _lock = new();
+    private readonly Dictionary<Type, List<IObserverRegistration>> _observersByType = new();
 
     private bool _isDisposed;
-    
+
     public event EventHandler<NetworkExceptionEventArgs>? ObserverException;
 
     public NetworkObserverDispatcher()
@@ -40,47 +40,65 @@ public class NetworkObserverDispatcher : IDisposable
         return _queueWriter.TryWrite(new ObserverMessage(connection, message));
     }
 
-    public NetworkObserverRef AddObserver<T>(NetworkMessageObserver<T> observer, object? parameter = null) where T : class, INetworkMessage
+    public NetworkObserverRef AddObserver<T>(NetworkMessageObserver<T> observer, int priority = 10,
+        object? parameter = null) where T : class, INetworkMessage
     {
         CheckIfDisposed();
-        
-        var registration = new SyncObserverRegistration<T>(observer, parameter);
+
+        var registration = new SyncObserverRegistration<T>(observer, parameter) { Priority = priority };
         var messageType = typeof(T);
 
-        _observersByType.AddOrUpdate(
-            messageType,
-            [registration],
-            (_, bag) =>
-            {
-                bag.Add(registration);
-                return bag;
-            });
+        AddObserverInternal(messageType, registration);
 
-        return new NetworkObserverRef(() => RemoveObserver(registration));
+        return new NetworkObserverRef(() => RemoveObserver(messageType, registration));
     }
-    
-    public NetworkObserverRef AddObserver<T>(AsyncNetworkMessageObserver<T> observer, object? parameter = null) where T : class, INetworkMessage
+
+    public NetworkObserverRef AddObserver<T>(AsyncNetworkMessageObserver<T> observer, int priority = 10,
+        object? parameter = null) where T : class, INetworkMessage
     {
         CheckIfDisposed();
-        
-        var registration = new AsyncObserverRegistration<T>(observer, parameter);
+
+        var registration = new AsyncObserverRegistration<T>(observer, parameter) { Priority = priority };
         var messageType = typeof(T);
 
-        _observersByType.AddOrUpdate(
-            messageType,
-            [registration],
-            (_, bag) =>
-            {
-                bag.Add(registration);
-                return bag;
-            });
+        AddObserverInternal(messageType, registration);
 
-        return new NetworkObserverRef(() => RemoveObserver(registration));
+        return new NetworkObserverRef(() => RemoveObserver(messageType, registration));
     }
 
-    private static void RemoveObserver(IObserverRegistration registration)
+    private void AddObserverInternal(Type messageType, IObserverRegistration observer)
     {
-        registration.IsActive = false;
+        _lock.EnterWriteLock();
+
+        try
+        {
+            if (!_observersByType.TryGetValue(messageType, out var observers))
+            {
+                observers = [];
+                _observersByType[messageType] = observers;
+            }
+
+            observers.Add(observer);
+            observers.Sort((a, b) => b.Priority.CompareTo(a.Priority));
+        }
+        finally
+        {
+            _lock.ExitWriteLock();
+        }
+    }
+
+    private bool RemoveObserver(Type messageType, IObserverRegistration observer)
+    {
+        _lock.EnterWriteLock();
+
+        try
+        {
+            return _observersByType.TryGetValue(messageType, out var observers) && observers.Remove(observer);
+        }
+        finally
+        {
+            _lock.ExitWriteLock();
+        }
     }
 
     private async Task DispatchLoopAsync(CancellationToken token)
@@ -88,65 +106,40 @@ public class NetworkObserverDispatcher : IDisposable
         await foreach (var message in _queueReader.ReadAllAsync(token))
         {
             var messageType = message.Message.GetType();
+            IObserverRegistration[]? observersArray = null;
+            var observerCount = 0;
 
-            if (!_observersByType.TryGetValue(messageType, out var observers) || observers.IsEmpty)
-            {
-                continue;
-            }
-
-            // Rent an array to store active observers
-            var count = 0;
-            var hasInactiveObservers = false;
-            var observerArray = ArrayPool<IObserverRegistration>.Shared.Rent(100);
-            Task[]? taskArray = null;
-
+            _lock.EnterReadLock();
             try
             {
-                foreach (var observer in observers)
+                if (_observersByType.TryGetValue(messageType, out var observerList) && observerList.Count > 0)
                 {
-                    if (!observer.IsActive)
-                    {
-                        hasInactiveObservers = true;
-                        continue;
-                    }
-
-                    // If we've reached the array capacity, grow it
-                    if (count >= observerArray.Length)
-                    {
-                        var oldArray = observerArray;
-                        observerArray = ArrayPool<IObserverRegistration>.Shared.Rent(oldArray.Length * 2);
-                        Array.Copy(oldArray, observerArray, oldArray.Length);
-                        ArrayPool<IObserverRegistration>.Shared.Return(oldArray);
-                    }
-
-                    observerArray[count++] = observer;
-                }
-
-                // If we have any active observers, dispatch them to the message handler
-                if (count > 0)
-                {
-                    taskArray = ArrayPool<Task>.Shared.Rent(count);
-                    for (var i = 0; i < count; i++)
-                    {
-                        var observer = observerArray[i];
-                        taskArray[i] = SafeHandleAsync(observer, message.Connection, message.Message);
-                    }
-
-                    await Task.WhenAll(taskArray.AsSpan(0, count));
+                    observersArray = ArrayPool<IObserverRegistration>.Shared.Rent(observerList.Count);
+                    observerList.CopyTo(observersArray);
+                    observerCount = observerList.Count;
                 }
             }
             finally
             {
-                ArrayPool<IObserverRegistration>.Shared.Return(observerArray);
-                if (taskArray != null)
+                _lock.ExitReadLock();
+            }
+
+            if (observersArray == null || observerCount == 0)
+            {
+                continue;
+            }
+
+            try
+            {
+                // Process observers sequentially based on priority
+                for (var i = 0; i < observerCount; i++)
                 {
-                    ArrayPool<Task>.Shared.Return(taskArray);
+                    await SafeHandleAsync(observersArray[i], message.Connection, message.Message);
                 }
-                
-                if (hasInactiveObservers)
-                {
-                    CleanupInactiveObservers(messageType);
-                }
+            }
+            finally
+            {
+                ArrayPool<IObserverRegistration>.Shared.Return(observersArray);
             }
         }
     }
@@ -161,28 +154,6 @@ public class NetworkObserverDispatcher : IDisposable
         catch (Exception ex)
         {
             ObserverException?.Invoke(observer, new NetworkExceptionEventArgs(ex));
-        }
-    }
-
-    private void CleanupInactiveObservers(Type messageType)
-    {
-        if (!_observersByType.TryGetValue(messageType, out var observers))
-        {
-            return;
-        }
-
-        var activeObservers = observers.Where(o => o.IsActive).ToList();
-        
-        if (activeObservers.Count == 0)
-        {
-            // If there are no more active observers, remove the bag entirely
-            _observersByType.TryRemove(messageType, out _);
-        }
-        else if (activeObservers.Count < observers.Count)
-        {
-            // Replace the bag with a new one containing only the active observers
-            var newBag = new ConcurrentBag<IObserverRegistration>(activeObservers);
-            _observersByType.AddOrUpdate(messageType, newBag, (_, _) => newBag);
         }
     }
 
