@@ -15,8 +15,8 @@ public sealed class PlayerInventory
     public int Capacity => _items.Length;
     public int Count => _items.Count(i => !i.IsEmpty);
 
-    public event Action<InventoryItem>? ItemAdded;
-    public event Action<InventoryItem>? ItemRemoved;
+    public event Action<int, InventoryItem>? ItemAdded;
+    public event Action<int, InventoryItem>? ItemRemoved;
     public event Action? ItemsChanged;
 
     public PlayerInventory()
@@ -81,7 +81,7 @@ public sealed class PlayerInventory
         }
 
         _items[slot - 1] = item;
-        ItemAdded?.Invoke(item);
+        ItemAdded?.Invoke(slot, item);
         ItemsChanged?.Invoke();
     }
 
@@ -93,13 +93,13 @@ public sealed class PlayerInventory
         }
 
         var item = _items[slot - 1];
-        if (!item.IsEmpty)
+        if (item.IsEmpty)
         {
             return;
         }
 
         _items[slot - 1] = InventoryItem.Empty;
-        ItemRemoved?.Invoke(item);
+        ItemRemoved?.Invoke(slot, item);
         ItemsChanged?.Invoke();
     }
 
@@ -123,7 +123,7 @@ public sealed class PlayerInventory
 
             if (!wasEmpty)
             {
-                ItemRemoved?.Invoke(_items[i]);
+                ItemRemoved?.Invoke(i + 1, _items[i]);
             }
         }
 

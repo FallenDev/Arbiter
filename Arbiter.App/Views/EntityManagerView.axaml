@@ -152,9 +152,9 @@
                                                    Text="{Binding Id, StringFormat={}0x{0:X}}"
                                                    TextAlignment="Right"
                                                    Foreground="{StaticResource Talgonite.Color.LightGray}"
-                                                   FontSize="16"
+                                                   FontSize="14"
                                                    FontFamily="{StaticResource Talgonite.Font.Monospace}"
-                                                   VerticalAlignment="Bottom"/>
+                                                   VerticalAlignment="Center"/>
                                         
                                         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                                 Margin="-4,0"

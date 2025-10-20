@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Remove sprite flags in Sprite value for `ServerAddItemMessage` previews
 - Placeholder text in `Dialog` view when no selected client
 - Placeholder text in `Clients` view when no clients available
 - Placeholder background for `Inspector` view to make it less empty

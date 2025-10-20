@@ -21,6 +21,9 @@ public partial class PlayerInventoryViewModel : ViewModelBase
         {
             InventorySlots.Add(new PlayerInventorySlotViewModel(i + 1, inventory[i]));
         }
+
+        _inventory.ItemAdded += OnItemAdded;
+        _inventory.ItemRemoved += OnItemRemoved;
     }
 
     public void SetSlot(int slot, InventoryItem item) =>
@@ -28,4 +31,24 @@ public partial class PlayerInventoryViewModel : ViewModelBase
     
     public void ClearSlot(int slot) =>
         _inventory.ClearSlot(slot);
+
+    private void OnItemAdded(int slot, InventoryItem item)
+    {
+        if (slot < 1 || slot > _inventory.Capacity)
+        {
+            return;
+        }
+
+        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot, item);
+    }
+
+    private void OnItemRemoved(int slot, InventoryItem item)
+    {
+        if (slot < 1 || slot > _inventory.Capacity)
+        {
+            return;
+        }
+
+        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot, InventoryItem.Empty);
+    }
 }
