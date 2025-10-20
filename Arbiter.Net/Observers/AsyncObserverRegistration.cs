@@ -9,7 +9,7 @@ internal class AsyncObserverRegistration<T> : IObserverRegistration where T : cl
     private readonly AsyncNetworkMessageObserver<T> _observer;
     private readonly object? _parameter;
 
-    public bool IsActive { get; set; } = true;
+    public int Priority { get; init; } = 10;
 
     public AsyncObserverRegistration(AsyncNetworkMessageObserver<T> observer, object? parameter = null)
     {

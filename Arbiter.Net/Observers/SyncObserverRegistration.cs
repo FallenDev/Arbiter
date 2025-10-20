@@ -9,7 +9,7 @@ internal class SyncObserverRegistration<T> : IObserverRegistration where T : cla
     private readonly NetworkMessageObserver<T> _observer;
     private readonly object? _parameter;
 
-    public bool IsActive { get; set; } = true;
+    public int Priority { get; init; } = 10;
 
     public SyncObserverRegistration(NetworkMessageObserver<T> observer, object? parameter = null)
     {

@@ -8,11 +8,18 @@ public partial class ProxyConnection
 {
     private readonly NetworkObserverDispatcher _observerDispatcher = new();
 
-    public NetworkObserverRef AddObserver<T>(NetworkMessageObserver<T> observer, object? parameter = null)
+    public NetworkObserverRef AddObserver<T>(NetworkMessageObserver<T> observer, int priority = 10, object? parameter = null)
         where T : class, INetworkMessage
     {
         CheckIfDisposed();
-        return _observerDispatcher.AddObserver(observer, parameter);
+        return _observerDispatcher.AddObserver(observer, priority, parameter);
+    }
+    
+    public NetworkObserverRef AddObserver<T>(AsyncNetworkMessageObserver<T> observer, int priority = 10, object? parameter = null)
+        where T : class, INetworkMessage
+    {
+        CheckIfDisposed();
+        return _observerDispatcher.AddObserver(observer, priority, parameter);
     }
     
     private void NotifyObservers(ProxyConnection connection, NetworkPacket packet)

@@ -4,6 +4,7 @@ namespace Arbiter.Net.Observers;
 
 internal interface IObserverRegistration
 {
-    bool IsActive { get; set; }
+    int Priority { get; }
+    
     Task HandleAsync(ProxyConnection connection, INetworkMessage message);
 }
