@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Arbiter.App.Models;
 
@@ -36,5 +37,35 @@ public readonly struct InventoryItem
         }
 
         return sb.ToString();
+    }
+
+    public static string GetBaseName(string name)
+    {
+        if (string.IsNullOrEmpty(name) || name[^1] != ']')
+        {
+            return name;
+        }
+
+        var bracketIndex = name.LastIndexOf(" [", StringComparison.Ordinal);
+        if (bracketIndex < 0)
+        {
+            return name;
+        }
+
+        // Ensure it ends with ']' and content between '[' and ']' are digits only
+        var start = bracketIndex + 2; // skip space and '['
+        var end = name.Length - 1; // position of ']'
+        if (start >= end) return name;
+
+        for (var i = start; i < end; i++)
+        {
+            if (!char.IsDigit(name[i]))
+            {
+                return name;
+            }
+        }
+
+        // Looks like a quantity suffix; strip it
+        return name[..bracketIndex];
     }
 }

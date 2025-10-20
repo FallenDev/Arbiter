@@ -125,7 +125,7 @@ public partial class ProxyViewModel
         {
             return result.Passthrough();
         }
-        
+
         SendItemQuantityOverrides(connection, player.Inventory);
         return result.Passthrough();
     }
@@ -136,7 +136,7 @@ public partial class ProxyViewModel
         var addItemMessages = inventory.Where(i => i.IsStackable)
             .Select(item =>
             {
-                var baseName = StripItemQuantitySuffix(item.Name);
+                var baseName = InventoryItem.GetBaseName(item.Name);
                 return new ServerAddItemMessage
                 {
                     Slot = (byte)item.Slot,
@@ -150,13 +150,13 @@ public partial class ProxyViewModel
                 };
             });
         connection.EnqueueMessages(addItemMessages, NetworkPriority.High);
-        
+
         // Then we revert it after a short delay which will happen after the dialog is shown
         // This happens very quickly so its not noticeable to the user
         var revertItemMessages = inventory.Where(i => i.IsStackable)
             .Select(item =>
             {
-                var baseName = StripItemQuantitySuffix(item.Name);
+                var baseName = InventoryItem.GetBaseName(item.Name);
                 return new ServerAddItemMessage
                 {
                     Slot = (byte)item.Slot,
@@ -170,35 +170,5 @@ public partial class ProxyViewModel
                 };
             });
         connection.EnqueueMessagesAfter(revertItemMessages, TimeSpan.FromMilliseconds(100), NetworkPriority.High);
-    }
-
-    private static string StripItemQuantitySuffix(string name)
-    {
-        if (string.IsNullOrEmpty(name) || name[^1] != ']')
-        {
-            return name;
-        }
-
-        var bracketIndex = name.LastIndexOf(" [", StringComparison.Ordinal);
-        if (bracketIndex < 0)
-        {
-            return name;
-        }
-
-        // Ensure it ends with ']' and content between '[' and ']' are digits only
-        var start = bracketIndex + 2; // skip space and '['
-        var end = name.Length - 1; // position of ']'
-        if (start >= end) return name;
-
-        for (var i = start; i < end; i++)
-        {
-            if (!char.IsDigit(name[i]))
-            {
-                return name;
-            }
-        }
-
-        // Looks like a quantity suffix; strip it
-        return name[..bracketIndex];
     }
 }
