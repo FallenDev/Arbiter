@@ -120,6 +120,7 @@ public partial class ClientViewModel
     {
         var item = new InventoryItem
         {
+            Slot = message.Slot,
             Name = message.Name,
             Sprite = message.Sprite,
             Color = (byte)message.Color,

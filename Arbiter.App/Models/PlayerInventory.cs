@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Arbiter.App.Models;
 
-public sealed class PlayerInventory
+public sealed class PlayerInventory : IReadOnlyCollection<InventoryItem>
 {
     public const int MaxItems = 60;
 
@@ -23,7 +24,7 @@ public sealed class PlayerInventory
     {
         for (var i = 0; i < _items.Length; i++)
         {
-            _items[i] = InventoryItem.Empty;
+            _items[i] = InventoryItem.Empty(i + 1);
         }
     }
 
@@ -54,7 +55,7 @@ public sealed class PlayerInventory
 
     public bool TryFindItem(string name, out InventoryItem item)
     {
-        item = InventoryItem.Empty;
+        item = InventoryItem.Empty();
 
         foreach (var t in _items)
         {
@@ -80,7 +81,7 @@ public sealed class PlayerInventory
             return;
         }
 
-        _items[slot - 1] = item;
+        _items[slot - 1] = item with { Slot = slot };
         ItemAdded?.Invoke(slot, item);
         ItemsChanged?.Invoke();
     }
@@ -98,18 +99,18 @@ public sealed class PlayerInventory
             return;
         }
 
-        _items[slot - 1] = InventoryItem.Empty;
+        _items[slot - 1] = InventoryItem.Empty(slot);
         ItemRemoved?.Invoke(slot, item);
         ItemsChanged?.Invoke();
     }
 
     public void SwapSlot(int a, int b)
     {
-        var itemA = a is < 1 or > MaxItems ? InventoryItem.Empty : _items[a - 1];
-        var itemB = b is < 1 or > MaxItems ? InventoryItem.Empty : _items[b - 1];
+        var itemA = a is < 1 or > MaxItems ? InventoryItem.Empty(a) : _items[a - 1];
+        var itemB = b is < 1 or > MaxItems ? InventoryItem.Empty(b) : _items[b - 1];
 
-        _items[a - 1] = itemB;
-        _items[b - 1] = itemA;
+        _items[a - 1] = itemB with { Slot = a };
+        _items[b - 1] = itemA with { Slot = b };
 
         ItemsChanged?.Invoke();
     }
@@ -119,7 +120,7 @@ public sealed class PlayerInventory
         for (var i = 0; i < _items.Length; i++)
         {
             var wasEmpty = _items[i].IsEmpty;
-            _items[i] = InventoryItem.Empty;
+            _items[i] = InventoryItem.Empty(i + 1);
 
             if (!wasEmpty)
             {
@@ -129,4 +130,11 @@ public sealed class PlayerInventory
 
         ItemsChanged?.Invoke();
     }
+
+    public IEnumerator<InventoryItem> GetEnumerator()
+    {
+        return _items.AsEnumerable().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

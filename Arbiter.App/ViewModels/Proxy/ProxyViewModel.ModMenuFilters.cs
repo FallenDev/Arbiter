@@ -13,6 +13,8 @@ namespace Arbiter.App.ViewModels.Proxy;
 
 public partial class ProxyViewModel
 {
+    private const int ModMenuFilterPriority = int.MinValue + 100;
+    
     private static readonly List<(string Text, ushort PursuitId)> ModMenuChoices =
     [
         ("Interact", 0xFF00),
@@ -34,10 +36,10 @@ public partial class ProxyViewModel
     private void AddModMenuFilters(DebugSettings settings)
     {
         _modMenuInteractFilter = _proxyServer.AddFilter<ClientInteractMessage>(HandleModMenuInteractMessage,
-            $"{FilterPrefix}_ModMenu_ClientInteract", int.MinValue, settings);
+            $"{FilterPrefix}_ModMenu_ClientInteract", ModMenuFilterPriority, settings);
 
         _modMenuInteractFilter = _proxyServer.AddFilter<ClientDialogMenuChoiceMessage>(HandleModMenuDialogChoiceMessage,
-            $"{FilterPrefix}_ModMenu_ClientInteract", int.MinValue, settings);
+            $"{FilterPrefix}_ModMenu_ClientInteract", ModMenuFilterPriority, settings);
     }
 
     private void RemoveModMenuFilters()
@@ -100,8 +102,11 @@ public partial class ProxyViewModel
         {
             // Get the player so we can get their inventory
             _playerService.TryGetState(connection.Id, out var player);
-            var destroyItemMenu = GetDestroyItemDialogForEntity(entity, player?.Inventory ?? new PlayerInventory());
+            var inventory = player?.Inventory ?? new PlayerInventory();
             
+            var destroyItemMenu = GetDestroyItemDialogForEntity(entity, inventory);
+            
+            SendItemQuantityOverrides(connection, inventory);
             connection.EnqueueMessage(destroyItemMenu);
             return result.Block();
         }
@@ -164,7 +169,7 @@ public partial class ProxyViewModel
             Content =
                 "Which item do you wish to destroy?\n{=hThis may not work on items which cannot be dropped.\n{=sBe careful! This cannot be undone.\n"
         };
-
+        
         // Add all used slots to the dialog
         dialog.InventorySlots.AddRange(inventory.GetNonEmptySlots().Select(x => (byte)x));
 

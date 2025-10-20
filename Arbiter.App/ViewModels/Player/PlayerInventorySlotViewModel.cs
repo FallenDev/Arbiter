@@ -6,7 +6,7 @@ public partial class PlayerInventorySlotViewModel : ViewModelBase
 {
     private readonly InventoryItem _item;
 
-    public int Slot { get; }
+    public int Slot => _item.Slot;
     public bool IsEmpty => _item.IsEmpty;
     public string Name => _item.Name;
     public ushort Sprite => _item.Sprite;
@@ -20,7 +20,6 @@ public partial class PlayerInventorySlotViewModel : ViewModelBase
 
     public PlayerInventorySlotViewModel(int slot, InventoryItem item)
     {
-        Slot = slot;
         _item = item;
     }
 }

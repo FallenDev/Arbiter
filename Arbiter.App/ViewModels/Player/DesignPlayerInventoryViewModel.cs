@@ -16,6 +16,7 @@ public class DesignPlayerInventoryViewModel : PlayerInventoryViewModel
 
         var testItem = new InventoryItem
         {
+            Slot = 1,
             Name = "Apple",
             Sprite = 1,
             Quantity = 10,

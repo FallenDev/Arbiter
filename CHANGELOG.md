@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Option to show item quantity in sell/deposit dialogs
 - `Inventory` tab showing selected character inventory
 - Sync inventory state for characters
 - Observers in network layer
 
 ### Changed
 
+- Only non-empty slots in Destroy Item mod menu option
 - Remove sprite flags in Sprite value for `ServerAddItemMessage` previews
 - Placeholder text in `Dialog` view when no selected client
 - Placeholder text in `Clients` view when no clients available

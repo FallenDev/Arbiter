@@ -49,6 +49,6 @@ public partial class PlayerInventoryViewModel : ViewModelBase
             return;
         }
 
-        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot, InventoryItem.Empty);
+        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot, InventoryItem.Empty(slot));
     }
 }
