@@ -134,33 +134,71 @@ public partial class ProxyViewModel
     {
         // First we update the client with the stack size in the name
         var addItemMessages = inventory.Where(i => i.IsStackable)
-            .Select(item => new ServerAddItemMessage
+            .Select(item =>
             {
-                Slot = (byte)item.Slot,
-                Name = $"{item.Name} [{item.Quantity}]",
-                Sprite = item.Sprite,
-                Color = (DyeColor)item.Color,
-                Quantity = (uint)item.Quantity,
-                IsStackable = item.IsStackable,
-                Durability = (uint)(item.Durability ?? 0),
-                MaxDurability = (uint)(item.MaxDurability ?? 0)
+                var baseName = StripItemQuantitySuffix(item.Name);
+                return new ServerAddItemMessage
+                {
+                    Slot = (byte)item.Slot,
+                    Name = $"{baseName} [{item.Quantity}]",
+                    Sprite = item.Sprite,
+                    Color = (DyeColor)item.Color,
+                    Quantity = (uint)item.Quantity,
+                    IsStackable = item.IsStackable,
+                    Durability = (uint)(item.Durability ?? 0),
+                    MaxDurability = (uint)(item.MaxDurability ?? 0)
+                };
             });
         connection.EnqueueMessages(addItemMessages, NetworkPriority.High);
         
         // Then we revert it after a short delay which will happen after the dialog is shown
         // This happens very quickly so its not noticeable to the user
         var revertItemMessages = inventory.Where(i => i.IsStackable)
-            .Select(item => new ServerAddItemMessage
+            .Select(item =>
             {
-                Slot = (byte)item.Slot,
-                Name = item.Name,
-                Sprite = item.Sprite,
-                Color = (DyeColor)item.Color,
-                Quantity = (uint)item.Quantity,
-                IsStackable = item.IsStackable,
-                Durability = (uint)(item.Durability ?? 0),
-                MaxDurability = (uint)(item.MaxDurability ?? 0)
+                var baseName = StripItemQuantitySuffix(item.Name);
+                return new ServerAddItemMessage
+                {
+                    Slot = (byte)item.Slot,
+                    Name = baseName,
+                    Sprite = item.Sprite,
+                    Color = (DyeColor)item.Color,
+                    Quantity = (uint)item.Quantity,
+                    IsStackable = item.IsStackable,
+                    Durability = (uint)(item.Durability ?? 0),
+                    MaxDurability = (uint)(item.MaxDurability ?? 0)
+                };
             });
         connection.EnqueueMessagesAfter(revertItemMessages, TimeSpan.FromMilliseconds(100), NetworkPriority.High);
+    }
+
+    private static string StripItemQuantitySuffix(string name)
+    {
+        if (string.IsNullOrEmpty(name) || name[^1] != ']')
+        {
+            return name;
+        }
+
+        var bracketIndex = name.LastIndexOf(" [", StringComparison.Ordinal);
+        if (bracketIndex < 0)
+        {
+            return name;
+        }
+
+        // Ensure it ends with ']' and content between '[' and ']' are digits only
+        var start = bracketIndex + 2; // skip space and '['
+        var end = name.Length - 1; // position of ']'
+        if (start >= end) return name;
+
+        for (var i = start; i < end; i++)
+        {
+            if (!char.IsDigit(name[i]))
+            {
+                return name;
+            }
+        }
+
+        // Looks like a quantity suffix; strip it
+        return name[..bracketIndex];
     }
 }
