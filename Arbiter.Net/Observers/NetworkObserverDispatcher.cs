@@ -106,14 +106,17 @@ public class NetworkObserverDispatcher : IDisposable
         await foreach (var message in _queueReader.ReadAllAsync(token))
         {
             var messageType = message.Message.GetType();
-            List<IObserverRegistration>? observers = null;
+            IObserverRegistration[]? observersArray = null;
+            var observerCount = 0;
 
             _lock.EnterReadLock();
             try
             {
                 if (_observersByType.TryGetValue(messageType, out var observerList) && observerList.Count > 0)
                 {
-                    observers = observerList;
+                    observersArray = ArrayPool<IObserverRegistration>.Shared.Rent(observerList.Count);
+                    observerList.CopyTo(observersArray);
+                    observerCount = observerList.Count;
                 }
             }
             finally
@@ -121,52 +124,22 @@ public class NetworkObserverDispatcher : IDisposable
                 _lock.ExitReadLock();
             }
 
-            if (observers == null)
+            if (observersArray == null)
             {
                 continue;
             }
 
-            // Rent an array to store active observers
-            var count = 0;
-            var observerArray = ArrayPool<IObserverRegistration>.Shared.Rent(100);
-            Task[]? taskArray = null;
-
             try
             {
-                foreach (var observer in observers)
+                // Process observers sequentially based on priority
+                for (var i = 0; i < observerCount; i++)
                 {
-                    // If we've reached the array capacity, grow it
-                    if (count >= observerArray.Length)
-                    {
-                        var oldArray = observerArray;
-                        observerArray = ArrayPool<IObserverRegistration>.Shared.Rent(oldArray.Length * 2);
-                        Array.Copy(oldArray, observerArray, oldArray.Length);
-                        ArrayPool<IObserverRegistration>.Shared.Return(oldArray);
-                    }
-
-                    observerArray[count++] = observer;
-                }
-
-                // If we have any active observers, dispatch them to the message handler
-                if (count > 0)
-                {
-                    taskArray = ArrayPool<Task>.Shared.Rent(count);
-                    for (var i = 0; i < count; i++)
-                    {
-                        var observer = observerArray[i];
-                        taskArray[i] = SafeHandleAsync(observer, message.Connection, message.Message);
-                    }
-
-                    await Task.WhenAll(taskArray.AsSpan(0, count));
+                    await SafeHandleAsync(observersArray[i], message.Connection, message.Message);
                 }
             }
             finally
             {
-                ArrayPool<IObserverRegistration>.Shared.Return(observerArray);
-                if (taskArray != null)
-                {
-                    ArrayPool<Task>.Shared.Return(taskArray);
-                }
+                ArrayPool<IObserverRegistration>.Shared.Return(observersArray);
             }
         }
     }
