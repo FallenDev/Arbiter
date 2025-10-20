@@ -11,6 +11,8 @@ namespace Arbiter.Net.Proxy;
 
 public partial class ProxyConnection : IDisposable
 {
+    private record struct QueuedNetworkPacket(NetworkPacket Packet, NetworkPacketSource Source);
+    
     private const int RecvBufferSize = 4096;
 
     private bool _isDisposed;
@@ -34,8 +36,8 @@ public partial class ProxyConnection : IDisposable
 
     private int _clientSequence;
     private int _serverSequence;
-    private readonly Channel<NetworkPacket> _sendQueue = Channel.CreateUnbounded<NetworkPacket>();
-    private readonly Channel<NetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<NetworkPacket>();
+    private readonly Channel<QueuedNetworkPacket> _sendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
+    private readonly Channel<QueuedNetworkPacket> _prioritySendQueue = Channel.CreateUnbounded<QueuedNetworkPacket>();
 
     public int Id { get; }
     public string? Name { get; private set; }

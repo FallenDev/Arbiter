@@ -36,7 +36,8 @@ public partial class ProxyConnection
             _ => _sendQueue.Writer,
         };
 
-        if (!writer.TryWrite(packet))
+        var queuedPacket = new QueuedNetworkPacket(packet, NetworkPacketSource.Injected);
+        if (!writer.TryWrite(queuedPacket))
         {
             return false;
         }
