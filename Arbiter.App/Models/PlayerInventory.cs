@@ -28,7 +28,7 @@ public sealed class PlayerInventory
     }
 
     public int? GetFirstEmptySlot() => GetEmptySlots().FirstOrDefault();
-    public int? GetFirstUsedSlot() => GetUsedSlots().FirstOrDefault();
+    public int? GetFirstNonEmptySlot() => GetNonEmptySlots().FirstOrDefault();
 
     public IEnumerable<int> GetEmptySlots()
     {
@@ -41,7 +41,7 @@ public sealed class PlayerInventory
         }
     }
 
-    public IEnumerable<int> GetUsedSlots()
+    public IEnumerable<int> GetNonEmptySlots()
     {
         for (var i = 0; i < _items.Length; i++)
         {

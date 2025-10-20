@@ -12,7 +12,9 @@ public partial class ProxyViewModel : ViewModelBase
 {
     private readonly ILogger<ProxyViewModel> _logger;
     private readonly ProxyServer _proxyServer;
+    private readonly IPlayerService _playerService;
     private readonly IEntityStore _entityStore;
+    
 
     public bool IsRunning => _proxyServer.IsRunning;
 
@@ -21,6 +23,7 @@ public partial class ProxyViewModel : ViewModelBase
         _logger = logger;
         
         _proxyServer = serviceProvider.GetRequiredService<ProxyServer>();
+        _playerService = serviceProvider.GetRequiredService<IPlayerService>();
         _entityStore = serviceProvider.GetRequiredService<IEntityStore>();
     }
 

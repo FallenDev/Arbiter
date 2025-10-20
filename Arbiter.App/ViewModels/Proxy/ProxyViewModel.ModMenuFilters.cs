@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Arbiter.App.Models;
 using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
@@ -97,7 +98,10 @@ public partial class ProxyViewModel
         if (message.PursuitId == 0xFF01 && _entityStore.TryGetEntity(message.EntityId, out var entity) &&
             entity.Flags.HasFlag(EntityFlags.Mundane))
         {
-            var destroyItemMenu = GetDestroyItemDialogForEntity(entity);
+            // Get the player so we can get their inventory
+            _playerService.TryGetState(connection.Id, out var player);
+            var destroyItemMenu = GetDestroyItemDialogForEntity(entity, player?.Inventory ?? new PlayerInventory());
+            
             connection.EnqueueMessage(destroyItemMenu);
             return result.Block();
         }
@@ -139,7 +143,8 @@ public partial class ProxyViewModel
         return dialog;
     }
 
-    private static ServerShowDialogMenuMessage GetDestroyItemDialogForEntity(GameEntity entity)
+    private static ServerShowDialogMenuMessage GetDestroyItemDialogForEntity(GameEntity entity,
+        PlayerInventory inventory)
     {
         var dialog = new ServerShowDialogMenuMessage
         {
@@ -160,11 +165,8 @@ public partial class ProxyViewModel
                 "Which item do you wish to destroy?\n{=hThis may not work on items which cannot be dropped.\n{=sBe careful! This cannot be undone.\n"
         };
 
-        // Add all inventory slots
-        for (var i = 1; i < 60; i++)
-        {
-            dialog.InventorySlots.Add((byte)i);
-        }
+        // Add all used slots to the dialog
+        dialog.InventorySlots.AddRange(inventory.GetNonEmptySlots().Select(x => (byte)x));
 
         return dialog;
     }
