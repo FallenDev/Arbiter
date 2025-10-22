@@ -52,6 +52,7 @@ public enum ServerCommand : byte
     RequestUserPortrait = 0x49,
     ForcePacket = 0x4B,
     ExitResponse = 0x4C,
+    UserIdResponse = 0x52,
     ServerTable = 0x56,
     MapTransferComplete = 0x58,
     LoginNotice = 0x60,
