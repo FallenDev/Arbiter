@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;

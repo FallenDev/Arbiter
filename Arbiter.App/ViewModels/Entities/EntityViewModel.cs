@@ -1,4 +1,4 @@
-﻿using Arbiter.App.Models;
+﻿using Arbiter.App.Models.Entities;
 using Arbiter.Net.Types;
 using CommunityToolkit.Mvvm.ComponentModel;
 

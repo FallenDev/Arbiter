@@ -1,4 +1,4 @@
-﻿using Arbiter.App.Models;
+﻿using Arbiter.App.Models.Settings;
 using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;

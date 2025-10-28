@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using Arbiter.App.Collections;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Arbiter.App.Threading;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;

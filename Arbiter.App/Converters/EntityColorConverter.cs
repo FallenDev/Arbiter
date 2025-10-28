@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
+using Arbiter.App.Models.Player;
+using Arbiter.App.Models.Settings;
 using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;

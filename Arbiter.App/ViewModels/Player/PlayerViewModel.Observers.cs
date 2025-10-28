@@ -1,5 +1,5 @@
 ﻿using System;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Player;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;

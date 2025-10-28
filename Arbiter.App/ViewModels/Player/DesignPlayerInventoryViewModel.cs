@@ -1,4 +1,4 @@
-﻿using Arbiter.App.Models;
+﻿using Arbiter.App.Models.Player;
 
 namespace Arbiter.App.ViewModels.Player;
 

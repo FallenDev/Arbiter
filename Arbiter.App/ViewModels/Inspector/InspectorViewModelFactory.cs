@@ -6,7 +6,7 @@ using System.Net;
 using System.Reflection;
 using Arbiter.App.Extensions;
 using Arbiter.App.Mappings;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Arbiter.Net;
 using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;

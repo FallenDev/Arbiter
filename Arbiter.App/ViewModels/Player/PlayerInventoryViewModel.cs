@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Player;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Player;

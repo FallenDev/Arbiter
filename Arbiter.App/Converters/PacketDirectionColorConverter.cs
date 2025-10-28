@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Arbiter.App.ViewModels.Tracing;
 using Arbiter.Net;
 using Arbiter.Net.Client;

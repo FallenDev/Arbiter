@@ -1,6 +1,6 @@
 ﻿using System;
 using Arbiter.App.Models;
-using Arbiter.App.Services;
+using Arbiter.App.Services.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
