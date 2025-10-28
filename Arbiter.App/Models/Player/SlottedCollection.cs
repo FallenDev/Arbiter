@@ -252,4 +252,18 @@ public abstract class SlottedCollection<T> : ISlottedCollection<T> where T : ISl
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    protected T? GetSlot(int slot)
+    {
+        Lock.EnterReadLock();
+
+        try
+        {
+            return _items[slot - 1];
+        }
+        finally
+        {
+            Lock.ExitReadLock();
+        }
+    }
+
 }

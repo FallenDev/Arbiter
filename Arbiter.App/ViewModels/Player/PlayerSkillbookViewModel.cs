@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -33,6 +34,9 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
     public void ClearSlot(int slot) =>
         _skillbook.ClearSlot(slot);
 
+    public void UpdateCooldown(int slot, TimeSpan duration)
+        => _skillbook.UpdateCooldown(slot, duration);
+    
     private void OnSkillAdded(int slot, SkillbookItem skill)
     {
         if (slot < 1 || slot > _skillbook.Capacity)

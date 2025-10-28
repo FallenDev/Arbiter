@@ -163,6 +163,10 @@
                 <TabItem Header="Inventory">
                     <v:PlayerInventoryView DataContext="{Binding ClientManager.SelectedClient.Player.Inventory, FallbackValue={x:Null}}"/>
                 </TabItem>
+                <!-- Skills View-->
+                <TabItem Header="Skills">
+                    <v:PlayerSkillbookView DataContext="{Binding ClientManager.SelectedClient.Player.Skillbook, FallbackValue={x:Null}}"/>
+                </TabItem>
             </TabControl>
             
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"
