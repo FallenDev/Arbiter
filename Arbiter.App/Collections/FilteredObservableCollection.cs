@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -36,14 +37,26 @@ public class FilteredObservableCollection<T> : ConcurrentObservableCollection<T>
 
     public void Refresh()
     {
-        using var _ = Lock.EnterScope();
-        Clear();
-
-        var copy = _sourceCollection.Where(Predicate).ToList();
-        foreach (var item in copy)
+        List<T> copy;
+        if (_sourceCollection is ConcurrentObservableCollection<T> concurrent)
         {
-            Add(item);
+            copy = [];
+            concurrent.WithinLock(() => copy = _sourceCollection.Where(Predicate).ToList());
         }
+        else
+        {
+            copy = _sourceCollection.Where(Predicate).ToList();
+        }
+
+        DeferUpdates(() =>
+        {
+            Clear();
+
+            foreach (var item in copy)
+            {
+                Add(item);
+            }
+        });
     }
 
     private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

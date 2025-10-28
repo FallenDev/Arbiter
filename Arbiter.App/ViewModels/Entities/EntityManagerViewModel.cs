@@ -81,12 +81,24 @@ public partial class EntityManagerViewModel : ViewModelBase
         // Initialize opacity based on current search
         vm.Opacity = IsSearchMatch(vm) ? 1 : 0.5;
 
-        InsertSorted(vm);
+        if (!FilteredEntities.Dispatcher.CheckAccess())
+        {
+            FilteredEntities.Dispatcher.Post(() => InsertSorted(vm));
+        }
+        else
+        {
+            InsertSorted(vm);
+        }
     }
 
     private void OnEntityUpdated(GameEntity entity)
     {
-        var vm = _allEntities.FirstOrDefault(vm => vm.Id == entity.Id);
+        EntityViewModel? vm = null;
+        _allEntities.WithinLock(() =>
+        {
+            vm =  _allEntities.FirstOrDefault(e => e.Id == entity.Id);
+        });
+        
         if (vm is null)
         {
             OnEntityAdded(entity);
@@ -104,13 +116,13 @@ public partial class EntityManagerViewModel : ViewModelBase
         // Update opacity whenever entity changes, as search can be by ID or name
         vm.Opacity = IsSearchMatch(vm) ? 1 : 0.5;
 
-        if (!MatchesFilter(vm))
+        if (!FilteredEntities.Dispatcher.CheckAccess())
         {
-            FilteredEntities.Remove(vm);
+            FilteredEntities.Dispatcher.Post(() => UpdateFiltered(vm));
         }
-        else if (MatchesFilter(vm) && !FilteredEntities.Contains(vm))
+        else
         {
-            FilteredEntities.Add(vm);
+            UpdateFiltered(vm);
         }
 
         // If currently sorting by Name and the name changed, re-apply sorting to preserve order
@@ -122,12 +134,26 @@ public partial class EntityManagerViewModel : ViewModelBase
 
     private void OnEntityRemoved(GameEntity entity)
     {
-        var existingEntity = _allEntities.FirstOrDefault(vm => vm.Id == entity.Id);
-        if (existingEntity is null)
+        EntityViewModel? vm = null;
+        _allEntities.WithinLock(() => { vm = _allEntities.FirstOrDefault(e => e.Id == entity.Id); });
+
+        if (vm is null)
         {
             return;
         }
 
-        _allEntities.Remove(existingEntity);
+        _allEntities.Remove(vm);
+    }
+
+    private void UpdateFiltered(EntityViewModel vm)
+    {
+        if (!MatchesFilter(vm))
+        {
+            FilteredEntities.Remove(vm);
+        }
+        else if (!FilteredEntities.Contains(vm))
+        {
+            FilteredEntities.Add(vm);
+        }
     }
 }

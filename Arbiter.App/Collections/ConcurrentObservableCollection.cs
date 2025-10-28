@@ -17,7 +17,7 @@ public class ConcurrentObservableCollection<T> : ObservableCollection<T>
 
     public ConcurrentObservableCollection(Dispatcher? dispatcher = null)
     {
-        Dispatcher = dispatcher ?? dispatcher ?? Dispatcher.UIThread;
+        Dispatcher = dispatcher ?? Dispatcher.UIThread;
     }
 
     public void DeferUpdates(Action action)
