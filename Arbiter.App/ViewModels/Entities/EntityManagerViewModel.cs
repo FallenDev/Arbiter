@@ -8,6 +8,7 @@ using Arbiter.App.Services.Entities;
 using Arbiter.App.Services.Players;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net.Proxy;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -73,6 +74,12 @@ public partial class EntityManagerViewModel : ViewModelBase
 
     private void OnEntityAdded(GameEntity entity)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => OnEntityAdded(entity));
+            return;
+        }
+
         var sortIndex = Interlocked.Increment(ref _indexCounter);
         var vm = new EntityViewModel(entity)
         {
@@ -81,19 +88,17 @@ public partial class EntityManagerViewModel : ViewModelBase
 
         // Initialize opacity based on current search
         vm.Opacity = IsSearchMatch(vm) ? 1 : 0.5;
-
-        if (!FilteredEntities.Dispatcher.CheckAccess())
-        {
-            FilteredEntities.Dispatcher.Post(() => InsertSorted(vm));
-        }
-        else
-        {
-            InsertSorted(vm);
-        }
+        InsertSorted(vm);
     }
 
     private void OnEntityUpdated(GameEntity entity)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => OnEntityUpdated(entity));
+            return;
+        }
+        
         EntityViewModel? vm = null;
         _allEntities.WithinLock(() =>
         {
@@ -116,15 +121,7 @@ public partial class EntityManagerViewModel : ViewModelBase
 
         // Update opacity whenever entity changes, as search can be by ID or name
         vm.Opacity = IsSearchMatch(vm) ? 1 : 0.5;
-
-        if (!FilteredEntities.Dispatcher.CheckAccess())
-        {
-            FilteredEntities.Dispatcher.Post(() => UpdateFiltered(vm));
-        }
-        else
-        {
-            UpdateFiltered(vm);
-        }
+        UpdateFiltered(vm);
 
         // If currently sorting by Name and the name changed, re-apply sorting to preserve order
         if (nameChanged && SortOrder == EntitySortOrder.Name)
@@ -135,6 +132,12 @@ public partial class EntityManagerViewModel : ViewModelBase
 
     private void OnEntityRemoved(GameEntity entity)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => OnEntityRemoved(entity));
+            return;
+        }
+        
         EntityViewModel? vm = null;
         _allEntities.WithinLock(() => { vm = _allEntities.FirstOrDefault(e => e.Id == entity.Id); });
 
