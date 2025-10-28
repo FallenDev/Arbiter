@@ -2,12 +2,8 @@
 
 namespace Arbiter.App.Models.Player;
 
-public readonly struct SpellbookItem
+public readonly struct SpellbookItem : ISlotted
 {
-    public static SpellbookItem Empty(int slot)
-        => new(slot, 0, string.Empty);
-
-    public bool IsEmpty { get; private init; }
     public int Slot { get; init; }
     public ushort Sprite { get; init; }
     public string Name { get; init; }

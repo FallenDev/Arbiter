@@ -3,12 +3,8 @@ using System.Text;
 
 namespace Arbiter.App.Models.Player;
 
-public readonly struct InventoryItem
+public readonly struct InventoryItem : ISlotted
 {
-    public static InventoryItem Empty(int slot = 0)
-        => new() { Slot = slot, IsEmpty = true, Name = string.Empty };
-
-    public bool IsEmpty { get; private init; }
     public int Slot { get; init; }
     public ushort Sprite { get; init; }
     public byte Color { get; init; }
