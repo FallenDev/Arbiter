@@ -17,10 +17,20 @@ public class PlayerInventorySlotViewModel : ViewModelBase
     public long MaxDurability => _item?.MaxDurability ?? 0;
     public bool HasDurability => Durability > 0 && MaxDurability > 0;
     public int PercentDurability => HasDurability ? (int)(Durability * 100 / MaxDurability) : 100;
-    
+
     public PlayerInventorySlotViewModel(int slot, InventoryItem? item = null)
     {
         Slot = slot;
         _item = item;
+    }
+
+    public override string ToString()
+    {
+        if (IsEmpty)
+        {
+            return "<empty>";
+        }
+
+        return IsStackable ? $"{Name} [{Quantity}]" : Name;
     }
 }

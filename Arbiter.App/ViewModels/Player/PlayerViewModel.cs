@@ -81,12 +81,14 @@ public partial class PlayerViewModel : ViewModelBase
     public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
 
     public PlayerInventoryViewModel Inventory { get; }
+    public PlayerSkillbookViewModel Skillbook { get; }
 
     public PlayerViewModel(PlayerState player)
     {
         _player = player;
 
         Inventory = new PlayerInventoryViewModel(player.Inventory);
+        Skillbook = new PlayerSkillbookViewModel(player.Skillbook);
     }
 
     // Forward all property changes to the player model

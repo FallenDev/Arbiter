@@ -18,6 +18,8 @@ public partial class PlayerViewModel
     private NetworkObserverRef? _updateStatsMessageObserver;
     private NetworkObserverRef? _addItemObserver;
     private NetworkObserverRef? _removeItemObserver;
+    private NetworkObserverRef? _addSkillObserver;
+    private NetworkObserverRef? _removeSkillObserver;
 
     public void Subscribe(ProxyConnection connection)
     {
@@ -37,6 +39,10 @@ public partial class PlayerViewModel
         // Inventory
         _addItemObserver = connection.AddObserver<ServerAddItemMessage>(OnAddItemMessage);
         _removeItemObserver = connection.AddObserver<ServerRemoveItemMessage>(OnRemoveItemMessage);
+
+        // Skills
+        _addSkillObserver = connection.AddObserver<ServerAddSkillMessage>(OnAddSkillMessage);
+        _removeSkillObserver = connection.AddObserver<ServerRemoveSkillMessage>(OnRemoveSkillMessage);
     }
 
     public void Unsubscribe()
@@ -47,8 +53,12 @@ public partial class PlayerViewModel
         _mapLocationMessageObserver?.Unregister();
         _selfProfileMessageObserver?.Unregister();
         _updateStatsMessageObserver?.Unregister();
+        
         _addItemObserver?.Unregister();
         _removeItemObserver?.Unregister();
+        
+        _addSkillObserver?.Unregister();
+        _removeSkillObserver?.Unregister();
     }
 
     private void OnUserIdMessage(ProxyConnection connection, ServerUserIdMessage message, object? parameter)
@@ -143,5 +153,25 @@ public partial class PlayerViewModel
         Inventory.ClearSlot(message.Slot);
     }
 
+    #endregion
+    
+    #region Skill Observers
+
+    private void OnAddSkillMessage(ProxyConnection connection, ServerAddSkillMessage message, object? parameter)
+    {
+        var skill = new SkillbookItem
+        {
+            Slot = message.Slot,
+            Name = message.Name,
+            Sprite = message.Icon
+        };
+        
+        Skillbook.SetSlot(message.Slot, skill);
+    }
+
+    private void OnRemoveSkillMessage(ProxyConnection connection, ServerRemoveSkillMessage message, object? parameter)
+    {
+        Skillbook.ClearSlot(message.Slot);
+    }
     #endregion
 }
