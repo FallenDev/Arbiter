@@ -183,15 +183,7 @@ public partial class PlayerViewModel
             name = message.Name[..match.Index];
         }
 
-        var skill = new SkillbookItem
-        {
-            Slot = message.Slot,
-            Name = name,
-            Sprite = message.Icon,
-            CurrentLevel = level,
-            MaxLevel = maxLevel,
-        };
-
+        var skill = new SkillbookItem(message.Slot, message.Icon, name, level, maxLevel);
         Skillbook.SetSlot(message.Slot, skill);
     }
 

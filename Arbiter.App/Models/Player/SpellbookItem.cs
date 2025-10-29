@@ -2,7 +2,7 @@
 
 namespace Arbiter.App.Models.Player;
 
-public readonly struct SpellbookItem : ISlotted
+public sealed class SpellbookItem : ISlotted
 {
     public int Slot { get; init; }
     public ushort Sprite { get; init; }

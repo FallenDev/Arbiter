@@ -8,6 +8,19 @@ public sealed class PlayerSkillSlotViewModel : ViewModelBase
     private readonly SkillbookItem? _skill;
 
     public int Slot { get; }
+
+    public int RelativeSlot
+    {
+        get
+        {
+            return Slot switch
+            {
+                <= 36 => Slot,
+                <= 72 => Slot - 36,
+                _ => Slot - 72
+            };
+        }
+    }
     public bool IsEmpty => _skill is null;
     public string Name => _skill?.Name ?? string.Empty;
     public ushort Sprite => _skill?.Sprite ?? 0;

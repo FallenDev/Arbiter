@@ -13,15 +13,9 @@ public sealed class DesignPlayerSkillbookViewModel : PlayerSkillbookViewModel
     {
         var skillbook = new PlayerSkillbook();
 
-        skillbook.SetSlot(1, new SkillbookItem
-        {
-            Slot = 1,
-            Name = "Assail",
-            Sprite = 13,
-            CurrentLevel = 80,
-            MaxLevel = 100
-        });
-        
+        var skill = new SkillbookItem(1, 1, "Assail", 80, 100);
+        skillbook.SetSlot(1, skill);
+
         return skillbook;
     }
 }

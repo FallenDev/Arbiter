@@ -12,7 +12,9 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
 
     [ObservableProperty] private PlayerSkillSlotViewModel? _selectedSkill;
 
-    public ObservableCollection<PlayerSkillSlotViewModel> SkillSlots { get; } = [];
+    public ObservableCollection<PlayerSkillSlotViewModel> TemuairSkills { get; } = [];
+    public ObservableCollection<PlayerSkillSlotViewModel> MedeniaSkills { get; } = [];
+    public ObservableCollection<PlayerSkillSlotViewModel> WorldSkills { get; } = [];
 
     public PlayerSkillbookViewModel(PlayerSkillbook skillbook)
     {
@@ -20,7 +22,18 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
 
         for (var i = 0; i < skillbook.Capacity; i++)
         {
-            SkillSlots.Add(new PlayerSkillSlotViewModel(i + 1));
+            if (i < 36)
+            {
+                TemuairSkills.Add(new PlayerSkillSlotViewModel(i + 1));
+            }
+            else if (i < 72)
+            {
+                MedeniaSkills.Add(new PlayerSkillSlotViewModel(i + 1));
+            }
+            else
+            {
+                WorldSkills.Add(new PlayerSkillSlotViewModel(i + 1));
+            }
         }
 
         _skillbook.ItemAdded += OnSkillAdded;
@@ -50,7 +63,7 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
             return;
         }
 
-        SkillSlots[slot - 1] = new PlayerSkillSlotViewModel(slot, skill);
+        SetSkillViewModel(slot, skill);
     }
 
     private void OnSkillUpdated(int slot, SkillbookItem existing, SkillbookItem updated)
@@ -66,7 +79,7 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
             return;
         }
 
-        SkillSlots[slot - 1] = new PlayerSkillSlotViewModel(slot, updated);
+        SetSkillViewModel(slot, updated);
     }
 
     private void OnSkillRemoved(int slot, SkillbookItem item)
@@ -82,6 +95,29 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
             return;
         }
 
-        SkillSlots[slot - 1] = new PlayerSkillSlotViewModel(slot);
+        SetSkillViewModel(slot);
+    }
+
+    private void SetSkillViewModel(int slot, SkillbookItem? skill = null)
+    {
+        if (slot < 1 || slot > _skillbook.Capacity)
+        {
+            return;
+        }
+
+        var index = (slot - 1) % 36;
+
+        switch (slot - 1)
+        {
+            case < 36:
+                TemuairSkills[index] = new PlayerSkillSlotViewModel(slot, skill);
+                break;
+            case < 72: 
+                MedeniaSkills[index] = new PlayerSkillSlotViewModel(slot, skill);
+                break;
+            default:
+                WorldSkills[index] = new PlayerSkillSlotViewModel(slot, skill);
+                break;
+        }
     }
 }

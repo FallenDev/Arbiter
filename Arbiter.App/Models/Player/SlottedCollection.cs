@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Arbiter.App.Models.Player;
 
-public abstract class SlottedCollection<T> : ISlottedCollection<T> where T : ISlotted
+public abstract class SlottedCollection<T> : ISlottedCollection<T> where T : class, ISlotted
 {
     protected ReaderWriterLockSlim Lock { get; } = new();
     
@@ -185,7 +185,7 @@ public abstract class SlottedCollection<T> : ISlottedCollection<T> where T : ISl
         try
         {
             existing = _items[slot - 1];
-            _items[slot - 1] = default;
+            _items[slot - 1] = null;
         }
         finally
         {

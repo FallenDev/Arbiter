@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Arbiter.App.ViewModels.Player"
-             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="480"
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="640"
              x:Class="Arbiter.App.Views.PlayerSkillbookView"
              x:DataType="vm:PlayerSkillbookViewModel">
     
@@ -11,28 +11,9 @@
         <vm:DesignPlayerSkillbookViewModel/>
     </Design.DataContext>
     
-    <Grid Background="{StaticResource Talgonite.Control.Background}"
-          HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-        <ListBox ItemsSource="{Binding SkillSlots}"
-                 SelectedValue="{Binding SelectedSkill}"
-                 SelectionMode="Single"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 Margin="2"
-                 Padding="4">
-            
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="12" ColumnSpacing="8" RowSpacing="8"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Border Width="48" Height="48"
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="vm:PlayerSkillSlotViewModel">
+            <Border Width="48" Height="48"
                             Background="Transparent"
                             BorderBrush="{StaticResource Talgonite.Border.HighlightBrush}"
                             BorderThickness="1"
@@ -42,7 +23,7 @@
                             <Border Background="{StaticResource Talgonite.Border.ShadowBrush}"
                                     IsVisible="{Binding IsEmpty}"/>
                             <!-- Slot Number -->
-                            <TextBlock Text="{Binding Slot}"
+                            <TextBlock Text="{Binding RelativeSlot}"
                                        FontFamily="{StaticResource Talgonite.Font.Monospace}"
                                        FontSize="12"
                                        Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
@@ -92,7 +73,7 @@
                                         
                                         <!-- Slot -->
                                         <TextBlock Grid.Row="0" Grid.Column="1"
-                                                   Text="{Binding Slot, StringFormat={}Slot {0}}"
+                                                   Text="{Binding RelativeSlot, StringFormat={}Slot {0}}"
                                                    TextAlignment="Right"
                                                    Foreground="{StaticResource Talgonite.TextBlock.DimForeground}"
                                                    FontSize="14"
@@ -128,14 +109,95 @@
                                 </Border>
                         </ToolTip.Tip>
                     </Border>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        
-        <!-- Placeholder Text -->
-        <TextBlock Text="No Character Selected"
-                   Classes="placeholder"
-                   IsVisible="{Binding Path=., Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+    
+    <Grid Background="{StaticResource Talgonite.Control.Background}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <Grid Background="{StaticResource Talgonite.ListBox.Background}"
+              Margin="2">
+            <Border Classes="sunken-shadow" CornerRadius="0"/>
+            <Border Classes="sunken-highlight" CornerRadius="0"/>
+            
+            <ScrollViewer IsVisible="{Binding Path=., Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue={x:False}}">
+                <StackPanel Margin="4">
+                    <!-- Temuair Skills -->
+                    <Label Content="Temuair"
+                           FontSize="20"
+                           FontWeight="Normal"
+                           HorizontalAlignment="Center"
+                           Margin="4,2"/>
+                    <ListBox ItemsSource="{Binding TemuairSkills}"
+                             SelectedValue="{Binding SelectedSkill}"
+                             SelectionMode="Single"
+                             Classes="borderless"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             Margin="4,0">
+                    
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="12" ColumnSpacing="8" RowSpacing="8"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                
+                    <!-- Medenia Skills -->
+                    <Label Content="Medenia"
+                           FontSize="20"
+                           FontWeight="Normal"
+                           HorizontalAlignment="Center"
+                           Margin="4,2"/>
+                    <ListBox ItemsSource="{Binding MedeniaSkills}"
+                             SelectedValue="{Binding SelectedSkill}"
+                             SelectionMode="Single"
+                             Classes="borderless"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             Margin="4,0">
+                    
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="12" ColumnSpacing="8" RowSpacing="8"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+            
+                    <!-- World Skills -->
+                    <Label Content="World"
+                           FontSize="20"
+                           FontWeight="Normal"
+                           HorizontalAlignment="Center"
+                           Margin="4,2"/>
+                    <ListBox ItemsSource="{Binding WorldSkills}"
+                             SelectedValue="{Binding SelectedSkill}"
+                             SelectionMode="Single"
+                             Classes="borderless"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             Margin="4,0">
+                    
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="6" ColumnSpacing="8" RowSpacing="8"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Placeholder Text -->
+            <TextBlock Text="No Character Selected"
+                       Classes="placeholder"
+                       IsVisible="{Binding Path=., Converter={x:Static ObjectConverters.IsNull}, FallbackValue={x:False}}"/>
+        </Grid>
     </Grid>
     
 </UserControl>

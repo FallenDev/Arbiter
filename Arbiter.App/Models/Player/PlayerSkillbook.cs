@@ -27,15 +27,12 @@ public sealed class PlayerSkillbook : SlottedCollection<SkillbookItem>
         }
 
         var item = GetSlot(slot);
-        if (item.Cooldown == duration)
+        if (item is null || item.Cooldown == duration)
         {
             return false;
         }
-        
-        var update = item with
-        {
-            Cooldown = duration
-        };
+
+        var update = new SkillbookItem(slot, item.Sprite, item.Name, item.CurrentLevel, item.MaxLevel, duration);
         SetSlot(slot, update);
         return true;
     }
