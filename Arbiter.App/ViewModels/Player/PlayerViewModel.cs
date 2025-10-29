@@ -82,6 +82,7 @@ public partial class PlayerViewModel : ViewModelBase
 
     public PlayerInventoryViewModel Inventory { get; }
     public PlayerSkillbookViewModel Skillbook { get; }
+    public PlayerSpellbookViewModel Spellbook { get; }
 
     public PlayerViewModel(PlayerState player)
     {
@@ -89,6 +90,7 @@ public partial class PlayerViewModel : ViewModelBase
 
         Inventory = new PlayerInventoryViewModel(player.Inventory);
         Skillbook = new PlayerSkillbookViewModel(player.Skillbook);
+        Spellbook = new PlayerSpellbookViewModel(player.Spellbook);
     }
 
     // Forward all property changes to the player model
