@@ -42,6 +42,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowDialogId))]
     [NotifyPropertyChangedFor(nameof(DebugShowPursuitId))]
     [NotifyPropertyChangedFor(nameof(DebugShowDialogItemQuantity))]
+    [NotifyPropertyChangedFor(nameof(DebugShowEquipmentDurability))]
     [NotifyPropertyChangedFor(nameof(DebugShowNpcId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterClickId))]
@@ -208,6 +209,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.ShowDialogItemQuantity = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugShowEquipmentDurability
+    {
+        get => Settings.Debug.ShowEquipmentDurability;
+        set
+        {
+            Settings.Debug.ShowEquipmentDurability = value;
             OnPropertyChanged();
             HasChanges = true;
         }
