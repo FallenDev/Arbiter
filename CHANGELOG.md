@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Skills` tab for viewing character skills
+- `Spells` tab for viewing character spells
 
 ### Changed
 
+- More concurrency fixes with `Entity` list and sorting
+- Exclude spell chants from entity list
 
 ## [1.6.0] - 2025-10-20
 
