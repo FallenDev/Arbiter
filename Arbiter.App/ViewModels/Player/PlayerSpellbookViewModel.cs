@@ -10,7 +10,7 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
 {
     private readonly PlayerSpellbook _spellbook;
 
-    [ObservableProperty] private PlayerSpellSlotViewModel? _selectedSkill;
+    [ObservableProperty] private PlayerSpellSlotViewModel? _selectedSpell;
 
     public ObservableCollection<PlayerSpellSlotViewModel> TemuairSpells { get; } = [];
     public ObservableCollection<PlayerSpellSlotViewModel> MedeniaSpells { get; } = [];
@@ -35,6 +35,10 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
                 WorldSpells.Add(new PlayerSpellSlotViewModel(i + 1));
             }
         }
+        
+        _spellbook.ItemAdded += OnSpellAdded;
+        _spellbook.ItemUpdated += OnSpellUpdated;
+        _spellbook.ItemRemoved += OnSpellRemoved;
     }
 
     public void SetSlot(int slot, SpellbookItem spell) =>

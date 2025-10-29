@@ -167,6 +167,10 @@
                 <TabItem Header="Skills">
                     <v:PlayerSkillbookView DataContext="{Binding ClientManager.SelectedClient.Player.Skillbook, FallbackValue={x:Null}}"/>
                 </TabItem>
+                <!-- Spells View-->
+                <TabItem Header="Spells">
+                    <v:PlayerSpellbookView DataContext="{Binding ClientManager.SelectedClient.Player.Spellbook, FallbackValue={x:Null}}"/>
+                </TabItem>
             </TabControl>
             
             <GridSplitter Grid.Row="1" ResizeDirection="Rows"

@@ -31,8 +31,8 @@ public sealed class PlayerSpellbook : SlottedCollection<SpellbookItem>
             return false;
         }
 
-        var update = new SpellbookItem(slot, item.Sprite, item.Name, item.CastLines, item.CurrentLevel, item.MaxLevel,
-            duration);
+        var update = new SpellbookItem(slot, item.Sprite, item.Name, item.TargetType, item.CastLines, item.CurrentLevel,
+            item.MaxLevel, duration);
         SetSlot(slot, update);
         return true;
     }
