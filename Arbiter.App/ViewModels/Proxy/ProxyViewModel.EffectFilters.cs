@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Settings;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;

@@ -61,6 +61,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerSyncTicksMapping(registry);
         RegisterServerUpdateStatsMapping(registry);
         RegisterServerUserIdMapping(registry);
+        RegisterServerUserIdResponseMapping(registry);
         RegisterServerUserProfileMapping(registry);
         RegisterServerWalkResponseMapping(registry);
         RegisterServerWorldListMapping(registry);
@@ -895,6 +896,17 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.CanMove, p => p.ToolTip("Whether the user is allowed to move."));
             b.Section("Guild")
                 .Property(m => m.HasGuild, p => p.ToolTip("Whether the user is a member of a guild."));
+        });
+    }
+
+    private static void RegisterServerUserIdResponseMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerUserIdResponseMessage>(b =>
+        {
+            b.Section("User")
+                .Property(m => m.UserId, p => p.ShowHex().ToolTip("ID of the user."));
+            b.Section("Response")
+                .Property(m => m.Nonce, p => p.ToolTip("Nonce that was sent by the client."));
         });
     }
 

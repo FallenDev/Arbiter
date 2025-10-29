@@ -3,10 +3,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Arbiter.App.Collections;
-using Arbiter.App.Models;
-using Arbiter.App.Services;
+using Arbiter.App.Models.Entities;
+using Arbiter.App.Services.Entities;
+using Arbiter.App.Services.Players;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.Net.Proxy;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -72,6 +74,12 @@ public partial class EntityManagerViewModel : ViewModelBase
 
     private void OnEntityAdded(GameEntity entity)
     {
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => OnEntityAdded(entity));
+            return;
+        }
+
         var sortIndex = Interlocked.Increment(ref _indexCounter);
         var vm = new EntityViewModel(entity)
         {
@@ -80,13 +88,23 @@ public partial class EntityManagerViewModel : ViewModelBase
 
         // Initialize opacity based on current search
         vm.Opacity = IsSearchMatch(vm) ? 1 : 0.5;
-
         InsertSorted(vm);
     }
 
     private void OnEntityUpdated(GameEntity entity)
     {
-        var vm = _allEntities.FirstOrDefault(vm => vm.Id == entity.Id);
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => OnEntityUpdated(entity));
+            return;
+        }
+        
+        EntityViewModel? vm = null;
+        _allEntities.WithinLock(() =>
+        {
+            vm =  _allEntities.FirstOrDefault(e => e.Id == entity.Id);
+        });
+        
         if (vm is null)
         {
             OnEntityAdded(entity);
@@ -103,15 +121,7 @@ public partial class EntityManagerViewModel : ViewModelBase
 
         // Update opacity whenever entity changes, as search can be by ID or name
         vm.Opacity = IsSearchMatch(vm) ? 1 : 0.5;
-
-        if (!MatchesFilter(vm))
-        {
-            FilteredEntities.Remove(vm);
-        }
-        else if (MatchesFilter(vm) && !FilteredEntities.Contains(vm))
-        {
-            FilteredEntities.Add(vm);
-        }
+        UpdateFiltered(vm);
 
         // If currently sorting by Name and the name changed, re-apply sorting to preserve order
         if (nameChanged && SortOrder == EntitySortOrder.Name)
@@ -122,12 +132,32 @@ public partial class EntityManagerViewModel : ViewModelBase
 
     private void OnEntityRemoved(GameEntity entity)
     {
-        var existingEntity = _allEntities.FirstOrDefault(vm => vm.Id == entity.Id);
-        if (existingEntity is null)
+        if (!Dispatcher.UIThread.CheckAccess())
+        {
+            Dispatcher.UIThread.Post(() => OnEntityRemoved(entity));
+            return;
+        }
+        
+        EntityViewModel? vm = null;
+        _allEntities.WithinLock(() => { vm = _allEntities.FirstOrDefault(e => e.Id == entity.Id); });
+
+        if (vm is null)
         {
             return;
         }
 
-        _allEntities.Remove(existingEntity);
+        _allEntities.Remove(vm);
+    }
+
+    private void UpdateFiltered(EntityViewModel vm)
+    {
+        if (!MatchesFilter(vm))
+        {
+            FilteredEntities.Remove(vm);
+        }
+        else if (!FilteredEntities.Contains(vm))
+        {
+            FilteredEntities.Add(vm);
+        }
     }
 }

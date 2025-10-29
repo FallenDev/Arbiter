@@ -1,5 +1,5 @@
 ﻿using System;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Player;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Player;
@@ -81,12 +81,16 @@ public partial class PlayerViewModel : ViewModelBase
     public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
 
     public PlayerInventoryViewModel Inventory { get; }
+    public PlayerSkillbookViewModel Skillbook { get; }
+    public PlayerSpellbookViewModel Spellbook { get; }
 
     public PlayerViewModel(PlayerState player)
     {
         _player = player;
 
         Inventory = new PlayerInventoryViewModel(player.Inventory);
+        Skillbook = new PlayerSkillbookViewModel(player.Skillbook);
+        Spellbook = new PlayerSpellbookViewModel(player.Spellbook);
     }
 
     // Forward all property changes to the player model

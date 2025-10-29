@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
 
 namespace Arbiter.App.ViewModels.Send;
 

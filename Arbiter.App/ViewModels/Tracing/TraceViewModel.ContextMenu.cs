@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 using Avalonia;

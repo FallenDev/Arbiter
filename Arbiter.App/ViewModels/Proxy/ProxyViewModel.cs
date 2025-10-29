@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Arbiter.App.Services;
+using Arbiter.App.Services.Entities;
+using Arbiter.App.Services.Players;
 using Arbiter.Net.Proxy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

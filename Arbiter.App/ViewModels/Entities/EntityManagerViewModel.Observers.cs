@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
@@ -140,8 +140,8 @@ public partial class EntityManagerViewModel
 
     private void OnPublicMessage(ProxyConnection connection, ServerPublicMessageMessage message, object? parameter)
     {
-        // Ignore world shouts
-        if (message.SenderId == 0)
+        // Ignore world shouts and spell chants
+        if (message.SenderId == 0 || message.MessageType == PublicMessageType.Chant)
         {
             return;
         }

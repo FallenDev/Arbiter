@@ -49,6 +49,7 @@ public enum ClientCommand : byte
     BeginSpellCast = 0x4D,
     SpellChant = 0x4E,
     UserPortrait = 0x4F,
+    RequestUserId = 0x56,
     RequestServerTable = 0x57,
     RequestSequence = 0x62,
     RequestHomepage = 0x68,

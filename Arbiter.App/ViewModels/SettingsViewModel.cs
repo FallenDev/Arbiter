@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Arbiter.App.Models;
-using Arbiter.App.Services;
+using Arbiter.App.Models.Settings;
+using Arbiter.App.Services.Dialogs;
+using Arbiter.App.Services.Settings;
 using Arbiter.App.ViewModels.Filters;
 using Arbiter.App.Views;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -42,6 +42,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugShowDialogId))]
     [NotifyPropertyChangedFor(nameof(DebugShowPursuitId))]
     [NotifyPropertyChangedFor(nameof(DebugShowDialogItemQuantity))]
+    [NotifyPropertyChangedFor(nameof(DebugShowEquipmentDurability))]
     [NotifyPropertyChangedFor(nameof(DebugShowNpcId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterId))]
     [NotifyPropertyChangedFor(nameof(DebugShowMonsterClickId))]
@@ -208,6 +209,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.ShowDialogItemQuantity = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugShowEquipmentDurability
+    {
+        get => Settings.Debug.ShowEquipmentDurability;
+        set
+        {
+            Settings.Debug.ShowEquipmentDurability = value;
             OnPropertyChanged();
             HasChanges = true;
         }

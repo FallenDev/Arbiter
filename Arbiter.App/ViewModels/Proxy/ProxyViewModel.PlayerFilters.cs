@@ -1,4 +1,5 @@
-﻿using Arbiter.App.Models;
+﻿using System;
+using Arbiter.App.Models.Settings;
 using Arbiter.Net;
 using Arbiter.Net.Filters;
 using Arbiter.Net.Proxy;
@@ -10,16 +11,20 @@ namespace Arbiter.App.ViewModels.Proxy;
 public partial class ProxyViewModel
 {
     private NetworkFilterRef? _debugShowUserFilter;
-
+    private NetworkFilterRef? _debugShowEquipmentDurabilityFilter;
     private void AddDebugPlayerFilters(DebugSettings settings)
     {
         _debugShowUserFilter = _proxyServer.AddFilter<ServerShowUserMessage>(HandleShowUserMessage,
             $"{FilterPrefix}_Player_ServerShowUser", DebugFilterPriority, settings);
+
+        _debugShowEquipmentDurabilityFilter = _proxyServer.AddFilter<ServerSetEquipmentMessage>(
+            HandleSetEquipmentMessage, $"{FilterPrefix}_Player_ServerSetEquipment", DebugFilterPriority, settings);
     }
 
     private void RemoveDebugPlayerFilters()
     {
         _debugShowUserFilter?.Unregister();
+        _debugShowEquipmentDurabilityFilter?.Unregister();
     }
 
     private static NetworkPacket HandleShowUserMessage(ProxyConnection connection, ServerShowUserMessage message,
@@ -50,5 +55,26 @@ public partial class ProxyViewModel
         }
 
         return hasChanges ? result.Replace(message) : result.Passthrough();
+    }
+
+    private static NetworkPacket HandleSetEquipmentMessage(ProxyConnection connection,
+        ServerSetEquipmentMessage message,
+        object? parameter, NetworkMessageFilterResult<ServerSetEquipmentMessage> result)
+    {
+        if (parameter is not DebugSettings filterSettings || filterSettings is
+                { ShowEquipmentDurability: false })
+        {
+            return result.Passthrough();
+        }
+
+        // Calculate durability percentage
+        var percent = (int)Math.Floor(message.Durability * 100.0 / Math.Max(1, message.MaxDurability));
+        percent = Math.Clamp(percent, 0, 100);
+
+        // Add durability to name
+        var durability = $"{message.Durability} / {message.MaxDurability} ({percent}%)";
+        message.Name = $"{message.Name}\n{durability}";
+
+        return result.Replace(message);
     }
 }

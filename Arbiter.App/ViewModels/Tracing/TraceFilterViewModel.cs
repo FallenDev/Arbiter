@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Globalization;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;
 

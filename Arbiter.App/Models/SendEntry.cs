@@ -1,4 +1,5 @@
 ﻿using System;
+using Arbiter.App.Models.Entities;
 using Arbiter.Net;
 using Arbiter.Net.Server;
 

@@ -194,7 +194,7 @@
             <!-- Dialogs Settings Tab -->
             <TabItem Header="Dialogs">
                 <StackPanel Spacing="4" Margin="4">
-                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Pursuit ID for Dialogs -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Pursuit ID in Menus"
@@ -208,6 +208,13 @@
                                ToolTip.Tip="Shows the item quantity along with item name in sell or deposit menus (in-game)."/>
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowDialogItemQuantity}"/>
+                        
+                        <!-- Show Equipment Durability -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Content="Show Equipment Durability in Profile"
+                               ToolTip.Tip="Shows equipment durability in your profile view (in-game)."/>
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowEquipmentDurability}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

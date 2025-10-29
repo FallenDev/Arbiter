@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Arbiter.App.Collections;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
 using Arbiter.App.Threading;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;

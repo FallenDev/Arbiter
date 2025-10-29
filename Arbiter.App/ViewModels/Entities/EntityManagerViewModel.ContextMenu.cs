@@ -3,7 +3,7 @@ using System.Buffers.Binary;
 using System.Linq;
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Entities;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Types;
 using Avalonia;

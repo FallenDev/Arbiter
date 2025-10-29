@@ -1,5 +1,5 @@
 ﻿using Arbiter.App.Mappings;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Arbiter.App.ViewModels.Inspector;

@@ -1,5 +1,6 @@
 ﻿using System;
-using Arbiter.App.Models;
+using System.Text.RegularExpressions;
+using Arbiter.App.Models.Player;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;
@@ -10,6 +11,9 @@ namespace Arbiter.App.ViewModels.Player;
 
 public partial class PlayerViewModel
 {
+    private static readonly Regex LevelPattern =
+        new(@"\s*\(Lev:\s*(\d+)/(\d+)\)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
     private NetworkObserverRef? _walkMessageObserver;
     private NetworkObserverRef? _userIdMessageObserver;
     private NetworkObserverRef? _mapInfoMessageObserver;
@@ -18,6 +22,11 @@ public partial class PlayerViewModel
     private NetworkObserverRef? _updateStatsMessageObserver;
     private NetworkObserverRef? _addItemObserver;
     private NetworkObserverRef? _removeItemObserver;
+    private NetworkObserverRef? _addSpellObserver;
+    private NetworkObserverRef? _removeSpellObserver;
+    private NetworkObserverRef? _addSkillObserver;
+    private NetworkObserverRef? _removeSkillObserver;
+    private NetworkObserverRef? _cooldownObserver;
 
     public void Subscribe(ProxyConnection connection)
     {
@@ -37,6 +46,17 @@ public partial class PlayerViewModel
         // Inventory
         _addItemObserver = connection.AddObserver<ServerAddItemMessage>(OnAddItemMessage);
         _removeItemObserver = connection.AddObserver<ServerRemoveItemMessage>(OnRemoveItemMessage);
+
+        // Skills
+        _addSkillObserver = connection.AddObserver<ServerAddSkillMessage>(OnAddSkillMessage);
+        _removeSkillObserver = connection.AddObserver<ServerRemoveSkillMessage>(OnRemoveSkillMessage);
+
+        // Spells
+        _addSpellObserver = connection.AddObserver<ServerAddSpellMessage>(OnAddSpellMessage);
+        _removeSpellObserver = connection.AddObserver<ServerRemoveSpellMessage>(OnRemoveSpellMessage);
+
+        // Cooldowns
+        _cooldownObserver = connection.AddObserver<ServerCooldownMessage>(OnCooldownMessage);
     }
 
     public void Unsubscribe()
@@ -47,8 +67,17 @@ public partial class PlayerViewModel
         _mapLocationMessageObserver?.Unregister();
         _selfProfileMessageObserver?.Unregister();
         _updateStatsMessageObserver?.Unregister();
+
         _addItemObserver?.Unregister();
         _removeItemObserver?.Unregister();
+
+        _addSkillObserver?.Unregister();
+        _removeSkillObserver?.Unregister();
+
+        _addSpellObserver?.Unregister();
+        _removeSpellObserver?.Unregister();
+
+        _cooldownObserver?.Unregister();
     }
 
     private void OnUserIdMessage(ProxyConnection connection, ServerUserIdMessage message, object? parameter)
@@ -144,4 +173,75 @@ public partial class PlayerViewModel
     }
 
     #endregion
+
+    #region Skill Observers
+
+    private void OnAddSkillMessage(ProxyConnection connection, ServerAddSkillMessage message, object? parameter)
+    {
+        var level = 0;
+        var maxLevel = 0;
+        var name = message.Name;
+
+        var match = LevelPattern.Match(message.Name);
+        if (match.Success)
+        {
+            level = int.Parse(match.Groups[1].Value);
+            maxLevel = int.Parse(match.Groups[2].Value);
+
+            name = message.Name[..match.Index];
+        }
+
+        var skill = new SkillbookItem(message.Slot, message.Icon, name, level, maxLevel);
+        Skillbook.SetSlot(message.Slot, skill);
+    }
+
+    private void OnRemoveSkillMessage(ProxyConnection connection, ServerRemoveSkillMessage message, object? parameter)
+    {
+        Skillbook.ClearSlot(message.Slot);
+    }
+
+    #endregion
+
+    #region Spell Observers
+
+    private void OnAddSpellMessage(ProxyConnection connection, ServerAddSpellMessage message, object? parameter)
+    {
+        var level = 0;
+        var maxLevel = 0;
+        var name = message.Name;
+
+        var match = LevelPattern.Match(message.Name);
+        if (match.Success)
+        {
+            level = int.Parse(match.Groups[1].Value);
+            maxLevel = int.Parse(match.Groups[2].Value);
+
+            name = message.Name[..match.Index];
+        }
+
+        var spell = new SpellbookItem(message.Slot, message.Icon, name, message.TargetType, message.CastLines, level,
+            maxLevel);
+        Spellbook.SetSlot(message.Slot, spell);
+    }
+
+    private void OnRemoveSpellMessage(ProxyConnection connection, ServerRemoveSpellMessage message, object? parameter)
+    {
+        Spellbook.ClearSlot(message.Slot);
+    }
+
+    #endregion
+
+    private void OnCooldownMessage(ProxyConnection connection, ServerCooldownMessage message, object? parameter)
+    {
+        var duration = TimeSpan.FromSeconds(message.Seconds);
+
+        if (message.AbilityType == AbilityType.Skill)
+        {
+            Skillbook.UpdateCooldown(message.Slot, duration);
+        }
+        else if (message.AbilityType == AbilityType.Spell)
+        {
+            Spellbook.UpdateCooldown(message.Slot, duration);
+        }
+    }
 }

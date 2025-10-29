@@ -40,6 +40,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientRequestProfileMapping(registry);
         RegisterClientRequestSequenceMapping(registry);
         RegisterClientRequestServerTableMapping(registry);
+        RegisterClientRequestUserIdMapping(registry);
         RegisterClientSayMapping(registry);
         RegisterClientSetStatusMapping(registry);
         RegisterClientSpellChantMapping(registry);
@@ -455,6 +456,13 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Request")
                 .Property(m => m.NeedsServerTable, p => p.ToolTip("Whether the client needs the server table."));
         });
+    }
+
+    private static void RegisterClientRequestUserIdMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientRequestUserIdMessage>(b =>
+            b.Section("Request")
+                .Property(m => m.Nonce, p => p.ToolTip("Nonce for the request, will be echoed back in the response.")));
     }
 
     private static void RegisterClientSayMapping(InspectorMappingRegistry registry)

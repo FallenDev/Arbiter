@@ -44,9 +44,9 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel>
-                        <Border Classes="sunken-shadow"
+                        <Border Name="BorderShadow" Classes="sunken-shadow"
                                 CornerRadius="{TemplateBinding CornerRadius}" ZIndex="100"/>
-                        <Border Classes="sunken-highlight"
+                        <Border Name="BorderHighlight" Classes="sunken-highlight"
                                 CornerRadius="{TemplateBinding CornerRadius}" ZIndex="100"/>
                         <ScrollViewer Name="PART_ScrollViewer"
                                       Background="Transparent"
@@ -66,6 +66,19 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        
+        <Style Selector="^.borderless">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style Selector="^.borderless /template/ Border#BorderShadow">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style Selector="^.borderless /template/ Border#BorderHighlight">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
     </Style>
     
 </Styles>

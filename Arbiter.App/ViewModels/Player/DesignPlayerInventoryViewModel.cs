@@ -1,8 +1,8 @@
-﻿using Arbiter.App.Models;
+﻿using Arbiter.App.Models.Player;
 
 namespace Arbiter.App.ViewModels.Player;
 
-public class DesignPlayerInventoryViewModel : PlayerInventoryViewModel
+public sealed class DesignPlayerInventoryViewModel : PlayerInventoryViewModel
 {
     public DesignPlayerInventoryViewModel()
         : base(CreateTestInventory())
@@ -25,6 +25,5 @@ public class DesignPlayerInventoryViewModel : PlayerInventoryViewModel
 
         inventory.SetSlot(1, testItem);
         return inventory;
-        ;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 
 namespace Arbiter.App.ViewModels.Inspector;
 

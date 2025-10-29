@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Tracing;
 using Arbiter.App.Threading;
 using Arbiter.Net.Client;
 using Arbiter.Net.Server;

@@ -2,7 +2,10 @@
 using System.Net;
 using System.Threading.Tasks;
 using Arbiter.App.Models;
-using Arbiter.App.Services;
+using Arbiter.App.Models.Settings;
+using Arbiter.App.Services.Client;
+using Arbiter.App.Services.Dialogs;
+using Arbiter.App.Services.Settings;
 using Arbiter.App.ViewModels.Client;
 using Arbiter.App.ViewModels.Dialogs;
 using Arbiter.App.ViewModels.Entities;

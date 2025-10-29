@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Arbiter.App.Models;
+using Arbiter.App.Models.Settings;
 
 namespace Arbiter.App.ViewModels.Proxy;
 
