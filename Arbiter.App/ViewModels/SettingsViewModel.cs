@@ -56,6 +56,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
     [NotifyPropertyChangedFor(nameof(DebugEnableNpcModMenu))]
+    [NotifyPropertyChangedFor(nameof(DebugEnableSuperLook))]
     [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
@@ -363,6 +364,17 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.EnableNpcModMenu = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugEnableSuperLook
+    {
+        get => Settings.Debug.EnableSuperLook;
+        set
+        {
+            Settings.Debug.EnableSuperLook = value;
             OnPropertyChanged();
             HasChanges = true;
         }
