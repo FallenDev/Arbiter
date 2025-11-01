@@ -20,6 +20,7 @@ public enum ClientCommand : byte
     Assail = 0x13,
     RequestWorldList = 0x18,
     Whisper = 0x19,
+    EatItem = 0x1A,
     ToggleSetting = 0x1B,
     UseItem = 0x1C,
     Emote = 0x1D,

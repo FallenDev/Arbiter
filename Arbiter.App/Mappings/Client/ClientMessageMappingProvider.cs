@@ -19,6 +19,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientDialogMenuChoiceMapping(registry);
         RegisterClientDropGoldMapping(registry);
         RegisterClientDropItemMapping(registry);
+        RegisterClientEatItemMapping(registry);
         RegisterClientEditNotepadMapping(registry);
         RegisterClientEmoteMapping(registry);
         RegisterClientExceptionMapping(registry);
@@ -228,6 +229,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Position")
                 .Property(m => m.X, p => p.ToolTip("X-coordinate of the map position to drop the item."))
                 .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the map position to drop the item."));
+        });
+    }
+
+    private static void RegisterClientEatItemMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientEatItemMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the item to eat."));
         });
     }
 
