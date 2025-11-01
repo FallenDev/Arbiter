@@ -34,6 +34,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerMapLocationMapping(registry);
         RegisterServerMapTransferCompleteMapping(registry);
         RegisterServerMapTransferMapping(registry);
+        RegisterServerManufactureMapping(registry);
         RegisterServerMetadataMapping(registry);
         RegisterServerPlaySoundMapping(registry);
         RegisterServerPublicMessageMapping(registry);
@@ -337,6 +338,30 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerManufactureMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerManufactureMessage>(b =>
+        {
+            b.Section("Message")
+                .Property(m => m.MessageType, p => p.ToolTip("Type of manufacture message."))
+                .Property(m => m.ManufactureId, p => p.ShowHex().ToolTip("ID of the manufacture dialog."));
+            b.Section("Recipe Count")
+                .Property(m => m.RecipeCount, p => p.ToolTip("Number of recipes in the manufacture dialog."))
+                .IsExpanded(m => m.RecipeCount.HasValue);
+            b.Section("Recipe")
+                .Property(m => m.RecipeIndex,
+                    p => p.ToolTip("Zero-based index of the recipe in the manufacture dialog."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite of the recipe in the manufacture dialog."))
+                .Property(m => m.RecipeName,
+                    p => p.ShowMultiline().ToolTip("Name of the recipe in the manufacture dialog."))
+                .Property(m => m.RecipeDescription,
+                    p => p.ShowMultiline().ToolTip("Description of the recipe in the manufacture dialog."))
+                .Property(m => m.Ingredients,
+                    p => p.ShowMultiline().ToolTip("List of ingredients for the recipe in the manufacture dialog."))
+                .IsExpanded(m => m.RecipeIndex.HasValue);
+        });
+    }
+    
     private static void RegisterServerMapChangedMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerMapChangedMessage>(b =>

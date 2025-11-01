@@ -32,6 +32,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
         RegisterClientLookTileMapping(registry);
+        RegisterClientManufactureMapping(registry);
         RegisterClientPickupItemMapping(registry);
         RegisterClientRaiseStatMapping(registry);
         RegisterClientRequestEntityMapping(registry);
@@ -385,7 +386,20 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.TileY, p => p.ToolTip("Y-coordinate of the tile to look at."));
         });
     }
-    
+
+    private static void RegisterClientManufactureMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientManufactureMessage>(b =>
+        {
+            b.Section("Message")
+                .Property(m => m.MessageType, p => p.ToolTip("Type of manufacture message sent."))
+                .Property(m => m.ManufactureId, p => p.ToolTip("ID of the manufacture dialog."));
+            b.Section("Recipe")
+                .Property(m => m.RecipeIndex, p => p.ToolTip("Index of the recipe requested."))
+                .Property(m => m.RecipeName, p => p.ToolTip("Name of the recipe requested."));
+        });
+    }
+
     private static void RegisterClientPickupItemMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientPickupItemMessage>(b =>
