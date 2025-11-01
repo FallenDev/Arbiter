@@ -31,6 +31,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientIgnoreUserMapping(registry);
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
+        RegisterClientLookTileMapping(registry);
         RegisterClientPickupItemMapping(registry);
         RegisterClientRaiseStatMapping(registry);
         RegisterClientRequestEntityMapping(registry);
@@ -375,6 +376,16 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterClientLookTileMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientLookTileMessage>(b =>
+        {
+            b.Section("Location")
+                .Property(m => m.TileX, p => p.ToolTip("X-coordinate of the tile to look at."))
+                .Property(m => m.TileY, p => p.ToolTip("Y-coordinate of the tile to look at."));
+        });
+    }
+    
     private static void RegisterClientPickupItemMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ClientPickupItemMessage>(b =>

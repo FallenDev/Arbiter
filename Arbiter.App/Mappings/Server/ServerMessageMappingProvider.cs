@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -54,7 +53,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerShowDialogMapping(registry);
         RegisterServerShowDialogMenuMapping(registry);
         RegisterServerShowEffectMapping(registry);
+        RegisterServerShowMapHelpMapping(registry);
         RegisterServerShowNotepadMapping(registry);
+        RegisterServerShowSpinnerMapping(registry);
         RegisterServerShowUserMapping(registry);
         RegisterServerStatusEffectMapping(registry);
         RegisterServerSwitchPaneMapping(registry);
@@ -714,6 +715,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerShowMapHelpMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowMapHelpMessage>(b =>
+        {
+            b.Section("Map")
+                .Property(m => m.MapIndex, p => p.ToolTip("Index of the map to show help for."));
+        });
+    }
+
     private static void RegisterServerShowNotepadMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerShowNotepadMessage>(b =>
@@ -726,6 +736,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Height, p => p.ToolTip("Height of the notepad."));
             b.Section("Content")
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Current content of the notepad."));
+        });
+    }
+
+    private static void RegisterServerShowSpinnerMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowSpinnerMessage>(b =>
+        {
+            b.Section("Visibility")
+                .Property(m => m.IsVisible, p => p.ToolTip("Whether the spinner is visible."));
         });
     }
 
