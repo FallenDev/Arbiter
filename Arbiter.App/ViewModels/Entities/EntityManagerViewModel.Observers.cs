@@ -156,6 +156,11 @@ public partial class EntityManagerViewModel
         // Try to get the existing entity, this should rule out monsters/npcs that talk
         if (_entityStore.TryGetEntity(message.SenderId, out var existing))
         {
+            if (!existing.Flags.HasFlag(EntityFlags.Player))
+            {
+                return;
+            }
+            
             entityFlags = existing.Flags;
             entitySprite = existing.Sprite ?? entitySprite;
         }
@@ -164,11 +169,11 @@ public partial class EntityManagerViewModel
         var sections = message.Message.Split(':', '!',
             StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        if (sections.Length < 2)
+        if (sections.Length < 2 || sections[0].StartsWith('[') || sections[0].EndsWith(']'))
         {
             return;
         }
-        
+
         var senderName = sections[0];
         var entity = new GameEntity
         {
