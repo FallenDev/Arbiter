@@ -161,8 +161,15 @@ public partial class EntityManagerViewModel
         }
 
         // The name should come before the symbol, so split on the first symbol (chat or shout)
-        var senderName =
-            message.Message.Split(':', '!', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
+        var sections = message.Message.Split(':', '!',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        if (sections.Length < 2)
+        {
+            return;
+        }
+        
+        var senderName = sections[0];
         var entity = new GameEntity
         {
             Flags = entityFlags,
