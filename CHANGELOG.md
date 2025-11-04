@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Option to inject `Super Look` skill/spells
+- Right-click option to block next redirect for a client
+
+### Changed
+
+- Formatted HP/MP values
+- Fix issue with NPC names changing when they speak
+- Fix some more concurrency issues
+
 ## [1.7.0] - 2025-10-29
 
 ### Added

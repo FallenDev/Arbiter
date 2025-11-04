@@ -30,20 +30,27 @@
             <StackPanel Spacing="4">
                 <Grid ColumnDefinitions="*,Auto">
                     <!-- Name -->
-                    <TextBlock Grid.Row="0" Grid.Column="0"
-                               Text="{Binding Name}"
-                               FontSize="24"
-                               Foreground="{StaticResource Talgonite.Client.NameForeground}"
-                               VerticalAlignment="Bottom"/>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{Binding Name, FallbackValue=Aisling}"
+                                   FontSize="24"
+                                   Foreground="{StaticResource Talgonite.Client.NameForeground}"
+                                   VerticalAlignment="Bottom"/>
+                        <Path Width="16" Height="8"
+                              Stroke="{StaticResource Talgonite.Color.LightRed}"
+                              Data="{StaticResource Talgonite.Icon.WarningLevel}"
+                              VerticalAlignment="Center"
+                              IsVisible="{Binding ShouldBlockNextRedirect}"/>
+                    </StackPanel>
+                    
 
                     <!-- Level and Class -->
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
-                        <TextBlock Text="{Binding Player.DisplayLevel}"
+                        <TextBlock Text="{Binding Player.DisplayLevel, FallbackValue=Level 1}"
                                    TextAlignment="Right"
                                    FontSize="14"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
                                    VerticalAlignment="Top"/>
-                        <TextBlock Text="{Binding Player.Class}"
+                        <TextBlock Text="{Binding Player.Class, FallbackValue=Peasant}"
                                    TextAlignment="Right"
                                    FontSize="14"
                                    Foreground="{StaticResource Talgonite.Client.LevelForeground}"
@@ -53,10 +60,10 @@
 
                 <!-- Map Location -->
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <TextBlock Text="{Binding Player.MapName}"
+                    <TextBlock Text="{Binding Player.MapName, FallbackValue=Some Map}"
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
-                    <TextBlock Text="{Binding Player.MapPosition, StringFormat={}({0})}"
+                    <TextBlock Text="{Binding Player.MapPosition, StringFormat={}({0}), FallbackValue=(X\, Y)}"
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.MapForeground}"/>
                 </StackPanel>
@@ -75,14 +82,11 @@
 
                     <!-- Current and Max -->
                     <TextBlock Grid.Column="1"
+                               Text="{Binding Player.FormatedHealthText, FallbackValue=100k / 100k}"
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.TextForeground}"
                                TextAlignment="Right"
-                               VerticalAlignment="Center">
-                        <Run Text="{Binding Player.CurrentHealth}"/>
-                        <Run Text="/"/>
-                        <Run Text="{Binding Player.MaxHealth}"/>
-                    </TextBlock>
+                               VerticalAlignment="Center"/>
                 </Grid>
 
                 <!-- HP Bar -->
@@ -102,14 +106,11 @@
 
                     <!-- Current and Max -->
                     <TextBlock Grid.Column="1"
+                               Text="{Binding Player.FormatedManaText, FallbackValue=125k / 125k}"
                                FontSize="14"
                                Foreground="{StaticResource Talgonite.Client.TextForeground}"
                                TextAlignment="Right"
-                               VerticalAlignment="Center">
-                        <Run Text="{Binding Player.CurrentMana}"/>
-                        <Run Text="/"/>
-                        <Run Text="{Binding Player.MaxMana}"/>
-                    </TextBlock>
+                               VerticalAlignment="Center"/>
                 </Grid>
 
                 <!-- MP Bar -->
@@ -124,6 +125,11 @@
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Bring to Front" Command="{Binding BringToFrontCommand}"/>
+                <Separator/>
+                <MenuItem Header="Block Next Redirect" Command="{Binding ToggleBlockNextRedirectCommand}" CommandParameter="{x:False}"
+                          IsVisible="{Binding !ShouldBlockNextRedirect}"/>
+                <MenuItem Header="Allow Next Redirect" Command="{Binding ToggleBlockNextRedirectCommand}" CommandParameter="{x:True}"
+                          IsVisible="{Binding ShouldBlockNextRedirect}"/>
             </ContextMenu>
         </Grid.ContextMenu>
     </Grid>
