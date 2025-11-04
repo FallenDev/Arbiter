@@ -60,6 +60,7 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
+    [ObservableProperty] private int _selectedTabIndex;
     [ObservableProperty] private bool _hasChanges;
 
     public string MessageFilterCount => GetHumanizedFilterCount();

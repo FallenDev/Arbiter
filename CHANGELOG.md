@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Retain last selected settings tab for ease of use
 - Formatted HP/MP values
 - Fix issue with NPC names changing when they speak
 - Fix some more concurrency issues

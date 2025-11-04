@@ -1,4 +1,6 @@
 ﻿
+using Arbiter.Net.Client.Messages;
+
 namespace Arbiter.App.ViewModels.Client;
 
 public partial class ClientManagerViewModel
@@ -26,10 +28,16 @@ public partial class ClientManagerViewModel
             return;
         }
 
-        client.AddVirtualSkill(74, 1, "Super Look", () => PerformSuperLook(client));
+        client.AddVirtualSkill(74, 8, "Super Look", () => PerformSuperLook(client));
     }
 
-    private void PerformSuperLook(ClientViewModel client)
+    private static void PerformSuperLook(ClientViewModel client)
+    {
+        var lookAction = new ClientLookAheadMessage();
+        client.EnqueueMessage(lookAction);
+    }
+
+    private static void PerformSuperLookAt(ClientViewModel client)
     {
         
     }

@@ -88,8 +88,16 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
         return false;
     }
 
-    public void SetSlot(int slot, SpellbookItem spell) =>
+    public void SetSlot(int slot, SpellbookItem spell)
+    {
+        var existing = _spellbook.GetSlot(slot);
+        if (existing?.IsVirtual is true)
+        {
+            return;
+        }
+        
         _spellbook.SetSlot(slot, spell);
+    }
 
     public void ClearSlot(int slot) =>
         _spellbook.ClearSlot(slot);

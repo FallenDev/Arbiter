@@ -90,8 +90,16 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
         return false;
     }
 
-    public void SetSlot(int slot, SkillbookItem skill) =>
+    public void SetSlot(int slot, SkillbookItem skill)
+    {
+        var existing = _skillbook.GetSlot(slot);
+        if (existing?.IsVirtual is true)
+        {
+            return;
+        }
+
         _skillbook.SetSlot(slot, skill);
+    }
 
     public void ClearSlot(int slot) =>
         _skillbook.ClearSlot(slot);

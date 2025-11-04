@@ -26,7 +26,8 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8"
+                    SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4" Margin="4">

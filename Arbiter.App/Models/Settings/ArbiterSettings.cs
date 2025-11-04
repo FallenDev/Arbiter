@@ -30,6 +30,7 @@ public class ArbiterSettings : ICloneable
     public InterfacePanelState? LeftPanel { get; set; }
     public InterfacePanelState? RightPanel { get; set; }
     public InterfacePanelState? BottomPanel { get; set; }
+    public int SettingsPanelIndex { get; set; }
 
     public List<MessageFilter> MessageFilters { get; set; } = [];
 
@@ -51,6 +52,7 @@ public class ArbiterSettings : ICloneable
         LeftPanel = LeftPanel?.Clone() as InterfacePanelState,
         RightPanel = RightPanel?.Clone() as InterfacePanelState,
         BottomPanel = BottomPanel?.Clone() as InterfacePanelState,
+        SettingsPanelIndex = SettingsPanelIndex,
         MessageFilters = MessageFilters.Select(x => new MessageFilter { Pattern = x.Pattern }).ToList(),
         EntitySorting = EntitySorting
     };

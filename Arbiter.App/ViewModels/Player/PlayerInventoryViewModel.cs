@@ -75,8 +75,16 @@ public partial class PlayerInventoryViewModel : ViewModelBase
         return false;
     }
 
-    public void SetSlot(int slot, InventoryItem item) =>
+    public void SetSlot(int slot, InventoryItem item)
+    {
+        var existing = _inventory.GetSlot(slot);
+        if (existing?.IsVirtual is true)
+        {
+            return;
+        }
+
         _inventory.SetSlot(slot, item);
+    }
 
     public void ClearSlot(int slot) =>
         _inventory.ClearSlot(slot);
