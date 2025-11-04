@@ -114,17 +114,23 @@ public partial class ClientManagerViewModel : ViewModelBase
             // Select the client if no other selection
             SelectedClient ??= client;
         });
+
+        if (_debugSettings?.EnableSuperLook ?? false)
+        {
+            AddSuperLookSkill(client);
+        }
     }
 
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
         var client = _clients.GetValueOrDefault(e.Connection.Id);
-        if (client is null)
+        if (client is not null)
         {
-            return;
+            CleanupClient(client);
         }
 
-        CleanupClient(client);
+        _clients.TryRemove(e.Connection.Id, out _);
+        _playerService.Unregister(e.Connection.Id);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
@@ -137,12 +143,13 @@ public partial class ClientManagerViewModel : ViewModelBase
         var client = Clients.FirstOrDefault(c => c.Id == e.Connection.Id);
         client?.Unsubscribe();
 
-        if (client is null)
+        if (client is not null)
         {
-            return;
+            CleanupClient(client);
         }
-
-        CleanupClient(client);
+        
+        _clients.TryRemove(e.Connection.Id, out _);
+        _playerService.Unregister(e.Connection.Id);
     }
 
     private void CleanupClient(ClientViewModel client)
@@ -163,9 +170,6 @@ public partial class ClientManagerViewModel : ViewModelBase
                 SelectedClient ??= Clients.FirstOrDefault();
             }
         });
-
-        _clients.TryRemove(client.Id, out _);
-        _playerService.Unregister(client.Id);
         
         ClientDisconnected?.Invoke(client);
     }

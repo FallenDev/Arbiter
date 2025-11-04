@@ -17,6 +17,18 @@ public sealed class SpellbookItem : ISlotted
     public Action<SpellCastParameters>? OnCast { get; init; }
 
     public SpellbookItem(int slot, ushort sprite, string name, SpellTargetType targetType, int castLines = 0,
+        Action<SpellCastParameters>? onCast = null)
+    {
+        Slot = slot;
+        Sprite = sprite;
+        Name = name;
+        TargetType = targetType;
+        CastLines = castLines;
+        OnCast = onCast;
+        IsVirtual = true;
+    }
+
+    public SpellbookItem(int slot, ushort sprite, string name, SpellTargetType targetType, int castLines = 0,
         int currentLevel = 0,
         int maxLevel = 0, TimeSpan? cooldown = null)
     {

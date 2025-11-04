@@ -13,7 +13,7 @@ public sealed class SkillbookItem : ISlotted
     public bool IsVirtual { get; init; }
     public Action? OnUse { get; init; }
 
-    public SkillbookItem(int slot, ushort sprite, string name, Action onUse)
+    public SkillbookItem(int slot, ushort sprite, string name, Action? onUse)
     {
         Slot = slot;
         Sprite = sprite;

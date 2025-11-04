@@ -32,7 +32,10 @@ public sealed class PlayerSkillbook : SlottedCollection<SkillbookItem>
             return false;
         }
 
-        var update = new SkillbookItem(slot, item.Sprite, item.Name, item.CurrentLevel, item.MaxLevel, duration);
+        var update = item.IsVirtual
+            ? new SkillbookItem(slot, item.Sprite, item.Name, item.OnUse)
+            : new SkillbookItem(slot, item.Sprite, item.Name, item.CurrentLevel, item.MaxLevel, duration);
+
         SetSlot(slot, update);
         return true;
     }

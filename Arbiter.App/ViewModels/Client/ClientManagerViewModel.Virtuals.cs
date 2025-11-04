@@ -7,12 +7,7 @@ public partial class ClientManagerViewModel
     {
         foreach (var client in _clients.Values)
         {
-            if (client.Player.Skillbook.HasSkill("SuperLook"))
-            {
-                continue;
-            }
-            
-            client.AddVirtualSkill(74, 1, "Super Look", PerformSuperLook);
+            AddSuperLookSkill(client);
         }
     }
 
@@ -24,7 +19,17 @@ public partial class ClientManagerViewModel
         }
     }
 
-    private void PerformSuperLook()
+    private void AddSuperLookSkill(ClientViewModel client)
+    {
+        if (client.Player.Skillbook.HasSkill("SuperLook"))
+        {
+            return;
+        }
+
+        client.AddVirtualSkill(74, 1, "Super Look", () => PerformSuperLook(client));
+    }
+
+    private void PerformSuperLook(ClientViewModel client)
     {
         
     }
