@@ -29,6 +29,7 @@ public sealed class PlayerSkillSlotViewModel : ViewModelBase
     public TimeSpan Cooldown => _skill?.Cooldown ?? TimeSpan.Zero;
     public bool HasLevel => _skill?.MaxLevel > 0;
     public bool HasCooldown => Cooldown > TimeSpan.Zero;
+    public bool IsVirtual => _skill?.IsVirtual ?? false;
 
     public PlayerSkillSlotViewModel(int slot, SkillbookItem? skill = null)
     {

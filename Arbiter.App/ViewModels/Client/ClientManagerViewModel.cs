@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Arbiter.App.Models.Player;
+using Arbiter.App.Models.Settings;
 using Arbiter.App.Services.Client;
 using Arbiter.App.Services.Players;
 using Arbiter.Net.Proxy;
@@ -19,7 +20,9 @@ public partial class ClientManagerViewModel : ViewModelBase
     private readonly IGameClientService _gameClientService;
     private readonly IPlayerService _playerService;
     private readonly ConcurrentDictionary<long, ClientViewModel> _clients = [];
-
+    
+    private DebugSettings? _debugSettings;
+    
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
     
     [ObservableProperty]
@@ -48,9 +51,23 @@ public partial class ClientManagerViewModel : ViewModelBase
         _proxyServer.ClientDisconnected += OnClientDisconnected;
     }
 
+    public void ApplySettings(DebugSettings settings)
+    {
+        _debugSettings = settings;
+        
+        if (settings.EnableSuperLook)
+        {
+            AddSuperLookToClients();
+        }
+        else
+        {
+            RemoveSuperLookFromClients();
+        }
+    }
+    
     public bool TryGetClient(long id, [NotNullWhen(true)] out ClientViewModel? client) =>
         _clients.TryGetValue(id, out client);
-
+    
     partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
     {
         ClientSelected?.Invoke(newValue);

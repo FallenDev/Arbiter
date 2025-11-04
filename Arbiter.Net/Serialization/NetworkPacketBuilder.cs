@@ -251,6 +251,6 @@ public ref struct NetworkPacketBuilder : IDisposable
 
         _isDisposed = true;
     }
-    
-    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Network packet builder is disposed");
+
+    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, typeof(NetworkPacketBuilder));
 }

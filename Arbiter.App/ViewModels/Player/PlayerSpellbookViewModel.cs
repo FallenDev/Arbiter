@@ -54,6 +54,39 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
         spell = _spellbook.GetSlot(slot);
         return spell is not null;
     }
+    
+    public int? GetFirstEmptySlot(int startSlot = 1)
+    {
+        for (var i = startSlot; i <= _spellbook.Capacity; i++)
+        {
+            if (_spellbook.GetSlot(i) is null)
+            {
+                return i;
+            }
+        }
+
+        return null;
+    }
+    
+    public bool TryRemoveSpell(string name, [NotNullWhen(true)] out int? slot)
+    {
+        slot = null;
+        
+        for (var i = 1; i <= _spellbook.Capacity; i++)
+        {
+            var skill = _spellbook.GetSlot(i);
+            if (!string.Equals(name, skill?.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            slot = i;
+            _spellbook.ClearSlot(i);
+            return true;
+        }
+
+        return false;
+    }
 
     public void SetSlot(int slot, SpellbookItem spell) =>
         _spellbook.SetSlot(slot, spell);

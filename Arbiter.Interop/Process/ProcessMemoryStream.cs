@@ -191,5 +191,5 @@ public class ProcessMemoryStream : Stream
         _isDisposed = true;
     }
 
-    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Stream is disposed");
+    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, this);
 }

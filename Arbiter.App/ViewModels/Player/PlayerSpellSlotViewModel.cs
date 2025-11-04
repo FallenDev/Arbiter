@@ -39,6 +39,7 @@ public sealed class PlayerSpellSlotViewModel : ViewModelBase
         1 => "1 line",
         _ => $"{CastLines} lines"
     };
+    public bool IsVirtual => _spell?.IsVirtual ?? false;
 
     public string TargetTypeText => TargetType switch
     {

@@ -166,6 +166,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ApplySettings()
     {
         Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
+        ClientManager.ApplySettings(Settings.Debug);
+        
         Trace.MaxTraceHistory = Settings.TraceMaxHistory;
         EntityManager.SortOrder = Settings.EntitySorting;
     }

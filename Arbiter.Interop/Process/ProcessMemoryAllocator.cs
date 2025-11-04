@@ -91,5 +91,5 @@ public class ProcessMemoryAllocator : IDisposable
         _isDisposed = true;
     }
 
-    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Allocator is disposed");
+    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, this);
 }

@@ -13,6 +13,15 @@ public sealed class SkillbookItem : ISlotted
     public bool IsVirtual { get; init; }
     public Action? OnUse { get; init; }
 
+    public SkillbookItem(int slot, ushort sprite, string name, Action onUse)
+    {
+        Slot = slot;
+        Sprite = sprite;
+        Name = name;
+        OnUse = onUse;
+        IsVirtual = true;
+    }
+
     public SkillbookItem(int slot, ushort sprite, string name, int currentLevel = 0, int maxLevel = 0,
         TimeSpan? cooldown = null)
     {

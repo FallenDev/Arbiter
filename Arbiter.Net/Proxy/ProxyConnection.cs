@@ -145,5 +145,5 @@ public partial class ProxyConnection : IDisposable
     }
 
     private void CheckIfDisposed()
-        => ObjectDisposedException.ThrowIf(_isDisposed, nameof(ProxyConnection));
+        => ObjectDisposedException.ThrowIf(_isDisposed, this);
 }

@@ -41,6 +41,8 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
         _skillbook.ItemUpdated += OnSkillUpdated;
         _skillbook.ItemRemoved += OnSkillRemoved;
     }
+
+    public bool HasSkill(string name) => _skillbook.TryFind(name, out _);
     
     public bool TryGetSlot(int slot, [NotNullWhen(true)] out SkillbookItem? skill)
     {
@@ -53,6 +55,39 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
 
         skill = _skillbook.GetSlot(slot);
         return skill is not null;
+    }
+    
+    public int? GetFirstEmptySlot(int startSlot = 1)
+    {
+        for (var i = startSlot; i <= _skillbook.Capacity; i++)
+        {
+            if (_skillbook.GetSlot(i) is null)
+            {
+                return i;
+            }
+        }
+
+        return null;
+    }
+
+    public bool TryRemoveSkill(string name, [NotNullWhen(true)] out int? slot)
+    {
+        slot = null;
+        
+        for (var i = 1; i <= _skillbook.Capacity; i++)
+        {
+            var skill = _skillbook.GetSlot(i);
+            if (!string.Equals(name, skill?.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            slot = i;
+            _skillbook.ClearSlot(i);
+            return true;
+        }
+
+        return false;
     }
 
     public void SetSlot(int slot, SkillbookItem skill) =>
