@@ -19,6 +19,8 @@ public interface ISlottedCollection<T> : IReadOnlyCollection<T> where T : ISlott
 
     IEnumerable<int> GetEmptySlots();
     IEnumerable<int> GetNonEmptySlots();
+    
+    T? GetSlot(int slot);
 
     bool TryFind(string name, [NotNullWhen(true)] out T? item);
 }

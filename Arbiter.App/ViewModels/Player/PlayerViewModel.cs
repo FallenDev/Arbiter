@@ -1,5 +1,6 @@
 ﻿using System;
 using Arbiter.App.Models.Player;
+using Arbiter.Net.Proxy;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Player;
@@ -97,10 +98,22 @@ public partial class PlayerViewModel : ViewModelBase
     public PlayerViewModel(PlayerState player)
     {
         _player = player;
-
+        
         Inventory = new PlayerInventoryViewModel(player.Inventory);
         Skillbook = new PlayerSkillbookViewModel(player.Skillbook);
         Spellbook = new PlayerSpellbookViewModel(player.Spellbook);
+    }
+
+    public void Subscribe(ProxyConnection connection)
+    {
+        AddObservers(connection);
+        AddVirtualFilters(connection);
+    }
+
+    public void Unsubscribe()
+    {
+        RemoveObservers();
+        RemoveVirtualFilters();
     }
 
     // Forward all property changes to the player model

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -39,6 +40,19 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
         _skillbook.ItemAdded += OnSkillAdded;
         _skillbook.ItemUpdated += OnSkillUpdated;
         _skillbook.ItemRemoved += OnSkillRemoved;
+    }
+    
+    public bool TryGetSlot(int slot, [NotNullWhen(true)] out SkillbookItem? skill)
+    {
+        skill = null;
+        
+        if (slot < 1 || slot > _skillbook.Capacity)
+        {
+            return false;
+        }
+
+        skill = _skillbook.GetSlot(slot);
+        return skill is not null;
     }
 
     public void SetSlot(int slot, SkillbookItem skill) =>

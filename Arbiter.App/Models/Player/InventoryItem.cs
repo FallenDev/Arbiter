@@ -13,7 +13,9 @@ public sealed class InventoryItem : ISlotted
     public bool IsStackable { get; init; }
     public long? Durability { get; init; }
     public long? MaxDurability { get; init; }
-
+    public bool IsVirtual { get; init; }
+    public Action? OnUse { get; init; }
+    
     public InventoryItem()
     {
         Quantity = 1;

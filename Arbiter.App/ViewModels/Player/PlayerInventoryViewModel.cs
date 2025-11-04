@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,6 +26,51 @@ public partial class PlayerInventoryViewModel : ViewModelBase
         _inventory.ItemAdded += OnItemAdded;
         _inventory.ItemUpdated += OnItemUpdated;
         _inventory.ItemRemoved += OnItemRemoved;
+    }
+
+    public bool AddVirtualItem(string name, int sprite, int? desiredSlot = null)
+    {
+        var slot = GetFirstEmptySlot(desiredSlot ?? 1);
+        if (slot == null)
+        {
+            return false;
+        }
+
+        var item = new InventoryItem
+        {
+            Slot = slot.Value,
+            IsVirtual = true,
+            Name = name
+        };
+        
+        _inventory.SetSlot(slot.Value, item);
+        return true;
+    }
+
+    public bool TryGetSlot(int slot, [NotNullWhen(true)] out InventoryItem? item)
+    {
+        item = null;
+        
+        if (slot < 1 || slot > _inventory.Capacity)
+        {
+            return false;
+        }
+
+        item = _inventory.GetSlot(slot);
+        return item is not null;
+    }
+
+    public int? GetFirstEmptySlot(int minSlot = 1)
+    {
+        for (var i = minSlot; i <= _inventory.Capacity; i++)
+        {
+            if (_inventory.GetSlot(i) is null)
+            {
+                return i;
+            }
+        }
+
+        return null;
     }
 
     public void SetSlot(int slot, InventoryItem item) =>

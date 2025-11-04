@@ -111,6 +111,25 @@ public abstract class SlottedCollection<T> : ISlottedCollection<T> where T : cla
         }
     }
 
+    public T? GetSlot(int slot)
+    {
+        if (slot < 1 || slot > Capacity)
+        {
+            throw new ArgumentOutOfRangeException(nameof(slot),
+                "Slot must be between 1 and the capacity of the collection");
+        }
+        
+        Lock.EnterReadLock();
+        try
+        {
+            return _items[slot - 1];
+        }
+        finally
+        {
+            Lock.ExitReadLock();
+        }
+    }
+
     public bool TryFind(string name, [NotNullWhen(true)] out T? item)
     {
         item = default;
@@ -251,19 +270,4 @@ public abstract class SlottedCollection<T> : ISlottedCollection<T> where T : cla
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    protected T? GetSlot(int slot)
-    {
-        Lock.EnterReadLock();
-
-        try
-        {
-            return _items[slot - 1];
-        }
-        finally
-        {
-            Lock.ExitReadLock();
-        }
-    }
-
 }

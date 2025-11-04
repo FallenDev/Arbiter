@@ -13,8 +13,11 @@ public sealed class SpellbookItem : ISlotted
     public int MaxLevel { get; init; }
     public int CastLines { get; init; }
     public TimeSpan Cooldown { get; init; }
+    public bool IsVirtual { get; init; }
+    public Action<SpellCastParameters>? OnCast { get; init; }
 
-    public SpellbookItem(int slot, ushort sprite, string name, SpellTargetType targetType, int castLines = 0, int currentLevel = 0,
+    public SpellbookItem(int slot, ushort sprite, string name, SpellTargetType targetType, int castLines = 0,
+        int currentLevel = 0,
         int maxLevel = 0, TimeSpan? cooldown = null)
     {
         Slot = slot;

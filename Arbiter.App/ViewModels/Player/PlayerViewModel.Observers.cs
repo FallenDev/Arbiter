@@ -28,7 +28,7 @@ public partial class PlayerViewModel
     private NetworkObserverRef? _removeSkillObserver;
     private NetworkObserverRef? _cooldownObserver;
 
-    public void Subscribe(ProxyConnection connection)
+    private void AddObservers(ProxyConnection connection)
     {
         const int observerPriority = int.MaxValue - 100;
 
@@ -59,7 +59,7 @@ public partial class PlayerViewModel
         _cooldownObserver = connection.AddObserver<ServerCooldownMessage>(OnCooldownMessage);
     }
 
-    public void Unsubscribe()
+    private void RemoveObservers()
     {
         _userIdMessageObserver?.Unregister();
         _walkMessageObserver?.Unregister();

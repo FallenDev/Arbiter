@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -39,6 +40,19 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
         _spellbook.ItemAdded += OnSpellAdded;
         _spellbook.ItemUpdated += OnSpellUpdated;
         _spellbook.ItemRemoved += OnSpellRemoved;
+    }
+    
+    public bool TryGetSlot(int slot, [NotNullWhen(true)] out SpellbookItem? spell)
+    {
+        spell = null;
+        
+        if (slot < 1 || slot > _spellbook.Capacity)
+        {
+            return false;
+        }
+
+        spell = _spellbook.GetSlot(slot);
+        return spell is not null;
     }
 
     public void SetSlot(int slot, SpellbookItem spell) =>
