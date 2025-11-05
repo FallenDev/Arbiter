@@ -89,7 +89,20 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
 
     public void UpdateCooldown(int slot, TimeSpan duration)
     {
+        if (slot < 1 || slot > _skills.Capacity)
+        {
+            return;
+        }
 
+        var index = slot - 1;
+        var vm = index switch
+        {
+            < 36 => TemuairSkills[index],
+            < 72 => MedeniaSkills[index - 36],
+            _ => WorldSkills[index - 72]
+        };
+        
+        vm.SetCooldown(duration);
     }
 
     private void OnSkillAdded(Slotted<SkillbookItem> skill)

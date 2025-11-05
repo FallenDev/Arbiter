@@ -91,7 +91,20 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
 
     public void UpdateCooldown(int slot, TimeSpan duration)
     {
+        if (slot < 1 || slot > _spells.Capacity)
+        {
+            return;
+        }
 
+        var index = slot - 1;
+        var vm = index switch
+        {
+            < 36 => TemuairSpells[index],
+            < 72 => MedeniaSpells[index - 36],
+            _ => WorldSpells[index - 72]
+        };
+        
+        vm.SetCooldown(duration);
     }
 
     private void OnSpellAdded(Slotted<SpellbookItem> spell)

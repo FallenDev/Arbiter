@@ -57,4 +57,18 @@ public sealed class PlayerSpellSlotViewModel : ViewModelBase
         Slot = slot;
         _spell = spell;
     }
+    
+    public void SetCooldown(TimeSpan duration)
+    {
+        if (_spell is null)
+        {
+            return;
+        }
+
+        _spell.Cooldown = duration;
+        OnPropertyChanged(nameof(Cooldown));
+        OnPropertyChanged(nameof(HasCooldown));
+    }
+    
+    public override string ToString() => IsEmpty ? "<empty>" : Name;
 }

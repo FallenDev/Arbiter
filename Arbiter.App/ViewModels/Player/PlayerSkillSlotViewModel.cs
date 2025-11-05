@@ -1,5 +1,6 @@
 ﻿using System;
 using Arbiter.App.Models.Player;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace Arbiter.App.ViewModels.Player;
 
@@ -35,6 +36,18 @@ public sealed class PlayerSkillSlotViewModel : ViewModelBase
     {
         Slot = slot;
         _skill = skill;
+    }
+
+    public void SetCooldown(TimeSpan duration)
+    {
+        if (_skill is null)
+        {
+            return;
+        }
+
+        _skill.Cooldown = duration;
+        OnPropertyChanged(nameof(Cooldown));
+        OnPropertyChanged(nameof(HasCooldown));
     }
 
     public override string ToString() => IsEmpty ? "<empty>" : Name;
