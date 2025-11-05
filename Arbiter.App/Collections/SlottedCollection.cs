@@ -108,11 +108,8 @@ public class SlottedCollection<T> : ISlottedCollection<T> where T: class
         {
             OnItemRemoved(new Slotted<T>(slot, existingItem));
         }
-        else
-        {
-            OnItemAdded(new Slotted<T>(slot, item));
-        }
-
+        OnItemAdded(new Slotted<T>(slot, item));
+        
         if (existingItem is not null)
         {
             OnItemChanged(new Slotted<T>(slot, existingItem), new Slotted<T>(slot, item));

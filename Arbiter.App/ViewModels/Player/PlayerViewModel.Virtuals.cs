@@ -5,7 +5,6 @@ using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Client.Types;
 using Arbiter.Net.Filters;
-using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
@@ -23,11 +22,7 @@ public partial class PlayerViewModel
     private NetworkFilterRef? _virtualItemFilter;
     private NetworkFilterRef? _virtualSkillFilter;
     private NetworkFilterRef? _virtualSpellFilter;
-    private NetworkFilterRef? _virtualSlotFilter;
-
-    private NetworkObserverRef? _virtualItemRemoveObserver;
-    private NetworkObserverRef? _virtualSkillRemoveObserver;
-    private NetworkObserverRef? _virtualSpellRemoveObserver;
+    private NetworkFilterRef? _virtualSwapSlotFilter;
 
     private void AddVirtualFilters(ProxyConnection connection)
     {
@@ -41,15 +36,8 @@ public partial class PlayerViewModel
         _virtualSpellFilter = connection.AddFilter<ClientCastSpellMessage>(HandleClientCastSpellMessage,
             $"{FilterPrefix}_VirtualSpellFilter", int.MaxValue);
 
-        _virtualSlotFilter = connection.AddFilter<ClientSwapSlotMessage>(HandleClientSwapSlotMessage,
-            $"{FilterPrefix}_VirtualSlotFilter", int.MaxValue);
-
-        _virtualItemRemoveObserver =
-            connection.AddObserver<ServerRemoveItemMessage>(HandleServerRemoveItemMessage, int.MaxValue);
-        _virtualSkillRemoveObserver =
-            connection.AddObserver<ServerRemoveSkillMessage>(HandleServerRemoveSkillMessage, int.MaxValue);
-        _virtualSpellRemoveObserver =
-            connection.AddObserver<ServerRemoveSpellMessage>(HandleServerRemoveSpellMessage, int.MaxValue);
+        _virtualSwapSlotFilter = connection.AddFilter<ClientSwapSlotMessage>(HandleClientSwapSlotMessage,
+            $"{FilterPrefix}_VirtualSwapSlotFilter", int.MaxValue);
     }
 
     private void RemoveVirtualFilters()
@@ -57,11 +45,7 @@ public partial class PlayerViewModel
         _virtualItemFilter?.Unregister();
         _virtualSkillFilter?.Unregister();
         _virtualSpellFilter?.Unregister();
-        _virtualSlotFilter?.Unregister();
-
-        _virtualItemRemoveObserver?.Unregister();
-        _virtualSkillRemoveObserver?.Unregister();
-        _virtualSpellRemoveObserver?.Unregister();
+        _virtualSwapSlotFilter?.Unregister();
     }
 
     private NetworkPacket? HandleClientUseItemMessage(ProxyConnection connection, ClientUseItemMessage message,
@@ -144,12 +128,12 @@ public partial class PlayerViewModel
 
             if (hasItemA && itemA.Value.IsVirtual)
             {
-                _pendingVirtualItemSwaps[slotA] = (itemA.Value, slotB);
+                _pendingVirtualItemSwaps[slotB] = (itemA.Value, slotB);
             }
 
             if (hasItemB && itemB.Value.IsVirtual)
             {
-                _pendingVirtualItemSwaps[slotB] = (itemB.Value, slotA);
+                _pendingVirtualItemSwaps[slotA] = (itemB.Value, slotA);
             }
         }
         else if (message.Pane == ClientSlotSwapType.Skills)
@@ -159,12 +143,12 @@ public partial class PlayerViewModel
 
             if (hasSkillA && skillA.Value.IsVirtual)
             {
-                _pendingVirtualSkillSwaps[slotA] = (skillA.Value, slotB);
+                _pendingVirtualSkillSwaps[slotB] = (skillA.Value, slotB);
             }
 
             if (hasSkillB && skillB.Value.IsVirtual)
             {
-                _pendingVirtualSkillSwaps[slotB] = (skillB.Value, slotA);
+                _pendingVirtualSkillSwaps[slotA] = (skillB.Value, slotA);
             }
         }
         else if (message.Pane == ClientSlotSwapType.Spells)
@@ -174,58 +158,19 @@ public partial class PlayerViewModel
 
             if (hasSpellA && spellA.Value.IsVirtual)
             {
-                _pendingVirtualSpellSwaps[slotA] = (spellA.Value, slotB);
+                _pendingVirtualSpellSwaps[slotB] = (spellA.Value, slotB);
             }
 
             if (hasSpellB && spellB.Value.IsVirtual)
             {
-                _pendingVirtualSpellSwaps[slotB] = (spellB.Value, slotA);
+                _pendingVirtualSpellSwaps[slotA] = (spellB.Value, slotA);
             }
         }
 
         return result.Passthrough();
     }
 
-    private void HandleServerRemoveItemMessage(ProxyConnection connection, ServerRemoveItemMessage message,
-        object? parameter)
-    {
-        var slot = message.Slot;
-        if (!_pendingVirtualItemSwaps.TryRemove(slot, out var swap))
-        {
-            return;
-        }
-
-        var item = swap.Item;
-        MoveVirtualItem(connection, item, swap.TargetSlot);
-    }
-
-    private void HandleServerRemoveSkillMessage(ProxyConnection connection, ServerRemoveSkillMessage message,
-        object? parameter)
-    {
-        var slot = message.Slot;
-        if (!_pendingVirtualSkillSwaps.TryRemove(slot, out var swap))
-        {
-            return;
-        }
-
-        var skill = swap.Skill;
-        MoveVirtualSkill(connection, skill, swap.TargetSlot);
-    }
-
-    private void HandleServerRemoveSpellMessage(ProxyConnection connection, ServerRemoveSpellMessage message,
-        object? parameter)
-    {
-        var slot = message.Slot;
-        if (!_pendingVirtualSpellSwaps.TryRemove(slot, out var swap))
-        {
-            return;
-        }
-
-        var spell = swap.Spell;
-        MoveVirtualSpell(connection, spell, swap.TargetSlot);
-    }
-
-    private void MoveVirtualItem(ProxyConnection connection, InventoryItem item, int targetSlot)
+    private void SendVirtualItem(ProxyConnection connection, InventoryItem item, int targetSlot)
     {
         Inventory.SetSlot(targetSlot, item);
 
@@ -243,7 +188,7 @@ public partial class PlayerViewModel
         connection.EnqueueMessage(addItemMessage);
     }
 
-    private void MoveVirtualSkill(ProxyConnection connection, SkillbookItem skill, int targetSlot)
+    private void SendVirtualSkill(ProxyConnection connection, SkillbookItem skill, int targetSlot)
     {
         Skills.SetSlot(targetSlot, skill);
 
@@ -257,7 +202,7 @@ public partial class PlayerViewModel
         connection.EnqueueMessage(addSkillMessage);
     }
 
-    private void MoveVirtualSpell(ProxyConnection connection, SpellbookItem spell, int targetSlot)
+    private void SendVirtualSpell(ProxyConnection connection, SpellbookItem spell, int targetSlot)
     {
         Spells.SetSlot(targetSlot, spell);
 

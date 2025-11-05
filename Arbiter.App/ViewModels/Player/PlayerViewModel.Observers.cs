@@ -158,7 +158,7 @@ public partial class PlayerViewModel
         {
             return;
         }
-        
+
         var item = new InventoryItem
         {
             Name = message.Name,
@@ -175,7 +175,15 @@ public partial class PlayerViewModel
 
     private void OnRemoveItemMessage(ProxyConnection connection, ServerRemoveItemMessage message, object? parameter)
     {
-        Inventory.ClearSlot(message.Slot);
+        var slot = message.Slot;
+        if (!_pendingVirtualItemSwaps.TryRemove(slot, out var swap))
+        {
+            Inventory.ClearSlot(message.Slot);
+            return;
+        }
+
+        var item = swap.Item;
+        SendVirtualItem(connection, item, swap.TargetSlot);
     }
 
     #endregion
@@ -189,7 +197,7 @@ public partial class PlayerViewModel
         {
             return;
         }
-        
+
         var level = 0;
         var maxLevel = 0;
         var name = message.Name;
@@ -216,7 +224,15 @@ public partial class PlayerViewModel
 
     private void OnRemoveSkillMessage(ProxyConnection connection, ServerRemoveSkillMessage message, object? parameter)
     {
-        Skills.ClearSlot(message.Slot);
+        var slot = message.Slot;
+        if (!_pendingVirtualSkillSwaps.TryRemove(slot, out var swap))
+        {
+            Skills.ClearSlot(message.Slot);
+            return;
+        }
+
+        var skill = swap.Skill;
+        SendVirtualSkill(connection, skill, swap.TargetSlot);
     }
 
     #endregion
@@ -230,7 +246,7 @@ public partial class PlayerViewModel
         {
             return;
         }
-        
+
         var level = 0;
         var maxLevel = 0;
         var name = message.Name;
@@ -259,7 +275,15 @@ public partial class PlayerViewModel
 
     private void OnRemoveSpellMessage(ProxyConnection connection, ServerRemoveSpellMessage message, object? parameter)
     {
-        Spells.ClearSlot(message.Slot);
+        var slot = message.Slot;
+        if (!_pendingVirtualSpellSwaps.TryRemove(slot, out var swap))
+        {
+            Spells.ClearSlot(message.Slot);
+            return;
+        }
+
+        var spell = swap.Spell;
+        SendVirtualSpell(connection, spell, swap.TargetSlot);
     }
 
     #endregion
