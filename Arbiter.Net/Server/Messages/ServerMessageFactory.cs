@@ -10,7 +10,7 @@ public class ServerMessageFactory : IServerMessageFactory
 {
     public static ServerMessageFactory Default { get; } = new();
 
-    private readonly Dictionary<ServerCommand, Func<IServerMessage>> _factoryMappings = new();
+    private readonly Dictionary<ServerCommand, Func<NetworkPacketSource, IServerMessage>> _factoryMappings = new();
     private readonly Dictionary<Type, ServerCommand> _commandMappings = new();
     private readonly Dictionary<ServerCommand, Type> _reverseCommandMappings = new();
 
@@ -42,14 +42,19 @@ public class ServerMessageFactory : IServerMessageFactory
             _reverseCommandMappings.Add(command, type);
         }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Func<IServerMessage> CreateFactory(Type type)
+    private static Func<NetworkPacketSource, IServerMessage> CreateFactory(Type type)
     {
         var ctor = type.GetConstructor(Type.EmptyTypes);
         return ctor is null
             ? throw new InvalidOperationException($"Type {type.Name} must have a parameterless constructor")
-            : () => (IServerMessage)ctor.Invoke(null);
+            : source =>
+            {
+                var instance = (IServerMessage)ctor.Invoke(null);
+                instance.Source = source;
+                return instance;
+            };
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -66,7 +71,7 @@ public class ServerMessageFactory : IServerMessageFactory
             return null;
         }
 
-        var instance = factory();
+        var instance = factory(packet.Source);
         var reader = new NetworkPacketReader(packet);
         instance.Deserialize(reader);
 

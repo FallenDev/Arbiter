@@ -57,7 +57,6 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
     [NotifyPropertyChangedFor(nameof(DebugEnableNpcModMenu))]
     [NotifyPropertyChangedFor(nameof(DebugEnableTrueLook))]
-    [NotifyPropertyChangedFor(nameof(DebugEnableFreeRepair))]
     [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
@@ -377,17 +376,6 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         set
         {
             Settings.Debug.EnableTrueLook = value;
-            OnPropertyChanged();
-            HasChanges = true;
-        }
-    }
-
-    public bool DebugEnableFreeRepair
-    {
-        get => Settings.Debug.EnableFreeRepair;
-        set
-        {
-            Settings.Debug.EnableFreeRepair = value;
             OnPropertyChanged();
             HasChanges = true;
         }

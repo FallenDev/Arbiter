@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Arbiter.App.Collections;
 
-public class SlottedCollection<T> : ISlottedCollection<T>
+public class SlottedCollection<T> : ISlottedCollection<T> where T: class
 {
     private readonly T?[] _items;
 
@@ -28,8 +28,17 @@ public class SlottedCollection<T> : ISlottedCollection<T>
         Capacity = capacity;
     }
 
-    public int? GetFirstEmptySlot(int startSlot = 1) => GetEmptySlots().FirstOrDefault(x => x >= startSlot);
-    public int? GetFirstNonEmptySlot(int startSlot = 1) => GetNonEmptySlots().FirstOrDefault(x => x >= startSlot);
+    public int? GetFirstEmptySlot(int startSlot = 1)
+    {
+        var availableSlot = GetEmptySlots().FirstOrDefault(x => x >= startSlot);
+        return availableSlot > 0 ? availableSlot : null;
+    }
+
+    public int? GetFirstNonEmptySlot(int startSlot = 1)
+    {
+        var takenSlot = GetNonEmptySlots().FirstOrDefault(x => x >= startSlot);
+        return takenSlot > 0 ? takenSlot : null;
+    }
 
     public virtual IEnumerable<int> GetEmptySlots()
     {

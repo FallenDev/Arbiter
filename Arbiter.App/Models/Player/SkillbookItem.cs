@@ -2,7 +2,7 @@
 
 namespace Arbiter.App.Models.Player;
 
-public readonly struct SkillbookItem
+public sealed class SkillbookItem
 {
     public ushort Sprite { get; init; }
     public required string Name { get; init; }

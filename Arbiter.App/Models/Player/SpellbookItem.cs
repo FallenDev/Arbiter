@@ -3,7 +3,7 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.App.Models.Player;
 
-public readonly struct SpellbookItem
+public sealed class SpellbookItem
 {
     public ushort Sprite { get; init; }
     public required string Name { get; init; }

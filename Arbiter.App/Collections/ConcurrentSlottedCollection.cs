@@ -6,10 +6,10 @@ using Avalonia.Threading;
 
 namespace Arbiter.App.Collections;
 
-public sealed class ConcurrentSlottedCollection<T> : SlottedCollection<T>
+public sealed class ConcurrentSlottedCollection<T> : SlottedCollection<T> where T : class
 {
     private readonly ReaderWriterLockSlim _lock = new();
-    
+
     public Dispatcher Dispatcher { get; }
 
     public ConcurrentSlottedCollection(int capacity, Dispatcher? dispatcher = null)
@@ -93,19 +93,6 @@ public sealed class ConcurrentSlottedCollection<T> : SlottedCollection<T>
         finally
         {
             _lock.ExitWriteLock();
-        }
-    }
-
-    public override IEnumerator<Slotted<T>> GetEnumerator()
-    {
-        _lock.EnterReadLock();
-        try
-        {
-            return base.GetEnumerator();
-        }
-        finally
-        {
-            _lock.ExitReadLock();
         }
     }
 

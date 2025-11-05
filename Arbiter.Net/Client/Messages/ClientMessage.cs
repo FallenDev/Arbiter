@@ -6,6 +6,7 @@ public abstract class ClientMessage : IClientMessage
 {
     public ClientCommand Command { get; private set; }
     public byte? Sequence { get; private set; }
+    public NetworkPacketSource Source { get; set; } = NetworkPacketSource.Network;
 
     public virtual void Deserialize(NetworkPacketReader reader)
     {

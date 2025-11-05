@@ -6,6 +6,7 @@ public abstract class ServerMessage : IServerMessage
 {
     public ServerCommand Command { get; private set; }
     public byte? Sequence { get; private set; }
+    public NetworkPacketSource Source { get; set; } = NetworkPacketSource.Network;
 
     public virtual void Deserialize(NetworkPacketReader reader)
     {
@@ -15,6 +16,6 @@ public abstract class ServerMessage : IServerMessage
 
     public virtual void Serialize(ref NetworkPacketBuilder builder)
     {
-        
+
     }
 }
