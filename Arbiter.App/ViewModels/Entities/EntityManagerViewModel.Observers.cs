@@ -156,13 +156,25 @@ public partial class EntityManagerViewModel
         // Try to get the existing entity, this should rule out monsters/npcs that talk
         if (_entityStore.TryGetEntity(message.SenderId, out var existing))
         {
+            if (!existing.Flags.HasFlag(EntityFlags.Player))
+            {
+                return;
+            }
+            
             entityFlags = existing.Flags;
             entitySprite = existing.Sprite ?? entitySprite;
         }
 
         // The name should come before the symbol, so split on the first symbol (chat or shout)
-        var senderName =
-            message.Message.Split(':', '!', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
+        var sections = message.Message.Split(':', '!',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        if (sections.Length < 2 || sections[0].StartsWith('[') || sections[0].EndsWith(']'))
+        {
+            return;
+        }
+
+        var senderName = sections[0];
         var entity = new GameEntity
         {
             Flags = entityFlags,

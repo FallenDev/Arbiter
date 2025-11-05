@@ -3,22 +3,18 @@ using System.Text;
 
 namespace Arbiter.App.Models.Player;
 
-public sealed class InventoryItem : ISlotted
+public sealed class InventoryItem
 {
-    public int Slot { get; init; }
     public ushort Sprite { get; init; }
     public byte Color { get; init; }
     public required string Name { get; init; }
-    public long Quantity { get; init; }
+    public long Quantity { get; init; } = 1;
     public bool IsStackable { get; init; }
     public long? Durability { get; init; }
     public long? MaxDurability { get; init; }
-
-    public InventoryItem()
-    {
-        Quantity = 1;
-    }
-
+    public bool IsVirtual { get; init; }
+    public Action? OnUse { get; init; }
+    
     public override string ToString()
     {
         var sb = new StringBuilder(Name);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Arbiter.App.Models.Player;
+using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;
@@ -28,7 +29,7 @@ public partial class PlayerViewModel
     private NetworkObserverRef? _removeSkillObserver;
     private NetworkObserverRef? _cooldownObserver;
 
-    public void Subscribe(ProxyConnection connection)
+    private void AddObservers(ProxyConnection connection)
     {
         const int observerPriority = int.MaxValue - 100;
 
@@ -59,7 +60,7 @@ public partial class PlayerViewModel
         _cooldownObserver = connection.AddObserver<ServerCooldownMessage>(OnCooldownMessage);
     }
 
-    public void Unsubscribe()
+    private void RemoveObservers()
     {
         _userIdMessageObserver?.Unregister();
         _walkMessageObserver?.Unregister();
@@ -152,9 +153,14 @@ public partial class PlayerViewModel
 
     private void OnAddItemMessage(ProxyConnection connection, ServerAddItemMessage message, object? parameter)
     {
+        // Ignore injected items, these are likely virtual items
+        if (message.Source == NetworkPacketSource.Injected)
+        {
+            return;
+        }
+
         var item = new InventoryItem
         {
-            Slot = message.Slot,
             Name = message.Name,
             Sprite = message.Sprite,
             Color = (byte)message.Color,
@@ -169,7 +175,15 @@ public partial class PlayerViewModel
 
     private void OnRemoveItemMessage(ProxyConnection connection, ServerRemoveItemMessage message, object? parameter)
     {
-        Inventory.ClearSlot(message.Slot);
+        var slot = message.Slot;
+        if (!_pendingVirtualItemSwaps.TryRemove(slot, out var swap))
+        {
+            Inventory.ClearSlot(message.Slot);
+            return;
+        }
+
+        var item = swap.Item;
+        SendVirtualItem(connection, item, swap.TargetSlot);
     }
 
     #endregion
@@ -178,6 +192,12 @@ public partial class PlayerViewModel
 
     private void OnAddSkillMessage(ProxyConnection connection, ServerAddSkillMessage message, object? parameter)
     {
+        // Ignore injected items, these are likely virtual skills
+        if (message.Source == NetworkPacketSource.Injected)
+        {
+            return;
+        }
+
         var level = 0;
         var maxLevel = 0;
         var name = message.Name;
@@ -191,13 +211,28 @@ public partial class PlayerViewModel
             name = message.Name[..match.Index];
         }
 
-        var skill = new SkillbookItem(message.Slot, message.Icon, name, level, maxLevel);
-        Skillbook.SetSlot(message.Slot, skill);
+        var skill = new SkillbookItem
+        {
+            Name = name,
+            Sprite = message.Icon,
+            CurrentLevel = level,
+            MaxLevel = maxLevel
+        };
+
+        Skills.SetSlot(message.Slot, skill);
     }
 
     private void OnRemoveSkillMessage(ProxyConnection connection, ServerRemoveSkillMessage message, object? parameter)
     {
-        Skillbook.ClearSlot(message.Slot);
+        var slot = message.Slot;
+        if (!_pendingVirtualSkillSwaps.TryRemove(slot, out var swap))
+        {
+            Skills.ClearSlot(message.Slot);
+            return;
+        }
+
+        var skill = swap.Skill;
+        SendVirtualSkill(connection, skill, swap.TargetSlot);
     }
 
     #endregion
@@ -206,6 +241,12 @@ public partial class PlayerViewModel
 
     private void OnAddSpellMessage(ProxyConnection connection, ServerAddSpellMessage message, object? parameter)
     {
+        // Ignore injected items, these are likely virtual spells
+        if (message.Source == NetworkPacketSource.Injected)
+        {
+            return;
+        }
+
         var level = 0;
         var maxLevel = 0;
         var name = message.Name;
@@ -219,14 +260,30 @@ public partial class PlayerViewModel
             name = message.Name[..match.Index];
         }
 
-        var spell = new SpellbookItem(message.Slot, message.Icon, name, message.TargetType, message.CastLines, level,
-            maxLevel);
-        Spellbook.SetSlot(message.Slot, spell);
+        var spell = new SpellbookItem
+        {
+            Name = name,
+            Sprite = message.Icon,
+            TargetType = message.TargetType,
+            CastLines = message.CastLines,
+            CurrentLevel = level,
+            MaxLevel = maxLevel,
+            Prompt = message.Prompt
+        };
+        Spells.SetSlot(message.Slot, spell);
     }
 
     private void OnRemoveSpellMessage(ProxyConnection connection, ServerRemoveSpellMessage message, object? parameter)
     {
-        Spellbook.ClearSlot(message.Slot);
+        var slot = message.Slot;
+        if (!_pendingVirtualSpellSwaps.TryRemove(slot, out var swap))
+        {
+            Spells.ClearSlot(message.Slot);
+            return;
+        }
+
+        var spell = swap.Spell;
+        SendVirtualSpell(connection, spell, swap.TargetSlot);
     }
 
     #endregion
@@ -237,11 +294,11 @@ public partial class PlayerViewModel
 
         if (message.AbilityType == AbilityType.Skill)
         {
-            Skillbook.UpdateCooldown(message.Slot, duration);
+            Skills.UpdateCooldown(message.Slot, duration);
         }
         else if (message.AbilityType == AbilityType.Spell)
         {
-            Spellbook.UpdateCooldown(message.Slot, duration);
+            Spells.UpdateCooldown(message.Slot, duration);
         }
     }
 }

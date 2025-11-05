@@ -19,6 +19,7 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientDialogMenuChoiceMapping(registry);
         RegisterClientDropGoldMapping(registry);
         RegisterClientDropItemMapping(registry);
+        RegisterClientEatItemMapping(registry);
         RegisterClientEditNotepadMapping(registry);
         RegisterClientEmoteMapping(registry);
         RegisterClientExceptionMapping(registry);
@@ -30,6 +31,8 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
         RegisterClientIgnoreUserMapping(registry);
         RegisterClientInteractMapping(registry);
         RegisterClientLoginMapping(registry);
+        RegisterClientLookTileMapping(registry);
+        RegisterClientManufactureMapping(registry);
         RegisterClientPickupItemMapping(registry);
         RegisterClientRaiseStatMapping(registry);
         RegisterClientRequestEntityMapping(registry);
@@ -133,6 +136,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Text Input")
                 .Property(m => m.TextInput, p => p.ShowMultiline().ToolTip("User input when casting the spell."))
                 .IsExpanded(m => !string.IsNullOrEmpty(m.TextInput));
+            b.Section("Numeric Input")
+                .Property(m => m.NumericInputs, p => p.ToolTip("Numeric inputs when casting the spell."))
+                .IsExpanded(m => m.NumericInputs.Count > 0);
         });
     }
 
@@ -228,6 +234,15 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Position")
                 .Property(m => m.X, p => p.ToolTip("X-coordinate of the map position to drop the item."))
                 .Property(m => m.Y, p => p.ToolTip("Y-coordinate of the map position to drop the item."));
+        });
+    }
+
+    private static void RegisterClientEatItemMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientEatItemMessage>(b =>
+        {
+            b.Section("Item")
+                .Property(m => m.Slot, p => p.ToolTip("Inventory slot of the item to eat."));
         });
     }
 
@@ -362,6 +377,29 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Client")
                 .Property(m => m.ClientId, p => p.ToolTip("ID of the local machine."))
                 .Property(m => m.Checksum, p => p.ShowHex().ToolTip("CRC-16 checksum of the login credentials."));
+        });
+    }
+
+    private static void RegisterClientLookTileMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientLookTileMessage>(b =>
+        {
+            b.Section("Location")
+                .Property(m => m.TileX, p => p.ToolTip("X-coordinate of the tile to look at."))
+                .Property(m => m.TileY, p => p.ToolTip("Y-coordinate of the tile to look at."));
+        });
+    }
+
+    private static void RegisterClientManufactureMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ClientManufactureMessage>(b =>
+        {
+            b.Section("Message")
+                .Property(m => m.MessageType, p => p.ToolTip("Type of manufacture message sent."))
+                .Property(m => m.ManufactureId, p => p.ToolTip("ID of the manufacture dialog."));
+            b.Section("Recipe")
+                .Property(m => m.RecipeIndex, p => p.ToolTip("Index of the recipe requested."))
+                .Property(m => m.RecipeName, p => p.ToolTip("Name of the recipe requested."));
         });
     }
 

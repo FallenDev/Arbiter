@@ -27,6 +27,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private ArbiterSettings Settings { get; set; } = new();
 
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<MainWindowViewModel> _logger;
     private readonly IDialogService _dialogService;
     private readonly IGameClientService _gameClientService;
@@ -49,16 +50,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         ILogger<MainWindowViewModel> logger,
         IServiceProvider serviceProvider,
-        IDialogService dialogService,
-        IGameClientService gameClientService,
-        ISettingsService settingsService,
         Window mainWindow)
     {
         _logger = logger;
-
-        _dialogService = dialogService;
-        _gameClientService = gameClientService;
-        _settingsService = settingsService;
+        _serviceProvider = serviceProvider;
+        
+        _dialogService = serviceProvider.GetRequiredService<IDialogService>();
+        _gameClientService = serviceProvider.GetRequiredService<IGameClientService>();
+        _settingsService = serviceProvider.GetRequiredService<ISettingsService>();
         _mainWindow = mainWindow;
 
         ClientManager = serviceProvider.GetRequiredService<ClientManagerViewModel>();
@@ -148,15 +147,22 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task ShowSettings()
     {
+        // Create the view model and set the selected tab index
+        var vm = _serviceProvider.GetRequiredService<SettingsViewModel>(); 
+        vm.SelectedTabIndex = Settings.SettingsPanelIndex;
+        
         var newSettings =
-            await _dialogService.ShowDialogAsync<SettingsWindow, SettingsViewModel, ArbiterSettings>();
-
+            await _dialogService.ShowDialogAsync<SettingsWindow, SettingsViewModel, ArbiterSettings>(vm);
+        
         if (newSettings is null)
         {
+            Settings.SettingsPanelIndex = vm.SelectedTabIndex;
             return;
         }
 
         Settings = newSettings;
+        Settings.SettingsPanelIndex = vm.SelectedTabIndex;
+        
         await _settingsService.SaveToFileAsync(Settings);
         LaunchClientCommand.NotifyCanExecuteChanged();
 
@@ -166,6 +172,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ApplySettings()
     {
         Proxy.ApplyDebugFilters(Settings.Debug, Settings.MessageFilters);
+        ClientManager.ApplySettings(Settings.Debug);
+        
         Trace.MaxTraceHistory = Settings.TraceMaxHistory;
         EntityManager.SortOrder = Settings.EntitySorting;
     }

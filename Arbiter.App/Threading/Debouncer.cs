@@ -100,13 +100,7 @@ public sealed class Debouncer : IDisposable
         return _cts!;
     }
 
-    private void ThrowIfDisposed()
-    {
-        if (_isDisposed)
-        {
-            throw new ObjectDisposedException(nameof(Debouncer));
-        }
-    }
+    private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, this);
 
     public void Dispose()
     {

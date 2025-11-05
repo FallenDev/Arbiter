@@ -35,9 +35,8 @@ public partial class ProxyConnection
             NetworkPriority.High => _prioritySendQueue.Writer,
             _ => _sendQueue.Writer,
         };
-
-        var queuedPacket = new QueuedNetworkPacket(packet, NetworkPacketSource.Injected);
-        if (!writer.TryWrite(queuedPacket))
+        
+        if (!writer.TryWrite(packet))
         {
             return false;
         }
@@ -90,8 +89,8 @@ public partial class ProxyConnection
         try
         {
             message.Serialize(ref builder);
-            var packet = builder.ToPacket();
-
+            var packet = builder.ToPacket(NetworkPacketSource.Injected);
+            
             // Prioritize outgoing client heartbeat packets
             if (packet is ClientPacket { Command: ClientCommand.Heartbeat })
             {
@@ -150,7 +149,7 @@ public partial class ProxyConnection
         try
         {
             message.Serialize(ref builder);
-            var packet = builder.ToPacket();
+            var packet = builder.ToPacket(NetworkPacketSource.Injected);
 
             // Prioritize incoming server heartbeat packets
             if (packet is ServerPacket { Command: ServerCommand.Heartbeat })

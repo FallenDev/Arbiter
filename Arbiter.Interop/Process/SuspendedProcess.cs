@@ -177,5 +177,5 @@ public class SuspendedProcess : IDisposable
         IsSuspended = false;
     }
 
-    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Process is disposed");
+    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, this);
 }

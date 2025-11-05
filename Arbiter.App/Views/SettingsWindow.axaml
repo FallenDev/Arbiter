@@ -8,7 +8,7 @@
                           x:Class="Arbiter.App.Views.SettingsWindow"
                           x:DataType="vm:SettingsViewModel"
                           Title="Settings"
-                          Width="720" Height="540"
+                          Width="720" Height="560"
                           CanResize="False"
                           WindowStartupLocation="CenterOwner"
                           ShowInTaskbar="False">
@@ -26,7 +26,8 @@
     </controls:TalgoniteWindow.TitleBarContent>
     
     <Grid RowDefinitions="*,Auto" Margin="1,0">
-        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8">
+        <TabControl Grid.Row="0" TabStripPlacement="Left" Padding="8"
+                    SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
             <!-- Game Client Settings Tab -->
             <TabItem Header="Game Client">
                 <StackPanel Spacing="4" Margin="4">
@@ -153,38 +154,43 @@
                 </StackPanel>
             </TabItem>
             
+            <!-- Abilities Tab -->
+            <TabItem Header="Spell/Skill">
+                <StackPanel Spacing="4" Margin="4">
+                    <Grid RowDefinitions="Auto" ColumnDefinitions="*,Auto" Margin="4">
+                        <!-- True Look -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Content="Enable True Look Skill/Spell"
+                               ToolTip.Tip="Injects additional look abilities (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugEnableTrueLook}"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            
             <!-- Entities Settings Tab -->
             <TabItem Header="Entities">
                 <StackPanel Spacing="4" Margin="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
-                        <!-- Show Entity ID for Dialogs -->
-                        <Label Grid.Row="0" Grid.Column="0"
-                               Content="Show Entity ID in Dialogs"
-                               ToolTip.Tip="Shows the entity ID within dialogs (in-game)."/>
-                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
-                                      IsChecked="{Binding DebugShowDialogId}"/>
-                        
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Entity ID for NPCs -->
-                        <Label Grid.Row="1" Grid.Column="0"
+                        <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Entity ID on NPCs"
                                ToolTip.Tip="Shows the entity ID next to NPC names (in-game)."/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding DebugShowNpcId}"/>
                         
-                        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
-                        
                         <!-- Show Entity ID for Monsters -->
-                        <Label Grid.Row="3" Grid.Column="0"
+                        <Label Grid.Row="1" Grid.Column="0"
                                Content="Show Entity ID on Monsters"
                                ToolTip.Tip="Shows the entity ID over monsters (in-game)."/>
-                        <ToggleSwitch Grid.Row="3" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterId}"/>
                         
                         <!-- Show Entity ID for Monster Click -->
-                        <Label Grid.Row="4" Grid.Column="0"
+                        <Label Grid.Row="2" Grid.Column="0"
                                Content="Show Entity ID on Monster Click"
                                ToolTip.Tip="Shows the entity ID in the bar message when clicking monsters (in-game)."/>
-                        <ToggleSwitch Grid.Row="4" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="2" Grid.Column="1"
                                       IsChecked="{Binding DebugShowMonsterClickId}"/>
                         
                     </Grid>
@@ -195,26 +201,26 @@
             <TabItem Header="Dialogs">
                 <StackPanel Spacing="4" Margin="4">
                     <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
-                        <!-- Show Pursuit ID for Dialogs -->
+                        <!-- Show Entity ID for Dialogs -->
                         <Label Grid.Row="0" Grid.Column="0"
+                               Content="Show Entity ID in Dialogs"
+                               ToolTip.Tip="Shows the entity ID within dialogs (in-game)."/>
+                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowDialogId}"/>
+                        
+                        <!-- Show Pursuit ID for Dialogs -->
+                        <Label Grid.Row="1" Grid.Column="0"
                                Content="Show Pursuit ID in Menus"
                                ToolTip.Tip="Shows the pursuit ID within dialog menus (in-game)."/>
-                        <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowPursuitId}"/>
                         
                         <!-- Show Item Quantity for Dialogs -->
-                        <Label Grid.Row="1" Grid.Column="0"
+                        <Label Grid.Row="2" Grid.Column="0"
                                Content="Show Item Quantity in Sell / Deposit"
                                ToolTip.Tip="Shows the item quantity along with item name in sell or deposit menus (in-game)."/>
-                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
-                                      IsChecked="{Binding DebugShowDialogItemQuantity}"/>
-                        
-                        <!-- Show Equipment Durability -->
-                        <Label Grid.Row="2" Grid.Column="0"
-                               Content="Show Equipment Durability in Profile"
-                               ToolTip.Tip="Shows equipment durability in your profile view (in-game)."/>
                         <ToggleSwitch Grid.Row="2" Grid.Column="1"
-                                      IsChecked="{Binding DebugShowEquipmentDurability}"/>
+                                      IsChecked="{Binding DebugShowDialogItemQuantity}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
@@ -222,7 +228,7 @@
             <!-- Players Settings Tab -->
             <TabItem Header="Players">
                 <StackPanel Spacing="4" Margin="4">
-                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
                         <!-- Show Hidden Players -->
                         <Label Grid.Row="0" Grid.Column="0"
                                Content="Show Hidden Players"
@@ -235,6 +241,15 @@
                                ToolTip.Tip="Always show player names over their head (in-game)."/>
                         <ToggleSwitch Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding DebugShowPlayerNames}"/>
+                        
+                        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="divider-h"/>
+                        
+                        <!-- Show Equipment Durability -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Content="Show Equipment Durability in Profile"
+                               ToolTip.Tip="Shows equipment durability in your profile view (in-game)."/>
+                        <ToggleSwitch Grid.Row="3" Grid.Column="1"
+                                      IsChecked="{Binding DebugShowEquipmentDurability}"/>
                         
                     </Grid>
                 </StackPanel>

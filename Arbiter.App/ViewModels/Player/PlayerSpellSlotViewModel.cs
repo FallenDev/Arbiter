@@ -39,6 +39,7 @@ public sealed class PlayerSpellSlotViewModel : ViewModelBase
         1 => "1 line",
         _ => $"{CastLines} lines"
     };
+    public bool IsVirtual => _spell?.IsVirtual ?? false;
 
     public string TargetTypeText => TargetType switch
     {
@@ -56,4 +57,18 @@ public sealed class PlayerSpellSlotViewModel : ViewModelBase
         Slot = slot;
         _spell = spell;
     }
+    
+    public void SetCooldown(TimeSpan duration)
+    {
+        if (_spell is null)
+        {
+            return;
+        }
+
+        _spell.Cooldown = duration;
+        OnPropertyChanged(nameof(Cooldown));
+        OnPropertyChanged(nameof(HasCooldown));
+    }
+    
+    public override string ToString() => IsEmpty ? "<empty>" : Name;
 }

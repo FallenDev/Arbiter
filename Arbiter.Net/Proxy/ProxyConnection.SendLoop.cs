@@ -21,7 +21,7 @@ public partial class ProxyConnection
                 // Prefer priority queue packets first
                 if (_prioritySendQueue.Reader.TryRead(out var priorityPacket))
                 {
-                    decryptedPacket = priorityPacket.Packet;
+                    decryptedPacket = priorityPacket;
                     source = priorityPacket.Source;
                 }
                 else
@@ -33,12 +33,12 @@ public partial class ProxyConnection
 
                     if (_prioritySendQueue.Reader.TryRead(out priorityPacket))
                     {
-                        decryptedPacket = priorityPacket.Packet;
+                        decryptedPacket = priorityPacket;
                         source = priorityPacket.Source;
                     }
                     else if (_sendQueue.Reader.TryRead(out var normalPacket))
                     {
-                        decryptedPacket = normalPacket.Packet;
+                        decryptedPacket = normalPacket;
                         source = normalPacket.Source;
                     }
                     else

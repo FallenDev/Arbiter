@@ -1,4 +1,5 @@
 ﻿using Arbiter.Net.Annotations;
+using Arbiter.Net.Client.Types;
 using Arbiter.Net.Serialization;
 using Arbiter.Net.Types;
 
@@ -7,7 +8,7 @@ namespace Arbiter.Net.Client.Messages;
 [NetworkCommand(ClientCommand.SwapSlot)]
 public class ClientSwapSlotMessage : ClientMessage
 {
-    public InterfacePane Pane { get; set; }
+    public ClientSlotSwapType Pane { get; set; }
     public byte SourceSlot { get; set; }
     public byte TargetSlot { get; set; }
 
@@ -15,7 +16,7 @@ public class ClientSwapSlotMessage : ClientMessage
     {
         base.Deserialize(reader);
         
-        Pane = (InterfacePane)reader.ReadByte();
+        Pane = (ClientSlotSwapType)reader.ReadByte();
         SourceSlot = reader.ReadByte();
         TargetSlot = reader.ReadByte();
     }

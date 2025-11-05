@@ -1,5 +1,6 @@
 ﻿using System;
 using Arbiter.App.Models.Player;
+using Arbiter.Net.Proxy;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Arbiter.App.ViewModels.Player;
@@ -32,21 +33,25 @@ public partial class PlayerViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HealthPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedHealthPercent))]
+    [NotifyPropertyChangedFor(nameof(FormatedHealthText))]
     private long _currentHealth;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HealthPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedHealthPercent))]
+    [NotifyPropertyChangedFor(nameof(FormatedHealthText))]
     private long _maxHealth;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
+    [NotifyPropertyChangedFor(nameof(FormatedManaText))]
     private long _currentMana;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManaPercent))]
     [NotifyPropertyChangedFor(nameof(BoundedManaPercent))]
+    [NotifyPropertyChangedFor(nameof(FormatedManaText))]
     private long _maxMana;
 
     public bool IsLoggedIn => EntityId is not null;
@@ -67,6 +72,9 @@ public partial class PlayerViewModel : ViewModelBase
     }
 
     public double BoundedHealthPercent => Math.Clamp(HealthPercent, 0, 100);
+    
+    public string FormatedHealthText =>
+        $"{FormatHealthManaValue(CurrentHealth)} / {FormatHealthManaValue(MaxHealth)}";
 
     public double ManaPercent
     {
@@ -80,17 +88,32 @@ public partial class PlayerViewModel : ViewModelBase
 
     public double BoundedManaPercent => Math.Clamp(ManaPercent, 0, 100);
 
+    public string FormatedManaText =>
+        $"{FormatHealthManaValue(CurrentMana)} / {FormatHealthManaValue(MaxMana)}";
+
     public PlayerInventoryViewModel Inventory { get; }
-    public PlayerSkillbookViewModel Skillbook { get; }
-    public PlayerSpellbookViewModel Spellbook { get; }
+    public PlayerSkillbookViewModel Skills { get; }
+    public PlayerSpellbookViewModel Spells { get; }
 
     public PlayerViewModel(PlayerState player)
     {
         _player = player;
-
+        
         Inventory = new PlayerInventoryViewModel(player.Inventory);
-        Skillbook = new PlayerSkillbookViewModel(player.Skillbook);
-        Spellbook = new PlayerSpellbookViewModel(player.Spellbook);
+        Skills = new PlayerSkillbookViewModel(player.Skills);
+        Spells = new PlayerSpellbookViewModel(player.Spells);
+    }
+
+    public void Subscribe(ProxyConnection connection)
+    {
+        AddObservers(connection);
+        AddVirtualFilters(connection);
+    }
+
+    public void Unsubscribe()
+    {
+        RemoveObservers();
+        RemoveVirtualFilters();
     }
 
     // Forward all property changes to the player model
@@ -106,4 +129,14 @@ public partial class PlayerViewModel : ViewModelBase
     partial void OnMaxHealthChanged(long value) => _player.MaxHealth = value;
     partial void OnCurrentManaChanged(long value) => _player.CurrentMana = value;
     partial void OnMaxManaChanged(long value) => _player.MaxMana = value;
+
+    private static string FormatHealthManaValue(long value)
+    {
+        return value switch
+        {
+            < 1_000 => value.ToString(),
+            < 1_000_000 => $"{(value / 1_000.0):0.0}k",
+            _ => $"{(value / 1_000_000.0):0.0}m"
+        };
+    }
 }

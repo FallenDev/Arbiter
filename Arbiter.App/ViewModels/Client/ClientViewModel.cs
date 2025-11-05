@@ -5,17 +5,23 @@ using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
+using Arbiter.Net.Types;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Client;
 
 public partial class ClientViewModel : ViewModelBase
 {
+    [ObservableProperty] private bool _shouldBlockNextRedirect;
+    
     public int Id { get; init; }
     public required string Name { get; set; }
 
     private readonly ProxyConnection _connection;
 
+    public ProxyConnection Connection => _connection;
+    
     public PlayerViewModel Player { get; }
 
     public ClientViewModel(ProxyConnection connection, PlayerState player)
@@ -25,9 +31,27 @@ public partial class ClientViewModel : ViewModelBase
     }
 
     public event EventHandler? BringToFrontRequested;
-    
-    public void Subscribe() => Player.Subscribe(_connection);
-    public void Unsubscribe() => Player.Unsubscribe();
+
+    public void Subscribe()
+    {
+        RegisterFilters();
+        Player.Subscribe(_connection);
+    }
+
+    public void Unsubscribe()
+    {
+        Player.Unsubscribe();
+        UnregisterFilters();
+    }
+
+    public void SendBarMessage(string message, WorldMessageType messageType = WorldMessageType.BarMessage)
+    {
+        EnqueueMessage(new ServerWorldMessageMessage
+        {
+            MessageType = messageType,
+            Message = message,
+        });
+    }
 
     public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal) =>
         _connection.EnqueuePacket(packet, priority);
@@ -53,5 +77,11 @@ public partial class ClientViewModel : ViewModelBase
     {
         _connection.Disconnect();
         DisconnectCommand.NotifyCanExecuteChanged();
+    }
+
+    [RelayCommand]
+    public void ToggleBlockNextRedirect(bool isCancel = false)
+    {
+        ShouldBlockNextRedirect = !isCancel;
     }
 }

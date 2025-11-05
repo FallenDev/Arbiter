@@ -5,7 +5,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Arbiter.App.Models.Player;
+using Arbiter.App.Models.Settings;
 using Arbiter.App.Services.Client;
+using Arbiter.App.Services.Entities;
 using Arbiter.App.Services.Players;
 using Arbiter.Net.Proxy;
 using Avalonia.Threading;
@@ -18,8 +20,11 @@ public partial class ClientManagerViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
     private readonly IGameClientService _gameClientService;
     private readonly IPlayerService _playerService;
+    private readonly IEntityStore _entityStore;
     private readonly ConcurrentDictionary<long, ClientViewModel> _clients = [];
-
+    
+    private DebugSettings? _debugSettings;
+    
     public ObservableCollection<ClientViewModel> Clients { get; } = [];
     
     [ObservableProperty]
@@ -35,11 +40,12 @@ public partial class ClientManagerViewModel : ViewModelBase
     public event Action<ClientViewModel>? ClientDisconnected;
 
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
-        IPlayerService playerService)
+        IPlayerService playerService, IEntityStore entityStore)
     {
         _proxyServer = proxyServer;
         _gameClientService = gameClientService;
         _playerService = playerService;
+        _entityStore = entityStore;
 
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
@@ -48,9 +54,23 @@ public partial class ClientManagerViewModel : ViewModelBase
         _proxyServer.ClientDisconnected += OnClientDisconnected;
     }
 
+    public void ApplySettings(DebugSettings settings)
+    {
+        _debugSettings = settings;
+
+        if (settings.EnableTrueLook)
+        {
+            AddTrueLookToClients();
+        }
+        else
+        {
+            RemoveTrueLookFromClients();
+        }
+    }
+
     public bool TryGetClient(long id, [NotNullWhen(true)] out ClientViewModel? client) =>
         _clients.TryGetValue(id, out client);
-
+    
     partial void OnSelectedClientChanged(ClientViewModel? oldValue, ClientViewModel? newValue)
     {
         ClientSelected?.Invoke(newValue);
@@ -97,17 +117,24 @@ public partial class ClientManagerViewModel : ViewModelBase
             // Select the client if no other selection
             SelectedClient ??= client;
         });
+
+        if (_debugSettings?.EnableTrueLook ?? false)
+        {
+            AddTrueLookSkill(client);
+            AddTrueLookTileSpell(client);
+        }
     }
 
     private void OnClientLoggedOut(object? sender, ProxyConnectionEventArgs e)
     {
         var client = _clients.GetValueOrDefault(e.Connection.Id);
-        if (client is null)
+        if (client is not null)
         {
-            return;
+            CleanupClient(client);
         }
 
-        CleanupClient(client);
+        _clients.TryRemove(e.Connection.Id, out _);
+        _playerService.Unregister(e.Connection.Id);
     }
 
     private void OnClientRedirected(object? sender, ProxyConnectionRedirectEventArgs e)
@@ -120,12 +147,13 @@ public partial class ClientManagerViewModel : ViewModelBase
         var client = Clients.FirstOrDefault(c => c.Id == e.Connection.Id);
         client?.Unsubscribe();
 
-        if (client is null)
+        if (client is not null)
         {
-            return;
+            CleanupClient(client);
         }
-
-        CleanupClient(client);
+        
+        _clients.TryRemove(e.Connection.Id, out _);
+        _playerService.Unregister(e.Connection.Id);
     }
 
     private void CleanupClient(ClientViewModel client)
@@ -146,9 +174,6 @@ public partial class ClientManagerViewModel : ViewModelBase
                 SelectedClient ??= Clients.FirstOrDefault();
             }
         });
-
-        _clients.TryRemove(client.Id, out _);
-        _playerService.Unregister(client.Id);
         
         ClientDisconnected?.Invoke(client);
     }

@@ -3,7 +3,7 @@
 public class ServerPacket : NetworkPacket
 {
     public byte? Sequence { get; init; }
-
+    
     public new ServerCommand Command => Enum.IsDefined(typeof(ServerCommand), base.Command)
         ? (ServerCommand)base.Command
         : ServerCommand.Unknown;

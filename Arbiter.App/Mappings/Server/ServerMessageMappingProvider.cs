@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 using Arbiter.Net.Types;
 
@@ -35,6 +34,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerMapLocationMapping(registry);
         RegisterServerMapTransferCompleteMapping(registry);
         RegisterServerMapTransferMapping(registry);
+        RegisterServerManufactureMapping(registry);
         RegisterServerMetadataMapping(registry);
         RegisterServerPlaySoundMapping(registry);
         RegisterServerPublicMessageMapping(registry);
@@ -54,7 +54,9 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         RegisterServerShowDialogMapping(registry);
         RegisterServerShowDialogMenuMapping(registry);
         RegisterServerShowEffectMapping(registry);
+        RegisterServerShowMapHelpMapping(registry);
         RegisterServerShowNotepadMapping(registry);
+        RegisterServerShowSpinnerMapping(registry);
         RegisterServerShowUserMapping(registry);
         RegisterServerStatusEffectMapping(registry);
         RegisterServerSwitchPaneMapping(registry);
@@ -154,6 +156,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Boards)
                 .IsExpanded(m => m.Boards.Count > 0);
             b.Section("Board")
+                .Property(m => m.BoardType, p => p.ToolTip("Type of message board interaction."))
                 .Property(m => m.BoardId, p => p.ToolTip("ID of the message board."))
                 .Property(m => m.BoardName, p => p.ShowMultiline().ToolTip("Display name of the message board."))
                 .IsExpanded(m => m.ResultType is MessageBoardResult.Board or MessageBoardResult.Mailbox);
@@ -336,6 +339,30 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerManufactureMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerManufactureMessage>(b =>
+        {
+            b.Section("Message")
+                .Property(m => m.MessageType, p => p.ToolTip("Type of manufacture message."))
+                .Property(m => m.ManufactureId, p => p.ShowHex().ToolTip("ID of the manufacture dialog."));
+            b.Section("Recipe Count")
+                .Property(m => m.RecipeCount, p => p.ToolTip("Number of recipes in the manufacture dialog."))
+                .IsExpanded(m => m.RecipeCount.HasValue);
+            b.Section("Recipe")
+                .Property(m => m.RecipeIndex,
+                    p => p.ToolTip("Zero-based index of the recipe in the manufacture dialog."))
+                .Property(m => m.Sprite, p => p.ToolTip("Sprite of the recipe in the manufacture dialog."))
+                .Property(m => m.RecipeName,
+                    p => p.ShowMultiline().ToolTip("Name of the recipe in the manufacture dialog."))
+                .Property(m => m.RecipeDescription,
+                    p => p.ShowMultiline().ToolTip("Description of the recipe in the manufacture dialog."))
+                .Property(m => m.Ingredients,
+                    p => p.ShowMultiline().ToolTip("List of ingredients for the recipe in the manufacture dialog."))
+                .IsExpanded(m => m.RecipeIndex.HasValue);
+        });
+    }
+    
     private static void RegisterServerMapChangedMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerMapChangedMessage>(b =>
@@ -714,6 +741,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
         });
     }
 
+    private static void RegisterServerShowMapHelpMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowMapHelpMessage>(b =>
+        {
+            b.Section("Map")
+                .Property(m => m.MapIndex, p => p.ToolTip("Index of the map to show help for."));
+        });
+    }
+
     private static void RegisterServerShowNotepadMapping(InspectorMappingRegistry registry)
     {
         registry.Register<ServerShowNotepadMessage>(b =>
@@ -726,6 +762,15 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Height, p => p.ToolTip("Height of the notepad."));
             b.Section("Content")
                 .Property(m => m.Content, p => p.ShowMultiline().ToolTip("Current content of the notepad."));
+        });
+    }
+
+    private static void RegisterServerShowSpinnerMapping(InspectorMappingRegistry registry)
+    {
+        registry.Register<ServerShowSpinnerMessage>(b =>
+        {
+            b.Section("Visibility")
+                .Property(m => m.IsVisible, p => p.ToolTip("Whether the spinner is visible."));
         });
     }
 

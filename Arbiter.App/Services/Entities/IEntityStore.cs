@@ -15,6 +15,9 @@ public interface IEntityStore
 
     IEnumerable<GameEntity> Entities { get; }
 
+    IReadOnlyList<GameEntity> GetNearbyEntities(int mapId, int x, int y, int distance,
+        EntityFlags flags = EntityFlags.None);
+
     bool TryGetEntity(long id, out GameEntity entity);
     
     bool TrySetEntityName(long id, string name);

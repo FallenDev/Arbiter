@@ -199,14 +199,14 @@ public ref struct NetworkPacketBuilder : IDisposable
         }
     }
 
-    public NetworkPacket ToPacket()
+    public NetworkPacket ToPacket(NetworkPacketSource source = NetworkPacketSource.Network)
     {
         CheckIfDisposed();
         var packetData = _buffer.AsSpan(0, _position).ToArray();
-        
+
         NetworkPacket result = IsClient
-            ? new ClientPacket(Command, packetData)
-            : new ServerPacket(Command, packetData);
+            ? new ClientPacket(Command, packetData) { Source = source }
+            : new ServerPacket(Command, packetData) { Source = source };
 
         return result;
     }
@@ -251,6 +251,6 @@ public ref struct NetworkPacketBuilder : IDisposable
 
         _isDisposed = true;
     }
-    
-    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, "Network packet builder is disposed");
+
+    private void CheckIfDisposed() => ObjectDisposedException.ThrowIf(_isDisposed, typeof(NetworkPacketBuilder));
 }

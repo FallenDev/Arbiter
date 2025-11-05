@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using Arbiter.App.Collections;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,7 +10,7 @@ namespace Arbiter.App.ViewModels.Player;
 
 public partial class PlayerSkillbookViewModel : ViewModelBase
 {
-    private readonly PlayerSkillbook _skillbook;
+    private readonly ISlottedCollection<SkillbookItem> _skills;
 
     [ObservableProperty] private PlayerSkillSlotViewModel? _selectedSkill;
 
@@ -16,11 +18,11 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
     public ObservableCollection<PlayerSkillSlotViewModel> MedeniaSkills { get; } = [];
     public ObservableCollection<PlayerSkillSlotViewModel> WorldSkills { get; } = [];
 
-    public PlayerSkillbookViewModel(PlayerSkillbook skillbook)
+    public PlayerSkillbookViewModel(ISlottedCollection<SkillbookItem> skills)
     {
-        _skillbook = skillbook;
+        _skills = skills;
 
-        for (var i = 0; i < skillbook.Capacity; i++)
+        for (var i = 0; i < _skills.Capacity; i++)
         {
             if (i < 36)
             {
@@ -36,71 +38,108 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
             }
         }
 
-        _skillbook.ItemAdded += OnSkillAdded;
-        _skillbook.ItemUpdated += OnSkillUpdated;
-        _skillbook.ItemRemoved += OnSkillRemoved;
+        _skills.ItemAdded += OnSkillAdded;
+        _skills.ItemRemoved += OnSkillRemoved;
     }
 
-    public void SetSlot(int slot, SkillbookItem skill) =>
-        _skillbook.SetSlot(slot, skill);
+    public int? GetFirstEmptySlot(int startSlot = 1) => _skills.GetFirstEmptySlot(startSlot);
 
-    public void ClearSlot(int slot) =>
-        _skillbook.ClearSlot(slot);
+    public bool HasSkill(string name) => GetSkill(name, out _);
+
+    public bool GetSkill(string name, [NotNullWhen(true)] out Slotted<SkillbookItem>? skill)
+    {
+        skill = null;
+        if (!_skills.TryGetValue(x => string.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase),
+                out var found))
+        {
+            return false;
+        }
+
+        skill = found;
+        return true;
+    }
+    
+    public bool TryGetSlot(int slot, out Slotted<SkillbookItem> skill)
+    {
+        skill = default;
+        if (!_skills.TryGetValue(x => x.Slot == slot, out var found))
+        {
+            return false;
+        }
+        
+        skill = found;
+        return true;
+    }
+
+    public void SetSlot(int slot, SkillbookItem item) => _skills.SetSlot(slot, item);
+    public void ClearSlot(int slot) => _skills.ClearSlot(slot);
+
+    public bool TryRemoveSkill(string name, out int slot)
+    {
+        slot = 0;
+        if (!_skills.TryGetValue(x => string.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase),
+                out var found))
+        {
+            return false;
+        }
+
+        slot = found.Slot;
+        return true;
+    }
 
     public void UpdateCooldown(int slot, TimeSpan duration)
-        => _skillbook.UpdateCooldown(slot, duration);
-    
-    private void OnSkillAdded(int slot, SkillbookItem skill)
     {
-        if (slot < 1 || slot > _skillbook.Capacity)
+        if (slot < 1 || slot > _skills.Capacity)
         {
             return;
         }
 
-        if (!Dispatcher.UIThread.CheckAccess())
+        var index = slot - 1;
+        var vm = index switch
         {
-            Dispatcher.UIThread.Post(() => OnSkillAdded(slot, skill));
-            return;
-        }
-
-        SetSkillViewModel(slot, skill);
+            < 36 => TemuairSkills[index],
+            < 72 => MedeniaSkills[index - 36],
+            _ => WorldSkills[index - 72]
+        };
+        
+        vm.SetCooldown(duration);
     }
 
-    private void OnSkillUpdated(int slot, SkillbookItem existing, SkillbookItem updated)
+    private void OnSkillAdded(Slotted<SkillbookItem> skill)
     {
-        if (slot < 1 || slot > _skillbook.Capacity)
+        if (skill.Slot < 1 || skill.Slot > _skills.Capacity)
         {
             return;
         }
 
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => OnSkillUpdated(slot, existing, updated));
+            Dispatcher.UIThread.Post(() => OnSkillAdded(skill));
             return;
         }
 
-        SetSkillViewModel(slot, updated);
+        SetSkillViewModel(skill.Slot, skill.Value);
     }
 
-    private void OnSkillRemoved(int slot, SkillbookItem item)
+    private void OnSkillRemoved(Slotted<SkillbookItem> skill)
     {
-        if (slot < 1 || slot > _skillbook.Capacity)
+        if (skill.Slot < 1 || skill.Slot > _skills.Capacity)
         {
             return;
         }
 
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => OnSkillRemoved(slot, item));
+            Dispatcher.UIThread.Post(() => OnSkillRemoved(skill));
             return;
         }
 
-        SetSkillViewModel(slot);
+        SetSkillViewModel(skill.Slot);
     }
 
     private void SetSkillViewModel(int slot, SkillbookItem? skill = null)
     {
-        if (slot < 1 || slot > _skillbook.Capacity)
+        if (slot < 1 || slot > _skills.Capacity)
         {
             return;
         }
@@ -112,7 +151,7 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
             case < 36:
                 TemuairSkills[index] = new PlayerSkillSlotViewModel(slot, skill);
                 break;
-            case < 72: 
+            case < 72:
                 MedeniaSkills[index] = new PlayerSkillSlotViewModel(slot, skill);
                 break;
             default:

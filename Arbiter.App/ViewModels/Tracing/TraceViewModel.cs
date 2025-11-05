@@ -131,14 +131,7 @@ public partial class TraceViewModel : ViewModelBase
 
         Dispatcher.UIThread.Post(() =>
         {
-            // Remove the client from the list
-            var client = TraceClients.FirstOrDefault(c =>
-                string.Equals(c.Name, e.Connection.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (client is not null)
-            {
-                TraceClients.Remove(client);
-            }
+            PruneClients();
 
             // If not running, select "all clients"
             if (!IsRunning)

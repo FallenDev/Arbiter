@@ -8,6 +8,9 @@ namespace Arbiter.Net.Filters;
 public delegate NetworkPacket? ServerMessageFilterHandler<TMessage>(ProxyConnection connection, TMessage message,
     object? parameter, NetworkMessageFilterResult<TMessage> result) where TMessage : IServerMessage;
 
+public delegate bool ServerMessageFilterPredicate<in TMessage>(ProxyConnection connection, TMessage message,
+    object? parameter) where TMessage : IServerMessage;
+
 public class ServerMessageFilter<TMessage> : INetworkMessageFilter where TMessage : IServerMessage
 {
     private readonly ServerMessageFactory _messageFactory = ServerMessageFactory.Default;
@@ -49,7 +52,7 @@ public class ServerMessageFilter<TMessage> : INetworkMessageFilter where TMessag
                 try
                 {
                     modifiedMessage.Serialize(ref builder);
-                    return builder.ToPacket();
+                    return builder.ToPacket(packet.Source);
                 }
                 finally
                 {

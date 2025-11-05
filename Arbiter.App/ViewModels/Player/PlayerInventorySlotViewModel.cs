@@ -17,6 +17,7 @@ public class PlayerInventorySlotViewModel : ViewModelBase
     public long MaxDurability => _item?.MaxDurability ?? 0;
     public bool HasDurability => Durability > 0 && MaxDurability > 0;
     public int PercentDurability => HasDurability ? (int)(Durability * 100 / MaxDurability) : 100;
+    public bool IsVirtual => _item?.IsVirtual ?? false;
 
     public PlayerInventorySlotViewModel(int slot, InventoryItem? item = null)
     {

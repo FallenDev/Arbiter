@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Arbiter.App.Collections;
 using Arbiter.App.Models.Entities;
 using Arbiter.App.Models.Player;
 using Arbiter.App.Models.Settings;
@@ -104,7 +105,7 @@ public partial class ProxyViewModel
         {
             // Get the player so we can get their inventory
             _playerService.TryGetState(connection.Id, out var player);
-            var inventory = player?.Inventory ?? new PlayerInventory();
+            var inventory = player?.Inventory ?? new SlottedCollection<InventoryItem>(1);
             
             var destroyItemMenu = GetDestroyItemDialogForEntity(entity, inventory);
             
@@ -151,7 +152,7 @@ public partial class ProxyViewModel
     }
 
     private static ServerShowDialogMenuMessage GetDestroyItemDialogForEntity(GameEntity entity,
-        PlayerInventory inventory)
+        ISlottedCollection<InventoryItem> inventory)
     {
         var dialog = new ServerShowDialogMenuMessage
         {

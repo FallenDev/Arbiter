@@ -1,7 +1,17 @@
-﻿namespace Arbiter.App.Models.Player;
+﻿using Arbiter.App.Collections;
+
+namespace Arbiter.App.Models.Player;
 
 public sealed class PlayerState
 {
+    public const int MaxInventorySlots = 60;
+    public const int MaxTemuairSkills = 36;
+    public const int MaxMedeniaSkills = 36;
+    public const int MaxWorldSkills = 18;
+    public const int MaxTemuairSpells = 36;
+    public const int MaxMedeniaSpells = 36;
+    public const int MaxWorldSpells = 18;
+
     public int ConnectionId { get; }
     public long? UserId { get; set; }
 
@@ -20,9 +30,14 @@ public sealed class PlayerState
     public long CurrentMana { get; set; }
     public long MaxMana { get; set; }
 
-    public PlayerInventory Inventory { get; } = new();
-    public PlayerSkillbook Skillbook { get; } = new();
-    public PlayerSpellbook Spellbook { get; } = new();
+    public ISlottedCollection<InventoryItem> Inventory { get; } =
+        new ConcurrentSlottedCollection<InventoryItem>(MaxInventorySlots);
+
+    public ISlottedCollection<SkillbookItem> Skills { get; } =
+        new ConcurrentSlottedCollection<SkillbookItem>(MaxTemuairSkills + MaxMedeniaSkills + MaxWorldSkills);
+
+    public ISlottedCollection<SpellbookItem> Spells { get; } =
+        new ConcurrentSlottedCollection<SpellbookItem>(MaxTemuairSpells + MaxMedeniaSpells + MaxWorldSpells);
 
     public PlayerState(int connectionId, string? name)
     {

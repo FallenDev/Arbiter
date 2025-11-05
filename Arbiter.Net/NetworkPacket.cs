@@ -10,6 +10,7 @@ public abstract class NetworkPacket : IEnumerable<byte>
 
     public byte Command { get; }
     public byte[] Data { get; }
+    public NetworkPacketSource Source { get; init; } = NetworkPacketSource.Network;
 
     protected NetworkPacket(byte command, byte[] data)
     {
