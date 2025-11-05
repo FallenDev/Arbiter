@@ -95,8 +95,8 @@ public partial class PlayerViewModel
                     SpellTargetType.Target => SpellCastParameters.Target(casterId, message.TargetId ?? 0,
                         message.TargetX ?? 0, message.TargetY ?? 0),
                     SpellTargetType.Prompt =>
-                        SpellCastParameters.TextInput(casterId, message.TextInput ?? string.Empty),
-                    _ => SpellCastParameters.NumericInput(casterId)
+                        SpellCastParameters.WithTextInput(casterId, message.TextInput ?? string.Empty),
+                    _ => SpellCastParameters.WithNumericInput(casterId, message.NumericInputs)
                 };
                 spell.OnCast(parameters);
             });

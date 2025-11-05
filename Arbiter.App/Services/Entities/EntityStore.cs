@@ -36,6 +36,18 @@ public sealed class EntityStore : IEntityStore
         }
     }
 
+    public IReadOnlyList<GameEntity> GetNearbyEntities(int mapId, int x, int y, int distance,
+        EntityFlags flags = EntityFlags.None)
+    {
+        using var _ = _lock.EnterScope();
+        var matches = _entities.Values
+            .Where(e => flags == EntityFlags.None || e.Flags.HasFlag(flags) && e.MapId == mapId &&
+                Math.Abs(e.X - x) <= distance && Math.Abs(e.Y - y) <= distance)
+            .OrderBy(e => Math.Abs(e.X - x) + Math.Abs(e.Y - y));
+
+        return matches.ToList();
+    }
+
     public bool TryGetEntity(long id, out GameEntity entity)
     {
         using var _ = _lock.EnterScope();

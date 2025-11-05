@@ -21,7 +21,8 @@ public class DebugSettings : ICloneable
     public bool EnableZoomedOutMap { get; set; }
     public bool IgnoreEmptyMessages { get; set; }
     public bool EnableNpcModMenu { get; set; }
-    public bool EnableSuperLook { get; set; }
+    public bool EnableTrueLook { get; set; }
+    public bool EnableFreeRepair { get; set; }
 
     public object Clone() => new DebugSettings
     {
@@ -42,6 +43,7 @@ public class DebugSettings : ICloneable
         DisableDarkness = DisableDarkness,
         IgnoreEmptyMessages = IgnoreEmptyMessages,
         EnableNpcModMenu = EnableNpcModMenu,
-        EnableSuperLook = EnableSuperLook
+        EnableTrueLook = EnableTrueLook,
+        EnableFreeRepair = EnableFreeRepair
     };
 }

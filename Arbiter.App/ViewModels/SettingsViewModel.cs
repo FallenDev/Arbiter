@@ -56,7 +56,8 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
     [NotifyPropertyChangedFor(nameof(DebugDisableDarkness))]
     [NotifyPropertyChangedFor(nameof(DebugIgnoreEmptyMessages))]
     [NotifyPropertyChangedFor(nameof(DebugEnableNpcModMenu))]
-    [NotifyPropertyChangedFor(nameof(DebugEnableSuperLook))]
+    [NotifyPropertyChangedFor(nameof(DebugEnableTrueLook))]
+    [NotifyPropertyChangedFor(nameof(DebugEnableFreeRepair))]
     [NotifyPropertyChangedFor(nameof(MessageFilterCount))]
     private ArbiterSettings _settings = new();
 
@@ -370,12 +371,23 @@ public partial class SettingsViewModel : ViewModelBase, IDialogResult<ArbiterSet
         }
     }
 
-    public bool DebugEnableSuperLook
+    public bool DebugEnableTrueLook
     {
-        get => Settings.Debug.EnableSuperLook;
+        get => Settings.Debug.EnableTrueLook;
         set
         {
-            Settings.Debug.EnableSuperLook = value;
+            Settings.Debug.EnableTrueLook = value;
+            OnPropertyChanged();
+            HasChanges = true;
+        }
+    }
+
+    public bool DebugEnableFreeRepair
+    {
+        get => Settings.Debug.EnableFreeRepair;
+        set
+        {
+            Settings.Debug.EnableFreeRepair = value;
             OnPropertyChanged();
             HasChanges = true;
         }

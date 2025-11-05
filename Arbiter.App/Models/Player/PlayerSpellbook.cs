@@ -32,9 +32,9 @@ public sealed class PlayerSpellbook : SlottedCollection<SpellbookItem>
         }
 
         var update = item.IsVirtual
-            ? new SpellbookItem(slot, item.Sprite, item.Name, item.TargetType, item.CastLines, item.OnCast)
+            ? new SpellbookItem(slot, item.Sprite, item.Name, item.TargetType, item.CastLines, item.OnCast, item.Prompt)
             : new SpellbookItem(slot, item.Sprite, item.Name, item.TargetType, item.CastLines, item.CurrentLevel,
-                item.MaxLevel, duration);
+                item.MaxLevel, item.Prompt, duration);
 
         SetSlot(slot, update);
         return true;

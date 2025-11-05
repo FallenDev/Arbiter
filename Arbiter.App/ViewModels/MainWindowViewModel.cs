@@ -153,15 +153,15 @@ public partial class MainWindowViewModel : ViewModelBase
         
         var newSettings =
             await _dialogService.ShowDialogAsync<SettingsWindow, SettingsViewModel, ArbiterSettings>(vm);
-
-        Settings.SettingsPanelIndex = vm.SelectedTabIndex;
         
         if (newSettings is null)
         {
+            Settings.SettingsPanelIndex = vm.SelectedTabIndex;
             return;
         }
 
         Settings = newSettings;
+        Settings.SettingsPanelIndex = vm.SelectedTabIndex;
         
         await _settingsService.SaveToFileAsync(Settings);
         LaunchClientCommand.NotifyCanExecuteChanged();

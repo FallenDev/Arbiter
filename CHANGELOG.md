@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Option to inject `Super Look` skill/spells
+- Option to inject `Super Look` and `Super Look At` skill/spells
+- Backend for virtual spells/skills
 - Right-click option to block next redirect for a client
 
 ### Changed
 
+- Fixed `ClientSpellCastMessage` packet definition
 - Retain last selected settings tab for ease of use
 - Formatted HP/MP values
 - Fix issue with NPC names changing when they speak

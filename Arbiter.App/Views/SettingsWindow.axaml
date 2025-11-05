@@ -157,14 +157,19 @@
             <!-- Abilities Tab -->
             <TabItem Header="Spell/Skill">
                 <StackPanel Spacing="4" Margin="4">
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
-                        <!-- Show Entity ID for NPCs -->
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="4">
+                        <!-- True Look -->
                         <Label Grid.Row="0" Grid.Column="0"
-                               Content="Enable Super Look Skill/Spell"
+                               Content="Enable True Look Skill/Spell"
                                ToolTip.Tip="Injects additional look abilities (in-game)."/>
                         <ToggleSwitch Grid.Row="0" Grid.Column="1"
-                                      IsChecked="{Binding DebugEnableSuperLook}"/>
-                        
+                                      IsChecked="{Binding DebugEnableTrueLook}"/>
+                        <!-- Free Repair -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Content="Enable Free Repair Skill"
+                               ToolTip.Tip="Injects free repair item skill (in-game)."/>
+                        <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding DebugEnableFreeRepair}"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

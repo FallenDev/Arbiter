@@ -29,10 +29,14 @@ public partial class PlayerInventoryViewModel : ViewModelBase
         _inventory.ItemRemoved += OnItemRemoved;
     }
 
+    public bool HasItem(string name) => _inventory.TryFind(name, out _);
+    
+    public int? FindItem(string name) => _inventory.FindItem(name);
+
     public bool TryGetSlot(int slot, [NotNullWhen(true)] out InventoryItem? item)
     {
         item = null;
-        
+
         if (slot < 1 || slot > _inventory.Capacity)
         {
             return false;
@@ -54,11 +58,11 @@ public partial class PlayerInventoryViewModel : ViewModelBase
 
         return null;
     }
-    
+
     public bool TryRemoveItem(string name, [NotNullWhen(true)] out int? slot)
     {
         slot = null;
-        
+
         for (var i = 1; i <= _inventory.Capacity; i++)
         {
             var skill = _inventory.GetSlot(i);

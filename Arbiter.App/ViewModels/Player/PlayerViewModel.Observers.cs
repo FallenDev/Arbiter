@@ -220,7 +220,7 @@ public partial class PlayerViewModel
         }
 
         var spell = new SpellbookItem(message.Slot, message.Icon, name, message.TargetType, message.CastLines, level,
-            maxLevel);
+            maxLevel, message.Prompt);
         Spellbook.SetSlot(message.Slot, spell);
     }
 

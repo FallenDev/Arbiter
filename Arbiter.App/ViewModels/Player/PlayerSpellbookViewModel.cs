@@ -42,6 +42,10 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
         _spellbook.ItemRemoved += OnSpellRemoved;
     }
     
+    public bool HasSpell(string name) => _spellbook.TryFind(name, out _);
+    
+    public int? FindSpell(string name) => _spellbook.FindSpell(name);
+    
     public bool TryGetSlot(int slot, [NotNullWhen(true)] out SpellbookItem? spell)
     {
         spell = null;

@@ -44,6 +44,8 @@ public partial class PlayerSkillbookViewModel : ViewModelBase
 
     public bool HasSkill(string name) => _skillbook.TryFind(name, out _);
     
+    public int? FindSkill(string name) => _skillbook.FindSkill(name);
+    
     public bool TryGetSlot(int slot, [NotNullWhen(true)] out SkillbookItem? skill)
     {
         skill = null;

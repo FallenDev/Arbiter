@@ -11,11 +11,12 @@ public class ClientCastSpellMessage : ClientMessage
     public ushort? TargetX { get; set; }
     public ushort? TargetY { get; set; }
     public string? TextInput { get; set; }
+    public IReadOnlyList<ushort> NumericInputs { get; set; } = [];
 
     public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
-        
+
         Slot = reader.ReadByte();
 
         if (reader.IsEndOfPacket())
@@ -23,23 +24,32 @@ public class ClientCastSpellMessage : ClientMessage
             return;
         }
 
-        var argsLength = reader.ReadByte();
+        var position = reader.Position;
+
+        // This packet has the spell arguments in the packet
+        // Unfortunately, there is no way to know how many or what they are so you have to read all possibilities
         
-        if (argsLength == 0x00 && reader.CanRead(7))
+        if (reader.CanRead(8))
         {
-            reader.Position -= 1;
-            
             TargetId = reader.ReadUInt32();
             TargetX = reader.ReadUInt16();
-            TargetY = reader.ReadByte();
+            TargetY = reader.ReadUInt16();
         }
+        reader.Position = position;
+        
+        // Try to read the text input
+        TextInput = reader.ReadFixedString(reader.Remaining);
+        reader.Position = position;
 
-        if (argsLength != 0x00 && reader.CanRead(argsLength))
+        // Try to read the numeric inputs
+        var numericInputs = new List<ushort>();
+        while (!reader.IsEndOfPacket() && reader.CanRead(2))
         {
-            TextInput = reader.ReadFixedString(argsLength);
+            numericInputs.Add(reader.ReadUInt16());
         }
+        NumericInputs = numericInputs;
     }
-    
+
     public override void Serialize(ref NetworkPacketBuilder builder)
     {
         base.Serialize(ref builder);
@@ -48,15 +58,20 @@ public class ClientCastSpellMessage : ClientMessage
         
         if (TargetId.HasValue && TargetX.HasValue && TargetY.HasValue)
         {
-            builder.AppendByte(0x00);
             builder.AppendUInt32(TargetId.Value);
             builder.AppendUInt16(TargetX.Value);
             builder.AppendByte((byte)TargetY.Value);
         }
         else if (!string.IsNullOrEmpty(TextInput))
         {
-            builder.AppendByte((byte)TextInput.Length);
-            builder.AppendString8(TextInput);
+            builder.AppendNullTerminatedString(TextInput);
+        }
+        else if (NumericInputs.Count > 0)
+        {
+            foreach (var value in NumericInputs)
+            {
+                builder.AppendUInt16(value);
+            }
         }
         else
         {

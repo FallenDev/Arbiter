@@ -136,6 +136,9 @@ public class ClientMessageMappingProvider : IInspectorMappingProvider
             b.Section("Text Input")
                 .Property(m => m.TextInput, p => p.ShowMultiline().ToolTip("User input when casting the spell."))
                 .IsExpanded(m => !string.IsNullOrEmpty(m.TextInput));
+            b.Section("Numeric Input")
+                .Property(m => m.NumericInputs, p => p.ToolTip("Numeric inputs when casting the spell."))
+                .IsExpanded(m => m.NumericInputs.Count > 0);
         });
     }
 

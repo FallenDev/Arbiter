@@ -5,6 +5,7 @@ using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Proxy;
 using Arbiter.Net.Server.Messages;
+using Arbiter.Net.Types;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -39,6 +40,15 @@ public partial class ClientViewModel : ViewModelBase
     {
         Player.Unsubscribe();
         UnregisterFilters();
+    }
+
+    public void SendBarMessage(string message, WorldMessageType messageType = WorldMessageType.BarMessage)
+    {
+        EnqueueMessage(new ServerWorldMessageMessage
+        {
+            MessageType = messageType,
+            Message = message,
+        });
     }
 
     public bool EnqueuePacket(NetworkPacket packet, NetworkPriority priority = NetworkPriority.Normal) =>

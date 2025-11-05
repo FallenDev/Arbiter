@@ -7,6 +7,7 @@ using System.Linq;
 using Arbiter.App.Models.Player;
 using Arbiter.App.Models.Settings;
 using Arbiter.App.Services.Client;
+using Arbiter.App.Services.Entities;
 using Arbiter.App.Services.Players;
 using Arbiter.Net.Proxy;
 using Avalonia.Threading;
@@ -19,6 +20,7 @@ public partial class ClientManagerViewModel : ViewModelBase
     private readonly ProxyServer _proxyServer;
     private readonly IGameClientService _gameClientService;
     private readonly IPlayerService _playerService;
+    private readonly IEntityStore _entityStore;
     private readonly ConcurrentDictionary<long, ClientViewModel> _clients = [];
     
     private DebugSettings? _debugSettings;
@@ -38,11 +40,12 @@ public partial class ClientManagerViewModel : ViewModelBase
     public event Action<ClientViewModel>? ClientDisconnected;
 
     public ClientManagerViewModel(ProxyServer proxyServer, IGameClientService gameClientService,
-        IPlayerService playerService)
+        IPlayerService playerService, IEntityStore entityStore)
     {
         _proxyServer = proxyServer;
         _gameClientService = gameClientService;
         _playerService = playerService;
+        _entityStore = entityStore;
 
         _proxyServer.ClientAuthenticated += OnClientAuthenticated;
         _proxyServer.ClientLoggedIn += OnClientLoggedIn;
@@ -54,17 +57,26 @@ public partial class ClientManagerViewModel : ViewModelBase
     public void ApplySettings(DebugSettings settings)
     {
         _debugSettings = settings;
-        
-        if (settings.EnableSuperLook)
+
+        if (settings.EnableTrueLook)
         {
-            AddSuperLookToClients();
+            AddTrueLookToClients();
         }
         else
         {
-            RemoveSuperLookFromClients();
+            RemoveTrueLookFromClients();
+        }
+
+        if (settings.EnableFreeRepair)
+        {
+            AddFreeRepairToClients();
+        }
+        else
+        {
+            RemoveFreeRepairFromClients();
         }
     }
-    
+
     public bool TryGetClient(long id, [NotNullWhen(true)] out ClientViewModel? client) =>
         _clients.TryGetValue(id, out client);
     
@@ -115,9 +127,15 @@ public partial class ClientManagerViewModel : ViewModelBase
             SelectedClient ??= client;
         });
 
-        if (_debugSettings?.EnableSuperLook ?? false)
+        if (_debugSettings?.EnableTrueLook ?? false)
         {
-            AddSuperLookSkill(client);
+            AddTrueLookSkill(client);
+            AddTrueLookTileSpell(client);
+        }
+
+        if (_debugSettings?.EnableFreeRepair ?? false)
+        {
+            AddFreeRepairSkill(client);
         }
     }
 

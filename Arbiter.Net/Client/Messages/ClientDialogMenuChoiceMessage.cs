@@ -12,7 +12,7 @@ public class ClientDialogMenuChoiceMessage : ClientMessage
     public ushort PursuitId { get; set; }
     public byte? Slot { get; set; }
     public List<string> Arguments { get; set; } = [];
-
+    
     public override void Deserialize(NetworkPacketReader reader)
     {
         base.Deserialize(reader);
