@@ -20,6 +20,8 @@ public partial class ClientViewModel : ViewModelBase
 
     private readonly ProxyConnection _connection;
 
+    public ProxyConnection Connection => _connection;
+    
     public PlayerViewModel Player { get; }
 
     public ClientViewModel(ProxyConnection connection, PlayerState player)

@@ -138,13 +138,16 @@ public partial class ClientManagerViewModel
             return;
         }
 
-        // Send the repair request
         var entity = nearbyNpcs[0];
+        var entityId = (uint)entity.Id;
+        const ushort repairPursuitId = 0x5B;
+
+        // Send the repair request
         var repairMenuMessage = new ClientDialogMenuChoiceMessage
         {
             EntityType = EntityTypeFlags.Creature,
-            EntityId = (uint)entity.Id,
-            PursuitId = 0x5B,
+            EntityId = entityId,
+            PursuitId = repairPursuitId,
             Arguments = FreeRepairSlotArgs.ToList()
         };
         client.EnqueueMessage(repairMenuMessage);
