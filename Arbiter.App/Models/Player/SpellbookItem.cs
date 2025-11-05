@@ -3,11 +3,10 @@ using Arbiter.Net.Types;
 
 namespace Arbiter.App.Models.Player;
 
-public sealed class SpellbookItem : ISlotted
+public readonly struct SpellbookItem
 {
-    public int Slot { get; init; }
     public ushort Sprite { get; init; }
-    public string Name { get; init; }
+    public required string Name { get; init; }
     public SpellTargetType TargetType { get; init; }
     public int CurrentLevel { get; init; }
     public int MaxLevel { get; init; }
@@ -16,34 +15,6 @@ public sealed class SpellbookItem : ISlotted
     public TimeSpan Cooldown { get; init; }
     public bool IsVirtual { get; init; }
     public Action<SpellCastParameters>? OnCast { get; init; }
-
-    public SpellbookItem(int slot, ushort sprite, string name, SpellTargetType targetType, int castLines = 0,
-        Action<SpellCastParameters>? onCast = null, string? prompt = null)
-    {
-        Slot = slot;
-        Sprite = sprite;
-        Name = name;
-        TargetType = targetType;
-        CastLines = castLines;
-        Prompt = prompt;
-        OnCast = onCast;
-        IsVirtual = true;
-    }
-
-    public SpellbookItem(int slot, ushort sprite, string name, SpellTargetType targetType, int castLines = 0,
-        int currentLevel = 0,
-        int maxLevel = 0, string? prompt = null, TimeSpan? cooldown = null)
-    {
-        Slot = slot;
-        Sprite = sprite;
-        Name = name;
-        TargetType = targetType;
-        CastLines = castLines;
-        Prompt = prompt;
-        CurrentLevel = currentLevel;
-        MaxLevel = maxLevel;
-        Cooldown = cooldown ?? TimeSpan.Zero;
-    }
 
     public override string ToString()
         => MaxLevel > 0 ? $"{Name} (Level: {CurrentLevel}/{MaxLevel})" : Name;

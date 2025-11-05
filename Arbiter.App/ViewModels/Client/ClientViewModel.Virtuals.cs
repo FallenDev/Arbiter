@@ -15,7 +15,7 @@ public partial class ClientViewModel
         }
 
         // Determine the first available slot
-        var availableSlot = Player.Skillbook.GetFirstEmptySlot(desiredSlot);
+        var availableSlot = Player.Skills.GetFirstEmptySlot(desiredSlot);
         if (availableSlot is null)
         {
             return;
@@ -24,8 +24,14 @@ public partial class ClientViewModel
         var slot = availableSlot.Value;
 
         // Add the skill to the skillbook
-        var virtualSkill = new SkillbookItem(slot, icon, name, onUse);
-        Player.Skillbook.SetSlot(slot, virtualSkill);
+        var virtualSkill = new SkillbookItem
+        {
+            Name = name,
+            Sprite = icon,
+            OnUse = onUse,
+            IsVirtual = true
+        };
+        Player.Skills.SetSlot(slot, virtualSkill);
 
         // Send the message to the client to add the skill to the skillbook
         var addSkillMessage = new ServerAddSkillMessage
@@ -39,7 +45,7 @@ public partial class ClientViewModel
 
     public bool RemoveVirtualSkill(string name)
     {
-        if (!_connection.IsLoggedIn || !Player.Skillbook.TryRemoveSkill(name, out var slot))
+        if (!_connection.IsLoggedIn || !Player.Skills.TryRemoveSkill(name, out var slot))
         {
             return false;
         }
@@ -61,7 +67,7 @@ public partial class ClientViewModel
         }
 
         // Determine the first available slot
-        var availableSlot = Player.Spellbook.GetFirstEmptySlot(desiredSlot);
+        var availableSlot = Player.Spells.GetFirstEmptySlot(desiredSlot);
         if (availableSlot is null)
         {
             return;
@@ -70,8 +76,16 @@ public partial class ClientViewModel
         var slot = availableSlot.Value;
 
         // Add the spell to the spellbook
-        var virtualSpell = new SpellbookItem(slot, icon, name, targetType, 0, onCast, textPrompt);
-        Player.Spellbook.SetSlot(slot, virtualSpell);
+        var virtualSpell = new SpellbookItem
+        {
+            Name = name,
+            Sprite = icon,
+            TargetType = targetType,
+            Prompt = textPrompt ?? string.Empty,
+            OnCast = onCast,
+            IsVirtual = true,
+        };
+        Player.Spells.SetSlot(slot, virtualSpell);
 
         // Send the message to the client to add the spell to the spellbook
         var addSpellMessage = new ServerAddSpellMessage
@@ -88,7 +102,7 @@ public partial class ClientViewModel
 
     public bool RemoveVirtualSpell(string name)
     {
-        if (!_connection.IsLoggedIn || !Player.Spellbook.TryRemoveSpell(name, out var slot))
+        if (!_connection.IsLoggedIn || !Player.Spells.TryRemoveSpell(name, out var slot))
         {
             return false;
         }

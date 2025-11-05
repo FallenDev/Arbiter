@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
+using Arbiter.App.Collections;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,7 +9,7 @@ namespace Arbiter.App.ViewModels.Player;
 
 public partial class PlayerSpellbookViewModel : ViewModelBase
 {
-    private readonly PlayerSpellbook _spellbook;
+    private readonly ISlottedCollection<SpellbookItem> _spells;
 
     [ObservableProperty] private PlayerSpellSlotViewModel? _selectedSpell;
 
@@ -17,11 +17,11 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
     public ObservableCollection<PlayerSpellSlotViewModel> MedeniaSpells { get; } = [];
     public ObservableCollection<PlayerSpellSlotViewModel> WorldSpells { get; } = [];
 
-    public PlayerSpellbookViewModel(PlayerSpellbook spellbook)
+    public PlayerSpellbookViewModel(ISlottedCollection<SpellbookItem> spells)
     {
-        _spellbook = spellbook;
+        _spells = spells;
 
-        for (var i = 0; i < spellbook.Capacity; i++)
+        for (var i = 0; i < _spells.Capacity; i++)
         {
             if (i < 36)
             {
@@ -36,130 +36,99 @@ public partial class PlayerSpellbookViewModel : ViewModelBase
                 WorldSpells.Add(new PlayerSpellSlotViewModel(i + 1));
             }
         }
-        
-        _spellbook.ItemAdded += OnSpellAdded;
-        _spellbook.ItemUpdated += OnSpellUpdated;
-        _spellbook.ItemRemoved += OnSpellRemoved;
+
+        _spells.ItemAdded += OnSpellAdded;
+        _spells.ItemRemoved += OnSpellRemoved;
     }
     
-    public bool HasSpell(string name) => _spellbook.TryFind(name, out _);
+    public int? GetFirstEmptySlot(int startSlot = 1) => _spells.GetFirstEmptySlot(startSlot);
     
-    public int? FindSpell(string name) => _spellbook.FindSpell(name);
-    
-    public bool TryGetSlot(int slot, [NotNullWhen(true)] out SpellbookItem? spell)
+    public bool HasSpell(string name) => GetSpell(name, out _);
+
+    public bool GetSpell(string name, out Slotted<SpellbookItem> spell)
     {
-        spell = null;
-        
-        if (slot < 1 || slot > _spellbook.Capacity)
+        spell = default;
+        if (!_spells.TryGetValue(x => string.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase),
+                out var found))
         {
             return false;
         }
 
-        spell = _spellbook.GetSlot(slot);
-        return spell is not null;
+        spell = found;
+        return true;
     }
     
-    public int? GetFirstEmptySlot(int startSlot = 1)
+    public bool TryGetSlot(int slot, out Slotted<SpellbookItem> spell)
     {
-        for (var i = startSlot; i <= _spellbook.Capacity; i++)
+        spell = default;
+        if (!_spells.TryGetValue(x => x.Slot == slot, out var found))
         {
-            if (_spellbook.GetSlot(i) is null)
-            {
-                return i;
-            }
+            return false;
         }
-
-        return null;
-    }
-    
-    public bool TryRemoveSpell(string name, [NotNullWhen(true)] out int? slot)
-    {
-        slot = null;
         
-        for (var i = 1; i <= _spellbook.Capacity; i++)
-        {
-            var skill = _spellbook.GetSlot(i);
-            if (!string.Equals(name, skill?.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            slot = i;
-            _spellbook.ClearSlot(i);
-            return true;
-        }
-
-        return false;
+        spell = found;
+        return true;
     }
-
+    
     public void SetSlot(int slot, SpellbookItem spell)
-    {
-        var existing = _spellbook.GetSlot(slot);
-        if (existing?.IsVirtual is true)
-        {
-            return;
-        }
-        
-        _spellbook.SetSlot(slot, spell);
-    }
+        => _spells.SetSlot(slot, spell);
+    
+    public void ClearSlot(int slot)
+        => _spells.ClearSlot(slot);
 
-    public void ClearSlot(int slot) =>
-        _spellbook.ClearSlot(slot);
+    public bool TryRemoveSpell(string name, out int slot)
+    {
+        slot = 0;
+        if (!_spells.TryGetValue(x => string.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase),
+                out var found))
+        {
+            return false;
+        }
+
+        slot = found.Slot;
+        return true;
+    }
 
     public void UpdateCooldown(int slot, TimeSpan duration)
-        => _spellbook.UpdateCooldown(slot, duration);
-
-    private void OnSpellAdded(int slot, SpellbookItem skill)
     {
-        if (slot < 1 || slot > _spellbook.Capacity)
-        {
-            return;
-        }
 
-        if (!Dispatcher.UIThread.CheckAccess())
-        {
-            Dispatcher.UIThread.Post(() => OnSpellAdded(slot, skill));
-            return;
-        }
-
-        SetSpellViewModel(slot, skill);
     }
 
-    private void OnSpellUpdated(int slot, SpellbookItem existing, SpellbookItem updated)
+    private void OnSpellAdded(Slotted<SpellbookItem> spell)
     {
-        if (slot < 1 || slot > _spellbook.Capacity)
+        if (spell.Slot < 1 || spell.Slot > _spells.Capacity)
         {
             return;
         }
 
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => OnSpellUpdated(slot, existing, updated));
+            Dispatcher.UIThread.Post(() => OnSpellAdded(spell));
             return;
         }
 
-        SetSpellViewModel(slot, updated);
+        SetSpellViewModel(spell.Slot, spell.Value);
     }
 
-    private void OnSpellRemoved(int slot, SpellbookItem item)
+    private void OnSpellRemoved(Slotted<SpellbookItem> spell)
     {
-        if (slot < 1 || slot > _spellbook.Capacity)
+        if (spell.Slot < 1 || spell.Slot > _spells.Capacity)
         {
             return;
         }
 
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => OnSpellRemoved(slot, item));
+            Dispatcher.UIThread.Post(() => OnSpellRemoved(spell));
             return;
         }
 
-        SetSpellViewModel(slot);
+        SetSpellViewModel(spell.Slot);
     }
 
     private void SetSpellViewModel(int slot, SpellbookItem? spell = null)
     {
-        if (slot < 1 || slot > _spellbook.Capacity)
+        if (slot < 1 || slot > _spells.Capacity)
         {
             return;
         }

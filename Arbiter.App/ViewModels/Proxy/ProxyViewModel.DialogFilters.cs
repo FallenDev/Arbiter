@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Arbiter.App.Collections;
 using Arbiter.App.Models.Player;
 using Arbiter.App.Models.Settings;
 using Arbiter.Net;
@@ -122,7 +123,8 @@ public partial class ProxyViewModel
         }
 
         // If unable to get the player OR no stackable items just passthrough
-        if (!_playerService.TryGetState(connection.Id, out var player) || !player.Inventory.Any(i => i.IsStackable))
+        if (!_playerService.TryGetState(connection.Id, out var player) ||
+            !player.Inventory.Any(i => i.Value.IsStackable))
         {
             return result.Passthrough();
         }
@@ -131,43 +133,44 @@ public partial class ProxyViewModel
         return result.Passthrough();
     }
 
-    private static void SendItemQuantityOverrides(ProxyConnection connection, PlayerInventory inventory)
+    private static void SendItemQuantityOverrides(ProxyConnection connection,
+        ISlottedCollection<InventoryItem> inventory)
     {
         // First we update the client with the stack size in the name
-        var addItemMessages = inventory.Where(i => i.IsStackable)
+        var addItemMessages = inventory.Where(i => i.Value.IsStackable)
             .Select(item =>
             {
-                var baseName = InventoryItem.GetBaseName(item.Name);
+                var baseName = InventoryItem.GetBaseName(item.Value.Name);
                 return new ServerAddItemMessage
                 {
                     Slot = (byte)item.Slot,
-                    Name = $"{baseName} [{item.Quantity}]",
-                    Sprite = item.Sprite,
-                    Color = (DyeColor)item.Color,
-                    Quantity = (uint)item.Quantity,
-                    IsStackable = item.IsStackable,
-                    Durability = (uint)(item.Durability ?? 0),
-                    MaxDurability = (uint)(item.MaxDurability ?? 0)
+                    Name = $"{baseName} [{item.Value.Quantity}]",
+                    Sprite = item.Value!.Sprite,
+                    Color = (DyeColor)item.Value.Color,
+                    Quantity = (uint)item.Value.Quantity,
+                    IsStackable = item.Value.IsStackable,
+                    Durability = (uint)(item.Value.Durability ?? 0),
+                    MaxDurability = (uint)(item.Value.MaxDurability ?? 0)
                 };
             });
         connection.EnqueueMessages(addItemMessages, NetworkPriority.High);
 
         // Then we revert it after a short delay which will happen after the dialog is shown
         // This happens very quickly so its not noticeable to the user
-        var revertItemMessages = inventory.Where(i => i.IsStackable)
+        var revertItemMessages = inventory.Where(i => i.Value.IsStackable)
             .Select(item =>
             {
-                var baseName = InventoryItem.GetBaseName(item.Name);
+                var baseName = InventoryItem.GetBaseName(item.Value.Name);
                 return new ServerAddItemMessage
                 {
                     Slot = (byte)item.Slot,
                     Name = baseName,
-                    Sprite = item.Sprite,
-                    Color = (DyeColor)item.Color,
-                    Quantity = (uint)item.Quantity,
-                    IsStackable = item.IsStackable,
-                    Durability = (uint)(item.Durability ?? 0),
-                    MaxDurability = (uint)(item.MaxDurability ?? 0)
+                    Sprite = item.Value!.Sprite,
+                    Color = (DyeColor)item.Value.Color,
+                    Quantity = (uint)item.Value.Quantity,
+                    IsStackable = item.Value.IsStackable,
+                    Durability = (uint)(item.Value.Durability ?? 0),
+                    MaxDurability = (uint)(item.Value.MaxDurability ?? 0)
                 };
             });
         connection.EnqueueMessagesAfter(revertItemMessages, TimeSpan.FromMilliseconds(100), NetworkPriority.High);

@@ -66,15 +66,6 @@ public partial class ClientManagerViewModel : ViewModelBase
         {
             RemoveTrueLookFromClients();
         }
-
-        if (settings.EnableFreeRepair)
-        {
-            AddFreeRepairToClients();
-        }
-        else
-        {
-            RemoveFreeRepairFromClients();
-        }
     }
 
     public bool TryGetClient(long id, [NotNullWhen(true)] out ClientViewModel? client) =>
@@ -131,11 +122,6 @@ public partial class ClientManagerViewModel : ViewModelBase
         {
             AddTrueLookSkill(client);
             AddTrueLookTileSpell(client);
-        }
-
-        if (_debugSettings?.EnableFreeRepair ?? false)
-        {
-            AddFreeRepairSkill(client);
         }
     }
 

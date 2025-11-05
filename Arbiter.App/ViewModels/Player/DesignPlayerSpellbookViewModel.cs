@@ -1,4 +1,5 @@
-﻿using Arbiter.App.Models.Player;
+﻿using Arbiter.App.Collections;
+using Arbiter.App.Models.Player;
 
 namespace Arbiter.App.ViewModels.Player;
 
@@ -9,12 +10,13 @@ public sealed class DesignPlayerSpellbookViewModel : PlayerSpellbookViewModel
     {
     }
 
-    private static PlayerSpellbook CreateTestSpellbook()
+    private static ISlottedCollection<SpellbookItem> CreateTestSpellbook()
     {
-        var spellbook = new PlayerSpellbook();
+        var spellbook = new SlottedCollection<SpellbookItem>(PlayerState.MaxTemuairSpells +
+                                                             PlayerState.MaxMedeniaSpells + PlayerState.MaxWorldSpells);
 
-        
-        
+
+
         return spellbook;
     }
 }

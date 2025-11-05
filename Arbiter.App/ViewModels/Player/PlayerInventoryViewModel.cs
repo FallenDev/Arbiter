@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using Arbiter.App.Collections;
 using Arbiter.App.Models.Player;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,13 +10,13 @@ namespace Arbiter.App.ViewModels.Player;
 
 public partial class PlayerInventoryViewModel : ViewModelBase
 {
-    private readonly PlayerInventory _inventory;
+    private readonly ISlottedCollection<InventoryItem> _inventory;
 
     [ObservableProperty] private PlayerInventorySlotViewModel? _selectedItem;
 
     public ObservableCollection<PlayerInventorySlotViewModel> InventorySlots { get; } = [];
 
-    public PlayerInventoryViewModel(PlayerInventory inventory)
+    public PlayerInventoryViewModel(ISlottedCollection<InventoryItem> inventory)
     {
         _inventory = inventory;
 
@@ -25,119 +26,73 @@ public partial class PlayerInventoryViewModel : ViewModelBase
         }
 
         _inventory.ItemAdded += OnItemAdded;
-        _inventory.ItemUpdated += OnItemUpdated;
         _inventory.ItemRemoved += OnItemRemoved;
     }
-
-    public bool HasItem(string name) => _inventory.TryFind(name, out _);
     
-    public int? FindItem(string name) => _inventory.FindItem(name);
+    public int? GetFirstEmptySlot() => _inventory.GetFirstEmptySlot();
 
-    public bool TryGetSlot(int slot, [NotNullWhen(true)] out InventoryItem? item)
+    public bool HasItem(string name) => GetItem(name, out _);
+
+    public bool GetItem(string name, out Slotted<InventoryItem> item)
     {
-        item = null;
-
-        if (slot < 1 || slot > _inventory.Capacity)
+        item = default;
+        if (!_inventory.TryGetValue(x => string.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase),
+                out var found))
         {
             return false;
         }
 
-        item = _inventory.GetSlot(slot);
-        return item is not null;
+        item = default;
+        return true;
     }
 
-    public int? GetFirstEmptySlot(int startSlot = 1)
+    public bool TryGetSlot(int slot, out Slotted<InventoryItem> item)
     {
-        for (var i = startSlot; i <= _inventory.Capacity; i++)
+        item = default;
+        if (!_inventory.TryGetValue(x => x.Slot == slot, out var found))
         {
-            if (_inventory.GetSlot(i) is null)
-            {
-                return i;
-            }
+            return false;
         }
 
-        return null;
-    }
-
-    public bool TryRemoveItem(string name, [NotNullWhen(true)] out int? slot)
-    {
-        slot = null;
-
-        for (var i = 1; i <= _inventory.Capacity; i++)
-        {
-            var skill = _inventory.GetSlot(i);
-            if (!string.Equals(name, skill?.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            slot = i;
-            _inventory.ClearSlot(i);
-            return true;
-        }
-
-        return false;
+        item = default;
+        return true;
     }
 
     public void SetSlot(int slot, InventoryItem item)
+        => _inventory.SetSlot(slot, item);
+
+    public void ClearSlot(int slot)
+        => _inventory.ClearSlot(slot);
+
+    private void OnItemAdded(Slotted<InventoryItem> item)
     {
-        var existing = _inventory.GetSlot(slot);
-        if (existing?.IsVirtual is true)
-        {
-            return;
-        }
-
-        _inventory.SetSlot(slot, item);
-    }
-
-    public void ClearSlot(int slot) =>
-        _inventory.ClearSlot(slot);
-
-    private void OnItemAdded(int slot, InventoryItem item)
-    {
-        if (slot < 1 || slot > _inventory.Capacity)
+        if (item.Slot < 1 || item.Slot > _inventory.Capacity)
         {
             return;
         }
 
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => OnItemAdded(slot, item));
+            Dispatcher.UIThread.Post(() => OnItemAdded(item));
             return;
         }
 
-        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot, item);
+        InventorySlots[item.Slot - 1] = new PlayerInventorySlotViewModel(item.Slot, item.Value);
     }
 
-    private void OnItemUpdated(int slot, InventoryItem existing, InventoryItem updated)
+    private void OnItemRemoved(Slotted<InventoryItem> item)
     {
-        if (slot < 1 || slot > _inventory.Capacity)
+        if (item.Slot < 1 || item.Slot > _inventory.Capacity)
         {
             return;
         }
 
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => OnItemUpdated(slot, existing, updated));
+            Dispatcher.UIThread.Post(() => OnItemRemoved(item));
             return;
         }
 
-        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot, updated);
-    }
-
-    private void OnItemRemoved(int slot, InventoryItem item)
-    {
-        if (slot < 1 || slot > _inventory.Capacity)
-        {
-            return;
-        }
-
-        if (!Dispatcher.UIThread.CheckAccess())
-        {
-            Dispatcher.UIThread.Post(() => OnItemRemoved(slot, item));
-            return;
-        }
-
-        InventorySlots[slot - 1] = new PlayerInventorySlotViewModel(slot);
+        InventorySlots[item.Slot - 1] = new PlayerInventorySlotViewModel(item.Slot);
     }
 }

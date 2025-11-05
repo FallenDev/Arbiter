@@ -1,4 +1,5 @@
-﻿using Arbiter.App.Models.Player;
+﻿using Arbiter.App.Collections;
+using Arbiter.App.Models.Player;
 
 namespace Arbiter.App.ViewModels.Player;
 
@@ -9,13 +10,19 @@ public sealed class DesignPlayerSkillbookViewModel : PlayerSkillbookViewModel
     {
     }
 
-    public static PlayerSkillbook CreateTestSkillbook()
+    public static ISlottedCollection<SkillbookItem> CreateTestSkillbook()
     {
-        var skillbook = new PlayerSkillbook();
+        var skills = new SlottedCollection<SkillbookItem>(PlayerState.MaxTemuairSkills + PlayerState.MaxMedeniaSkills +
+                                                          PlayerState.MaxWorldSkills);
+        var skill = new SkillbookItem
+        {
+            Name = "Assail",
+            Sprite = 1,
+            CurrentLevel = 80,
+            MaxLevel = 100
+        };
 
-        var skill = new SkillbookItem(1, 1, "Assail", 80, 100);
-        skillbook.SetSlot(1, skill);
-
-        return skillbook;
+        skills.SetSlot(1, skill);
+        return skills;
     }
 }

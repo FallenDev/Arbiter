@@ -3,9 +3,8 @@ using System.Text;
 
 namespace Arbiter.App.Models.Player;
 
-public sealed class InventoryItem : ISlotted
+public readonly struct InventoryItem
 {
-    public int Slot { get; init; }
     public ushort Sprite { get; init; }
     public byte Color { get; init; }
     public required string Name { get; init; }

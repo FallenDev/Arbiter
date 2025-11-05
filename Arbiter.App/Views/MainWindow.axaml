@@ -165,11 +165,11 @@
                 </TabItem>
                 <!-- Skills View-->
                 <TabItem Header="Skills">
-                    <v:PlayerSkillbookView DataContext="{Binding ClientManager.SelectedClient.Player.Skillbook, FallbackValue={x:Null}}"/>
+                    <v:PlayerSkillbookView DataContext="{Binding ClientManager.SelectedClient.Player.Skills, FallbackValue={x:Null}}"/>
                 </TabItem>
                 <!-- Spells View-->
                 <TabItem Header="Spells">
-                    <v:PlayerSpellbookView DataContext="{Binding ClientManager.SelectedClient.Player.Spellbook, FallbackValue={x:Null}}"/>
+                    <v:PlayerSpellbookView DataContext="{Binding ClientManager.SelectedClient.Player.Spells, FallbackValue={x:Null}}"/>
                 </TabItem>
             </TabControl>
             

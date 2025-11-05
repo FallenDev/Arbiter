@@ -92,16 +92,16 @@ public partial class PlayerViewModel : ViewModelBase
         $"{FormatHealthManaValue(CurrentMana)} / {FormatHealthManaValue(MaxMana)}";
 
     public PlayerInventoryViewModel Inventory { get; }
-    public PlayerSkillbookViewModel Skillbook { get; }
-    public PlayerSpellbookViewModel Spellbook { get; }
+    public PlayerSkillbookViewModel Skills { get; }
+    public PlayerSpellbookViewModel Spells { get; }
 
     public PlayerViewModel(PlayerState player)
     {
         _player = player;
         
         Inventory = new PlayerInventoryViewModel(player.Inventory);
-        Skillbook = new PlayerSkillbookViewModel(player.Skillbook);
-        Spellbook = new PlayerSpellbookViewModel(player.Spellbook);
+        Skills = new PlayerSkillbookViewModel(player.Skills);
+        Spells = new PlayerSpellbookViewModel(player.Spells);
     }
 
     public void Subscribe(ProxyConnection connection)
