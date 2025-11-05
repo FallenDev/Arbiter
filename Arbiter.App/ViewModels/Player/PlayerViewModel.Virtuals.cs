@@ -67,7 +67,7 @@ public partial class PlayerViewModel
     private NetworkPacket? HandleClientUseItemMessage(ProxyConnection connection, ClientUseItemMessage message,
         object? parameter, NetworkMessageFilterResult<ClientUseItemMessage> result)
     {
-        if (!Inventory.TryGetSlot(message.Slot, out var slotted) || !slotted.Value.IsVirtual)
+        if (!Inventory.TryGetSlot(message.Slot, out var slotted) || !slotted.Value.IsVirtual is not true)
         {
             return result.Passthrough();
         }

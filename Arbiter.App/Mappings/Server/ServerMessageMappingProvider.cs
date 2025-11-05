@@ -156,6 +156,7 @@ public class ServerMessageMappingProvider : IInspectorMappingProvider
                 .Property(m => m.Boards)
                 .IsExpanded(m => m.Boards.Count > 0);
             b.Section("Board")
+                .Property(m => m.BoardType, p => p.ToolTip("Type of message board interaction."))
                 .Property(m => m.BoardId, p => p.ToolTip("ID of the message board."))
                 .Property(m => m.BoardName, p => p.ShowMultiline().ToolTip("Display name of the message board."))
                 .IsExpanded(m => m.ResultType is MessageBoardResult.Board or MessageBoardResult.Mailbox);

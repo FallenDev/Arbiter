@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Arbiter.App.Models.Player;
+using Arbiter.Net;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Observers;
 using Arbiter.Net.Proxy;
@@ -152,6 +153,12 @@ public partial class PlayerViewModel
 
     private void OnAddItemMessage(ProxyConnection connection, ServerAddItemMessage message, object? parameter)
     {
+        // Ignore injected items, these are likely virtual items
+        if (message.Source == NetworkPacketSource.Injected)
+        {
+            return;
+        }
+        
         var item = new InventoryItem
         {
             Name = message.Name,
@@ -177,6 +184,12 @@ public partial class PlayerViewModel
 
     private void OnAddSkillMessage(ProxyConnection connection, ServerAddSkillMessage message, object? parameter)
     {
+        // Ignore injected items, these are likely virtual skills
+        if (message.Source == NetworkPacketSource.Injected)
+        {
+            return;
+        }
+        
         var level = 0;
         var maxLevel = 0;
         var name = message.Name;
@@ -212,6 +225,12 @@ public partial class PlayerViewModel
 
     private void OnAddSpellMessage(ProxyConnection connection, ServerAddSpellMessage message, object? parameter)
     {
+        // Ignore injected items, these are likely virtual spells
+        if (message.Source == NetworkPacketSource.Injected)
+        {
+            return;
+        }
+        
         var level = 0;
         var maxLevel = 0;
         var name = message.Name;

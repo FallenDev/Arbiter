@@ -52,7 +52,7 @@ public class ServerMessageFilter<TMessage> : INetworkMessageFilter where TMessag
                 try
                 {
                     modifiedMessage.Serialize(ref builder);
-                    return builder.ToPacket();
+                    return builder.ToPacket(packet.Source);
                 }
                 finally
                 {

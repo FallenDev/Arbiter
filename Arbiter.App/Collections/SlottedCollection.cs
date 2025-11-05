@@ -70,11 +70,6 @@ public class SlottedCollection<T> : ISlottedCollection<T> where T: class
         
         foreach (var slottedItem in this)
         {
-            if (!slottedItem.HasValue)
-            {
-                continue;
-            }
-
             if (!predicate(slottedItem))
             {
                 continue;
@@ -135,7 +130,7 @@ public class SlottedCollection<T> : ISlottedCollection<T> where T: class
         }
 
         var existingItem = _items[slot - 1];
-        _items[slot - 1] = default;
+        _items[slot - 1] = null;
 
         if (existingItem is not null)
         {
@@ -147,10 +142,17 @@ public class SlottedCollection<T> : ISlottedCollection<T> where T: class
 
     public virtual IEnumerator<Slotted<T>> GetEnumerator()
     {
-        return _items
-            .Select((item, index) => new Slotted<T>(index + 1, item))
-            .Where(item => item.HasValue)
-            .GetEnumerator();
+        var items = new List<Slotted<T>>(_items.Length);
+        for (var i = 0; i < _items.Length; i++)
+        {
+            var item = _items[i];
+            if (item is not null)
+            {
+                items.Add(new Slotted<T>(i + 1, item));
+            }
+        }
+
+        return items.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

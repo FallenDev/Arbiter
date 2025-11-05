@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Arbiter.App.Collections;
 
-public interface ISlottedCollection<T> : IReadOnlyCollection<Slotted<T>>
+public interface ISlottedCollection<T> : IReadOnlyCollection<Slotted<T>> where T : class
 {
     int Capacity { get; }
 

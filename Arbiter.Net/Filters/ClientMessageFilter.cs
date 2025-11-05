@@ -52,8 +52,7 @@ public class ClientMessageFilter<TMessage> : INetworkMessageFilter where TMessag
                 try
                 {
                     modifiedMessage.Serialize(ref builder);
-                    var newPacket = builder.ToPacket();
-                    return newPacket;
+                    return builder.ToPacket(packet.Source);
                 }
                 finally
                 {

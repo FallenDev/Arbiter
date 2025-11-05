@@ -100,8 +100,7 @@ public partial class ProxyConnection
                         var writer = isServerHeartbeat ? _prioritySendQueue.Writer : _sendQueue.Writer;
 
                         // Send the decrypted packet to the other end of the connection (it will be re-encrypted)
-                        var queuedPacket = new QueuedNetworkPacket(output, NetworkPacketSource.Network);
-                        await writer.WriteAsync(queuedPacket, token).ConfigureAwait(false);
+                        await writer.WriteAsync(output, token).ConfigureAwait(false);
                     }
 
                     // Notify when a filter throws an exception

@@ -3,7 +3,7 @@
 public sealed class TimedNetworkFilter : IDisposable
 {
     private readonly NetworkFilterRef _filterRef;
-    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly CancellationTokenSource? _cancellationTokenSource;
     private volatile bool _isDisposed;
 
     public TimedNetworkFilter(NetworkFilterRef filterRef, TimeSpan? expiration = null)
@@ -21,7 +21,7 @@ public sealed class TimedNetworkFilter : IDisposable
     {
         try
         {
-            await Task.Delay(expiration, _cancellationTokenSource.Token);
+            await Task.Delay(expiration, _cancellationTokenSource!.Token);
             Dispose();
         }
         catch

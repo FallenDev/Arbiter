@@ -10,7 +10,7 @@ public class ServerBoardResultMessage : ServerMessage
 {
     public MessageBoardResult ResultType { get; set; }
     public List<ServerMessageBoardInfo> Boards { get; set; } = [];
-    public MessageBoardSource? Source { get; set; }
+    public MessageBoardType? BoardType { get; set; }
     public ushort? BoardId { get; set; }
     public string? BoardName { get; set; }
     public List<ServerMessageBoardPostListing> Posts { get; set; } = [];
@@ -39,7 +39,7 @@ public class ServerBoardResultMessage : ServerMessage
         }
         else if (ResultType is MessageBoardResult.Board or MessageBoardResult.Mailbox)
         {
-            Source = (MessageBoardSource)reader.ReadByte();
+            BoardType = (MessageBoardType)reader.ReadByte();
             BoardId = reader.ReadUInt16();
             BoardName = reader.ReadString8();
 
