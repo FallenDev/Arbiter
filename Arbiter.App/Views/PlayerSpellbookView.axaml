@@ -43,7 +43,7 @@
                         <!-- Tooltip -->
                         <ToolTip.Tip>
                             <Border Padding="4">
-                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
+                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
                                           RowSpacing="4" ColumnSpacing="8"
                                           MinWidth="200">
                                         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="8">
@@ -124,6 +124,15 @@
                                                 <Run Text="seconds"/>
                                             </Span>
                                         </TextBlock>
+                                        
+                                        <!-- Virtual Spell -->
+                                        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                                                   Text="Virtual Spell"
+                                                   Foreground="{StaticResource Talgonite.Color.LightYellow}"
+                                                   FontSize="14"
+                                                   FontFamily="{StaticResource Talgonite.Font.Monospace}"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding IsVirtual}"/>
                                     </Grid>
                                 </Border>
                         </ToolTip.Tip>
