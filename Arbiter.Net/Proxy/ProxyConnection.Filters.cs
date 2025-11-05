@@ -1,6 +1,7 @@
 ﻿using Arbiter.Net.Client;
 using Arbiter.Net.Client.Messages;
 using Arbiter.Net.Filters;
+using Arbiter.Net.Filters.Specialized;
 using Arbiter.Net.Server;
 using Arbiter.Net.Server.Messages;
 
@@ -23,6 +24,48 @@ public partial class ProxyConnection
         };
 
         return AddFilter(serverFilter);
+    }
+
+    public TimedNetworkFilter AddFilterOnce<T>(ClientMessageFilterPredicate<T> predicate,
+        ClientMessageFilterHandler<T> handler, object? parameter = null,
+        TimeSpan? expiration = null)
+        where T : IClientMessage
+    {
+        TimedNetworkFilter? timedFilter = null;
+
+        var filter = timedFilter;
+        var oneShotHandler = new ClientMessageFilterOnce<T>(
+            predicate,
+            handler,
+            onTriggered: () => Task.Run(() => filter?.Dispose()));
+
+        var filterGuid = Guid.NewGuid();
+        var filterRef = AddFilter<T>(oneShotHandler.Handle, $"OneShot_{typeof(T).Name}_{filterGuid:N}", int.MaxValue,
+            parameter);
+
+        timedFilter = new TimedNetworkFilter(filterRef, expiration);
+        return timedFilter;
+    }
+    
+    public TimedNetworkFilter AddFilterOnce<T>(ServerMessageFilterPredicate<T> predicate,
+        ServerMessageFilterHandler<T> handler, object? parameter = null,
+        TimeSpan? expiration = null)
+        where T : IServerMessage
+    {
+        TimedNetworkFilter? timedFilter = null;
+
+        var filter = timedFilter;
+        var oneShotHandler = new ServerMessageFilterOnce<T>(
+            predicate,
+            handler,
+            onTriggered: () => Task.Run(() => filter?.Dispose()));
+
+        var filterGuid = Guid.NewGuid();
+        var filterRef = AddFilter<T>(oneShotHandler.Handle, $"OneShot_{typeof(T).Name}_{filterGuid:N}", int.MaxValue,
+            parameter);
+
+        timedFilter = new TimedNetworkFilter(filterRef, expiration);
+        return timedFilter;
     }
 
     public NetworkFilterRef AddFilter<T>(ClientMessageFilter<T> filter) where T : IClientMessage

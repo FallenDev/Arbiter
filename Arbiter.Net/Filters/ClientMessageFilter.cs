@@ -8,6 +8,9 @@ namespace Arbiter.Net.Filters;
 public delegate NetworkPacket? ClientMessageFilterHandler<TMessage>(ProxyConnection connection, TMessage message,
     object? parameter, NetworkMessageFilterResult<TMessage> result) where TMessage : IClientMessage;
 
+public delegate bool ClientMessageFilterPredicate<in TMessage>(ProxyConnection connection, TMessage message,
+    object? parameter) where TMessage : IClientMessage;
+
 public class ClientMessageFilter<TMessage> : INetworkMessageFilter where TMessage : IClientMessage
 {
     private readonly ClientMessageFactory _messageFactory = ClientMessageFactory.Default;
