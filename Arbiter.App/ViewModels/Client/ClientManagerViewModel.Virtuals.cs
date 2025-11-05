@@ -38,7 +38,7 @@ public partial class ClientManagerViewModel
             return;
         }
 
-        client.AddVirtualSkill(73, 71, TrueLookSkillName, () => PerformTrueLook(client));
+        client.AddVirtualSkill(73, 8, TrueLookSkillName, () => PerformTrueLook(client));
     }
 
     private static void AddTrueLookTileSpell(ClientViewModel client)
@@ -48,8 +48,8 @@ public partial class ClientManagerViewModel
             return;
         }
 
-        client.AddVirtualSpell(73, 76, TrueLookSpellName, SpellTargetType.PromptTwoNumbers,
-            parameters => PerformTrueLookTile(client, parameters), "Enter Map X,Y to Look at: ");
+        client.AddVirtualSpell(73, 200, TrueLookSpellName, SpellTargetType.Target,
+            parameters => PerformTrueLookTile(client, parameters));
     }
 
     private static void PerformTrueLook(ClientViewModel client)
@@ -60,18 +60,10 @@ public partial class ClientManagerViewModel
 
     private static void PerformTrueLookTile(ClientViewModel client, SpellCastParameters castParameters)
     {
-        if (castParameters.NumericInputs?.Count < 2)
-        {
-            return;
-        }
-
-        var tileX = castParameters.NumericInputs![0];
-        var tileY = castParameters.NumericInputs![1];
-
         var lookTileAction = new ClientLookTileMessage
         {
-            TileX = tileX,
-            TileY = tileY
+            TileX = (ushort)castParameters.TargetX,
+            TileY = (ushort)castParameters.TargetY
         };
         client.EnqueueMessage(lookTileAction);
     }
