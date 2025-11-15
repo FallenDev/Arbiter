@@ -12,7 +12,7 @@ Custom UI styling based on [Godot's](https://godotengine.org/) look and feel.
 ## Requirements ✅
 
 - [Dark Ages](https://www.darkages.com) Client 7.41 (current latest)
-- [.NET 9.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+- [.NET 10.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 - Windows, macOS*, Linux*
 
 > [!NOTE]

@@ -8,7 +8,7 @@
         <Setter Property="TitleBarBorderBrush" Value="{StaticResource Talgonite.Window.TitleBorderBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource Talgonite.Font.InterfaceFont}"/>
         <Setter Property="FontSize" Value="{StaticResource Talgonite.FontSize.Normal}"/>
-        <Setter Property="SystemDecorations" Value="None"/>
+        <Setter Property="SystemDecorations" Value="Full"/>
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True"/>
         <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome"/>
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="40"/>
@@ -102,16 +102,6 @@
                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             </DockPanel>
-                           
-                            <!-- Resize Grip -->
-                            <Panel Name="PART_ResizeGrip"
-                                  Grid.Row="1"
-                                  Classes="resize-grip-container"
-                                  IsVisible="{Binding $parent[Window].CanResize}">
-                                <Path Width="16" Height="16"
-                                      Classes="resize-grip"
-                                      Margin="0,0,4,4"/>
-                            </Panel>
                         </Grid>
                         
                     </VisualLayerManager>

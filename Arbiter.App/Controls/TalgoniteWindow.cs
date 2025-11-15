@@ -8,17 +8,13 @@ using Avalonia.Media;
 
 namespace Arbiter.App.Controls;
 
-[PseudoClasses(":dragging", ":resizing", ":maximized")]
+[PseudoClasses(":dragging", ":maximized")]
 public class TalgoniteWindow : Window
 {
     private Control? _titleBar;
     private Button? _minimizeButton;
     private Button? _maximizeButton;
     private Button? _closeButton;
-    private Control? _resizeGrip;
-
-    private bool _isMouseDown;
-    private Point _mouseDownPosition;
     
     protected override Type StyleKeyOverride { get; } = typeof(TalgoniteWindow);
     
@@ -90,58 +86,29 @@ public class TalgoniteWindow : Window
         
         _closeButton = e.NameScope.Find<Button>("PART_CloseButton")!;
         _closeButton.Click += (_, _) => Close();
-
-        _resizeGrip = e.NameScope.Find<Control>("PART_ResizeGrip");
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         if (_titleBar?.IsPointerOver is true)
         {
-            _isMouseDown = true;
-            _mouseDownPosition = e.GetPosition(this);
-
             if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
                 BeginMoveDrag(e);
                 PseudoClasses.Set(":dragging", true);
-                _isMouseDown = false;
             }
-        }
-        else if (_resizeGrip?.IsPointerOver is true && CanResize)
-        {
-            PseudoClasses.Set(":resizing", true);
-            BeginResizeDrag(WindowEdge.SouthEast, e);
         }
         else
         {
-            PseudoClasses.Set(":resizing", false);
             PseudoClasses.Set(":dragging", false);
-            _isMouseDown = false;
         }
         
         base.OnPointerPressed(e);
     }
 
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        PseudoClasses.Set(":resizing", false);
-        PseudoClasses.Set(":dragging", false);
-        base.OnPointerReleased(e);
-    }
-
-    protected override void OnPointerMoved(PointerEventArgs e)
-    {
-        if (!_isMouseDown)
-        {
-            PseudoClasses.Set(":resizing", false);
-        }
-        base.OnPointerMoved(e);
-    }
-
     private void ToggleMaximizedState()
     {
-        if (!CanResize)
+        if (!CanMaximize)
         {
             return;
         }
