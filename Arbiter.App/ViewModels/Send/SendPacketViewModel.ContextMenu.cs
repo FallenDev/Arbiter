@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Arbiter.App.Extensions;
 using Avalonia;
+using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Arbiter.App.ViewModels.Send;
@@ -48,7 +49,7 @@ public partial class SendPacketViewModel
             return;
         }
 
-        var newText = await clipboard.GetTextAsync();
+        var newText = await clipboard.TryGetTextAsync();
         if (!string.IsNullOrWhiteSpace(newText))
         {
             InputText = newText;

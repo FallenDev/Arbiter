@@ -14,6 +14,8 @@
         Title="{Binding Title}"
         Width="1280" Height="720"
         MinWidth="1280" MinHeight="640"
+        CanMinimize="True"
+        CanMaximize="True"
         CanResize="True"
         WindowStartupLocation="CenterScreen"
         Opened="Window_OnOpened"
